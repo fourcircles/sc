@@ -1,0 +1,45 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'gwt'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        maven {
+            url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/'
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+dependencies {
+    providedCompile 'com.google.gwt:gwt-dev:2.6.1'
+    providedCompile 'com.google.gwt:gwt-user:2.6.1'
+}
+
+gwt {
+    minHeapSize = "512M";
+    maxHeapSize = "1024M";
+
+    modules 'kz.arta.sc3.showcase.ShowCase'
+}
+
+project.webAppDirName = 'src/main/resources'

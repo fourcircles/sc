@@ -1,8 +1,10 @@
 package kz.arta.sc3.showcase.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.dom.client.StyleElement;
+import com.google.gwt.dom.client.StyleInjector;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
  * User: user
@@ -10,9 +12,12 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Time: 16:47
  */
 public class ShowCase implements EntryPoint {
+    public StyleElement styleElement = StyleInjector.injectStylesheet("");
 
     @Override
     public void onModuleLoad() {
-        RootPanel.get("root").add(new Label("hello"));
+        Window.setMargin("0px");
+        RootLayoutPanel.get().add(new ShowCasePanel(styleElement));
     }
+
 }

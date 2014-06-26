@@ -2,6 +2,7 @@ package kz.arta.synergy.components.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Cookies;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
 import kz.arta.synergy.components.style.client.resources.ComponentResourcesDark;
@@ -22,7 +23,8 @@ public class SynergyComponents implements EntryPoint {
     }
 
     private String getThemeName() {
-        return Theme.standard.name();
+        String themeName = Cookies.getCookie("theme");
+        return themeName == null ? Theme.standard.name() : themeName;
     }
 
     /**
@@ -30,6 +32,7 @@ public class SynergyComponents implements EntryPoint {
      * @param themeName тема
      */
     private void initTheme(String themeName) {
+        System.out.println(themeName);
         Theme theme = Theme.getTheme(themeName);
         switch (theme) {
             case standard:

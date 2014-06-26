@@ -1,18 +1,18 @@
 package kz.arta.sc3.showcase.client;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.StyleElement;
-import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.layout.client.Layout;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import kz.arta.sc3.showcase.client.css.CssTheme;
-import kz.arta.sc3.showcase.client.css.Resources;
-import kz.arta.sc3.showcase.client.images.TreeResources;
+import kz.arta.synergy.components.client.theme.Theme;
+import kz.arta.synergy.components.style.client.resources.ComponentResources;
 
 import java.util.ArrayList;
 
@@ -26,8 +26,8 @@ public class ShowCasePanel extends LayoutPanel {
     private final static int TREE_WIDTH = 15;
     private final static int SPACING = 1;
 
-    private final static Theme defaultTheme = Theme.BLUE;
-    private StyleElement styleElement;
+    private Theme currentTheme;
+    private ComponentResources resources;
 
     Tree tree;
 
@@ -44,8 +44,12 @@ public class ShowCasePanel extends LayoutPanel {
         w.getElement().getStyle().setProperty("border", "solid 1px black");
     }
 
-    public ShowCasePanel(StyleElement styleElement) {
-        this.styleElement = styleElement;
+    public ShowCasePanel() {
+        if (Cookies.getCookie("theme") == null) {
+            currentTheme = Theme.standard;
+        } else {
+            currentTheme = Theme.getTheme(Cookies.getCookie("theme"));
+        }
 
         contentPanel = new TabLayoutPanel(30, Style.Unit.PX);
         themes = new ArrayList<Theme>();
@@ -58,6 +62,7 @@ public class ShowCasePanel extends LayoutPanel {
         leftPanel.add(tree);
 
         leftPanel.setWidgetTopBottom(navigationLabel, 0, Style.Unit.PCT, 95, Style.Unit.PCT);
+        navigationLabel.getElement().getStyle().setProperty("borderBottom", "solid");
         leftPanel.setWidgetTopBottom(tree, 5, Style.Unit.PCT, 0, Style.Unit.PCT);
 
         LayoutPanel titlePanel = new LayoutPanel();
@@ -65,21 +70,21 @@ public class ShowCasePanel extends LayoutPanel {
         titlePanel.add(showCaseLabel);
 
         stylesListBox = new ListBox();
-        Theme.addAllThemes(this);
+        addAllThemes();
 
         stylesListBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                stylesListBox.getTitle();
-                setTheme(themes.get(stylesListBox.getSelectedIndex()));
+                Cookies.setCookie("theme", themes.get(stylesListBox.getSelectedIndex()).name());
+                Window.Location.reload();
             }
         });
 
         titlePanel.add(stylesListBox);
         titlePanel.setWidth("100%");
 
-        titlePanel.setWidgetLeftWidth(showCaseLabel, 0, Style.Unit.PCT, 50, Style.Unit.PCT);
-        titlePanel.setWidgetRightWidth(stylesListBox, 0, Style.Unit.PCT, 50, Style.Unit.PCT);
+        titlePanel.setWidgetHorizontalPosition(stylesListBox, Layout.Alignment.END);
+        titlePanel.setWidgetHorizontalPosition(showCaseLabel, Layout.Alignment.BEGIN);
 
         add(titlePanel);
         add(leftPanel);
@@ -101,7 +106,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         forceLayout();
 
-        setTheme(defaultTheme);
+        setTheme(currentTheme);
 
         tabbedComponents = new ArrayList<ShowComponent>();
 
@@ -163,7 +168,7 @@ public class ShowCasePanel extends LayoutPanel {
     }
 
     private void treeSetUp() {
-        tree = new Tree(TreeResources.IMPL, true);
+        tree = new Tree();
 
         TreeItem category1 = addCategory("category1");
         TreeItem category2 = addCategory("category2");
@@ -179,54 +184,20 @@ public class ShowCasePanel extends LayoutPanel {
         cnt++;
     }
 
+    private void addAllThemes() {
+        for (Theme theme : Theme.values()) {
+            addTheme(theme);
+        }
+    }
+
     private void addTheme(Theme theme) {
         if (!themes.contains(theme)) {
             themes.add(theme);
-            stylesListBox.addItem(theme.themeName);
+            stylesListBox.addItem(theme.name());
         }
     }
 
     private void setTheme(Theme theme) {
         stylesListBox.setSelectedIndex(themes.indexOf(theme));
-        StyleInjector.setContents(styleElement, theme.getCss().getText());
-    }
-
-    static enum Theme {
-        RED("redTheme"), BLUE("blueTheme"), YELLOW("yellowTheme");
-        String themeName;
-
-        Theme(String themeName) {
-            this.themeName = themeName;
-        }
-
-        String getThemeName() {
-            return themeName;
-        }
-
-        public static Theme getTheme(String themeName) {
-            for (Theme theme : Theme.values()) {
-                if (theme.themeName.equals(themeName)) {
-                    return theme;
-                }
-            }
-            return null;
-        }
-
-        public static void addAllThemes(ShowCasePanel panel) {
-            for (Theme theme : Theme.values()) {
-                panel.addTheme(theme);
-            }
-        }
-
-        public CssTheme getCss() {
-            switch (this) {
-                case RED:
-                    return Resources.IMPL.red();
-                case BLUE:
-                    return Resources.IMPL.blue();
-                default:
-                    return Resources.IMPL.blue();
-            }
-        }
     }
 }

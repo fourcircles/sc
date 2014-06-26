@@ -2,6 +2,8 @@
 <module>
 
     <inherits name='com.google.gwt.user.User'/>
+    <inherits name="kz.arta.synergy.components.SynergyComponents"/>
+
 
     <entry-point class='kz.arta.sc3.showcase.client.ShowCase'/>
 

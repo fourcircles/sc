@@ -20,6 +20,6 @@ public enum  Theme {
                 return theme;
             }
         }
-        return null;
+        return standard;
     }
 }

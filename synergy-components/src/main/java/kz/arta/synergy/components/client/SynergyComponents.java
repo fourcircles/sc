@@ -32,7 +32,6 @@ public class SynergyComponents implements EntryPoint {
      * @param themeName тема
      */
     private void initTheme(String themeName) {
-        System.out.println(themeName);
         Theme theme = Theme.getTheme(themeName);
         switch (theme) {
             case standard:

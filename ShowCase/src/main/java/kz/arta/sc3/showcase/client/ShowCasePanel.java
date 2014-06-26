@@ -7,6 +7,7 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.layout.client.Layout;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
@@ -15,6 +16,7 @@ import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * User: vsl
@@ -45,6 +47,7 @@ public class ShowCasePanel extends LayoutPanel {
     }
 
     public ShowCasePanel() {
+        System.out.println(Arrays.asList(LocaleInfo.getAvailableLocaleNames()));
         if (Cookies.getCookie("theme") == null) {
             currentTheme = Theme.standard;
         } else {

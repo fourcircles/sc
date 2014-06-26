@@ -7,16 +7,16 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.layout.client.Layout;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
+import kz.arta.synergy.components.style.client.resources.messages.ExampleMessages;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * User: vsl
@@ -39,15 +39,17 @@ public class ShowCasePanel extends LayoutPanel {
 
     private ArrayList<ShowComponent> tabbedComponents;
 
-    private ListBox stylesListBox;
+    private ListBox themeListBox;
+    private ListBox localeListBox;
+
     private ArrayList<Theme> themes;
+    private ArrayList<String> locales;
 
     public void setBorder(Widget w) {
         w.getElement().getStyle().setProperty("border", "solid 1px black");
     }
 
     public ShowCasePanel() {
-        System.out.println(Arrays.asList(LocaleInfo.getAvailableLocaleNames()));
         if (Cookies.getCookie("theme") == null) {
             currentTheme = Theme.standard;
         } else {
@@ -59,7 +61,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         treeSetUp();
 
-        Label navigationLabel = new Label("Навигация");
+        Label navigationLabel = new Label(ExampleMessages.IMPL.navigation());
         LayoutPanel leftPanel = new LayoutPanel();
         leftPanel.add(navigationLabel);
         leftPanel.add(tree);
@@ -72,22 +74,47 @@ public class ShowCasePanel extends LayoutPanel {
         Label showCaseLabel = new Label("ShowCase");
         titlePanel.add(showCaseLabel);
 
-        stylesListBox = new ListBox();
+        themeListBox = new ListBox();
         addAllThemes();
 
-        stylesListBox.addChangeHandler(new ChangeHandler() {
+        themeListBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                Cookies.setCookie("theme", themes.get(stylesListBox.getSelectedIndex()).name());
+                Cookies.setCookie("theme", themes.get(themeListBox.getSelectedIndex()).name());
                 Window.Location.reload();
             }
         });
 
-        titlePanel.add(stylesListBox);
+        titlePanel.add(themeListBox);
+
+        locales = new ArrayList<String>();
+        localeListBox = new ListBox();
+        for (String locale : LocaleInfo.getAvailableLocaleNames()) {
+            if (!"default".equals(locale)) {
+                locales.add(locale);
+                localeListBox.addItem(locale);
+            }
+        }
+
+        String chosenLocale = LocaleInfo.getCurrentLocale().getLocaleName();
+        localeListBox.setSelectedIndex(locales.indexOf(chosenLocale));
+
+        localeListBox.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent event) {
+                UrlBuilder newUrl = Window.Location.createUrlBuilder();
+                newUrl.setParameter("locale", localeListBox.getItemText(localeListBox.getSelectedIndex()));
+                Window.Location.assign(newUrl.buildString());
+            }
+        });
+
+        titlePanel.add(localeListBox);
+
         titlePanel.setWidth("100%");
 
-        titlePanel.setWidgetHorizontalPosition(stylesListBox, Layout.Alignment.END);
-        titlePanel.setWidgetHorizontalPosition(showCaseLabel, Layout.Alignment.BEGIN);
+        titlePanel.setWidgetLeftWidth(showCaseLabel, 0, Style.Unit.PCT, 20, Style.Unit.PCT);
+        titlePanel.setWidgetRightWidth(themeListBox, 0, Style.Unit.PCT, 80, Style.Unit.PX);
+        titlePanel.setWidgetRightWidth(localeListBox, 20, Style.Unit.PCT, 80, Style.Unit.PX);
 
         add(titlePanel);
         add(leftPanel);
@@ -196,11 +223,11 @@ public class ShowCasePanel extends LayoutPanel {
     private void addTheme(Theme theme) {
         if (!themes.contains(theme)) {
             themes.add(theme);
-            stylesListBox.addItem(theme.name());
+            themeListBox.addItem(theme.name());
         }
     }
 
     private void setTheme(Theme theme) {
-        stylesListBox.setSelectedIndex(themes.indexOf(theme));
+        themeListBox.setSelectedIndex(themes.indexOf(theme));
     }
 }

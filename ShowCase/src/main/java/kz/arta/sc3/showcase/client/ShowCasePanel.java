@@ -60,7 +60,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         treeSetUp();
 
-        Label navigationLabel = new Label(SCMessages.i18n.tr("Navigation"));
+        Label navigationLabel = new Label(SCMessages.i18n.tr("Навигация"));
         LayoutPanel leftPanel = new LayoutPanel();
         leftPanel.add(navigationLabel);
         leftPanel.add(tree);
@@ -70,7 +70,7 @@ public class ShowCasePanel extends LayoutPanel {
         leftPanel.setWidgetTopBottom(tree, 5, Style.Unit.PCT, 0, Style.Unit.PCT);
 
         LayoutPanel titlePanel = new LayoutPanel();
-        Label showCaseLabel = new Label(SCMessages.i18n.tr("ShowCase"));
+        Label showCaseLabel = new Label("ShowCase");
         titlePanel.add(showCaseLabel);
 
         themeListBox = new ListBox();

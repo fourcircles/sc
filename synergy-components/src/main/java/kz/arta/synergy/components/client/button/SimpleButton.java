@@ -21,7 +21,7 @@ public class SimpleButton extends ButtonBase {
     /**
      * Текст кнопки
      */
-    private String text = Messages.i18n.tr("Button");
+    private String text = Messages.i18n.tr("Кнопка");
 
     /**
      * Иконка

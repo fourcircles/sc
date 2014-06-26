@@ -14,7 +14,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
-import kz.arta.synergy.components.style.client.resources.messages.ExampleMessages;
 
 import java.util.ArrayList;
 
@@ -61,7 +60,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         treeSetUp();
 
-        Label navigationLabel = new Label(ExampleMessages.IMPL.navigation());
+        Label navigationLabel = new Label(SCMessages.i18n.tr("Navigation"));
         LayoutPanel leftPanel = new LayoutPanel();
         leftPanel.add(navigationLabel);
         leftPanel.add(tree);
@@ -71,7 +70,7 @@ public class ShowCasePanel extends LayoutPanel {
         leftPanel.setWidgetTopBottom(tree, 5, Style.Unit.PCT, 0, Style.Unit.PCT);
 
         LayoutPanel titlePanel = new LayoutPanel();
-        Label showCaseLabel = new Label("ShowCase");
+        Label showCaseLabel = new Label(SCMessages.i18n.tr("ShowCase"));
         titlePanel.add(showCaseLabel);
 
         themeListBox = new ListBox();

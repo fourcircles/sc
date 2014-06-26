@@ -1,10 +1,14 @@
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'gwt'
+version='3.0'
 
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        url 'http://192.168.1.30:8081/artifactory/synergy-libs'
+    }
 }
 
 buildscript {
@@ -42,6 +46,20 @@ dependencies {
     providedCompile 'com.google.gwt:gwt-user:2.6.1'
     compile project(':component-style')
     providedCompile files('component-style/src/main/java')
+    compile(group: 'kz.arta', name: 'arta-i18n', version: '1.0')
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'src'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+jar {
+    from 'src/main/java'
 }
 
 project(':component-style') {

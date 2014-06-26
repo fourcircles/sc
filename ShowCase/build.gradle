@@ -5,6 +5,9 @@ apply plugin: 'gwt'
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        url 'http://192.168.1.30:8081/artifactory/synergy-libs'
+    }
 }
 
 buildscript {
@@ -31,8 +34,13 @@ sourceSets {
 }
 
 dependencies {
+    providedCompile files('../synergy-components/build/libs/synergy-components-3.0.jar')
+    providedCompile files('../synergy-components/component-style/build/libs/component-style-3.0.jar')
+    compile files('../synergy-components/build/libs/synergy-components-3.0.jar')
+    compile files('../synergy-components/build/libs/component-style-3.0.jar')
     providedCompile 'com.google.gwt:gwt-dev:2.6.1'
     providedCompile 'com.google.gwt:gwt-user:2.6.1'
+    compile(group: 'kz.arta', name: 'arta-i18n', version: '1.0')
 }
 
 gwt {

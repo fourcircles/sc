@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'gwt'
+version='3.0'
 
 repositories {
     mavenLocal()
@@ -34,3 +35,18 @@ dependencies {
     providedCompile 'com.google.gwt:gwt-dev:2.6.1'
     providedCompile 'com.google.gwt:gwt-user:2.6.1'
 }
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'src'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+jar {
+    from 'src/main/java'
+}
+
+

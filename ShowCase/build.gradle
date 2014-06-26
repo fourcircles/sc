@@ -40,10 +40,15 @@ dependencies {
     compile files('../synergy-components/build/libs/component-style-3.0.jar')
     providedCompile 'com.google.gwt:gwt-dev:2.6.1'
     providedCompile 'com.google.gwt:gwt-user:2.6.1'
+    compile files('../synergy-components/src/main/java')
+    compile files('../synergy-components/component-style/src/main/java')
+    providedCompile files('../synergy-components/build/libs/synergy-components.jar')
+    providedCompile files('../synergy-components/component-style/build/libs/component-style.jar')
     compile(group: 'kz.arta', name: 'arta-i18n', version: '1.0')
 }
 
 gwt {
+    gwtVersion='2.6.1'
     minHeapSize = "512M";
     maxHeapSize = "1024M";
 

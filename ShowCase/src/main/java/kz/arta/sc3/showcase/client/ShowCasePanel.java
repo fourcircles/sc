@@ -14,6 +14,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
+import kz.arta.synergy.components.style.client.resources.messages.ExampleMessages;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,7 @@ public class ShowCasePanel extends LayoutPanel {
     Tree tree;
 
     TabLayoutPanel contentPanel;
+    private FlowPanel titlePanel;
 
     TreeItem selectedItem;
 
@@ -40,6 +42,8 @@ public class ShowCasePanel extends LayoutPanel {
 
     private ListBox themeListBox;
     private ListBox localeListBox;
+    private FlowPanel navigationPanel;
+    private final Label showCaseLabel;
 
     private ArrayList<Theme> themes;
     private ArrayList<String> locales;
@@ -61,16 +65,16 @@ public class ShowCasePanel extends LayoutPanel {
         treeSetUp();
 
         Label navigationLabel = new Label(SCMessages.i18n.tr("Navigation"));
-        LayoutPanel leftPanel = new LayoutPanel();
-        leftPanel.add(navigationLabel);
-        leftPanel.add(tree);
+        navigationPanel = new FlowPanel();
+        navigationPanel.add(navigationLabel);
+        navigationPanel.add(tree);
 
-        leftPanel.setWidgetTopBottom(navigationLabel, 0, Style.Unit.PCT, 95, Style.Unit.PCT);
-        navigationLabel.getElement().getStyle().setProperty("borderBottom", "solid");
-        leftPanel.setWidgetTopBottom(tree, 5, Style.Unit.PCT, 0, Style.Unit.PCT);
+        navigationLabel.setWidth("100%");
+        navigationLabel.getElement().getStyle().setProperty("borderBottom", "solid 1px black");
+        tree.setWidth("100%");
 
-        LayoutPanel titlePanel = new LayoutPanel();
-        Label showCaseLabel = new Label(SCMessages.i18n.tr("ShowCase"));
+        titlePanel = new FlowPanel();
+        showCaseLabel = new Label("ShowCase");
         titlePanel.add(showCaseLabel);
 
         themeListBox = new ListBox();
@@ -111,29 +115,38 @@ public class ShowCasePanel extends LayoutPanel {
 
         titlePanel.setWidth("100%");
 
-        titlePanel.setWidgetLeftWidth(showCaseLabel, 0, Style.Unit.PCT, 20, Style.Unit.PCT);
-        titlePanel.setWidgetRightWidth(themeListBox, 0, Style.Unit.PCT, 80, Style.Unit.PX);
-        titlePanel.setWidgetRightWidth(localeListBox, 20, Style.Unit.PCT, 80, Style.Unit.PX);
+        showCaseLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
+        themeListBox.getElement().getStyle().setFloat(Style.Float.RIGHT);
+        localeListBox.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
         add(titlePanel);
-        add(leftPanel);
+        add(navigationPanel);
         add(contentPanel);
 
-        setWidgetLeftWidth(leftPanel, 0, Style.Unit.PCT, TREE_WIDTH, Style.Unit.PCT);
-        setWidgetTopBottom(leftPanel, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
 
-        setWidgetRightWidth(contentPanel, 0, Style.Unit.PCT, 100 - TREE_WIDTH - SPACING, Style.Unit.PCT);
-        setWidgetTopBottom(contentPanel, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
+//        titlePanel.setSize("100%", "auto");
+//        navigationPanel.setWidth("40%");
+//        contentPanel.setWidth("40%");
+        titlePanel.setWidth("100%");
+        navigationPanel.getElement().getStyle().setFloat(Style.Float.LEFT);
+        contentPanel.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
-        setWidgetTopBottom(titlePanel, 0, Style.Unit.PCT, 100 - TITLE_HEIGHT, Style.Unit.PCT);
 
-        setBorder(leftPanel);
+//        setWidgetLeftWidth(leftPanel, 0, Style.Unit.PCT, TREE_WIDTH, Style.Unit.PCT);
+//        setWidgetTopBottom(leftPanel, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
+//
+//        setWidgetRightWidth(contentPanel, 0, Style.Unit.PCT, 100 - TREE_WIDTH - SPACING, Style.Unit.PCT);
+//        setWidgetTopBottom(contentPanel, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
+//
+//        setWidgetTopBottom(titlePanel, 0, Style.Unit.PCT, 100 - TITLE_HEIGHT, Style.Unit.PCT);
+
+        setBorder(navigationPanel);
         setBorder(titlePanel);
         setBorder(contentPanel);
 
         setSize("100%", "100%");
 
-        forceLayout();
+//        forceLayout();
 
         setTheme(currentTheme);
 

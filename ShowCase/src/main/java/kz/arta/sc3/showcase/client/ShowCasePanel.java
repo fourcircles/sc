@@ -13,8 +13,6 @@ import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.theme.Theme;
-import kz.arta.synergy.components.style.client.resources.ComponentResources;
-import kz.arta.synergy.components.style.client.resources.messages.ExampleMessages;
 
 import java.util.ArrayList;
 
@@ -29,7 +27,6 @@ public class ShowCasePanel extends LayoutPanel {
     private final static int SPACING = 1;
 
     private Theme currentTheme;
-    private ComponentResources resources;
 
     Tree tree;
 
@@ -62,15 +59,15 @@ public class ShowCasePanel extends LayoutPanel {
         treeSetUp();
 
         Label navigationLabel = new Label(SCMessages.i18n.tr("Navigation"));
-        LayoutPanel leftPanel = new LayoutPanel();
-        leftPanel.add(navigationLabel);
-        leftPanel.add(tree);
+        FlowPanel navigationPanel = new FlowPanel();
+        navigationPanel.add(navigationLabel);
+        navigationPanel.add(tree);
 
-        leftPanel.setWidgetTopBottom(navigationLabel, 0, Style.Unit.PCT, 95, Style.Unit.PCT);
-        navigationLabel.getElement().getStyle().setProperty("borderBottom", "solid");
-        leftPanel.setWidgetTopBottom(tree, 5, Style.Unit.PCT, 0, Style.Unit.PCT);
+        navigationLabel.setWidth("100%");
+        tree.setWidth("100%");
+        navigationLabel.getElement().getStyle().setProperty("borderBottom", "solid 1px");
 
-        LayoutPanel titlePanel = new LayoutPanel();
+        FlowPanel titlePanel = new FlowPanel();
         Label showCaseLabel = new Label(SCMessages.i18n.tr("ShowCase"));
         titlePanel.add(showCaseLabel);
 
@@ -96,7 +93,10 @@ public class ShowCasePanel extends LayoutPanel {
             }
         }
 
-        String chosenLocale = LocaleInfo.getCurrentLocale().getLocaleName();
+        String chosenLocale = Window.Location.getParameter("locale");
+        if (chosenLocale == null) {
+            chosenLocale = LocaleInfo.getCurrentLocale().getLocaleName();
+        }
         localeListBox.setSelectedIndex(locales.indexOf(chosenLocale));
 
         localeListBox.addChangeHandler(new ChangeHandler() {
@@ -111,24 +111,23 @@ public class ShowCasePanel extends LayoutPanel {
         titlePanel.add(localeListBox);
 
         titlePanel.setWidth("100%");
-
-        titlePanel.setWidgetLeftWidth(showCaseLabel, 0, Style.Unit.PCT, 20, Style.Unit.PCT);
-        titlePanel.setWidgetRightWidth(themeListBox, 0, Style.Unit.PCT, 80, Style.Unit.PX);
-        titlePanel.setWidgetRightWidth(localeListBox, 20, Style.Unit.PCT, 80, Style.Unit.PX);
+        showCaseLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
+        themeListBox.getElement().getStyle().setFloat(Style.Float.RIGHT);
+        localeListBox.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
         add(titlePanel);
-        add(leftPanel);
+        add(navigationPanel);
         add(contentPanel);
 
-        setWidgetLeftWidth(leftPanel, 0, Style.Unit.PCT, TREE_WIDTH, Style.Unit.PCT);
-        setWidgetTopBottom(leftPanel, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
+        setWidgetLeftWidth(navigationPanel, 0, Style.Unit.PCT, TREE_WIDTH, Style.Unit.PCT);
+        setWidgetTopBottom(navigationPanel, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
 
         setWidgetRightWidth(contentPanel, 0, Style.Unit.PCT, 100 - TREE_WIDTH - SPACING, Style.Unit.PCT);
         setWidgetTopBottom(contentPanel, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
 
         setWidgetTopBottom(titlePanel, 0, Style.Unit.PCT, 100 - TITLE_HEIGHT, Style.Unit.PCT);
 
-        setBorder(leftPanel);
+        setBorder(navigationPanel);
         setBorder(titlePanel);
         setBorder(contentPanel);
 

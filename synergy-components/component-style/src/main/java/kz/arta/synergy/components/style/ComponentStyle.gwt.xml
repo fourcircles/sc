@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.google.gwt.resources.Resources" />
+    <inherits name="com.google.gwt.i18n.I18N"/>
+
+    <entry-point class='kz.arta.synergy.components.style.client.ComponentStyle'/>
+</module>

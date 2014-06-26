@@ -1,0 +1,77 @@
+@font-face {
+    font-family: 'DroidSans';
+    src: url('DroidSans.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DroidSansBold';
+    src: url('DroidSans-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DroidSansRegular';
+    src: url('DroidSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+/**/
+@def whiteBG #ffffff;
+@def buttonBorder #e2e2e2;
+@def buttonBG #ebebeb;
+@def textColor1 #757575;
+@def textColor2 #606060;
+@def textColor3 #404040;
+@def border1 #afafaf;
+
+.buttonSimple, .buttonSimpleOver, .buttonSimplePressed, .buttonSimpleDisabled {
+    height: 32px;
+    line-height: 32px;
+    min-width: 32px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    vertical-align: middle;
+    text-align: center;
+    white-space:nowrap;
+    overflow: hidden;
+}
+
+.buttonSimple {
+    background-color: whiteBG;
+    border-color: buttonBorder;
+    color: textColor2;
+}
+
+.buttonSimpleOver {
+    background-color: whiteBG;
+    border-color: border1;
+    color: textColor3;
+}
+
+.buttonSimpleDisabled {
+    background-color: whiteBG;
+    border-color: buttonBorder;
+    color: border1;
+}
+
+.buttonSimplePressed {
+    background-color: buttonBG;
+    border-color: border1;
+    color: textColor3;
+}
+
+.mainTextBold {
+    font-family: DroidSansBold, sans-serif ;
+    font-size:13pt;
+}
+
+.paddingElement {
+    padding-left: 10px;
+    padding-right: 10px;
+}

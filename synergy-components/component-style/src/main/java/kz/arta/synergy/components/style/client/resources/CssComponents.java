@@ -17,19 +17,7 @@ public interface CssComponents extends CssResource {
 
     String buttonSimple();
 
-    String buttonSimpleDisabled();
-
     String buttonSimpleGradient();
-
-    String buttonSimpleGradientDisabled();
-
-    String buttonSimpleGradientOver();
-
-    String buttonSimpleGradientPressed();
-
-    String buttonSimpleOver();
-
-    String buttonSimplePressed();
 
     String buttonText();
 
@@ -44,4 +32,30 @@ public interface CssComponents extends CssResource {
     String textColor3();
 
     String whiteBG();
+
+    String dialogContent();
+
+    String dialogBackButton();
+
+    String dialogTitleLabel();
+
+    String dialogMoreButton();
+
+    String popupPanel();
+
+    String dialogTitleButton();
+
+    String dialogTitle();
+
+    String dialogButton();
+
+    String dialog();
+
+    String dialogWithButtons();
+
+    String pressed();
+
+    String over();
+
+    String disabled();
 }

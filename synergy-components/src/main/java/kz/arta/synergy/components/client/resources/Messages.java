@@ -7,6 +7,7 @@ import org.xnap.commons.i18n.I18n;
  * User: user
  * Date: 26.06.14
  * Time: 15:00
+ * Локализация сообщений в Синерджи
  */
 public class Messages {
 

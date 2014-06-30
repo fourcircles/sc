@@ -29,22 +29,21 @@ sourceSets {
         }
         resources {
             srcDir 'src/main/resources'
+//            srcDir '../synergy-components/src/main/resources'
+//            srcDir '../synergy-components/component-style/src/main/resources'
         }
     }
 }
 
 dependencies {
-    providedCompile files('../synergy-components/build/libs/synergy-components-3.0.jar')
-    providedCompile files('../synergy-components/component-style/build/libs/component-style-3.0.jar')
-    compile files('../synergy-components/build/libs/synergy-components-3.0.jar')
-    compile files('../synergy-components/build/libs/component-style-3.0.jar')
     providedCompile 'com.google.gwt:gwt-dev:2.6.1'
     providedCompile 'com.google.gwt:gwt-user:2.6.1'
-    compile files('../synergy-components/src/main/java')
-    compile files('../synergy-components/component-style/src/main/java')
-    providedCompile files('../synergy-components/build/libs/synergy-components.jar')
-    providedCompile files('../synergy-components/component-style/build/libs/component-style.jar')
+    providedCompile files('../synergy-components/src/main/java')
+    providedCompile files('../synergy-components/component-style/src/main/java')
+    compile project(':synergy-components')
+    compile project(':component-style')
     compile(group: 'kz.arta', name: 'arta-i18n', version: '1.0')
+    compile(group: 'kz.arta', name: 'synergy-messages', version: '3.0', changing: true)
 }
 
 gwt {
@@ -56,3 +55,16 @@ gwt {
 }
 
 project.webAppDirName = 'src/main/resources'
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+project(':synergy-components') {
+
+}
+
+project(':component-style') {
+
+}

@@ -34,12 +34,46 @@
     border-width: 1px;
     border-style: solid;
     border-radius: 4px;
-    padding-left: 10px;
-    padding-right: 10px;
     vertical-align: middle;
-    text-align: center;
     white-space:nowrap;
     overflow: hidden;
+    cursor: default;
+    position: relative;
+}
+
+.buttonText {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    position: absolute;
+    text-align: center;
+    display : inline;
+}
+
+.buttonSimpleGradient, .buttonSimpleGradientOver, .buttonSimpleGradientDisabled, .buttonSimpleGradientPressed {
+    position: absolute;
+    z-index: 10;
+    max-width: 20px;
+    width: 20%;
+    right: 0;
+    height: 32px;
+    line-height: 32px;
+    display : inline;
+    background: -webkit-linear-gradient(right, whiteBG 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(left, whiteBG 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(left, whiteBG 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to left, whiteBG 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
+}
+
+.buttonSimpleGradientPressed {
+    background: -webkit-linear-gradient(right, buttonBG 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(left, buttonBG 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(left, buttonBG 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to left, buttonBG 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
 }
 
 .buttonSimple {
@@ -73,5 +107,4 @@
 
 .paddingElement {
     padding-left: 10px;
-    padding-right: 10px;
 }

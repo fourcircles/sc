@@ -8,6 +8,7 @@ import com.google.gwt.resources.client.ImageResource;
  * User: user
  * Date: 25.06.14
  * Time: 17:46
+ * Рисунки
  */
 public interface ImageResources extends ClientBundle {
 

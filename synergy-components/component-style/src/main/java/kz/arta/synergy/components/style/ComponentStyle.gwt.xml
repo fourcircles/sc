@@ -6,4 +6,6 @@
     <inherits name="com.google.gwt.i18n.I18N"/>
 
     <entry-point class='kz.arta.synergy.components.style.client.ComponentStyle'/>
+
+    <set-configuration-property name="i18n.messages.class" value="kz.arta.synergy.i18n.Messages"/>
 </module>

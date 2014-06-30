@@ -19,9 +19,19 @@ public interface CssComponents extends CssResource {
 
     String buttonSimpleDisabled();
 
+    String buttonSimpleGradient();
+
+    String buttonSimpleGradientDisabled();
+
+    String buttonSimpleGradientOver();
+
+    String buttonSimpleGradientPressed();
+
     String buttonSimpleOver();
 
     String buttonSimplePressed();
+
+    String buttonText();
 
     String mainTextBold();
 

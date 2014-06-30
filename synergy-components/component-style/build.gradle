@@ -49,4 +49,12 @@ jar {
     from 'src/main/java'
 }
 
+gwt {
+    gwtVersion='2.6.1'
+    minHeapSize = "512M";
+    maxHeapSize = "1024M";
+
+    modules 'kz.arta.synergy.components.style.ComponentStyle'
+}
+
 

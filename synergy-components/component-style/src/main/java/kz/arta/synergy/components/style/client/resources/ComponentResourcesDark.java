@@ -7,7 +7,7 @@ package kz.arta.synergy.components.style.client.resources;
  */
 public interface ComponentResourcesDark extends ComponentResources {
 
-    @Source("css/ComponentsDark.css")
-    CssComponents cssComponents();
+    @Source({"css/Components.css", "css/ComponentsDark.css"})
+    CssComponentsDark cssComponents();
 
 }

@@ -65,3 +65,20 @@ jar {
 project(':component-style') {
 
 }
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+dependencies {
+    compile(group: 'kz.arta', name: 'synergy-messages', version: '3.0', changing: true)
+}
+
+gwt {
+    gwtVersion='2.6.1'
+    minHeapSize = "512M";
+    maxHeapSize = "1024M";
+
+    modules 'kz.arta.synergy.components.SynergyComponents'
+}
+

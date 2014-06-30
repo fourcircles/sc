@@ -1,4 +1,4 @@
-package kz.arta.sc3.showcase.client;
+package kz.arta.sc3.showcase.client.resources;
 
 import kz.arta.i18n.shared.I18nFactory;
 import org.xnap.commons.i18n.I18n;

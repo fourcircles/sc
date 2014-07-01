@@ -47,14 +47,7 @@ public class SimpleButton extends ButtonBase {
         gradient.setStyleName(SynergyComponents.resources.cssComponents().buttonSimpleGradient());
     }
 
-    public String getText() {
-        return text;
-    }
 
-    public void setText(String text) {
-        this.text = text;
-        textLabel.setText(text);
-    }
 
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);

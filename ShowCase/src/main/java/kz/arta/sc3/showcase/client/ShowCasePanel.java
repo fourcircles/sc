@@ -11,7 +11,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.button.SimpleButton;
+import kz.arta.synergy.components.client.button.TextColorButton;
 import kz.arta.synergy.components.client.theme.Theme;
 
 import java.util.ArrayList;
@@ -205,14 +207,17 @@ public class ShowCasePanel extends LayoutPanel {
         int cnt = 0;
 
         FlowPanel simpleButtonPanel = new FlowPanel();
+
         SimpleButton simpleButton = new SimpleButton(SCMessages.i18n.tr("Простая кнопка"));
         simpleButton.setWidth(140);
         simpleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton);
+
         SimpleButton simpleButton1 = new SimpleButton(SCMessages.i18n.tr("Неактивная кнопка"));
         simpleButton1.setEnabled(false);
         simpleButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton1);
+
         SimpleButton simpleButton2 = new SimpleButton("Кнопка с кликом");
         simpleButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton2);
@@ -226,18 +231,43 @@ public class ShowCasePanel extends LayoutPanel {
         new ShowComponent(this, category1, SCMessages.i18n.tr("Простая кнопка"), SCMessages.i18n.tr("Простая кнопка"), simpleButtonPanel);
 
         FlowPanel iconButtonPanel = new FlowPanel();
+
         SimpleButton iconButton = new SimpleButton(SCMessages.i18n.tr("Кнопка с иконкой"), SCImageResources.IMPL.zoom());
         iconButtonPanel.add(iconButton);
         iconButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
         SimpleButton iconButton1 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SCImageResources.IMPL.zoom());
         iconButtonPanel.add(iconButton1);
         iconButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
         SimpleButton iconButton2 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SCImageResources.IMPL.zoom());
         iconButton2.setWidth(150);
         iconButtonPanel.add(iconButton2);
         iconButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
+        SimpleButton iconButton3 = new SimpleButton(SCMessages.i18n.tr("Кнопка неактивная"), SCImageResources.IMPL.zoom());
+        iconButton3.setWidth(200);
+        iconButtonPanel.add(iconButton3);
+        iconButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton3.setEnabled(false);
+
+        ImageButton iconButton4 = new ImageButton(SCImageResources.IMPL.zoom());
+        iconButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButtonPanel.add(iconButton4);
+
+        ImageButton iconButton5 = new ImageButton(SCImageResources.IMPL.zoom());
+        iconButton5.setEnabled(false);
+        iconButtonPanel.add(iconButton5);
+
         new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопка с иконкой"), SCMessages.i18n.tr("Кнопка с иконкой"), iconButtonPanel);
 
+        FlowPanel colorButtonPanel = new FlowPanel();
+
+        TextColorButton colorButton = new TextColorButton(SCMessages.i18n.tr("Создать"), TextColorButton.APPROVE_BUTTON);
+        colorButtonPanel.add(colorButton);
+        colorButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
+        new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), colorButtonPanel);
 
         cnt++;
         new ShowComponent(this, category2, "tree_node_" + cnt, "tab_title_" + cnt, new Label("content_" + cnt));

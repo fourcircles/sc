@@ -1,0 +1,110 @@
+package kz.arta.synergy.components.client.button;
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import kz.arta.synergy.components.client.SynergyComponents;
+
+/**
+ * User: user
+ * Date: 30.06.14
+ * Time: 17:38
+ */
+public class TextColorButton extends ButtonBase {
+
+    /**
+     * Зеленая кнопка создания/подтверджения/заврешения
+     */
+    public static final int APPROVE_BUTTON = 0;
+
+    /**
+     * Красная кнопка отклонения/удаления
+     */
+    public static final int DECLINE_BUTTON = 1;
+
+    /**
+     * тип кнопки
+     */
+    private int type = APPROVE_BUTTON;
+
+    /**
+     * Кпопка цветная с текстом
+     * @param text  текст
+     * @param type  тип
+     *              @see kz.arta.synergy.components.client.button.TextColorButton#APPROVE_BUTTON
+     *              @see kz.arta.synergy.components.client.button.TextColorButton#DECLINE_BUTTON
+     */
+    public TextColorButton(String text, int type) {
+        super();
+        this.text = text;
+        this.type = type;
+        init();
+    }
+
+    public void init() {
+        super.init();
+        if (type == APPROVE_BUTTON) {
+            setStyleName(SynergyComponents.resources.cssComponents().approveButton());
+        }
+
+    }
+
+    public void onBrowserEvent(Event event) {
+        if (!enabled){
+            return;
+        }
+        if (type == APPROVE_BUTTON) {
+            switch (DOM.eventGetType(event)) {
+                case Event.ONMOUSEDOWN:
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
+                    addStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
+                    break;
+                case Event.ONMOUSEOVER:
+                    addStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
+                    break;
+                case Event.ONMOUSEUP:
+                    addStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
+                    break;
+                case Event.ONMOUSEOUT:
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
+                    addStyleName(SynergyComponents.resources.cssComponents().approveButton());
+                    break;
+                default:
+                    super.onBrowserEvent(event);
+
+            }
+        } else {
+            switch (DOM.eventGetType(event)) {
+                case Event.ONMOUSEDOWN:
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
+                    addStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
+                    break;
+                case Event.ONMOUSEOVER:
+                    addStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
+                    break;
+                case Event.ONMOUSEUP:
+                    addStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
+                    break;
+                case Event.ONMOUSEOUT:
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
+                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
+                    addStyleName(SynergyComponents.resources.cssComponents().approveButton());
+                    break;
+                default:
+                    super.onBrowserEvent(event);
+
+            }
+        }
+    }
+
+}

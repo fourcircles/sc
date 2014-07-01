@@ -7,6 +7,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -63,13 +64,14 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
      */
     protected ImageResource iconResource;
 
+    protected Image icon;
 
     protected void init() {
         textLabel.setStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
         textPanel.setStyleName(SynergyComponents.resources.cssComponents().buttonText());
 
         if (iconResource != null) {
-            Image icon = new Image(iconResource.getSafeUri());
+            icon = new Image(iconResource.getSafeUri());
             icon.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
             textPanel.add(icon);
             textLabel.addStyleName(SynergyComponents.resources.cssComponents().paddingElement());
@@ -102,6 +104,14 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+
+        if (icon != null) {
+            if (enabled) {
+                icon.getElement().getStyle().setOpacity(1);
+            } else {
+                icon.getElement().getStyle().setOpacity(0.5);
+            }
+        }
     }
 
     @Override
@@ -119,7 +129,13 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
                     setWidth(textWidth + (iconResource != null ? iconResource.getWidth() + 2 * PADDING : 2 * PADDING));
                 }
                 if (textWidth + (iconResource != null ? iconResource.getWidth() + 2 * PADDING : 2 * PADDING) > width) {
-                    add(gradient);
+                    if (LocaleInfo.getCurrentLocale().isRTL()) {
+                        clear();
+                        add(gradient);
+                        add(textPanel);
+                    } else {
+                        add(gradient);
+                    }
                 }
             }
         });
@@ -132,6 +148,15 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
     public void setWidth(int width) {
         super.setWidth(width + "px");
         this.width = width;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+        textLabel.setText(text);
     }
 
     /**

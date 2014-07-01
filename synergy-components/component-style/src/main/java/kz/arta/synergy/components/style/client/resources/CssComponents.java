@@ -9,6 +9,24 @@ import com.google.gwt.resources.client.CssResource;
  */
 public interface CssComponents extends CssResource {
 
+    String approveButton();
+
+    String approveButtonBG1();
+
+    String approveButtonBG2();
+
+    String approveButtonBG3();
+
+    String approveButtonBG4();
+
+    String approveButtonBG5();
+
+    String approveButtonDisabled();
+
+    String approveButtonOver();
+
+    String approveButtonPressed();
+
     String border1();
 
     String buttonBG();

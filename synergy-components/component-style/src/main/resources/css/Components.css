@@ -26,7 +26,8 @@
 @def textColor2 #606060;
 @def textColor3 #404040;
 @def border1 #afafaf;
-
+@def mainBg #373d49;
+@def titleHeight 38px;
 
 @def approveButtonBG1 #93c5ae;
 @def approveButtonBG2 #55cc95;
@@ -34,11 +35,7 @@
 @def approveButtonBG4 #28a66d;
 @def approveButtonBG5 #239260;
 
-
-
-
-.buttonSimple, .buttonSimpleOver, .buttonSimplePressed, .buttonSimpleDisabled,
-.approveButton, .approveButtonOver, .approveButtonPressed, .approveButtonDisabled {
+.buttonSimple, .approveButton {
     height: 32px;
     line-height: 32px;
     min-width: 32px;
@@ -50,6 +47,10 @@
     overflow: hidden;
     cursor: default;
     position: relative;
+
+    background-color: whiteBG;
+    border-color: buttonBorder;
+    color: textColor2;
     text-align: center;
 }
 
@@ -66,7 +67,7 @@
     display : inline;
 }
 
-.buttonSimpleGradient, .buttonSimpleGradientOver, .buttonSimpleGradientDisabled, .buttonSimpleGradientPressed {
+.buttonSimpleGradient {
     position: absolute;
     z-index: 10;
     max-width: 20px;
@@ -81,32 +82,26 @@
     background: linear-gradient(to left, whiteBG 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
 }
 
-.buttonSimpleGradientPressed {
+.buttonSimpleGradient.pressed {
     background: -webkit-linear-gradient(right, buttonBG 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
     background: -o-linear-gradient(left, buttonBG 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
     background: -moz-linear-gradient(left, buttonBG 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
     background: linear-gradient(to left, buttonBG 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
 }
 
-.buttonSimple {
-    background-color: whiteBG;
-    border-color: buttonBorder;
-    color: textColor2;
-}
-
-.buttonSimpleOver {
+.buttonSimple.over {
     background-color: whiteBG;
     border-color: border1;
     color: textColor3;
 }
 
-.buttonSimpleDisabled {
+.buttonSimple.disabled {
     background-color: whiteBG;
     border-color: buttonBorder;
     color: border1;
 }
 
-.buttonSimplePressed {
+.buttonSimple.pressed {
     background-color: buttonBG;
     border-color: border1;
     color: textColor3;
@@ -147,4 +142,74 @@
 
 .paddingElement {
     padding-left: 10px;
+    padding-right: 10px;
+}
+
+.dialogTitle {
+    background: mainBg;
+    height: titleHeight;
+    line-height: titleHeight;
+
+}
+
+.dialogTitleLabel {
+    font-family: DroidSansBold, sans-serif;
+    font-size:15pt;
+    padding-left: 10px;
+    vertical-align: middle;
+    color: whiteBG;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+
+.dialog {
+    background: whiteBG;
+    min-width: 350px;
+    min-height: 200px;
+}
+
+.dialogTitleButton {
+    /*so far this doesn't work*/
+    vertical-align: middle;
+
+    border: hidden;
+    height: 20px;
+    width: 20px;
+    background-color: mainBg;
+    color: whiteBG;
+
+    padding: 5px;
+}
+
+.dialogContent {
+    padding: 8px;
+}
+
+.dialogWithButtons .dialogContent {
+    padding-bottom: 0px;
+}
+
+.popupPanel {
+    border : none;
+    padding : 0px;
+}
+
+.dialogButton {
+    padding: 0px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.dialogBackButton {
+    margin-left: 20px;
+}
+
+.dialogMoreButton {
+    margin-right: 20px;
 }

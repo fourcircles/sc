@@ -4,6 +4,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.util.MouseStyle;
 
 /**
  * User: user
@@ -44,6 +45,7 @@ public class SimpleButton extends ButtonBase {
         super.init();
 
         setStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
+        addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
         gradient.setStyleName(SynergyComponents.resources.cssComponents().buttonSimpleGradient());
     }
 
@@ -52,9 +54,9 @@ public class SimpleButton extends ButtonBase {
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         if (enabled) {
-            setStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
+            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
         } else {
-            setStyleName(SynergyComponents.resources.cssComponents().buttonSimpleDisabled());
+            addStyleName(SynergyComponents.resources.cssComponents().disabled());
         }
     }
 
@@ -64,24 +66,20 @@ public class SimpleButton extends ButtonBase {
         }
         switch (DOM.eventGetType(event)) {
             case Event.ONMOUSEDOWN:
-                setStyleName(SynergyComponents.resources.cssComponents().buttonSimplePressed());
-                addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
-                gradient.setStyleName(SynergyComponents.resources.cssComponents().buttonSimpleGradientPressed());
+                MouseStyle.setPressed(this);
+                MouseStyle.setPressed(gradient);
                 break;
             case Event.ONMOUSEOVER:
-                setStyleName(SynergyComponents.resources.cssComponents().buttonSimpleOver());
-                addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
-                gradient.setStyleName(SynergyComponents.resources.cssComponents().buttonSimpleGradientOver());
+                MouseStyle.setOver(this);
+                MouseStyle.setOver(gradient);
                 break;
             case Event.ONMOUSEUP:
-                setStyleName(SynergyComponents.resources.cssComponents().buttonSimpleOver());
-                addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
-                gradient.setStyleName(SynergyComponents.resources.cssComponents().buttonSimpleGradientOver());
+                MouseStyle.setOver(this);
+                MouseStyle.setOver(gradient);
                 break;
             case Event.ONMOUSEOUT:
-                setStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
-                addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
-                gradient.setStyleName(SynergyComponents.resources.cssComponents().buttonSimpleGradient());
+                MouseStyle.removeAll(this);
+                MouseStyle.removeAll(gradient);
                 break;
             default:
                 super.onBrowserEvent(event);

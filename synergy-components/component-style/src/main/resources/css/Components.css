@@ -30,14 +30,20 @@
 
 @def approveButtonBG1 #93c5ae;
 @def approveButtonBG2 #55cc95;
+@eval approveButtonBG2_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#55cc95","0");
 @def approveButtonBG3 #49b785;
+@eval approveButtonBG3_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#49b785","0");
 @def approveButtonBG4 #28a66d;
+@eval approveButtonBG4_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#28a66d","0");
 @def approveButtonBG5 #239260;
 
 @def declineButtonBG1 #ecacad;
 @def declineButtonBG2 #f47172;
+@eval declineButtonBG2_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#f47172","0");
 @def declineButtonBG3 #df6c6d;
+@eval declineButtonBG3_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#df6c6d","0");
 @def declineButtonBG4 #b05253;
+@eval declineButtonBG4_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#b05253","0");
 
 .buttonSimple, .approveButton, .declineButton {
     height: 32px;
@@ -99,31 +105,57 @@
 }
 
 .approveButtonGradient {
-    background: -webkit-linear-gradient(right, approveButtonBG3 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(left, approveButtonBG3 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(left, approveButtonBG3 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to left, approveButtonBG3 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
+    background: -moz-linear-gradient(left,  approveButtonBG3_0 0%, approveButtonBG3 50%, approveButtonBG3 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG3_0), color-stop(50%,approveButtonBG3), color-stop(100%,approveButtonBG3));
+    background: -webkit-linear-gradient(left,  approveButtonBG3_0 0%,approveButtonBG3 50%,approveButtonBG3 100%);
+    background: -o-linear-gradient(left,  approveButtonBG3_0 0%,approveButtonBG3 50%,approveButtonBG3 100%);
+    background: -ms-linear-gradient(left,  approveButtonBG3_0 0%,approveButtonBG3 50%,approveButtonBG3 100%);
+    background: linear-gradient(to right,  approveButtonBG3_0 0%,approveButtonBG3 50%,approveButtonBG3 100%);
 }
 
 .approveButtonGradient.pressed {
-    background: -webkit-linear-gradient(right, approveButtonBG4 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(left, approveButtonBG4 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(left, approveButtonBG4 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to left, approveButtonBG4 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
+    background: -moz-linear-gradient(left,  approveButtonBG4_0 0%, approveButtonBG4 50%, approveButtonBG4 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG4_0), color-stop(50%,approveButtonBG4), color-stop(100%,approveButtonBG4));
+    background: -webkit-linear-gradient(left,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
+    background: -o-linear-gradient(left,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
+    background: -ms-linear-gradient(left,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
+    background: linear-gradient(to right,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
+}
+
+.over .approveButtonGradient{
+    background: -moz-linear-gradient(left,  approveButtonBG2_0 0%, approveButtonBG2 50%, approveButtonBG2 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG2_0), color-stop(50%,approveButtonBG2), color-stop(100%,approveButtonBG2));
+    background: -webkit-linear-gradient(left,  approveButtonBG2_0 0%,approveButtonBG2 50%,approveButtonBG2 100%);
+    background: -o-linear-gradient(left,  approveButtonBG2_0 0%,approveButtonBG2 50%,approveButtonBG2 100%);
+    background: -ms-linear-gradient(left,  approveButtonBG2_0 0%,approveButtonBG2 50%,approveButtonBG2 100%);
+    background: linear-gradient(to right,  approveButtonBG2_0 0%,approveButtonBG2 50%,approveButtonBG2 100%);
 }
 
 .declineButtonGradient {
-    background: -webkit-linear-gradient(right, declineButtonBG3 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(left, declineButtonBG3 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(left, declineButtonBG3 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to left, declineButtonBG3 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
+    background: -moz-linear-gradient(left,  declineButtonBG3_0 0%, declineButtonBG3 50%, declineButtonBG3 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG3_0), color-stop(50%,declineButtonBG3), color-stop(100%,declineButtonBG3)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left,  declineButtonBG3_0 0%,declineButtonBG3 50%,declineButtonBG3 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left,  declineButtonBG3_0 0%,declineButtonBG3 50%,declineButtonBG3 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left,  declineButtonBG3_0 0%,declineButtonBG3 50%,declineButtonBG3 100%); /* IE10+ */
+    background: linear-gradient(to right,  declineButtonBG3_0 0%,declineButtonBG3 50%,declineButtonBG3 100%); /* W3C */
 }
 
 .declineButtonGradient.pressed {
-    background: -webkit-linear-gradient(right, declineButtonBG4 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(left, declineButtonBG4 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(left, declineButtonBG4 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to left, declineButtonBG4 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
+    background: -moz-linear-gradient(left,  declineButtonBG4_0 0%, declineButtonBG4 50%, declineButtonBG4 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG4_0), color-stop(50%,declineButtonBG4), color-stop(100%,declineButtonBG4)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left,  declineButtonBG4_0 0%,declineButtonBG4 50%,declineButtonBG4 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left,  declineButtonBG4_0 0%,declineButtonBG4 50%,declineButtonBG4 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left,  declineButtonBG4_0 0%,declineButtonBG4 50%,declineButtonBG4 100%); /* IE10+ */
+    background: linear-gradient(to right,  declineButtonBG4_0 0%,declineButtonBG4 50%,declineButtonBG4 100%); /* W3C */
+}
+
+.over .declineButtonGradient {
+    background: -moz-linear-gradient(left,  declineButtonBG2_0 0%, declineButtonBG2 50%, declineButtonBG2 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG2_0), color-stop(50%,declineButtonBG2), color-stop(100%,declineButtonBG2)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* IE10+ */
+    background: linear-gradient(to right,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* W3C */
 }
 
 

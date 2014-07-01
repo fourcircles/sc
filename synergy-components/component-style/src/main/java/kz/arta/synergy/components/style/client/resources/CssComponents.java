@@ -85,7 +85,5 @@ public interface CssComponents extends CssResource {
 
     String textColor3();
 
-    String titleHeight();
-
     String whiteBG();
 }

@@ -9,6 +9,20 @@ import com.google.gwt.resources.client.CssResource;
  */
 public interface CssComponents extends CssResource {
 
+    String approveButton();
+
+    String approveButtonBG1();
+
+    String approveButtonBG2();
+
+    String approveButtonBG3();
+
+    String approveButtonBG4();
+
+    String approveButtonBG5();
+
+    String approveButtonGradient();
+
     String border1();
 
     String buttonBG();
@@ -21,9 +35,49 @@ public interface CssComponents extends CssResource {
 
     String buttonText();
 
+    String declineButton();
+
+    String declineButtonBG1();
+
+    String declineButtonBG2();
+
+    String declineButtonBG3();
+
+    String declineButtonBG4();
+
+    String declineButtonGradient();
+
+    String dialog();
+
+    String dialogBackButton();
+
+    String dialogButton();
+
+    String dialogContent();
+
+    String dialogMoreButton();
+
+    String dialogTitle();
+
+    String dialogTitleButton();
+
+    String dialogTitleLabel();
+
+    String dialogWithButtons();
+
+    String disabled();
+
+    String mainBg();
+
     String mainTextBold();
 
+    String over();
+
     String paddingElement();
+
+    String popupPanel();
+
+    String pressed();
 
     String textColor1();
 
@@ -31,33 +85,7 @@ public interface CssComponents extends CssResource {
 
     String textColor3();
 
+    String titleHeight();
+
     String whiteBG();
-
-    String dialogContent();
-
-    String dialogBackButton();
-
-    String dialogTitleLabel();
-
-    String dialogMoreButton();
-
-    String popupPanel();
-
-    String dialogTitleButton();
-
-    String dialogTitle();
-
-    String dialogButton();
-
-    String dialog();
-
-    String dialogWithButtons();
-
-    String pressed();
-
-    String over();
-
-    String disabled();
-
-    String approveButton();
 }

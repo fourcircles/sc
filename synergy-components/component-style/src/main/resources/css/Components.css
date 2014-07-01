@@ -29,15 +29,19 @@
 @def mainBg #373d49;
 @def titleHeight 38px;
 
-@def approveButtonBg1 #93c5ae;
-@def approveButtonBg2 #55cc95;
-@def approveButtonBg3 #49b785;
-@def approveButtonBg4 #28a66d;
+@def approveButtonBG1 #93c5ae;
+@def approveButtonBG2 #55cc95;
+@def approveButtonBG3 #49b785;
+@def approveButtonBG4 #28a66d;
+@def approveButtonBG5 #239260;
+
+@def declineButtonBG1 #ecacad;
+@def declineButtonBG2 #f47172;
+@def declineButtonBG3 #df6c6d;
+@def declineButtonBG4 #b05253;
 
 
-
-
-.buttonSimple {
+.buttonSimple, .approveButton, .declineButton {
     height: 32px;
     line-height: 32px;
     min-width: 32px;
@@ -49,7 +53,10 @@
     overflow: hidden;
     cursor: default;
     position: relative;
+    text-align: center;
+}
 
+.buttonSimple {
     background-color: whiteBG;
     border-color: buttonBorder;
     color: textColor2;
@@ -68,7 +75,7 @@
     display : inline;
 }
 
-.buttonSimpleGradient {
+.buttonSimpleGradient, .approveButtonGradient, .declineButtonGradient {
     position: absolute;
     z-index: 10;
     max-width: 20px;
@@ -77,6 +84,9 @@
     height: 32px;
     line-height: 32px;
     display : inline;
+}
+
+.buttonSimpleGradient {
     background: -webkit-linear-gradient(right, whiteBG 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
     background: -o-linear-gradient(left, whiteBG 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
     background: -moz-linear-gradient(left, whiteBG 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
@@ -89,6 +99,35 @@
     background: -moz-linear-gradient(left, buttonBG 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
     background: linear-gradient(to left, buttonBG 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
 }
+
+.approveButtonGradient {
+    background: -webkit-linear-gradient(right, approveButtonBG3 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(left, approveButtonBG3 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(left, approveButtonBG3 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to left, approveButtonBG3 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
+}
+
+.approveButtonGradient.pressed {
+    background: -webkit-linear-gradient(right, approveButtonBG4 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(left, approveButtonBG4 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(left, approveButtonBG4 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to left, approveButtonBG4 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
+}
+
+.declineButtonGradient {
+    background: -webkit-linear-gradient(right, declineButtonBG3 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(left, declineButtonBG3 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(left, declineButtonBG3 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to left, declineButtonBG3 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
+}
+
+.declineButtonGradient.pressed {
+    background: -webkit-linear-gradient(right, declineButtonBG4 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(left, declineButtonBG4 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(left, declineButtonBG4 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to left, declineButtonBG4 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
+}
+
 
 .buttonSimple.over {
     background-color: whiteBG;
@@ -108,6 +147,57 @@
     color: textColor3;
 }
 
+.approveButton {
+    background-color: approveButtonBG3;
+    border-color: approveButtonBG3;
+    color: whiteBG;
+    min-width: 150px;
+}
+
+.approveButton.over {
+    background-color: approveButtonBG2;
+    border-color: approveButtonBG2;
+    color: whiteBG;
+}
+
+.approveButton.disabled {
+    background-color: approveButtonBG1;
+    border-color: approveButtonBG1;
+    color: whiteBG;
+}
+
+.approveButton.pressed {
+    background-color: approveButtonBG4;
+    border-color: approveButtonBG4;
+    color: whiteBG;
+}
+
+.declineButton {
+    background-color: declineButtonBG3;
+    border-color: declineButtonBG3;
+    color: whiteBG;
+    min-width: 150px;
+}
+
+.declineButton.over {
+    background-color: declineButtonBG2;
+    border-color: declineButtonBG2;
+    color: whiteBG;
+}
+
+.declineButton.disabled {
+    background-color: declineButtonBG1;
+    border-color: declineButtonBG1;
+    color: whiteBG;
+}
+
+.declineButton.pressed {
+    background-color: declineButtonBG4;
+    border-color: declineButtonBG4;
+    color: whiteBG;
+}
+
+
 .mainTextBold {
     font-family: DroidSansBold, sans-serif ;
     font-size:13pt;
@@ -115,7 +205,6 @@
 
 .paddingElement {
     padding-left: 10px;
-    padding-right: 10px;
 }
 
 .dialogTitle {
@@ -186,22 +275,4 @@
 
 .dialogMoreButton {
     margin-right: 20px;
-}
-
-.approveButton {
-    width: 150px;
-    color: whiteBG;
-    background-color: approveButtonBg3;
-}
-
-.approveButton .pressed {
-    background-color: approveButtonBg4;
-}
-
-.approveButton .disabled {
-    background-color: approveButtonBg1;
-}
-
-.approveButton .over {
-    background-color: approveButtonBg2;
 }

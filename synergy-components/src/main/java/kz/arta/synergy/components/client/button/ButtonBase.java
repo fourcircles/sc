@@ -7,6 +7,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
@@ -17,6 +18,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.Messages;
+import kz.arta.synergy.components.client.util.MouseStyle;
 import kz.arta.synergy.components.client.util.Selection;
 
 /**
@@ -64,6 +66,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
      */
     protected ImageResource iconResource;
 
+    protected Image icon;
     private Command widthCallback;
 
     protected void init() {
@@ -71,7 +74,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         textPanel.setStyleName(SynergyComponents.resources.cssComponents().buttonText());
 
         if (iconResource != null) {
-            Image icon = new Image(iconResource.getSafeUri());
+            icon = new Image(iconResource.getSafeUri());
             icon.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
             textPanel.add(icon);
             textLabel.addStyleName(SynergyComponents.resources.cssComponents().paddingElement());
@@ -104,6 +107,20 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+
+        if (enabled) {
+            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+        } else {
+            addStyleName(SynergyComponents.resources.cssComponents().disabled());
+        }
+
+        if (icon != null) {
+            if (enabled) {
+                icon.getElement().getStyle().setOpacity(1);
+            } else {
+                icon.getElement().getStyle().setOpacity(0.5);
+            }
+        }
     }
 
     public void setWidthCallback(Command callback) {
@@ -124,14 +141,18 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
                 if (width == 0) {
                     setWidth(textWidth + (iconResource != null ? iconResource.getWidth() + 2 * PADDING : 2 * PADDING));
                 }
-                width = getOffsetWidth();
                 if (textWidth + (iconResource != null ? iconResource.getWidth() + 2 * PADDING : 2 * PADDING) > width) {
-                    add(gradient);
+                    if (LocaleInfo.getCurrentLocale().isRTL()) {
+                        clear();
+                        add(gradient);
+                        add(textPanel);
+                    } else {
+                        add(gradient);
+                    }
                 }
-
                 if (widthCallback != null) {
                     widthCallback.execute();
-                }
+                }                
             }
         });
     }
@@ -140,9 +161,22 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         return width;
     }
 
+    /**
+     * Длина в пискелях
+     * @param width длина
+     */
     public void setWidth(int width) {
         super.setWidth(width + "px");
         this.width = width;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+        textLabel.setText(text);
     }
 
     /**
@@ -158,5 +192,32 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         int width = e.getOffsetWidth();
         Document.get().getBody().removeChild(e);
         return width;
+    }
+
+    public void onBrowserEvent(Event event) {
+        if (!enabled){
+            return;
+        }
+        switch (DOM.eventGetType(event)) {
+            case Event.ONMOUSEDOWN:
+                MouseStyle.setPressed(this);
+                MouseStyle.setPressed(gradient);
+                break;
+            case Event.ONMOUSEOVER:
+                MouseStyle.setOver(this);
+                MouseStyle.setOver(gradient);
+                break;
+            case Event.ONMOUSEUP:
+                MouseStyle.setOver(this);
+                MouseStyle.setOver(gradient);
+                break;
+            case Event.ONMOUSEOUT:
+                MouseStyle.removeAll(this);
+                MouseStyle.removeAll(gradient);
+                break;
+            default:
+                super.onBrowserEvent(event);
+
+        }
     }
 }

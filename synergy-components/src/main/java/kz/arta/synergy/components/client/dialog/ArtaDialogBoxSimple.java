@@ -11,13 +11,24 @@ import kz.arta.synergy.components.client.SynergyComponents;
  * Time: 12:26
  */
 public class ArtaDialogBoxSimple extends PopupPanel {
-    public static final int TITLE_HEIGHT = 60;
+    /**
+     * панель для диалога
+     */
+    protected FlowPanel panel;
 
-    public FlowPanel panel;
-
+    /**
+     * панель для заголовка
+     */
     protected FlowPanel titlePanel;
+
+    /**
+     * кнопка закрытия диалога
+     */
     protected Button closeButton;
 
+    /**
+     * панель для контента
+     */
     protected FlowPanel contentPanel;
 
     private boolean dragging = false;

@@ -27,7 +27,6 @@
 @def textColor3 #404040;
 @def border1 #afafaf;
 @def mainBg #373d49;
-@def titleHeight 38px;
 
 @def approveButtonBG1 #93c5ae;
 @def approveButtonBG2 #55cc95;
@@ -39,7 +38,6 @@
 @def declineButtonBG2 #f47172;
 @def declineButtonBG3 #df6c6d;
 @def declineButtonBG4 #b05253;
-
 
 .buttonSimple, .approveButton, .declineButton {
     height: 32px;
@@ -209,14 +207,15 @@
 
 .dialogTitle {
     background: mainBg;
-    height: titleHeight;
-    line-height: titleHeight;
+    height: 38px;
+    line-height: 38px;
 
 }
 
 .dialogTitleLabel {
     font-family: DroidSansBold, sans-serif;
     font-size:15pt;
+    /*TODO уточнить отступ слева у названия заголовка*/
     padding-left: 10px;
     vertical-align: middle;
     color: whiteBG;
@@ -232,10 +231,12 @@
 
 .dialog {
     background: whiteBG;
+    /*TODO уточнить про размеры*/
     min-width: 350px;
     min-height: 200px;
 }
 
+/*TODO уточнить padding margins кнопок закрыть, свернуть*/
 .dialogTitleButton {
     /*so far this doesn't work*/
     vertical-align: middle;

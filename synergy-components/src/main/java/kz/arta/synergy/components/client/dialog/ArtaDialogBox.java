@@ -13,17 +13,34 @@ import kz.arta.synergy.components.client.button.SimpleButton;
  * Time: 11:38
  */
 public class ArtaDialogBox extends ArtaDialogBoxSimple {
+    /**
+     * margin слева для кнопки "назад" и справа для кнопки "еще"
+     */
     private static final int HORIZONTAL_BUTTON_MARGIN = 20;
 
+    /**
+     * панель для кнопок
+     */
     FlowPanel buttonsPanel;
 
     /**
-     * margin кнопки сохранить, когда кнопки по бокам видны
+     * margin кнопки "сохранить", когда кнопки по бокам видны
      */
     private Integer saveButtonBaseMargin;
 
+    /**
+     * кнопка "назад"
+     */
     private SimpleButton backButton;
+
+    /**
+     * кнопка сохранить
+     */
     private SimpleButton saveButton;
+
+    /**
+     * кнопка "еще"
+     */
     private SimpleButton moreButton;
 
     private boolean isBackButtonVisible;
@@ -31,6 +48,11 @@ public class ArtaDialogBox extends ArtaDialogBoxSimple {
 
     private Integer backButtonOffsetWidth;
     private Integer moreButtonOffsetWidth;
+
+    /**
+     * количество кнопок, ширина которых уже определена
+     */
+    private int setButtonsCnt = 0;
 
     public ArtaDialogBox(String title, Widget content) {
         super(title, content);
@@ -63,7 +85,7 @@ public class ArtaDialogBox extends ArtaDialogBoxSimple {
         Command widthCallback = new Command() {
             @Override
             public void execute() {
-                setUpWidths();
+                setUpWidthsAndMargins();
             }
         };
 
@@ -72,10 +94,12 @@ public class ArtaDialogBox extends ArtaDialogBoxSimple {
         saveButton.setWidthCallback(widthCallback);
     }
 
-    private int cnt = 0;
-    private void setUpWidths() {
-        cnt++;
-        if (cnt == 3) {
+    /**
+     * запоминаем ширину всех кнопок, для последующей установки margins
+     */
+    private void setUpWidthsAndMargins() {
+        setButtonsCnt++;
+        if (setButtonsCnt == 3) {
             backButtonOffsetWidth = backButton.getOffsetWidth();
             moreButtonOffsetWidth = moreButton.getOffsetWidth();
             saveButtonBaseMargin = (titlePanel.getOffsetWidth() - saveButton.getOffsetWidth() -

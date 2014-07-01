@@ -90,9 +90,6 @@ public class SimpleButton extends ButtonBase {
                 break;
             default:
                 super.onBrowserEvent(event);
-
         }
     }
-
-
 }

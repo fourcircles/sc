@@ -8,6 +8,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -63,6 +64,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
      */
     protected ImageResource iconResource;
 
+    private Command widthCallback;
 
     protected void init() {
         textLabel.setStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
@@ -104,6 +106,10 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         this.enabled = enabled;
     }
 
+    public void setWidthCallback(Command callback) {
+        this.widthCallback = callback;
+    }
+
     @Override
     public void onLoad() {
         super.onLoad();
@@ -118,8 +124,13 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
                 if (width == 0) {
                     setWidth(textWidth + (iconResource != null ? iconResource.getWidth() + 2 * PADDING : 2 * PADDING));
                 }
+                width = getOffsetWidth();
                 if (textWidth + (iconResource != null ? iconResource.getWidth() + 2 * PADDING : 2 * PADDING) > width) {
                     add(gradient);
+                }
+
+                if (widthCallback != null) {
+                    widthCallback.execute();
                 }
             }
         });

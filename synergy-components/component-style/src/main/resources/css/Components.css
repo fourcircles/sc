@@ -29,6 +29,14 @@
 @def mainBg #373d49;
 @def titleHeight 38px;
 
+@def approveButtonBg1 #93c5ae;
+@def approveButtonBg2 #55cc95;
+@def approveButtonBg3 #49b785;
+@def approveButtonBg4 #28a66d;
+
+
+
+
 .buttonSimple {
     height: 32px;
     line-height: 32px;
@@ -169,6 +177,7 @@
     padding: 0px;
     margin-top: 20px;
     margin-bottom: 20px;
+    display: inline-block;
 }
 
 .dialogBackButton {
@@ -177,4 +186,22 @@
 
 .dialogMoreButton {
     margin-right: 20px;
+}
+
+.approveButton {
+    width: 150px;
+    color: whiteBG;
+    background-color: approveButtonBg3;
+}
+
+.approveButton .pressed {
+    background-color: approveButtonBg4;
+}
+
+.approveButton .disabled {
+    background-color: approveButtonBg1;
+}
+
+.approveButton .over {
+    background-color: approveButtonBg2;
 }

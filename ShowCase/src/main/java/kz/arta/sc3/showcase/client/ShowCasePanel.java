@@ -12,6 +12,8 @@ import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
 import kz.arta.synergy.components.client.button.SimpleButton;
+import kz.arta.synergy.components.client.dialog.ArtaDialogBox;
+import kz.arta.synergy.components.client.dialog.ArtaDialogBoxSimple;
 import kz.arta.synergy.components.client.theme.Theme;
 
 import java.util.ArrayList;
@@ -169,7 +171,7 @@ public class ShowCasePanel extends LayoutPanel {
             //new tab
             contentPanel.add(component, component.getTabTitle());
             tabbedComponents.add(component);
-            contentPanel.selectTab(contentPanel);
+            contentPanel.selectTab(component);
         }
     }
 
@@ -196,11 +198,61 @@ public class ShowCasePanel extends LayoutPanel {
         addLeaf(where, new TreeItem(new Label(displayText)), contentWidget);
     }
 
+    private SimpleButton setUpDialog(int width, int height, boolean buttons, boolean backButton, boolean moreButton) {
+        String title = "Content size: " + width + "x" + height;
+        SimpleButton button = new SimpleButton(title);
+
+        Label contentLabel = new Label("content");
+        contentLabel.setSize("100%", "100%");
+        SimplePanel sPanel = new SimplePanel(contentLabel);
+        sPanel.setSize(width + "px", height + "px");
+        sPanel.getElement().getStyle().setBackgroundColor("pink");
+
+        final ArtaDialogBoxSimple dialog;
+        if (buttons) {
+            ArtaDialogBox withButtons = new ArtaDialogBox(title, sPanel);
+            withButtons.setBackButtonVisible(backButton);
+            withButtons.setMoreButtonVisible(moreButton);
+
+            dialog = withButtons;
+        } else {
+            dialog = new ArtaDialogBoxSimple(title, sPanel);
+        }
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                dialog.center();
+                dialog.show();
+            }
+        });
+        return button;
+    }
+
+    //TODO remove HorizontalPanel
+    private Panel setUpDialogs(boolean buttons) {
+        SimpleButton small = setUpDialog(300, 300, buttons, true, true);
+        SimpleButton middle = setUpDialog(400, 400, buttons, true, true);
+        SimpleButton big = setUpDialog(800, 500, buttons, true, true);
+        HorizontalPanel hPanel = new HorizontalPanel();
+        hPanel.add(small);
+        hPanel.add(middle);
+        hPanel.add(big);
+        if (buttons) {
+            hPanel.add(setUpDialog(400, 400, buttons, false, true));
+            hPanel.add(setUpDialog(400, 400, buttons, true, false));
+        }
+
+        hPanel.getElement().getStyle().setBackgroundColor("black");
+        hPanel.setSize("100%", "100%");
+
+        return hPanel;
+    }
+
     private void treeSetUp() {
         tree = new Tree();
 
         TreeItem category1 = addCategory(SCMessages.i18n.tr("Кнопки"));
-        TreeItem category2 = addCategory("category2");
+        TreeItem category2 = addCategory("Диалоги");
 
         int cnt = 0;
 
@@ -240,10 +292,9 @@ public class ShowCasePanel extends LayoutPanel {
 
 
         cnt++;
-        new ShowComponent(this, category2, "tree_node_" + cnt, "tab_title_" + cnt, new Label("content_" + cnt));
+        new ShowComponent(this, category2, "Диалог без кнопок", "Диалог без кнопок", setUpDialogs(false));
         cnt++;
-        new ShowComponent(this, category2, "tree_node_" + cnt, "tab_title_" + cnt, new Label("content_" + cnt));
-        cnt++;
+        new ShowComponent(this, category2, "Диалог с кнопками", "Диалог с кнопками", setUpDialogs(true));
     }
 
     private void addAllThemes() {

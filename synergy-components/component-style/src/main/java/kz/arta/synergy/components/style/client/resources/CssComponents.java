@@ -58,4 +58,6 @@ public interface CssComponents extends CssResource {
     String over();
 
     String disabled();
+
+    String approveButton();
 }

@@ -2,7 +2,6 @@ package kz.arta.synergy.components.client.button;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Image;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -43,35 +42,6 @@ public class ImageButton extends ButtonBase {
         setWidth(width);
     }
 
-    public void onBrowserEvent(Event event) {
-        if (!enabled){
-            return;
-        }
-        switch (DOM.eventGetType(event)) {
-            case Event.ONMOUSEDOWN:
-                removeStyleName(SynergyComponents.resources.cssComponents().buttonSimpleOver());
-                removeStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
-                addStyleName(SynergyComponents.resources.cssComponents().buttonSimplePressed());
-                break;
-            case Event.ONMOUSEOVER:
-                addStyleName(SynergyComponents.resources.cssComponents().buttonSimpleOver());
-                removeStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
-                removeStyleName(SynergyComponents.resources.cssComponents().buttonSimplePressed());
-                break;
-            case Event.ONMOUSEUP:
-                addStyleName(SynergyComponents.resources.cssComponents().buttonSimpleOver());
-                removeStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
-                removeStyleName(SynergyComponents.resources.cssComponents().buttonSimplePressed());
-                break;
-            case Event.ONMOUSEOUT:
-                removeStyleName(SynergyComponents.resources.cssComponents().buttonSimpleOver());
-                removeStyleName(SynergyComponents.resources.cssComponents().buttonSimplePressed());
-                addStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
-                break;
-            default:
-                super.onBrowserEvent(event);
 
-        }
-    }
 
 }

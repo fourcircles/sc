@@ -21,11 +21,7 @@ public interface CssComponents extends CssResource {
 
     String approveButtonBG5();
 
-    String approveButtonDisabled();
-
-    String approveButtonOver();
-
-    String approveButtonPressed();
+    String approveButtonGradient();
 
     String border1();
 
@@ -39,9 +35,49 @@ public interface CssComponents extends CssResource {
 
     String buttonText();
 
+    String declineButton();
+
+    String declineButtonBG1();
+
+    String declineButtonBG2();
+
+    String declineButtonBG3();
+
+    String declineButtonBG4();
+
+    String declineButtonGradient();
+
+    String dialog();
+
+    String dialogBackButton();
+
+    String dialogButton();
+
+    String dialogContent();
+
+    String dialogMoreButton();
+
+    String dialogTitle();
+
+    String dialogTitleButton();
+
+    String dialogTitleLabel();
+
+    String dialogWithButtons();
+
+    String disabled();
+
+    String mainBg();
+
     String mainTextBold();
 
+    String over();
+
     String paddingElement();
+
+    String popupPanel();
+
+    String pressed();
 
     String textColor1();
 
@@ -49,31 +85,7 @@ public interface CssComponents extends CssResource {
 
     String textColor3();
 
+    String titleHeight();
+
     String whiteBG();
-
-    String dialogContent();
-
-    String dialogBackButton();
-
-    String dialogTitleLabel();
-
-    String dialogMoreButton();
-
-    String popupPanel();
-
-    String dialogTitleButton();
-
-    String dialogTitle();
-
-    String dialogButton();
-
-    String dialog();
-
-    String dialogWithButtons();
-
-    String pressed();
-
-    String over();
-
-    String disabled();
 }

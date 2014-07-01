@@ -267,6 +267,34 @@ public class ShowCasePanel extends LayoutPanel {
         colorButtonPanel.add(colorButton);
         colorButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
 
+        TextColorButton colorButton1 = new TextColorButton(SCMessages.i18n.tr("Удалить"), TextColorButton.DECLINE_BUTTON);
+        colorButtonPanel.add(colorButton1);
+        colorButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
+        TextColorButton colorButton2 = new TextColorButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), TextColorButton.DECLINE_BUTTON);
+        colorButtonPanel.add(colorButton2);
+        colorButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
+        TextColorButton colorButton3 = new TextColorButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), TextColorButton.DECLINE_BUTTON);
+        colorButton3.setWidth(100);
+        colorButtonPanel.add(colorButton3);
+        colorButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
+        TextColorButton colorButton4 = new TextColorButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), TextColorButton.APPROVE_BUTTON);
+        colorButton4.setWidth(100);
+        colorButtonPanel.add(colorButton4);
+        colorButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
+        TextColorButton colorButton5 = new TextColorButton(SCMessages.i18n.tr("Кнопка неактивная"), TextColorButton.APPROVE_BUTTON);
+        colorButton5.setEnabled(false);
+        colorButtonPanel.add(colorButton5);
+        colorButton5.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
+        TextColorButton colorButton6 = new TextColorButton(SCMessages.i18n.tr("Кнопка неактивная"), TextColorButton.DECLINE_BUTTON);
+        colorButton6.setEnabled(false);
+        colorButtonPanel.add(colorButton6);
+        colorButton6.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
         new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), colorButtonPanel);
 
         cnt++;

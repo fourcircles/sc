@@ -1,13 +1,12 @@
 package kz.arta.synergy.components.client.button;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
 import kz.arta.synergy.components.client.SynergyComponents;
 
 /**
  * User: user
  * Date: 30.06.14
  * Time: 17:38
+ * Кнопка зеленая/красная
  */
 public class TextColorButton extends ButtonBase {
 
@@ -44,67 +43,12 @@ public class TextColorButton extends ButtonBase {
         super.init();
         if (type == APPROVE_BUTTON) {
             setStyleName(SynergyComponents.resources.cssComponents().approveButton());
-        }
-
-    }
-
-    public void onBrowserEvent(Event event) {
-        if (!enabled){
-            return;
-        }
-        if (type == APPROVE_BUTTON) {
-            switch (DOM.eventGetType(event)) {
-                case Event.ONMOUSEDOWN:
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
-                    addStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
-                    break;
-                case Event.ONMOUSEOVER:
-                    addStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
-                    break;
-                case Event.ONMOUSEUP:
-                    addStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
-                    break;
-                case Event.ONMOUSEOUT:
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
-                    addStyleName(SynergyComponents.resources.cssComponents().approveButton());
-                    break;
-                default:
-                    super.onBrowserEvent(event);
-
-            }
+            gradient.setStyleName(SynergyComponents.resources.cssComponents().approveButtonGradient());
         } else {
-            switch (DOM.eventGetType(event)) {
-                case Event.ONMOUSEDOWN:
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
-                    addStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
-                    break;
-                case Event.ONMOUSEOVER:
-                    addStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
-                    break;
-                case Event.ONMOUSEUP:
-                    addStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
-                    break;
-                case Event.ONMOUSEOUT:
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonOver());
-                    removeStyleName(SynergyComponents.resources.cssComponents().approveButtonPressed());
-                    addStyleName(SynergyComponents.resources.cssComponents().approveButton());
-                    break;
-                default:
-                    super.onBrowserEvent(event);
-
-            }
+            setStyleName(SynergyComponents.resources.cssComponents().declineButton());
+            gradient.setStyleName(SynergyComponents.resources.cssComponents().declineButtonGradient());
         }
+
     }
 
 }

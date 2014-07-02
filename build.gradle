@@ -58,11 +58,3 @@ configurations.all {
     // check for updates every build
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
-
-project(':synergy-components') {
-
-}
-
-project(':component-style') {
-
-}

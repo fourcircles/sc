@@ -1,0 +1,60 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'gwt'
+version='3.0'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        maven {
+            url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/'
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'synergy-components/component-style/src/main/java'
+        }
+        resources {
+            srcDir 'synergy-components/component-style/src/main/resources'
+        }
+    }
+}
+
+dependencies {
+    providedCompile 'com.google.gwt:gwt-dev:2.6.1'
+    providedCompile 'com.google.gwt:gwt-user:2.6.1'
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'src'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+jar {
+    from 'synergy-components/component-style/src/main/java'
+}
+
+gwt {
+    gwtVersion='2.6.1'
+    minHeapSize = "512M";
+    maxHeapSize = "1024M";
+
+    modules 'kz.arta.synergy.components.style.ComponentStyle'
+}
+
+

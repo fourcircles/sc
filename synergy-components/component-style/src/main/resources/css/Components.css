@@ -270,16 +270,12 @@
 
 /*TODO уточнить padding margins кнопок закрыть, свернуть*/
 .dialogTitleButton {
-    /*so far this doesn't work*/
-    vertical-align: middle;
-
-    border: hidden;
-    height: 20px;
-    width: 20px;
-    background-color: mainBg;
-    color: whiteBG;
-
-    padding: 5px;
+    height: 16px;
+    width: 16px;
+    margin-top: 11px;
+    float: right;
+    padding-right: 5px;
+    background-repeat: no-repeat;
 }
 
 .dialogContent {

@@ -4,6 +4,8 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.resources.ImageResources;
+import org.omg.CORBA.IRObject;
 
 /**
  * User: vsl
@@ -24,7 +26,13 @@ public class ArtaDialogBoxSimple extends PopupPanel {
     /**
      * кнопка закрытия диалога
      */
-    protected Button closeButton;
+    protected Image closeButton;
+
+    /**
+     * кнопка сворачивания диалога
+     */
+    protected Image collapseButton;
+
 
     /**
      * панель для контента
@@ -42,12 +50,53 @@ public class ArtaDialogBoxSimple extends PopupPanel {
         titlePanel = new FlowPanel();
         Label titleLabel = new Label(title);
 
-        closeButton = new Button("X");
+        closeButton = new Image(ImageResources.IMPL.dialogCloseButton());
+        closeButton.addMouseOverHandler(new MouseOverHandler() {
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                closeButton.setResource(ImageResources.IMPL.dialogCloseButtonOver());
+            }
+        });
+        closeButton.addMouseOutHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                closeButton.setResource(ImageResources.IMPL.dialogCloseButton());
+            }
+        });
+        closeButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                hide();
+            }
+        });
+
+
+        collapseButton = new Image(ImageResources.IMPL.dialogCollapseButton());
+        collapseButton.addMouseOverHandler(new MouseOverHandler() {
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                collapseButton.setResource(ImageResources.IMPL.dialogCollapseButtonOver());
+
+            }
+        });
+        collapseButton.addMouseOutHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                collapseButton.setResource(ImageResources.IMPL.dialogCollapseButton());
+            }
+        });
+        collapseButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                collapse();
+            }
+        });
+
         titlePanel.add(titleLabel);
         titlePanel.add(closeButton);
+        titlePanel.add(collapseButton);
 
         titleLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
-        closeButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
         titlePanel.setWidth("100%");
 
         contentPanel = new FlowPanel();
@@ -58,18 +107,12 @@ public class ArtaDialogBoxSimple extends PopupPanel {
 
         setWidget(panel);
 
-        closeButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                hide();
-            }
-        });
-
         this.setStyleName(SynergyComponents.resources.cssComponents().popupPanel());
         panel.setStyleName(SynergyComponents.resources.cssComponents().dialog());
         titlePanel.setStyleName(SynergyComponents.resources.cssComponents().dialogTitle());
         titleLabel.setStyleName(SynergyComponents.resources.cssComponents().dialogTitleLabel());
         closeButton.setStyleName(SynergyComponents.resources.cssComponents().dialogTitleButton());
+        collapseButton.setStyleName(SynergyComponents.resources.cssComponents().dialogTitleButton());
         contentPanel.setStyleName(SynergyComponents.resources.cssComponents().dialogContent());
 
         setUpDragging();
@@ -107,4 +150,19 @@ public class ArtaDialogBoxSimple extends PopupPanel {
         titlePanel.addDomHandler(up, MouseUpEvent.getType());
     }
 
+    @Override
+    public void hide() {
+        closeButton.setResource(ImageResources.IMPL.dialogCloseButton());
+        super.hide();
+    }
+
+    protected void collapse() {
+    }
+
+    @Override
+    public void show() {
+        collapseButton.setResource(ImageResources.IMPL.dialogCollapseButton());
+        closeButton.setResource(ImageResources.IMPL.dialogCloseButton());
+        super.show();
+    }
 }

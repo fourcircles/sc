@@ -27,7 +27,7 @@ public class ImageButton extends ButtonBase {
     }
 
     protected void init() {
-        width = 32;
+        setWidth("32px");
         icon = new Image(iconResource.getSafeUri());
         icon.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
         add(icon);
@@ -36,12 +36,4 @@ public class ImageButton extends ButtonBase {
         sinkEvents(Event.MOUSEEVENTS);
         sinkEvents(Event.ONCLICK);
     }
-
-    @Override
-    public void onLoad() {
-        setWidth(width);
-    }
-
-
-
 }

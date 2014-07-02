@@ -37,11 +37,6 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
     protected boolean enabled = true;
 
     /**
-     * Ширина кнопки, контентозависима, если не задана явно
-     */
-    protected int width = 0;
-
-    /**
      * Панель для текста с иконкой
      */
     protected FlowPanel textPanel = GWT.create(FlowPanel.class);
@@ -127,6 +122,14 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         this.widthCallback = callback;
     }
 
+    private boolean textFits() {
+        int oldHeight = textLabel.getOffsetHeight();
+        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NORMAL);
+        int newHeight = textLabel.getOffsetHeight();
+        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
+        return oldHeight != newHeight;
+    }
+
     @Override
     public void onLoad() {
         super.onLoad();
@@ -134,14 +137,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                int textWidth = textLabel.getElement().getOffsetWidth();
-                if (textWidth == 0) {
-                    textWidth = getWidth(textLabel.getElement());
-                }
-                if (width == 0) {
-                    setWidth(textWidth + (iconResource != null ? iconResource.getWidth() + 2 * PADDING : 2 * PADDING));
-                }
-                if (textWidth + (iconResource != null ? iconResource.getWidth() + 2 * PADDING : 2 * PADDING) > width) {
+                if (textFits()) {
                     if (LocaleInfo.getCurrentLocale().isRTL()) {
                         clear();
                         add(gradient);
@@ -150,24 +146,12 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
                         add(gradient);
                     }
                 }
+
                 if (widthCallback != null) {
                     widthCallback.execute();
-                }                
+                }
             }
         });
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    /**
-     * Длина в пискелях
-     * @param width длина
-     */
-    public void setWidth(int width) {
-        super.setWidth(width + "px");
-        this.width = width;
     }
 
     public String getText() {

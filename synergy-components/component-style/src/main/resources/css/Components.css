@@ -52,12 +52,11 @@
     border-width: 1px;
     border-style: solid;
     border-radius: 4px;
-    vertical-align: middle;
-    white-space:nowrap;
     overflow: hidden;
     cursor: default;
-    position: relative;
     text-align: center;
+
+    display: inline-block;
 }
 
 .buttonSimple {
@@ -67,27 +66,21 @@
 }
 
 .buttonText {
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
     padding-left: 10px;
     padding-right: 10px;
-    position: absolute;
+    vertical-align: middle;
+    white-space:nowrap;
     text-align: center;
-    display : inline;
 }
 
 .buttonSimpleGradient, .approveButtonGradient, .declineButtonGradient {
-    position: absolute;
     z-index: 10;
     max-width: 20px;
     width: 20%;
-    right: 0;
     height: 32px;
-    line-height: 32px;
-    display : inline;
+    float: right;
+    margin-top: -32px;
+    position: relative;
 }
 
 .buttonSimpleGradient {
@@ -241,14 +234,12 @@
     background: mainBg;
     height: 38px;
     line-height: 38px;
-
 }
 
 .dialogTitleLabel {
     font-family: DroidSansBold, sans-serif;
     font-size:15pt;
-    /*TODO уточнить отступ слева у названия заголовка*/
-    padding-left: 10px;
+    padding-left: 12px;
     vertical-align: middle;
     color: whiteBG;
 
@@ -264,17 +255,17 @@
 .dialog {
     background: whiteBG;
     /*TODO уточнить про размеры*/
-    min-width: 350px;
-    min-height: 200px;
+    min-width: 116px;
+    min-height: 84px;
+
+    border: 1px solid border1;
 }
 
 /*TODO уточнить padding margins кнопок закрыть, свернуть*/
 .dialogTitleButton {
-    height: 16px;
-    width: 16px;
-    margin-top: 11px;
+    padding: 4px;
+    margin-top: 5.5px;
     float: right;
-    padding-right: 5px;
     background-repeat: no-repeat;
 }
 

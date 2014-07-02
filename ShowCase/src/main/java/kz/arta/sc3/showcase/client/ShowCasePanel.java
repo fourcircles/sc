@@ -230,24 +230,31 @@ public class ShowCasePanel extends LayoutPanel {
         return button;
     }
 
-    //TODO remove HorizontalPanel
     private Panel setUpDialogs(boolean buttons) {
         SimpleButton small = setUpDialog(300, 300, buttons, true, true);
+        small.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         SimpleButton middle = setUpDialog(400, 400, buttons, true, true);
+        middle.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         SimpleButton big = setUpDialog(800, 500, buttons, true, true);
-        HorizontalPanel hPanel = new HorizontalPanel();
-        hPanel.add(small);
-        hPanel.add(middle);
-        hPanel.add(big);
+        big.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        FlowPanel panel = new FlowPanel();
+        panel.add(small);
+        panel.add(middle);
+        panel.add(big);
+        panel.add(new HTML("<p/>"));
         if (buttons) {
-            hPanel.add(setUpDialog(400, 400, buttons, false, true));
-            hPanel.add(setUpDialog(400, 400, buttons, true, false));
+            SimpleButton noLeft = setUpDialog(400, 400, buttons, false, true);
+            noLeft.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+            SimpleButton noRight = setUpDialog(400, 400, buttons, false, true);
+            noRight.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+            panel.add(noLeft);
+            panel.add(noRight);
         }
 
-        hPanel.getElement().getStyle().setBackgroundColor("black");
-        hPanel.setSize("100%", "100%");
+        panel.setSize("100%", "100%");
 
-        return hPanel;
+        return panel;
     }
 
     private void treeSetUp() {
@@ -261,17 +268,20 @@ public class ShowCasePanel extends LayoutPanel {
         FlowPanel simpleButtonPanel = new FlowPanel();
 
         SimpleButton simpleButton = new SimpleButton(SCMessages.i18n.tr("Простая кнопка"));
-        simpleButton.setWidth(140);
+        simpleButton.setWidth("140px");
         simpleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        simpleButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton);
 
         SimpleButton simpleButton1 = new SimpleButton(SCMessages.i18n.tr("Неактивная кнопка"));
         simpleButton1.setEnabled(false);
         simpleButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        simpleButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton1);
 
         SimpleButton simpleButton2 = new SimpleButton("Кнопка с кликом");
         simpleButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        simpleButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton2);
         simpleButton2.addClickHandler(new ClickHandler() {
             @Override
@@ -287,27 +297,34 @@ public class ShowCasePanel extends LayoutPanel {
         SimpleButton iconButton = new SimpleButton(SCMessages.i18n.tr("Кнопка с иконкой"), SCImageResources.IMPL.zoom());
         iconButtonPanel.add(iconButton);
         iconButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         SimpleButton iconButton1 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SCImageResources.IMPL.zoom());
         iconButtonPanel.add(iconButton1);
         iconButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         SimpleButton iconButton2 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SCImageResources.IMPL.zoom());
-        iconButton2.setWidth(150);
+        iconButton2.setWidth("150px");
         iconButtonPanel.add(iconButton2);
         iconButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         SimpleButton iconButton3 = new SimpleButton(SCMessages.i18n.tr("Кнопка неактивная"), SCImageResources.IMPL.zoom());
-        iconButton3.setWidth(200);
+        iconButton3.setWidth("200px");
         iconButtonPanel.add(iconButton3);
         iconButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton3.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         iconButton3.setEnabled(false);
 
         ImageButton iconButton4 = new ImageButton(SCImageResources.IMPL.zoom());
         iconButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         iconButtonPanel.add(iconButton4);
 
         ImageButton iconButton5 = new ImageButton(SCImageResources.IMPL.zoom());
+        iconButton5.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton5.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         iconButton5.setEnabled(false);
         iconButtonPanel.add(iconButton5);
 
@@ -318,34 +335,41 @@ public class ShowCasePanel extends LayoutPanel {
         TextColorButton colorButton = new TextColorButton(SCMessages.i18n.tr("Создать"), TextColorButton.APPROVE_BUTTON);
         colorButtonPanel.add(colorButton);
         colorButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         TextColorButton colorButton1 = new TextColorButton(SCMessages.i18n.tr("Удалить"), TextColorButton.DECLINE_BUTTON);
         colorButtonPanel.add(colorButton1);
         colorButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         TextColorButton colorButton2 = new TextColorButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), TextColorButton.DECLINE_BUTTON);
         colorButtonPanel.add(colorButton2);
         colorButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         TextColorButton colorButton3 = new TextColorButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), TextColorButton.DECLINE_BUTTON);
-        colorButton3.setWidth(100);
+        colorButton3.setWidth("100px");
         colorButtonPanel.add(colorButton3);
         colorButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton3.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         TextColorButton colorButton4 = new TextColorButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), TextColorButton.APPROVE_BUTTON);
-        colorButton4.setWidth(100);
+        colorButton4.setWidth("100px");
         colorButtonPanel.add(colorButton4);
         colorButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         TextColorButton colorButton5 = new TextColorButton(SCMessages.i18n.tr("Кнопка неактивная"), TextColorButton.APPROVE_BUTTON);
         colorButton5.setEnabled(false);
         colorButtonPanel.add(colorButton5);
         colorButton5.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton5.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         TextColorButton colorButton6 = new TextColorButton(SCMessages.i18n.tr("Кнопка неактивная"), TextColorButton.DECLINE_BUTTON);
         colorButton6.setEnabled(false);
         colorButtonPanel.add(colorButton6);
         colorButton6.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton6.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), colorButtonPanel);
 

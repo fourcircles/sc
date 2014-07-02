@@ -173,7 +173,7 @@ public class ShowCasePanel extends LayoutPanel {
             //new tab
             contentPanel.add(component, component.getTabTitle());
             tabbedComponents.add(component);
-            contentPanel.selectTab(contentPanel);
+            contentPanel.selectTab(component);
         }
     }
 

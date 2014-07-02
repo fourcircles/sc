@@ -27,8 +27,8 @@ sourceSets {
         }
         resources {
             srcDir 'ShowCase/src/main/resources'
-            srcDir 'ShowCase/synergy-components/src/main/resources'
-            srcDir 'ShowCase/synergy-components/component-style/src/main/resources'
+            srcDir 'synergy-components/src/main/resources'
+            srcDir 'synergy-components/component-style/src/main/resources'
         }
     }
 }

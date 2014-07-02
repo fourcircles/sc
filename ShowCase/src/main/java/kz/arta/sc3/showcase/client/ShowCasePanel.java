@@ -201,10 +201,10 @@ public class ShowCasePanel extends LayoutPanel {
     }
 
     private SimpleButton setUpDialog(int width, int height, boolean buttons, boolean backButton, boolean moreButton) {
-        String title = "Content size: " + width + "x" + height;
+        String title = SCMessages.i18n.tr("Размер") + ": " + width + "x" + height;
         SimpleButton button = new SimpleButton(title);
 
-        Label contentLabel = new Label("content");
+        Label contentLabel = new Label(SCMessages.i18n.tr("Содержимое"));
         contentLabel.setSize("100%", "100%");
         SimplePanel sPanel = new SimplePanel(contentLabel);
         sPanel.setSize(width + "px", height + "px");
@@ -350,9 +350,9 @@ public class ShowCasePanel extends LayoutPanel {
         new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), colorButtonPanel);
 
         cnt++;
-        new ShowComponent(this, category2, "Диалог без кнопок", "Диалог без кнопок", setUpDialogs(false));
+        new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));
         cnt++;
-        new ShowComponent(this, category2, "Диалог с кнопками", "Диалог с кнопками", setUpDialogs(true));
+        new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог с кнопками"), SCMessages.i18n.tr("Диалог с кнопками"), setUpDialogs(true));
     }
 
     private void addAllThemes() {

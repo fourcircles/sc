@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.SimpleButton;
+import kz.arta.synergy.components.client.resources.Messages;
 
 /**
  * User: vsl
@@ -59,10 +60,10 @@ public class ArtaDialogBox extends ArtaDialogBoxSimple {
         buttonsPanel = new FlowPanel();
         panel.add(buttonsPanel);
 
-        backButton = new SimpleButton("back");
+        backButton = new SimpleButton(Messages.i18n.tr("Назад"));
         backButton.getElement().getStyle().setFloat(Style.Float.LEFT);
-        saveButton = new SimpleButton("save");
-        moreButton = new SimpleButton("more");
+        saveButton = new SimpleButton(Messages.i18n.tr("Сохранить"));
+        moreButton = new SimpleButton(Messages.i18n.tr("Еще"));
         moreButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
         buttonsPanel.add(backButton);

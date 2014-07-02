@@ -1,0 +1,62 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'gwt'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url 'http://192.168.1.30:8081/artifactory/synergy-libs'
+    }
+}
+
+buildscript {
+    repositories {
+        maven {
+            url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/'
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'ShowCase/src/main/java'
+        }
+        resources {
+            srcDir 'ShowCase/src/main/resources'
+            srcDir 'synergy-components/src/main/resources'
+            srcDir 'synergy-components/component-style/src/main/resources'
+        }
+    }
+}
+
+dependencies {
+    providedCompile 'com.google.gwt:gwt-dev:2.6.1'
+    providedCompile 'com.google.gwt:gwt-user:2.6.1'
+    compile files('synergy-components/src/main/java')
+    compile files('synergy-components/component-style/src/main/java')
+    providedCompile files('synergy-components/src/main/java')
+    providedCompile files('synergy-components/component-style/src/main/java')
+    compile(group: 'kz.arta', name: 'arta-i18n', version: '1.0')
+    compile(group: 'kz.arta', name: 'synergy-messages', version: '3.0', changing: true)
+}
+
+gwt {
+    gwtVersion='2.6.1'
+    minHeapSize = "512M";
+    maxHeapSize = "1024M";
+
+    modules 'kz.arta.sc3.showcase.ShowCase'
+}
+
+project.webAppDirName = 'ShowCase/src/main/resources'
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}

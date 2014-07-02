@@ -1,11 +1,13 @@
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'gwt'
-version='3.0'
 
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        url 'http://192.168.1.30:8081/artifactory/synergy-libs'
+    }
 }
 
 buildscript {

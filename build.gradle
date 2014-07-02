@@ -23,10 +23,12 @@ buildscript {
 sourceSets {
     main {
         java {
-            srcDir 'synergy-components/component-style/src/main/java'
+            srcDir 'ShowCase/src/main/java'
         }
         resources {
-            srcDir 'synergy-components/component-style/src/main/resources'
+            srcDir 'ShowCase/src/main/resources'
+            srcDir 'ShowCase/synergy-components/src/main/resources'
+            srcDir 'ShowCase/synergy-components/component-style/src/main/resources'
         }
     }
 }
@@ -34,19 +36,12 @@ sourceSets {
 dependencies {
     providedCompile 'com.google.gwt:gwt-dev:2.6.1'
     providedCompile 'com.google.gwt:gwt-user:2.6.1'
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'src'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-jar {
-    from 'synergy-components/component-style/src/main/java'
+    compile files('synergy-components/src/main/java')
+    compile files('synergy-components/component-style/src/main/java')
+    providedCompile files('synergy-components/src/main/java')
+    providedCompile files('synergy-components/component-style/src/main/java')
+    compile(group: 'kz.arta', name: 'arta-i18n', version: '1.0')
+    compile(group: 'kz.arta', name: 'synergy-messages', version: '3.0', changing: true)
 }
 
 gwt {
@@ -54,7 +49,20 @@ gwt {
     minHeapSize = "512M";
     maxHeapSize = "1024M";
 
-    modules 'kz.arta.synergy.components.style.ComponentStyle'
+    modules 'kz.arta.sc3.showcase.ShowCase'
 }
 
+project.webAppDirName = 'ShowCase/src/main/resources'
 
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+project(':synergy-components') {
+
+}
+
+project(':component-style') {
+
+}

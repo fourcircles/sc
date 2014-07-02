@@ -234,14 +234,12 @@
     background: mainBg;
     height: 38px;
     line-height: 38px;
-
 }
 
 .dialogTitleLabel {
     font-family: DroidSansBold, sans-serif;
     font-size:15pt;
-    /*TODO уточнить отступ слева у названия заголовка*/
-    padding-left: 10px;
+    padding-left: 12px;
     vertical-align: middle;
     color: whiteBG;
 
@@ -257,17 +255,17 @@
 .dialog {
     background: whiteBG;
     /*TODO уточнить про размеры*/
-    min-width: 350px;
-    min-height: 200px;
+    min-width: 116px;
+    min-height: 84px;
+
+    border: 1px solid border1;
 }
 
 /*TODO уточнить padding margins кнопок закрыть, свернуть*/
 .dialogTitleButton {
-    height: 16px;
-    width: 16px;
-    margin-top: 11px;
+    padding: 4px;
+    margin-top: 5.5px;
     float: right;
-    padding-right: 5px;
     background-repeat: no-repeat;
 }
 

@@ -51,6 +51,7 @@ public class ArtaDialogBoxSimple extends PopupPanel {
         Label titleLabel = new Label(title);
 
         closeButton = new Image(ImageResources.IMPL.dialogCloseButton());
+        closeButton.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
         closeButton.addMouseOverHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {

@@ -24,8 +24,12 @@ public class GradientLabel extends FlowPanel {
 
     public GradientLabel() {
         add(textLabel);
-        getElement().getStyle().setDisplay(Style.Display.INLINE);
+        getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
+
         gradient.setStyleName(SynergyComponents.resources.cssComponents().gradient());
+        gradient.getElement().getStyle().setMarginRight(-10, Style.Unit.PX);
+        setHeight("32px");
     }
 
     public GradientLabel(String text) {

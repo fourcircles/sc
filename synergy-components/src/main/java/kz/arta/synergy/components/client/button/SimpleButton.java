@@ -38,6 +38,21 @@ public class SimpleButton extends ButtonBase {
         init();
     }
 
+    /**
+     * Кнопка с иконкой
+     * @param text  текст кнопки
+     * @param iconResource  иконка кнопки
+     * @param placement положение иконки (слева или справа)
+     */
+
+    public SimpleButton(String text, ImageResource iconResource, IconPosition placement) {
+        super();
+        this.text = text;
+        this.iconResource = iconResource;
+        iconPosition = placement;
+        init();
+    }
+
     protected void init() {
         super.init();
 

@@ -26,6 +26,9 @@ import kz.arta.synergy.components.client.util.Selection;
 public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusHandlers, HasEnabled {
 
     private static final int PADDING = 10;
+    private final int MIN_WIDTH = 150;
+    private final int MIN_WIDTH_NO_TEXT = 32;
+    private final IconPosition DEFAULT_ICON_POSITION = IconPosition.LEFT;
 
     /**
      * Активна ли кнопка
@@ -54,24 +57,52 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
 
     protected Image icon;
 
+    public enum IconPosition {
+        LEFT, RIGHT;
+    }
+
+    protected IconPosition iconPosition = null;
+
     protected void init() {
         textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
-        textPanel.addStyleName(SynergyComponents.resources.cssComponents().buttonText());
+        textLabel.addStyleName(SynergyComponents.resources.cssComponents().buttonText());
 
         if (iconResource != null) {
             icon = new Image(iconResource.getSafeUri());
             icon.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
-            textPanel.add(icon);
-            textLabel.addStyleName(SynergyComponents.resources.cssComponents().paddingElement());
+            setIconPosition(iconPosition == null ? DEFAULT_ICON_POSITION : iconPosition, true);
+        } else {
+            add(textLabel);
         }
+        textLabel.getElement().getStyle().setMarginRight(PADDING, Style.Unit.PX);
+        textLabel.getElement().getStyle().setMarginLeft(PADDING, Style.Unit.PX);
         textLabel.setText(text);
-
-        textPanel.add(textLabel);
-        add(textPanel);
 
         Selection.disableTextSelectInternal(getElement());
         sinkEvents(Event.MOUSEEVENTS);
         sinkEvents(Event.ONCLICK);
+    }
+
+    public void setIconPosition(IconPosition position) {
+        setIconPosition(position, false);
+    }
+
+    private void setIconPosition(IconPosition position, boolean init) {
+        if (init || (iconPosition != position & icon != null)) {
+            iconPosition = position;
+            clear();
+            if (iconPosition == IconPosition.RIGHT) {
+                add(textLabel);
+                add(icon);
+                icon.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
+                icon.getElement().getStyle().setMarginRight(PADDING, Style.Unit.PX);
+            } else {
+                add(icon);
+                add(textLabel);
+                icon.getElement().getStyle().setMarginRight(0, Style.Unit.PX);
+                icon.getElement().getStyle().setMarginLeft(PADDING, Style.Unit.PX);
+            }
+        }
     }
 
     @Override
@@ -141,6 +172,34 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
             default:
                 super.onBrowserEvent(event);
 
+        }
+    }
+
+    private void setWidth(int width) {
+        int textLabelWidth = width;
+        if (icon != null) {
+            textLabelWidth -= icon.getWidth();
+            textLabelWidth -= PADDING;
+        }
+        textLabel.setWidth(textLabelWidth + "px");
+    }
+
+    @Override
+    public void setWidth(String width) {
+        if (!width.substring(width.length() - 2, width.length()).equals("px")) {
+            throw new IllegalArgumentException();
+        }
+        int intWidth = Integer.parseInt(width.substring(0, width.length() - 2));
+        intWidth = Math.max(getMinWidth(), intWidth);
+        super.setWidth(intWidth + "px");
+        setWidth(intWidth - 2 * PADDING);
+    }
+
+    private int getMinWidth() {
+        if (text == null){
+            return MIN_WIDTH_NO_TEXT;
+        } else {
+            return MIN_WIDTH;
         }
     }
 }

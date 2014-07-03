@@ -18,6 +18,7 @@ buildscript {
             url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/'
         }
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'

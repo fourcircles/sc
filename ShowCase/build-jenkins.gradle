@@ -50,9 +50,19 @@ gwt {
     modules 'kz.arta.sc3.showcase.ShowCase'
 }
 
-project.webAppDirName = 'src/main/resources'
+project.webAppDirName = 'build/resources/main'
 
 configurations.all {
     // check for updates every build
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+import org.apache.tools.ant.filters.*
+processResources {
+    ext.fullrev = ''
+    ant.loadfile(srcFile: "../.git/refs/heads/master", property: ext.fullrev)
+
+    from(sourceSets.main.resources.srcDirs) {
+        filter(ReplaceTokens, tokens: [build_stamp: new Date().format('yyyy.MM.dd HH:mm'), revision: ant.properties[ext.fullrev].substring(0,10)])
+    }
 }

@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
@@ -75,6 +76,17 @@ public class ShowCasePanel extends LayoutPanel {
         Label showCaseLabel = new Label("ShowCase");
         titlePanel.add(showCaseLabel);
 
+        final Dictionary theme = Dictionary.getDictionary("properties");
+
+        Button about = new Button("About");
+        about.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Window.alert("About: \nSynergy components ShowCase\n\nRevision: " + theme.get("revision") + "\nBuild stamp: " + theme.get("build_stamp"));
+            }
+        });
+        titlePanel.add(about);
+        about.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         themeListBox = new ListBox();
         addAllThemes();
 
@@ -118,6 +130,7 @@ public class ShowCasePanel extends LayoutPanel {
         showCaseLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
         themeListBox.getElement().getStyle().setFloat(Style.Float.RIGHT);
         localeListBox.getElement().getStyle().setFloat(Style.Float.RIGHT);
+        about.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
         add(titlePanel);
         add(navigationPanel);

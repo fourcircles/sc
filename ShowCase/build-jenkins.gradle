@@ -59,10 +59,16 @@ configurations.all {
 
 import org.apache.tools.ant.filters.*
 processResources {
+    ext.env = System.getenv()
+    ext.buildNumber = '1.0.'+env.BUILD_NUMBER?.toInteger()
     ext.fullrev = ''
-    ant.loadfile(srcFile: "../.git/refs/remotes/origin/master", property: ext.fullrev)
+    ant.loadfile(srcFile: "../.git/refs/heads/master", property: ext.fullrev)
+    ant.properties[ext.buildNumber] = '1.0.'+env.BUILD_NUMBER?.toInteger()
     from(sourceSets.main.resources.srcDirs) {
         include 'ShowCase.html'
-        filter(ReplaceTokens, tokens: [build_stamp: new Date().format('yyyy.MM.dd HH:mm'), revision: ant.properties[ext.fullrev].substring(0,10)])
+        filter(ReplaceTokens, tokens: [build_stamp: new Date().format('yyyy.MM.dd HH:mm'),
+                                       revision: ant.properties[ext.fullrev].substring(0,10),
+                                       version: ant.properties[ext.buildNumber]
+        ])
     }
 }

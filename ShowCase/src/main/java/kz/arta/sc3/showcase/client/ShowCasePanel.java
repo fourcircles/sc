@@ -81,7 +81,8 @@ public class ShowCasePanel extends LayoutPanel {
         about.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                Window.alert("About: \nSynergy components ShowCase\n\nRevision: " + theme.get("revision") + "\nBuild stamp: " + theme.get("build_stamp"));
+                Window.alert("About: \nSynergy components ShowCase\n\nVersion: " + theme.get("version") +
+                        "\nRevision: " + theme.get("revision") +"\nBuild stamp: " + theme.get("build_stamp"));
             }
         });
         titlePanel.add(about);

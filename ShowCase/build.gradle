@@ -75,6 +75,7 @@ processResources {
     ant.loadfile(srcFile: "../.git/refs/heads/master", property: ext.fullrev)
 
     from(sourceSets.main.resources.srcDirs) {
+        include 'ShowCase.html'
         filter(ReplaceTokens, tokens: [build_stamp: new Date().format('yyyy.MM.dd HH:mm'), revision: ant.properties[ext.fullrev].substring(0,10)])
     }
 }

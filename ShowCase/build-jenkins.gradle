@@ -60,8 +60,7 @@ configurations.all {
 import org.apache.tools.ant.filters.*
 processResources {
     ext.fullrev = ''
-    ant.loadfile(srcFile: "../.git/refs/heads/master", property: ext.fullrev)
-
+    ant.loadfile(srcFile: "../.git/refs/remotes/origin/master", property: ext.fullrev)
     from(sourceSets.main.resources.srcDirs) {
         filter(ReplaceTokens, tokens: [build_stamp: new Date().format('yyyy.MM.dd HH:mm'), revision: ant.properties[ext.fullrev].substring(0,10)])
     }

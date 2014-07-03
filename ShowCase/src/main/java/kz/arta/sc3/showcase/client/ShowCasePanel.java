@@ -12,9 +12,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
-import kz.arta.synergy.components.client.button.ImageButton;
-import kz.arta.synergy.components.client.button.SimpleButton;
-import kz.arta.synergy.components.client.button.TextColorButton;
+import kz.arta.synergy.components.client.button.*;
+import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.dialog.ArtaDialogBox;
 import kz.arta.synergy.components.client.dialog.ArtaDialogBoxSimple;
 import kz.arta.synergy.components.client.theme.Theme;
@@ -274,7 +273,7 @@ public class ShowCasePanel extends LayoutPanel {
         tree = new Tree();
 
         TreeItem category1 = addCategory(SCMessages.i18n.tr("Кнопки"));
-        TreeItem category2 = addCategory("category2");
+        TreeItem category2 = addCategory(SCMessages.i18n.tr("Диалог"));
 
         int cnt = 0;
 
@@ -317,7 +316,7 @@ public class ShowCasePanel extends LayoutPanel {
         iconButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         iconButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
-        SimpleButton iconButton2 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SCImageResources.IMPL.zoom());
+        SimpleButton iconButton2 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SCImageResources.IMPL.zoom(), ButtonBase.IconPosition.RIGHT);
         iconButton2.setWidth("150px");
         iconButtonPanel.add(iconButton2);
         iconButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);

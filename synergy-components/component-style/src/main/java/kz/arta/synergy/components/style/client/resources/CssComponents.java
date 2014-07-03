@@ -21,8 +21,6 @@ public interface CssComponents extends CssResource {
 
     String approveButtonBG5();
 
-    String approveButtonGradient();
-
     String border1();
 
     String buttonBG();
@@ -30,8 +28,6 @@ public interface CssComponents extends CssResource {
     String buttonBorder();
 
     String buttonSimple();
-
-    String buttonSimpleGradient();
 
     String buttonText();
 
@@ -44,8 +40,6 @@ public interface CssComponents extends CssResource {
     String declineButtonBG3();
 
     String declineButtonBG4();
-
-    String declineButtonGradient();
 
     String dialog();
 
@@ -86,4 +80,6 @@ public interface CssComponents extends CssResource {
     String textColor3();
 
     String whiteBG();
+
+    String gradient();
 }

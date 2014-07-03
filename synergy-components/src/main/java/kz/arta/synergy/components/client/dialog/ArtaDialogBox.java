@@ -90,9 +90,9 @@ public class ArtaDialogBox extends ArtaDialogBoxSimple {
             }
         };
 
-        backButton.setWidthCallback(widthCallback);
-        moreButton.setWidthCallback(widthCallback);
-        saveButton.setWidthCallback(widthCallback);
+        backButton.setSizeCallback(widthCallback);
+        moreButton.setSizeCallback(widthCallback);
+        saveButton.setSizeCallback(widthCallback);
     }
 
     /**

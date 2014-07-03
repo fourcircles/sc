@@ -43,10 +43,8 @@ public class TextColorButton extends ButtonBase {
         super.init();
         if (type == APPROVE_BUTTON) {
             setStyleName(SynergyComponents.resources.cssComponents().approveButton());
-            gradient.setStyleName(SynergyComponents.resources.cssComponents().approveButtonGradient());
         } else {
             setStyleName(SynergyComponents.resources.cssComponents().declineButton());
-            gradient.setStyleName(SynergyComponents.resources.cssComponents().declineButtonGradient());
         }
 
     }

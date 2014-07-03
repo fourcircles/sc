@@ -1,13 +1,9 @@
 package kz.arta.synergy.components.client.button;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
@@ -15,8 +11,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.label.GradientLabel;
 import kz.arta.synergy.components.client.resources.Messages;
 import kz.arta.synergy.components.client.util.MouseStyle;
 import kz.arta.synergy.components.client.util.Selection;
@@ -44,12 +40,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
     /**
      * Надпись кнопки
      */
-    protected InlineLabel textLabel = GWT.create(InlineLabel.class);
-
-    /**
-     * Панель градиента для затемнения надписи иконки
-     */
-    protected FlowPanel gradient = GWT.create(FlowPanel.class);
+    protected GradientLabel textLabel = GWT.create(GradientLabel.class);
 
     /**
      * Текст кнопки
@@ -62,11 +53,10 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
     protected ImageResource iconResource;
 
     protected Image icon;
-    private Command widthCallback;
 
     protected void init() {
-        textLabel.setStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
-        textPanel.setStyleName(SynergyComponents.resources.cssComponents().buttonText());
+        textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
+        textPanel.addStyleName(SynergyComponents.resources.cssComponents().buttonText());
 
         if (iconResource != null) {
             icon = new Image(iconResource.getSafeUri());
@@ -118,40 +108,8 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         }
     }
 
-    public void setWidthCallback(Command callback) {
-        this.widthCallback = callback;
-    }
-
-    private boolean textFits() {
-        int oldHeight = textLabel.getOffsetHeight();
-        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NORMAL);
-        int newHeight = textLabel.getOffsetHeight();
-        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
-        return oldHeight != newHeight;
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        /*устанавливаем размеры кнопок*/
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-            @Override
-            public void execute() {
-                if (textFits()) {
-                    if (LocaleInfo.getCurrentLocale().isRTL()) {
-                        clear();
-                        add(gradient);
-                        add(textPanel);
-                    } else {
-                        add(gradient);
-                    }
-                }
-
-                if (widthCallback != null) {
-                    widthCallback.execute();
-                }
-            }
-        });
+    public void setSizeCallback(Command callback) {
+        textLabel.setSizeCallback(callback);
     }
 
     public String getText() {
@@ -163,21 +121,6 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         textLabel.setText(text);
     }
 
-    /**
-     * Получаем ширину элемента
-     * @param element   элемент
-     * @return  ширина элемента
-     */
-    public int getWidth(Element element) {
-        Element e = DOM.clone(element, true);
-        e.getStyle().setVisibility(Style.Visibility.HIDDEN);
-        e.setClassName(textLabel.getStyleName());
-        Document.get().getBody().appendChild(e);
-        int width = e.getOffsetWidth();
-        Document.get().getBody().removeChild(e);
-        return width;
-    }
-
     public void onBrowserEvent(Event event) {
         if (!enabled){
             return;
@@ -185,19 +128,15 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         switch (DOM.eventGetType(event)) {
             case Event.ONMOUSEDOWN:
                 MouseStyle.setPressed(this);
-                MouseStyle.setPressed(gradient);
                 break;
             case Event.ONMOUSEOVER:
                 MouseStyle.setOver(this);
-                MouseStyle.setOver(gradient);
                 break;
             case Event.ONMOUSEUP:
                 MouseStyle.setOver(this);
-                MouseStyle.setOver(gradient);
                 break;
             case Event.ONMOUSEOUT:
                 MouseStyle.removeAll(this);
-                MouseStyle.removeAll(gradient);
                 break;
             default:
                 super.onBrowserEvent(event);

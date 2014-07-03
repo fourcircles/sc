@@ -42,7 +42,6 @@ public class SimpleButton extends ButtonBase {
         super.init();
 
         setStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
-        gradient.setStyleName(SynergyComponents.resources.cssComponents().buttonSimpleGradient());
     }
 
 

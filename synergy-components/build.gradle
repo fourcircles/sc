@@ -1,6 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'gwt'
+apply plugin: 'artifactory-publish'
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
+
 version='3.0'
 
 repositories {
@@ -17,9 +21,11 @@ buildscript {
             url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/'
         }
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.4')
     }
 }
 
@@ -81,4 +87,33 @@ gwt {
 
     modules 'kz.arta.synergy.components.SynergyComponents'
 }
+
+artifactory {
+    contextUrl = 'http://192.168.1.30:8081/artifactory'
+    //The base Artifactory URL if not overridden by the publisher/resolver
+    publish {
+        //A closure defining publishing information
+        repository {
+            repoKey = 'synergy-libs'   //The Artifactory repository key to publish to
+            username = 'deployer'          //The publisher user name
+            password = 'deployer'       //The publisher password
+        }
+        defaults {
+            publishArtifacts = true
+            publications('mavenJava')
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId 'kz.arta'
+            artifactId 'synergy-components'
+
+            from components.java
+        }
+    }
+}
+
 

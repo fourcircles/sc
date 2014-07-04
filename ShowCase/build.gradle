@@ -1,6 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'gwt'
+//todo разобраться почему это здесь нужно
+apply plugin: 'artifactory-publish'
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
 
 repositories {
     mavenLocal()
@@ -16,9 +20,11 @@ buildscript {
             url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/'
         }
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.4')
     }
 }
 

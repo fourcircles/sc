@@ -3,7 +3,6 @@ package kz.arta.synergy.components.client.dialog;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.label.GradientLabel;
 import kz.arta.synergy.components.client.resources.ImageResources;

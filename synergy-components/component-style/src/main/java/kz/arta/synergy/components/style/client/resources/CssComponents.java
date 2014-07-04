@@ -67,8 +67,6 @@ public interface CssComponents extends CssResource {
 
     String over();
 
-    String paddingElement();
-
     String popupPanel();
 
     String pressed();

@@ -3,9 +3,11 @@ package kz.arta.synergy.components.client.dialog;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.label.GradientLabel;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.style.client.Constants;
 
 /**
  * User: vsl
@@ -127,8 +129,13 @@ public class ArtaDialogBoxSimple extends PopupPanel {
     @Override
     protected void onLoad() {
         super.onLoad();
-        //TODO remove magic numbers
-        titleLabel.setWidth((getWidth() - 50 - 12 - 8 - 10) + "px");
+        titleLabel.setWidth((getWidth() -
+                (Constants.DIALOG_CLOSE_BUTTON_SIZE + Constants.DIALOG_CLOSE_BUTTON_PADDING) * 2 -
+                Constants.DIALOG_CLOSE_BUTTON_RIGHT_MARGIN) -
+                Constants.DIALOG_TITLE_LEFT_MARGIN -
+                Constants.DIALOG_TITLE_LABEL_RIGHT_PADDING -
+                Constants.DIALOG_CONTENT_PADDING * 2
+                + "px");
     }
 
     private void setUpDragging() {

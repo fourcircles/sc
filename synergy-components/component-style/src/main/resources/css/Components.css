@@ -46,9 +46,10 @@
 @def declineButtonBG4 #b05253;
 @eval declineButtonBG4_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#b05253","0");
 
+@eval buttonHeight kz.arta.synergy.components.style.client.Constants.buttonHeight();
 .buttonSimple, .approveButton, .declineButton {
-    height: 32px;
-    line-height: 32px;
+    height: buttonHeight;
+    line-height: buttonHeight;
     min-width: 32px;
     border-width: 1px;
     border-style: solid;
@@ -73,13 +74,13 @@
     text-align: center;
 }
 
+@eval gradientTopMargin kz.arta.synergy.components.style.client.Constants.gradientTopMargin();
 .gradient {
-    z-index: 10;
     max-width: 20px;
     width: 20%;
-    height: 32px;
+    height: buttonHeight;
     float: right;
-    margin-top: -32px;
+    margin-top: gradientTopMargin;
     position: relative;
 }
 
@@ -179,11 +180,12 @@
     color: textColor3;
 }
 
+@eval approveButtonMinWidth kz.arta.synergy.components.style.client.Constants.buttonApproveMinWidth();
 .approveButton {
     background-color: approveButtonBG3;
     border-color: approveButtonBG3;
     color: whiteBG;
-    min-width: 150px;
+    min-width: approveButtonMinWidth;
 }
 
 .approveButton.over {
@@ -208,7 +210,7 @@
     background-color: declineButtonBG3;
     border-color: declineButtonBG3;
     color: whiteBG;
-    min-width: 150px;
+    min-width: approveButtonMinWidth;
 }
 
 .declineButton.over {
@@ -235,21 +237,22 @@
     font-size:13pt;
 }
 
-.paddingElement {
-    padding-left: 10px;
-}
+@eval dialogTitleHeight kz.arta.synergy.components.style.client.Constants.dialogTitleHeight();
 
 .dialogTitle {
     background: mainBg;
-    height: 38px;
-    line-height: 38px;
+    height: dialogTitleHeight;
+    line-height: dialogTitleHeight;
 }
+
+@eval dialogTitleLeftMargin kz.arta.synergy.components.style.client.Constants.dialogTitleLeftMargin();
+@eval dialogTitleLabelRightPadding kz.arta.synergy.components.style.client.Constants.dialogTitleLabelRightPadding();
 
 .dialogTitleLabel {
     font-family: DroidSansBold, sans-serif;
     font-size:15pt;
-    margin-left: 12px;
-    padding-right: 10px;
+    margin-left: dialogTitleLeftMargin;
+    padding-right: dialogTitleLabelRightPadding;
     vertical-align: middle;
     color: whiteBG;
 
@@ -262,23 +265,28 @@
     cursor: default;
 }
 
+@eval dialogBorderWidth kz.arta.synergy.components.style.client.Constants.dialogBorderWidth();
+
 .dialog {
     background: whiteBG;
     min-width: 116px;
     min-height: 84px;
 
-    border: 1px solid border1;
+    border: dialogBorderWidth solid border1;
 }
 
+@eval dialogCloseButtonPadding kz.arta.synergy.components.style.client.Constants.dialogCloseButtonPadding();
+
 .dialogTitleButton {
-    padding: 4px;
-    margin-top: 5.5px;
+    padding: dialogCloseButtonPadding;
+    margin-top: 3px;
     float: right;
     background-repeat: no-repeat;
 }
 
+@eval dialogContentPadding kz.arta.synergy.components.style.client.Constants.dialogContentPadding();
 .dialogContent {
-    padding: 8px;
+    padding: dialogContentPadding;
 }
 
 .dialogWithButtons .dialogContent {
@@ -286,21 +294,20 @@
 }
 
 .popupPanel {
-    border : none;
     padding : 0px;
 }
 
+@eval dialogButtonVMargin kz.arta.synergy.components.style.client.Constants.dialogNavigationButtonVMargin();
 .dialogButton {
-    padding: 0px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: dialogButtonVMargin;
+    margin-bottom: dialogButtonVMargin;
     display: inline-block;
 }
 
+@eval dialogButtonMargin kz.arta.synergy.components.style.client.Constants.dialogNavigationButtonMargin();
 .dialogBackButton {
-    margin-left: 20px;
+    margin-left: dialogButtonMargin;
 }
-
 .dialogMoreButton {
-    margin-right: 20px;
+    margin-right: dialogButtonMargin;
 }

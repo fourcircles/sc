@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.button;
 
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.style.client.Constants;
 
 /**
  * User: user
@@ -46,7 +47,10 @@ public class TextColorButton extends ButtonBase {
         } else {
             setStyleName(SynergyComponents.resources.cssComponents().declineButton());
         }
-
     }
 
+    @Override
+    protected int getMinWidth() {
+        return Constants.BUTTON_APPROVE_MIN_WIDTH;
+    }
 }

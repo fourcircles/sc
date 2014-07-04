@@ -8,6 +8,7 @@ import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.SimpleButton;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.resources.Messages;
+import kz.arta.synergy.components.style.client.Constants;
 
 /**
  * User: vsl
@@ -49,8 +50,6 @@ public class ArtaDialogBox extends ArtaDialogBoxSimple {
 
     private boolean isLeftButtonVisible;
     private boolean isRightButtonVisible;
-    //TODO we prob don't need it
-    private boolean isLoaded = false;
 
     public ArtaDialogBox(String title, Widget content) {
         super(title, content);
@@ -85,13 +84,12 @@ public class ArtaDialogBox extends ArtaDialogBoxSimple {
     @Override
     protected void onLoad() {
         super.onLoad();
-        isLoaded = true;
         adjustMargins();
     }
 
     private void adjustMargins() {
         //2 extra pixels for border
-        saveButtonBaseMargin = ((double) getOffsetWidth() - saveButton.getOffsetWidth() - getBorderWidth() * 2) / 2;
+        saveButtonBaseMargin = ((double) getOffsetWidth() - saveButton.getOffsetWidth() - Constants.DIALOG_BORDER_WIDTH * 2) / 2;
         adjustSaveButtonLeftMargin();
         adjustSaveButtonRightMargin();
     }
@@ -144,7 +142,7 @@ public class ArtaDialogBox extends ArtaDialogBoxSimple {
     public void setLeftButtonVisible(boolean isBackButtonVisible) {
         this.isLeftButtonVisible = isBackButtonVisible;
         leftButton.setVisible(isBackButtonVisible);
-        if (isLoaded) {
+        if (isAttached()) {
             adjustSaveButtonLeftMargin();
         }
     }
@@ -152,13 +150,8 @@ public class ArtaDialogBox extends ArtaDialogBoxSimple {
     public void setRightButtonVisible(boolean isMoreButtonVisible) {
         this.isRightButtonVisible = isMoreButtonVisible;
         rightButton.setVisible(isMoreButtonVisible);
-        if (isLoaded) {
+        if (isAttached()) {
             adjustSaveButtonRightMargin();
         }
-    }
-
-    //TODO
-    protected int getBorderWidth() {
-        return 1;
     }
 }

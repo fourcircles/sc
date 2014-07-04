@@ -1,6 +1,8 @@
 package kz.arta.synergy.components.client.button;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.DragStartEvent;
+import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Image;
@@ -29,6 +31,12 @@ public class ImageButton extends ButtonBase {
     protected void init() {
         setWidth("32px");
         icon = new Image(iconResource.getSafeUri());
+        icon.addDragStartHandler(new DragStartHandler() {
+            @Override
+            public void onDragStart(DragStartEvent event) {
+                event.preventDefault();
+            }
+        });
         icon.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
         add(icon);
         setStyleName(SynergyComponents.resources.cssComponents().buttonSimple());

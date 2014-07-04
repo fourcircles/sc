@@ -54,6 +54,12 @@ public class ArtaDialogBoxSimple extends PopupPanel {
 
         closeButton = new Image(ImageResources.IMPL.dialogCloseButton());
         closeButton.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
+        closeButton.addDragStartHandler(new DragStartHandler() {
+            @Override
+            public void onDragStart(DragStartEvent event) {
+                event.preventDefault();
+            }
+        });
         closeButton.addMouseOverHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
@@ -75,6 +81,12 @@ public class ArtaDialogBoxSimple extends PopupPanel {
 
 
         collapseButton = new Image(ImageResources.IMPL.dialogCollapseButton());
+        collapseButton.addDragStartHandler(new DragStartHandler() {
+            @Override
+            public void onDragStart(DragStartEvent event) {
+                event.preventDefault();
+            }
+        });
         collapseButton.addMouseOverHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {

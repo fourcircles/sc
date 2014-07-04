@@ -67,6 +67,12 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
 
         if (iconResource != null) {
             icon = new Image(iconResource.getSafeUri());
+            icon.addDragStartHandler(new DragStartHandler() {
+                @Override
+                public void onDragStart(DragStartEvent event) {
+                    event.preventDefault();
+                }
+            });
             icon.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
             setIconPosition(iconPosition == null ? DEFAULT_ICON_POSITION : iconPosition, true);
         } else {

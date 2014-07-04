@@ -4,8 +4,8 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.label.GradientLabel;
 import kz.arta.synergy.components.client.resources.ImageResources;
-import org.omg.CORBA.IRObject;
 
 /**
  * User: vsl
@@ -39,16 +39,16 @@ public class ArtaDialogBoxSimple extends PopupPanel {
      */
     protected FlowPanel contentPanel;
 
+    protected Widget content;
+
     private boolean dragging = false;
     private int dragStartX, dragStartY;
+    private GradientLabel titleLabel;
 
     public ArtaDialogBoxSimple(String title, Widget content) {
         setModal(true);
 
         panel = new FlowPanel();
-
-        titlePanel = new FlowPanel();
-        Label titleLabel = new Label(title);
 
         closeButton = new Image(ImageResources.IMPL.dialogCloseButton());
         closeButton.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
@@ -93,6 +93,10 @@ public class ArtaDialogBoxSimple extends PopupPanel {
             }
         });
 
+        titlePanel = new FlowPanel();
+        titleLabel = new GradientLabel(title);
+        titleLabel.setWidth("10px");
+
         titlePanel.add(titleLabel);
         titlePanel.add(closeButton);
         titlePanel.add(collapseButton);
@@ -100,6 +104,7 @@ public class ArtaDialogBoxSimple extends PopupPanel {
         titleLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
         titlePanel.setWidth("100%");
 
+        this.content = content;
         contentPanel = new FlowPanel();
         contentPanel.add(content);
 
@@ -117,6 +122,13 @@ public class ArtaDialogBoxSimple extends PopupPanel {
         contentPanel.setStyleName(SynergyComponents.resources.cssComponents().dialogContent());
 
         setUpDragging();
+    }
+
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        //TODO remove magic numbers
+        titleLabel.setWidth((getWidth() - 50 - 12 - 8 - 10) + "px");
     }
 
     private void setUpDragging() {
@@ -165,5 +177,9 @@ public class ArtaDialogBoxSimple extends PopupPanel {
         collapseButton.setResource(ImageResources.IMPL.dialogCollapseButton());
         closeButton.setResource(ImageResources.IMPL.dialogCloseButton());
         super.show();
+    }
+
+    public int getWidth() {
+        return contentPanel.getOffsetWidth();
     }
 }

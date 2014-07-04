@@ -20,7 +20,6 @@ public class GradientLabel extends FlowPanel {
     Command callback;
 
     private InlineLabel textLabel = GWT.create(InlineLabel.class);
-    private String gradientStyle;
 
     public GradientLabel() {
         add(textLabel);
@@ -42,7 +41,17 @@ public class GradientLabel extends FlowPanel {
         textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NORMAL);
         int newHeight = textLabel.getOffsetHeight();
         textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
-        return oldHeight != newHeight;
+        return oldHeight == newHeight;
+    }
+
+    protected void adjustGradient() {
+        if (!textFits()) {
+            if (LocaleInfo.getCurrentLocale().isRTL()) {
+                insert(gradient, 0);
+            } else {
+                add(gradient);
+            }
+        }
     }
 
     @Override
@@ -51,13 +60,7 @@ public class GradientLabel extends FlowPanel {
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                if (textFits()) {
-                    if (LocaleInfo.getCurrentLocale().isRTL()) {
-                        insert(gradient, 0);
-                    } else {
-                        add(gradient);
-                    }
-                }
+                adjustGradient();
 
                 if (callback != null) {
                     callback.execute();
@@ -72,9 +75,16 @@ public class GradientLabel extends FlowPanel {
 
     public void setText(String text) {
         textLabel.setText(text);
+        adjustGradient();
     }
 
     public String getText() {
         return textLabel.getText();
+    }
+
+    @Override
+    public void setWidth(String width) {
+        super.setWidth(width);
+        adjustGradient();
     }
 }

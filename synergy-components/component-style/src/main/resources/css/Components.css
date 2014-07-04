@@ -27,6 +27,7 @@
 @def textColor3 #404040;
 @def border1 #afafaf;
 @def mainBg #373d49;
+@eval mainBg_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#373d49","0");
 
 @def approveButtonBG1 #93c5ae;
 @def approveButtonBG2 #55cc95;
@@ -150,6 +151,15 @@
     background: linear-gradient(to right,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* W3C */
 }
 
+.dialogTitle .gradient{
+    background: -moz-linear-gradient(left,  mainBg_0 0%, mainBg 50%, mainBg 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,mainBg_0), color-stop(50%,mainBg), color-stop(100%,mainBg)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left,  mainBg_0 0%,mainBg 50%,mainBg 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left,  mainBg_0 0%,mainBg 50%,mainBg 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left,  mainBg_0 0%,mainBg 50%,mainBg 100%); /* IE10+ */
+    background: linear-gradient(to right,  mainBg_0 0%,mainBg 50%,mainBg 100%); /* W3C */
+}
+
 
 .buttonSimple.over {
     background-color: whiteBG;
@@ -238,7 +248,8 @@
 .dialogTitleLabel {
     font-family: DroidSansBold, sans-serif;
     font-size:15pt;
-    padding-left: 12px;
+    margin-left: 12px;
+    padding-right: 10px;
     vertical-align: middle;
     color: whiteBG;
 

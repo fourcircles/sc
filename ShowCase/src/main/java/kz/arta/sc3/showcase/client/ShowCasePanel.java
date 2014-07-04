@@ -212,8 +212,8 @@ public class ShowCasePanel extends LayoutPanel {
         final ArtaDialogBoxSimple dialog;
         if (buttons) {
             ArtaDialogBox withButtons = new ArtaDialogBox(title, sPanel);
-            withButtons.setBackButtonVisible(backButton);
-            withButtons.setMoreButtonVisible(moreButton);
+            withButtons.setLeftButtonVisible(backButton);
+            withButtons.setRightButtonVisible(moreButton);
 
             dialog = withButtons;
         } else {
@@ -230,6 +230,8 @@ public class ShowCasePanel extends LayoutPanel {
     }
 
     private Panel setUpDialogs(boolean buttons) {
+        SimpleButton tiny = setUpDialog(116, 84, buttons, true, true);
+        tiny.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         SimpleButton small = setUpDialog(300, 300, buttons, true, true);
         small.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         SimpleButton middle = setUpDialog(400, 400, buttons, true, true);
@@ -237,6 +239,7 @@ public class ShowCasePanel extends LayoutPanel {
         SimpleButton big = setUpDialog(800, 500, buttons, true, true);
         big.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         FlowPanel panel = new FlowPanel();
+        panel.add(tiny);
         panel.add(small);
         panel.add(middle);
         panel.add(big);
@@ -244,11 +247,14 @@ public class ShowCasePanel extends LayoutPanel {
         if (buttons) {
             SimpleButton noLeft = setUpDialog(400, 400, buttons, false, true);
             noLeft.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-            SimpleButton noRight = setUpDialog(400, 400, buttons, false, true);
+            SimpleButton noRight = setUpDialog(400, 400, buttons, true, false);
             noRight.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+            SimpleButton onlySave = setUpDialog(400, 400, buttons, false, false);
+            onlySave.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
             panel.add(noLeft);
             panel.add(noRight);
+            panel.add(onlySave);
         }
 
         panel.setSize("100%", "100%");

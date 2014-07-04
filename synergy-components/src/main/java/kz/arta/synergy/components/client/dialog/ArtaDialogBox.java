@@ -1,11 +1,12 @@
 package kz.arta.synergy.components.client.dialog;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.SimpleButton;
+import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.resources.Messages;
 
 /**
@@ -15,9 +16,11 @@ import kz.arta.synergy.components.client.resources.Messages;
  */
 public class ArtaDialogBox extends ArtaDialogBoxSimple {
     /**
-     * margin слева для кнопки "назад" и справа для кнопки "еще"
+     * margin слева для навигационных кнопок
      */
     private static final int HORIZONTAL_BUTTON_MARGIN = 20;
+
+    private static final int MIN_INNER_MARGIN = 20;
 
     /**
      * панель для кнопок
@@ -27,12 +30,12 @@ public class ArtaDialogBox extends ArtaDialogBoxSimple {
     /**
      * margin кнопки "сохранить", когда кнопки по бокам видны
      */
-    private Integer saveButtonBaseMargin;
+    private double saveButtonBaseMargin;
 
     /**
      * кнопка "назад"
      */
-    private SimpleButton backButton;
+    private SimpleButton leftButton;
 
     /**
      * кнопка сохранить
@@ -42,111 +45,120 @@ public class ArtaDialogBox extends ArtaDialogBoxSimple {
     /**
      * кнопка "еще"
      */
-    private SimpleButton moreButton;
+    private SimpleButton rightButton;
 
-    private boolean isBackButtonVisible;
-    private boolean isMoreButtonVisible;
-
-    private Integer backButtonOffsetWidth;
-    private Integer moreButtonOffsetWidth;
-
-    /**
-     * количество кнопок, ширина которых уже определена
-     */
-    private int setButtonsCnt = 0;
+    private boolean isLeftButtonVisible;
+    private boolean isRightButtonVisible;
+    //TODO we prob don't need it
+    private boolean isLoaded = false;
 
     public ArtaDialogBox(String title, Widget content) {
         super(title, content);
         buttonsPanel = new FlowPanel();
         panel.add(buttonsPanel);
 
-        backButton = new SimpleButton(Messages.i18n.tr("Назад"));
-        backButton.getElement().getStyle().setFloat(Style.Float.LEFT);
+        leftButton = new SimpleButton(Messages.i18n.tr("Назад"), ImageResources.IMPL.back(), ButtonBase.IconPosition.LEFT);
+        leftButton.getElement().getStyle().setFloat(Style.Float.LEFT);
         saveButton = new SimpleButton(Messages.i18n.tr("Сохранить"));
-        moreButton = new SimpleButton(Messages.i18n.tr("Еще"));
-        moreButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
+        rightButton = new SimpleButton(Messages.i18n.tr("Еще"), ImageResources.IMPL.forward(), ButtonBase.IconPosition.RIGHT);
+        rightButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
-        buttonsPanel.add(backButton);
+        buttonsPanel.add(leftButton);
         buttonsPanel.add(saveButton);
-        buttonsPanel.add(moreButton);
+        buttonsPanel.add(rightButton);
 
-        backButton.addStyleName(SynergyComponents.resources.cssComponents().dialogButton());
+        leftButton.addStyleName(SynergyComponents.resources.cssComponents().dialogButton());
         saveButton.addStyleName(SynergyComponents.resources.cssComponents().dialogButton());
         saveButton.addStyleName(SynergyComponents.resources.cssComponents().approveButton());
-        moreButton.addStyleName(SynergyComponents.resources.cssComponents().dialogButton());
+        rightButton.addStyleName(SynergyComponents.resources.cssComponents().dialogButton());
 
-        backButton.addStyleName(SynergyComponents.resources.cssComponents().dialogBackButton());
-        moreButton.addStyleName(SynergyComponents.resources.cssComponents().dialogMoreButton());
+        leftButton.addStyleName(SynergyComponents.resources.cssComponents().dialogBackButton());
+        rightButton.addStyleName(SynergyComponents.resources.cssComponents().dialogMoreButton());
 
         addStyleName(SynergyComponents.resources.cssComponents().dialogWithButtons());
 
-        backButton.setVisible(true);
-        moreButton.setVisible(true);
+        leftButton.setVisible(true);
+        rightButton.setVisible(true);
 
-        Command widthCallback = new Command() {
-            @Override
-            public void execute() {
-                setUpWidthsAndMargins();
+    }
+
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        isLoaded = true;
+        adjustMargins();
+    }
+
+    private void adjustMargins() {
+        //2 extra pixels for border
+        saveButtonBaseMargin = ((double) getOffsetWidth() - saveButton.getOffsetWidth() - getBorderWidth() * 2) / 2;
+        adjustSaveButtonLeftMargin();
+        adjustSaveButtonRightMargin();
+    }
+
+    private void adjustWidth() {
+        int minLeft = (isLeftButtonVisible ? leftButton.getOffsetWidth() + HORIZONTAL_BUTTON_MARGIN: 0) + HORIZONTAL_BUTTON_MARGIN;
+        int minRight = (isRightButtonVisible ? rightButton.getOffsetWidth() + HORIZONTAL_BUTTON_MARGIN : 0) + HORIZONTAL_BUTTON_MARGIN;
+
+        int minSaveButtonBaseMargin = Math.max(minLeft, minRight);
+        int minButtonsPanelWidth = minSaveButtonBaseMargin * 2 + saveButton.getOffsetWidth();
+
+        setWidth(minButtonsPanelWidth + "px");
+        adjustMargins();
+    }
+
+    public boolean isLeftButtonVisible() {
+        return isLeftButtonVisible;
+    }
+
+    public boolean isRightButtonVisible() {
+        return isRightButtonVisible;
+    }
+
+    private void adjustSaveButtonLeftMargin() {
+        if (isLeftButtonVisible) {
+            double newLeftMargin = saveButtonBaseMargin - leftButton.getOffsetWidth() - HORIZONTAL_BUTTON_MARGIN;
+            if (newLeftMargin < MIN_INNER_MARGIN) {
+                adjustWidth();
+                return;
             }
-        };
-
-        backButton.setSizeCallback(widthCallback);
-        moreButton.setSizeCallback(widthCallback);
-        saveButton.setSizeCallback(widthCallback);
-    }
-
-    /**
-     * запоминаем ширину всех кнопок, для последующей установки margins
-     */
-    private void setUpWidthsAndMargins() {
-        setButtonsCnt++;
-        if (setButtonsCnt == 3) {
-            backButtonOffsetWidth = backButton.getOffsetWidth();
-            moreButtonOffsetWidth = moreButton.getOffsetWidth();
-            saveButtonBaseMargin = (titlePanel.getOffsetWidth() - saveButton.getOffsetWidth() -
-                    backButtonOffsetWidth - moreButtonOffsetWidth - HORIZONTAL_BUTTON_MARGIN * 2) / 2;
-            setBackButtonVisible(isBackButtonVisible);
-            setMoreButtonVisible(isMoreButtonVisible);
-        }
-    }
-
-    public boolean isBackButtonVisible() {
-        return isBackButtonVisible;
-    }
-
-    public boolean isMoreButtonVisible() {
-        return isMoreButtonVisible;
-    }
-
-    private void adjustSaveButtonLeftMargin(boolean isBackButtonVisible) {
-        if (isBackButtonVisible) {
+            saveButton.getElement().getStyle().setMarginLeft(newLeftMargin, Style.Unit.PX);
+        } else {
             saveButton.getElement().getStyle().setMarginLeft(saveButtonBaseMargin, Style.Unit.PX);
-        } else {
-            saveButton.getElement().getStyle().setMarginLeft(saveButtonBaseMargin + backButtonOffsetWidth + HORIZONTAL_BUTTON_MARGIN, Style.Unit.PX);
         }
     }
 
-    private void adjustSaveButtonRightMargin(boolean isMoreButtonVisible) {
-        if (isMoreButtonVisible) {
+    private void adjustSaveButtonRightMargin() {
+        if (isRightButtonVisible) {
+            double newRightMargin = saveButtonBaseMargin - rightButton.getOffsetWidth() - HORIZONTAL_BUTTON_MARGIN;
+            if (newRightMargin < MIN_INNER_MARGIN) {
+                adjustWidth();
+                return;
+            }
+            saveButton.getElement().getStyle().setMarginRight(newRightMargin, Style.Unit.PX);
+        } else {
             saveButton.getElement().getStyle().setMarginRight(saveButtonBaseMargin, Style.Unit.PX);
-        } else {
-            saveButton.getElement().getStyle().setMarginRight(saveButtonBaseMargin + moreButtonOffsetWidth + HORIZONTAL_BUTTON_MARGIN, Style.Unit.PX);
         }
     }
 
-    public void setBackButtonVisible(boolean isBackButtonVisible) {
-        this.isBackButtonVisible = isBackButtonVisible;
-        if (isAttached()) {
-            backButton.setVisible(isBackButtonVisible);
-            adjustSaveButtonLeftMargin(isBackButtonVisible);
+    public void setLeftButtonVisible(boolean isBackButtonVisible) {
+        this.isLeftButtonVisible = isBackButtonVisible;
+        leftButton.setVisible(isBackButtonVisible);
+        if (isLoaded) {
+            adjustSaveButtonLeftMargin();
         }
     }
 
-    public void setMoreButtonVisible(boolean isMoreButtonVisible) {
-        this.isMoreButtonVisible = isMoreButtonVisible;
-        if (isAttached()) {
-            moreButton.setVisible(isMoreButtonVisible);
-            adjustSaveButtonRightMargin(isMoreButtonVisible);
+    public void setRightButtonVisible(boolean isMoreButtonVisible) {
+        this.isRightButtonVisible = isMoreButtonVisible;
+        rightButton.setVisible(isMoreButtonVisible);
+        if (isLoaded) {
+            adjustSaveButtonRightMargin();
         }
+    }
+
+    //TODO
+    protected int getBorderWidth() {
+        return 1;
     }
 }

@@ -15,7 +15,7 @@ import kz.arta.synergy.components.style.client.Constants;
  * Date: 01.07.14
  * Time: 11:38
  */
-public class ArtaDialogBox extends ArtaDialogBoxSimple {
+public class Dialog extends DialogSimple {
     /**
      * margin слева для навигационных кнопок
      */
@@ -51,7 +51,7 @@ public class ArtaDialogBox extends ArtaDialogBoxSimple {
     private boolean isLeftButtonVisible;
     private boolean isRightButtonVisible;
 
-    public ArtaDialogBox(String title, Widget content) {
+    public Dialog(String title, Widget content) {
         super(title, content);
         buttonsPanel = new FlowPanel();
         panel.add(buttonsPanel);

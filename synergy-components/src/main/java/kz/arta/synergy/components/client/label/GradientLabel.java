@@ -23,6 +23,7 @@ public class GradientLabel extends FlowPanel {
 
     public GradientLabel() {
         add(textLabel);
+        getElement().getStyle().setProperty("wordWrap", "break-word");
         getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
 
@@ -37,6 +38,7 @@ public class GradientLabel extends FlowPanel {
     }
 
     protected boolean textFits() {
+        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
         int oldHeight = textLabel.getOffsetHeight();
         textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NORMAL);
         int newHeight = textLabel.getOffsetHeight();

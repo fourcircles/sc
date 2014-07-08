@@ -12,10 +12,12 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
-import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.button.ButtonBase;
-import kz.arta.synergy.components.client.dialog.ArtaDialogBox;
-import kz.arta.synergy.components.client.dialog.ArtaDialogBoxSimple;
+import kz.arta.synergy.components.client.button.ImageButton;
+import kz.arta.synergy.components.client.button.SimpleButton;
+import kz.arta.synergy.components.client.button.TextColorButton;
+import kz.arta.synergy.components.client.dialog.Dialog;
+import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.theme.Theme;
 
 import java.util.ArrayList;
@@ -213,6 +215,19 @@ public class ShowCasePanel extends LayoutPanel {
         addLeaf(where, new TreeItem(new Label(displayText)), contentWidget);
     }
 
+    private SimpleButton setUpDialog(String title, final DialogSimple dialog) {
+        dialog.setText(title);
+        SimpleButton button = new SimpleButton(title);
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                dialog.center();
+                dialog.show();
+            }
+        });
+        return button;
+    }
+
     private SimpleButton setUpDialog(int width, int height, boolean buttons, boolean backButton, boolean moreButton) {
         String title = SCMessages.i18n.tr("Размер") + ": " + width + "x" + height;
         SimpleButton button = new SimpleButton(title);
@@ -223,15 +238,17 @@ public class ShowCasePanel extends LayoutPanel {
         sPanel.setSize(width + "px", height + "px");
         sPanel.getElement().getStyle().setBackgroundColor("pink");
 
-        final ArtaDialogBoxSimple dialog;
+        final DialogSimple dialog;
         if (buttons) {
-            ArtaDialogBox withButtons = new ArtaDialogBox(title, sPanel);
+            Dialog withButtons = new Dialog(title, sPanel);
             withButtons.setLeftButtonVisible(backButton);
             withButtons.setRightButtonVisible(moreButton);
 
             dialog = withButtons;
         } else {
-            dialog = new ArtaDialogBoxSimple(title, sPanel);
+            dialog = new DialogSimple();
+            dialog.setText(title);
+            dialog.setContent(sPanel);
         }
         button.addClickHandler(new ClickHandler() {
             @Override
@@ -244,6 +261,7 @@ public class ShowCasePanel extends LayoutPanel {
     }
 
     private Panel setUpDialogs(boolean buttons) {
+        SimpleButton empty = setUpDialog(SCMessages.i18n.tr("Пустой"), new DialogSimple());
         SimpleButton tiny = setUpDialog(116, 84, buttons, true, true);
         tiny.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         SimpleButton small = setUpDialog(300, 300, buttons, true, true);
@@ -253,6 +271,7 @@ public class ShowCasePanel extends LayoutPanel {
         SimpleButton big = setUpDialog(800, 500, buttons, true, true);
         big.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         FlowPanel panel = new FlowPanel();
+        panel.add(empty);
         panel.add(tiny);
         panel.add(small);
         panel.add(middle);

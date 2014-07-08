@@ -266,10 +266,11 @@
 }
 
 @eval dialogBorderWidth kz.arta.synergy.components.style.client.Constants.dialogBorderWidth();
+@eval dialogMinWidth kz.arta.synergy.components.style.client.Constants.dialogMinWidth();
 
 .dialog {
     background: whiteBG;
-    min-width: 116px;
+    min-width: dialogMinWidth;
     min-height: 84px;
 
     border: dialogBorderWidth solid border1;

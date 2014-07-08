@@ -11,6 +11,7 @@ public class Constants {
     public static final int BUTTON_APPROVE_MIN_WIDTH = 150;
     public static final int BUTTON_PADDING = 10;
 
+    public static final int DIALOG_MIN_WIDTH = 116;
     public static final int DIALOG_TITLE_HEIGHT = 32;
     public static final int DIALOG_CONTENT_PADDING = 8;
     public static final int DIALOG_NAV_BUTTON_HMARGIN = 20;
@@ -77,5 +78,8 @@ public class Constants {
     }
     public static String dialogContentPadding() {
         return DIALOG_CONTENT_PADDING + "px";
+    }
+    public static String dialogMinWidth() {
+        return DIALOG_MIN_WIDTH + "px";
     }
 }

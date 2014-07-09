@@ -29,9 +29,9 @@ public interface ImageResources extends ClientBundle {
     @Source("images/dialog/d_collapse_mouseover.png")
     ImageResource dialogCollapseButtonOver();
 
-    @Source("images/buttons/forward.png")
-    ImageResource forward();
+    @Source("images/buttons/navigation_right.png")
+    ImageResource navigation_right();
 
-    @Source("images/buttons/back.png")
-    ImageResource back();
+    @Source("images/buttons/navigation_left.png")
+    ImageResource navigation_left();
 }

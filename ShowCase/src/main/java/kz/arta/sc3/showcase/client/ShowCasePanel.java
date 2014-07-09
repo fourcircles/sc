@@ -262,6 +262,7 @@ public class ShowCasePanel extends LayoutPanel {
 
     private Panel setUpDialogs(boolean buttons) {
         SimpleButton empty = setUpDialog(SCMessages.i18n.tr("Пустой"), new DialogSimple());
+        empty.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         SimpleButton tiny = setUpDialog(116, 84, buttons, true, true);
         tiny.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         SimpleButton small = setUpDialog(300, 300, buttons, true, true);

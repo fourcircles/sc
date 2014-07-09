@@ -66,7 +66,8 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         textLabel.addStyleName(SynergyComponents.resources.cssComponents().buttonText());
 
         if (iconResource != null) {
-            icon = new Image(iconResource.getSafeUri());
+            icon = GWT.create(Image.class);
+            icon.setUrl(iconResource.getSafeUri());
             icon.addDragStartHandler(new DragStartHandler() {
                 @Override
                 public void onDragStart(DragStartEvent event) {

@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.dialog;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -14,6 +15,7 @@ import kz.arta.synergy.components.style.client.Constants;
  * User: vsl
  * Date: 01.07.14
  * Time: 11:38
+ * Диалог с кнопкой "сохранить" и кнопками навигации.
  */
 public class Dialog extends DialogSimple {
     /**
@@ -48,18 +50,15 @@ public class Dialog extends DialogSimple {
      */
     private SimpleButton rightButton;
 
-    private boolean isLeftButtonVisible;
-    private boolean isRightButtonVisible;
-
-    public Dialog(String title, Widget content) {
-        super(title, content);
+    public Dialog() {
+        super();
         buttonsPanel = new FlowPanel();
         panel.add(buttonsPanel);
 
-        leftButton = new SimpleButton(Messages.i18n.tr("Назад"), ImageResources.IMPL.back(), ButtonBase.IconPosition.LEFT);
+        leftButton = makeButton(Messages.i18n.tr("Назад"), ImageResources.IMPL.back(), ButtonBase.IconPosition.LEFT);
         leftButton.getElement().getStyle().setFloat(Style.Float.LEFT);
-        saveButton = new SimpleButton(Messages.i18n.tr("Сохранить"));
-        rightButton = new SimpleButton(Messages.i18n.tr("Еще"), ImageResources.IMPL.forward(), ButtonBase.IconPosition.RIGHT);
+        saveButton = makeButton(Messages.i18n.tr("Сохранить"));
+        rightButton = makeButton(Messages.i18n.tr("Еще"), ImageResources.IMPL.forward(), ButtonBase.IconPosition.RIGHT);
         rightButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
         buttonsPanel.add(leftButton);
@@ -78,80 +77,92 @@ public class Dialog extends DialogSimple {
 
         leftButton.setVisible(true);
         rightButton.setVisible(true);
+    }
 
+    SimpleButton makeButton(String title) {
+        return new SimpleButton(title);
+    }
+
+    SimpleButton makeButton(String title, ImageResource img, ButtonBase.IconPosition position) {
+        return new SimpleButton(title, img, position);
+    }
+
+    public Dialog(String title, Widget content) {
+        this();
+        setText(title);
+        setContent(content);
     }
 
     @Override
     protected void onLoad() {
         super.onLoad();
-        adjustMargins();
+        adjustSaveButtonMargin();
     }
 
-    private void adjustMargins() {
-        //2 extra pixels for border
-        saveButtonBaseMargin = ((double) getOffsetWidth() - saveButton.getOffsetWidth() - Constants.DIALOG_BORDER_WIDTH * 2) / 2;
-        adjustSaveButtonLeftMargin();
-        adjustSaveButtonRightMargin();
-    }
-
-    private void adjustWidth() {
-        int minLeft = (isLeftButtonVisible ? leftButton.getOffsetWidth() + HORIZONTAL_BUTTON_MARGIN: 0) + HORIZONTAL_BUTTON_MARGIN;
-        int minRight = (isRightButtonVisible ? rightButton.getOffsetWidth() + HORIZONTAL_BUTTON_MARGIN : 0) + HORIZONTAL_BUTTON_MARGIN;
+    /**
+     * Метод вычисляет минимальную возможную ширину при которой могут выполняться следующие два условия:
+     * 1. Кнопка "сохранить" должна быть равноудалена от левой и правой границы диалога.
+     * 2. Минимальное расстояние между кнопкой навигации и кнопкой "сохранить" = {@value #MIN_INNER_MARGIN}
+     */
+    protected int getMinWidth() {
+        int minLeft = (leftButton.isVisible() ? leftButton.getOffsetWidth() + HORIZONTAL_BUTTON_MARGIN: 0) + HORIZONTAL_BUTTON_MARGIN;
+        int minRight = (rightButton.isVisible() ? rightButton.getOffsetWidth() + HORIZONTAL_BUTTON_MARGIN : 0) + HORIZONTAL_BUTTON_MARGIN;
 
         int minSaveButtonBaseMargin = Math.max(minLeft, minRight);
         int minButtonsPanelWidth = minSaveButtonBaseMargin * 2 + saveButton.getOffsetWidth();
 
-        setWidth(minButtonsPanelWidth + "px");
-        adjustMargins();
+        return minButtonsPanelWidth;
     }
 
-    public boolean isLeftButtonVisible() {
-        return isLeftButtonVisible;
-    }
-
-    public boolean isRightButtonVisible() {
-        return isRightButtonVisible;
-    }
-
-    private void adjustSaveButtonLeftMargin() {
-        if (isLeftButtonVisible) {
-            double newLeftMargin = saveButtonBaseMargin - leftButton.getOffsetWidth() - HORIZONTAL_BUTTON_MARGIN;
-            if (newLeftMargin < MIN_INNER_MARGIN) {
-                adjustWidth();
-                return;
-            }
-            saveButton.getElement().getStyle().setMarginLeft(newLeftMargin, Style.Unit.PX);
+    /**
+     * Вычисляется величина соответствующего margin'а для кнопки "сохранить",
+     * чтобы она оставалась в середине диалога.
+     * @param navButton кнопка навигации
+     * @return величина margin'а
+     */
+    protected double getSaveButtonMargin(SimpleButton navButton) {
+        if (navButton.isVisible()) {
+            return saveButtonBaseMargin - navButton.getOffsetWidth() - HORIZONTAL_BUTTON_MARGIN;
         } else {
-            saveButton.getElement().getStyle().setMarginLeft(saveButtonBaseMargin, Style.Unit.PX);
+            return saveButtonBaseMargin;
         }
     }
 
-    private void adjustSaveButtonRightMargin() {
-        if (isRightButtonVisible) {
-            double newRightMargin = saveButtonBaseMargin - rightButton.getOffsetWidth() - HORIZONTAL_BUTTON_MARGIN;
-            if (newRightMargin < MIN_INNER_MARGIN) {
-                adjustWidth();
-                return;
-            }
-            saveButton.getElement().getStyle().setMarginRight(newRightMargin, Style.Unit.PX);
-        } else {
-            saveButton.getElement().getStyle().setMarginRight(saveButtonBaseMargin, Style.Unit.PX);
+    /**
+     * Изменяет значения левого и правого отступов для кнопки "сохранить", чтобы она оставалась в середине
+     * вне зависимости от отображения и ширины кнопок навигации. При необходимости ширина диалога изменяется
+     * на минимальную удовлетворяющую требованиям.
+     */
+    protected void adjustSaveButtonMargin() {
+        if (!isAttached()) {
+            return;
         }
+
+        saveButtonBaseMargin = ((double) getOffsetWidth() -
+                saveButton.getOffsetWidth() -
+                Constants.DIALOG_BORDER_WIDTH * 2) / 2;
+
+        double leftMargin = getSaveButtonMargin(leftButton);
+        double rightMargin = getSaveButtonMargin(rightButton);
+
+        if (leftMargin < MIN_INNER_MARGIN || rightMargin < MIN_INNER_MARGIN) {
+            //в случае когда ширины диалога не хватает, ширина устанавливается минимальная возможная
+            setWidth(getMinWidth() + "px");
+            leftMargin = MIN_INNER_MARGIN;
+            rightMargin = MIN_INNER_MARGIN;
+        }
+
+        saveButton.getElement().getStyle().setMarginLeft(leftMargin, Style.Unit.PX);
+        saveButton.getElement().getStyle().setMarginRight(rightMargin, Style.Unit.PX);
     }
 
-    public void setLeftButtonVisible(boolean isBackButtonVisible) {
-        this.isLeftButtonVisible = isBackButtonVisible;
-        leftButton.setVisible(isBackButtonVisible);
-        if (isAttached()) {
-            adjustSaveButtonLeftMargin();
-        }
+    public void setLeftButtonVisible(boolean visible) {
+        leftButton.setVisible(visible);
+        adjustSaveButtonMargin();
     }
 
-    public void setRightButtonVisible(boolean isMoreButtonVisible) {
-        this.isRightButtonVisible = isMoreButtonVisible;
-        rightButton.setVisible(isMoreButtonVisible);
-        if (isAttached()) {
-            adjustSaveButtonRightMargin();
-        }
+    public void setRightButtonVisible(boolean visible) {
+        rightButton.setVisible(visible);
+        adjustSaveButtonMargin();
     }
 }

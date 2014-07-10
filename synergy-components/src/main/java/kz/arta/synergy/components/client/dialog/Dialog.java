@@ -55,10 +55,10 @@ public class Dialog extends DialogSimple {
         buttonsPanel = new FlowPanel();
         panel.add(buttonsPanel);
 
-        leftButton = makeButton(Messages.i18n.tr("Назад"), ImageResources.IMPL.navigation_left(), ButtonBase.IconPosition.LEFT);
+        leftButton = makeButton(Messages.i18n.tr("Назад"), ImageResources.IMPL.navigationLeft(), ButtonBase.IconPosition.LEFT);
         leftButton.getElement().getStyle().setFloat(Style.Float.LEFT);
         saveButton = makeButton(Messages.i18n.tr("Сохранить"));
-        rightButton = makeButton(Messages.i18n.tr("Еще"), ImageResources.IMPL.navigation_right(), ButtonBase.IconPosition.RIGHT);
+        rightButton = makeButton(Messages.i18n.tr("Еще"), ImageResources.IMPL.navigationRight(), ButtonBase.IconPosition.RIGHT);
         rightButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
         buttonsPanel.add(leftButton);

@@ -80,4 +80,14 @@ public interface CssComponents extends CssResource {
     String whiteBG();
 
     String gradient();
+
+    String contextMenuButton();
+
+    String contextMenuItem();
+
+    String contextMenu();
+
+    String contextMenuRow();
+
+    String green();
 }

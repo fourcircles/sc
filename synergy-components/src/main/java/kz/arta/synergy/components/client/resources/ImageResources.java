@@ -30,8 +30,14 @@ public interface ImageResources extends ClientBundle {
     ImageResource dialogCollapseButtonOver();
 
     @Source("images/buttons/navigation_right.png")
-    ImageResource navigation_right();
+    ImageResource navigationRight();
 
     @Source("images/buttons/navigation_left.png")
-    ImageResource navigation_left();
+    ImageResource navigationLeft();
+
+    @Source("images/buttons/white_button_dropdown_icon.png")
+    ImageResource whiteButtonDropdown();
+
+    @Source("images/buttons/green_button_dropdown_icon.png")
+    ImageResource greenButtonDropdown();
 }

@@ -8,16 +8,20 @@ import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.synergy.components.client.ContextMenu;
 import kz.arta.synergy.components.client.button.ButtonBase;
+import kz.arta.synergy.components.client.button.ContextMenuButton;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.button.SimpleButton;
-import kz.arta.synergy.components.client.button.TextColorButton;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
+import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.theme.Theme;
 
 import java.util.ArrayList;
@@ -168,7 +172,7 @@ public class ShowCasePanel extends LayoutPanel {
         tree.addMouseUpHandler(new MouseUpHandler() {
             @Override
             public void onMouseUp(MouseUpEvent event) {
-                if (selectedItem.getUserObject() != null) {
+                if (selectedItem != null && selectedItem.getUserObject() != null) {
                     ShowComponent component = (ShowComponent) selectedItem.getUserObject();
                     showTab(component);
                 }
@@ -296,6 +300,14 @@ public class ShowCasePanel extends LayoutPanel {
         return panel;
     }
 
+    private static class FlowPanel_ extends FlowPanel {
+        public FlowPanel_() {
+            super();
+            sinkEvents(Event.ONCONTEXTMENU);
+//            sinkEvents(Event.ONMOUSEDOWN);
+        }
+    }
+
     private void treeSetUp() {
         tree = new Tree();
 
@@ -304,7 +316,21 @@ public class ShowCasePanel extends LayoutPanel {
 
         int cnt = 0;
 
-        FlowPanel simpleButtonPanel = new FlowPanel();
+        final ContextMenu menu = createSimpleMenu();
+
+        FlowPanel simpleButtonPanel = new FlowPanel_() {
+            @Override
+            public void onBrowserEvent(Event event) {
+                switch(DOM.eventGetType(event)) {
+                    case Event.ONCONTEXTMENU :
+                        event.preventDefault();
+                        menu.setPopupPosition(event.getClientX(), event.getClientY());
+                        menu.show();
+                        break;
+                }
+                super.onBrowserEvent(event);
+            }
+        };
 
         SimpleButton simpleButton = new SimpleButton(SCMessages.i18n.tr("Простая кнопка"));
         simpleButton.setWidth("140px");
@@ -318,7 +344,7 @@ public class ShowCasePanel extends LayoutPanel {
         simpleButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton1);
 
-        SimpleButton simpleButton2 = new SimpleButton("Кнопка с кликом");
+        SimpleButton simpleButton2 = new SimpleButton(SCMessages.i18n.tr("Кнопка с кликом"));
         simpleButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         simpleButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton2);
@@ -328,6 +354,14 @@ public class ShowCasePanel extends LayoutPanel {
                 Window.alert(SCMessages.i18n.tr("Кнопка была нажата!"));
             }
         });
+
+        ContextMenu menuForSimple = createSimpleMenu();
+        ContextMenuButton simpleButton4 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"));
+        simpleButton4.setWidth("140px");
+        simpleButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        simpleButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        simpleButtonPanel.add(simpleButton4);
+        simpleButton4.setContextMenu(menuForSimple);
 
         new ShowComponent(this, category1, SCMessages.i18n.tr("Простая кнопка"), SCMessages.i18n.tr("Простая кнопка"), simpleButtonPanel);
 
@@ -367,48 +401,71 @@ public class ShowCasePanel extends LayoutPanel {
         iconButton5.setEnabled(false);
         iconButtonPanel.add(iconButton5);
 
+        ContextMenu menu2 = createSimpleMenu();
+        ContextMenuButton iconButton6 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SCImageResources.IMPL.zoom());
+        iconButton6.setWidth("150px");
+        iconButtonPanel.add(iconButton6);
+        iconButton6.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton6.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        iconButton6.setContextMenu(menu2);
+
+        ContextMenu menu4 = createSimpleMenu();
+        ContextMenuButton iconButton7 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SCImageResources.IMPL.zoom(), ButtonBase.IconPosition.RIGHT);
+        iconButton7.setWidth("150px");
+        iconButtonPanel.add(iconButton7);
+        iconButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        iconButton7.setContextMenu(menu4);
+
         new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопка с иконкой"), SCMessages.i18n.tr("Кнопка с иконкой"), iconButtonPanel);
 
         FlowPanel colorButtonPanel = new FlowPanel();
 
-        TextColorButton colorButton = new TextColorButton(SCMessages.i18n.tr("Создать"), TextColorButton.APPROVE_BUTTON);
+        SimpleButton colorButton = new SimpleButton((SCMessages.i18n.tr("Создать")), SimpleButton.Type.APPROVE);
         colorButtonPanel.add(colorButton);
         colorButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         colorButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
-        TextColorButton colorButton1 = new TextColorButton(SCMessages.i18n.tr("Удалить"), TextColorButton.DECLINE_BUTTON);
+        SimpleButton colorButton1 = new SimpleButton(SCMessages.i18n.tr("Удалить"), SimpleButton.Type.DECLINE);
         colorButtonPanel.add(colorButton1);
         colorButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         colorButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
-        TextColorButton colorButton2 = new TextColorButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), TextColorButton.DECLINE_BUTTON);
+        SimpleButton colorButton2 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SimpleButton.Type.DECLINE);
         colorButtonPanel.add(colorButton2);
         colorButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         colorButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
-        TextColorButton colorButton3 = new TextColorButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), TextColorButton.DECLINE_BUTTON);
+        SimpleButton colorButton3 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SimpleButton.Type.DECLINE);
         colorButton3.setWidth("100px");
         colorButtonPanel.add(colorButton3);
         colorButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         colorButton3.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
-        TextColorButton colorButton4 = new TextColorButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), TextColorButton.APPROVE_BUTTON);
+        SimpleButton colorButton4 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SimpleButton.Type.APPROVE);
         colorButton4.setWidth("100px");
         colorButtonPanel.add(colorButton4);
         colorButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         colorButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
-        TextColorButton colorButton5 = new TextColorButton(SCMessages.i18n.tr("Кнопка неактивная"), TextColorButton.APPROVE_BUTTON);
+        SimpleButton colorButton5 = new SimpleButton(SCMessages.i18n.tr("Кнопка неактивная"), SimpleButton.Type.APPROVE);
         colorButton5.setEnabled(false);
         colorButtonPanel.add(colorButton5);
         colorButton5.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         colorButton5.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
-        TextColorButton colorButton6 = new TextColorButton(SCMessages.i18n.tr("Кнопка неактивная"), TextColorButton.DECLINE_BUTTON);
+        SimpleButton colorButton6 = new SimpleButton(SCMessages.i18n.tr("Кнопка неактивная"), SimpleButton.Type.DECLINE);
         colorButton6.setEnabled(false);
         colorButtonPanel.add(colorButton6);
         colorButton6.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         colorButton6.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+        ContextMenuButton colorButton7 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SimpleButton.Type.APPROVE);
+        colorButtonPanel.add(colorButton7);
+        colorButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        ContextMenu menu3 = createSimpleMenu();
+        colorButton7.setContextMenu(menu3);
 
         new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), colorButtonPanel);
 
@@ -416,6 +473,14 @@ public class ShowCasePanel extends LayoutPanel {
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));
         cnt++;
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог с кнопками"), SCMessages.i18n.tr("Диалог с кнопками"), setUpDialogs(true));
+    }
+
+    private ContextMenu createSimpleMenu() {
+        ContextMenu menu = new ContextMenu();
+        menu.addItem("Zoom", ImageResources.IMPL.zoom(), null);
+        menu.addItem("Left", ImageResources.IMPL.navigationLeft(), null);
+        menu.addItem("Right", ImageResources.IMPL.navigationRight(), null);
+        return menu;
     }
 
     private void addAllThemes() {

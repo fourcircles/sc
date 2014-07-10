@@ -46,13 +46,16 @@
 @def declineButtonBG4 #b05253;
 @eval declineButtonBG4_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#b05253","0");
 
+@def stackPanelText2 #808080;
+@def selectColor #deefff;
+@def tabBg2 #f9f9f9;
+
 @eval buttonHeight kz.arta.synergy.components.style.client.Constants.buttonHeight();
-.buttonSimple, .approveButton, .declineButton {
+.buttonSimple, .approveButton, .declineButton, .contextMenuButton {
     height: buttonHeight;
     line-height: buttonHeight;
     min-width: 32px;
-    border-width: 1px;
-    border-style: solid;
+    border: 1px solid;
     border-radius: 4px;
     overflow: hidden;
     cursor: default;
@@ -69,7 +72,7 @@
 }
 
 .buttonText {
-    vertical-align: middle;
+    vertical-align: top;
     white-space:nowrap;
     text-align: center;
 }
@@ -312,3 +315,54 @@
 .dialogMoreButton {
     margin-right: dialogButtonMargin;
 }
+
+.contextMenuButton {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border: 0px;
+    background-color: buttonBG;
+}
+
+.approveButton .contextMenuButton {
+    background-color: approveButtonBG4;
+}
+
+.contextMenuItem {
+    display: block;
+    border: 0px;
+    border-bottom: 1px tabBg2 solid;
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 32px;
+    line-height: 32px;
+}
+
+.contextMenuRow {
+    display: block;
+    border: 0px;
+    height: 32px;
+    line-height: 32px;
+}
+.contextMenuRow.over {
+    background-color: selectColor;
+}
+.green .contextMenuRow.over{
+    background-color: approveButtonBG2;
+}
+
+.contextMenu {
+    font-family: DroidSansBold, sans-serif ;
+    font-size:13pt;
+
+    min-width: 100px;
+    min-height: 32px;
+    border: 1px solid buttonBorder;
+    background-color: whiteBG;
+    color: stackPanelText2;
+    vertical-align: middle;
+}
+
+.contextMenu.green {
+    background-color: approveButtonBG4;
+}
+

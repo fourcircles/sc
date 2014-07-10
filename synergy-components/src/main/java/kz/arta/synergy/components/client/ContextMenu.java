@@ -109,7 +109,7 @@ public class ContextMenu extends PopupPanel {
             getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - 8 + "px");
 
             int x = relativeWidget.getAbsoluteLeft() + 4;
-            int y = relativeWidget.getAbsoluteTop() + relativeWidget.getOffsetHeight() + 1;
+            int y = relativeWidget.getAbsoluteTop() + relativeWidget.getOffsetHeight();
             setPopupPosition(x, y);
         } else {
             getElement().getStyle().setProperty("minWidth", "");
@@ -118,29 +118,25 @@ public class ContextMenu extends PopupPanel {
     }
 
     private static class ContextMenuItem implements IsWidget{
-        private static final FlowPanel SEPARATOR = new FlowPanel();
-        private static ContextMenuItem separator;
-
         private String text;
         private Command command;
         private ImageResource imageResource;
 
-        private FlowPanel itemPanel;
+        protected FlowPanel itemPanel;
 
         public static ContextMenuItem getSeparator() {
-            if (separator == null) {
-                separator = new ContextMenuItem() {
-                    @Override
-                    public Widget asWidget() {
-                        return SEPARATOR;
-                    }
-                };
-            }
-            return separator;
+            FlowPanel separatorPanel = new FlowPanel();
+            separatorPanel.setStyleName(SynergyComponents.resources.cssComponents().menuSeparator());
+            return new ContextMenuItem(separatorPanel) {
+                @Override
+                public Widget asWidget() {
+                    return this.itemPanel;
+                }
+            };
         }
 
-        private ContextMenuItem() {
-            SEPARATOR.setStyleName(SynergyComponents.resources.cssComponents().menuSeparator());
+        private ContextMenuItem(FlowPanel itemPanel) {
+            this.itemPanel = itemPanel;
         }
 
         public ContextMenuItem(String text, Command command) {

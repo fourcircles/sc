@@ -304,7 +304,6 @@ public class ShowCasePanel extends LayoutPanel {
         public FlowPanel_() {
             super();
             sinkEvents(Event.ONCONTEXTMENU);
-//            sinkEvents(Event.ONMOUSEDOWN);
         }
     }
 
@@ -324,8 +323,7 @@ public class ShowCasePanel extends LayoutPanel {
                 switch(DOM.eventGetType(event)) {
                     case Event.ONCONTEXTMENU :
                         event.preventDefault();
-                        menu.setPopupPosition(event.getClientX(), event.getClientY());
-                        menu.show();
+                        menu.smartShow(event.getClientX(), event.getClientY());
                         break;
                 }
                 super.onBrowserEvent(event);

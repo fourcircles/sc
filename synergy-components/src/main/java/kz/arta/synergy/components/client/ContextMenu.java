@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.util.Selection;
 
@@ -87,6 +88,21 @@ public class ContextMenu extends PopupPanel {
         addAutoHidePartner(relativeWidget.getElement());
 
         getElement().getStyle().setProperty("borderTop", "0px");
+    }
+
+    public void smartShow(int posX, int posY) {
+        show();
+        int lenX = getOffsetWidth();
+        int lenY = getOffsetHeight();
+
+        if (posX + lenX > Window.getClientWidth()) {
+            posX -= lenX;
+        }
+        if (posY + lenY > Window.getClientHeight()) {
+            posY -= lenY;
+        }
+
+        setPopupPosition(posX, posY);
     }
 
     public void showUnderParent() {

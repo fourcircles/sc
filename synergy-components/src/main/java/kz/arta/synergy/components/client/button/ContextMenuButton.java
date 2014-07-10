@@ -1,11 +1,13 @@
 package kz.arta.synergy.components.client.button;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.resources.client.ImageResource;
 import kz.arta.synergy.components.client.ContextMenu;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.style.client.Constants;
 
 /**
  * User: vsl
@@ -58,16 +60,28 @@ public class ContextMenuButton extends SimpleButton {
             }
         };
         contextButton.addDomHandler(down, MouseDownEvent.getType());
-        contextButton.setStyleName(SynergyComponents.resources.cssComponents().contextMenuButton());
+        contextButton.setStyleName(SynergyComponents.resources.cssComponents().dropDownButton());
         add(contextButton);
-        adjustTextLabelWidth();
     }
 
     @Override
     protected int getTextLabelWidth() {
         int width = super.getTextLabelWidth();
-        //TODO no magic
-        return width - 32;
+        return width - Constants.IMAGE_BUTTON_WIDTH;
+    }
+
+    @Override
+    protected void adjustMargins() {
+        if (!isAttached()) {
+            return;
+        }
+        int textLabelWidth = getTextLabelWidth();
+        int delta = textLabelWidth - textLabel.getOffsetWidth();
+        if (delta > 0) {
+            contextButton.getElement().getStyle().setPosition(Style.Position.RELATIVE);
+            contextButton.getElement().getStyle().setLeft((double) delta / 2, Style.Unit.PX);
+        }
+        super.adjustMargins();
     }
 
     public void setContextMenu(ContextMenu contextMenu) {

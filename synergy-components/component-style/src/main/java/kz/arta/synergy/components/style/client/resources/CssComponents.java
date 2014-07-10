@@ -81,13 +81,13 @@ public interface CssComponents extends CssResource {
 
     String gradient();
 
-    String contextMenuButton();
+    String dropDownButton();
 
     String contextMenuItem();
 
     String contextMenu();
 
-    String contextMenuRow();
-
     String green();
+
+    String menuSeparator();
 }

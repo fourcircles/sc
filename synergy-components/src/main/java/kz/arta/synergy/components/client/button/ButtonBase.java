@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.button;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -17,14 +18,14 @@ import kz.arta.synergy.components.client.util.MouseStyle;
 import kz.arta.synergy.components.client.util.Selection;
 import kz.arta.synergy.components.style.client.Constants;
 
-//TODO check what happens if the width is bigger then needed (menu -> right, everything else -> center)
+//TODO при открытии диалога кнопкой у кнопки остается стиль over
 /**
  * User: user
  * Date: 23.06.14
  * Time: 18:20
  * Базовый класс для кнопок
  */
-public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusHandlers, HasEnabled {
+public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusHandlers, HasEnabled{
 
     private final IconPosition DEFAULT_ICON_POSITION = IconPosition.LEFT;
 
@@ -90,6 +91,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
             this.iconPosition = iconPosition;
         }
         buildButton();
+
         sinkEvents(Event.MOUSEEVENTS);
         sinkEvents(Event.ONCLICK);
     }
@@ -123,6 +125,12 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         if (icon != null) {
             icon.getElement().getStyle().setMarginTop(((double) Constants.BUTTON_HEIGHT - icon.getHeight()) / 2, Style.Unit.PX);
         }
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                adjustMargins();
+            }
+        });
     }
 
     @Override
@@ -134,8 +142,6 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
         return addHandler(handler, FocusEvent.getType());
     }
-
-
 
     @Override
     public boolean isEnabled() {
@@ -251,7 +257,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
     }
 
     protected int getTextLabelWidth() {
-        int textLabelWidth = customWidth - 2 * Constants.BUTTON_PADDING;
+        int textLabelWidth = getOffsetWidth() - 2 * Constants.BUTTON_PADDING;
         if (icon != null) {
             textLabelWidth -= icon.getWidth();
             textLabelWidth -= Constants.BUTTON_PADDING;
@@ -259,11 +265,16 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         return textLabelWidth;
     }
 
-    protected void adjustTextLabelWidth() {
-        if (customWidth == null || textLabel == null) {
+    protected void adjustMargins() {
+        if (!isAttached()) {
             return;
         }
-        textLabel.setWidth(getTextLabelWidth() + "px");
+        if (textLabel != null) {
+            int width = getTextLabelWidth();
+            if (width < textLabel.getOffsetWidth()) {
+                textLabel.setWidth(width + "px");
+            }
+        }
     }
 
     @Override
@@ -274,7 +285,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         int intWidth = Integer.parseInt(width.substring(0, width.length() - 2));
         customWidth = Math.max(getMinWidth(), intWidth);
         super.setWidth(customWidth + "px");
-        adjustTextLabelWidth();
+        adjustMargins();
     }
 
     protected int getMinWidth() {

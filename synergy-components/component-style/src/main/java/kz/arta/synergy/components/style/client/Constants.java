@@ -23,6 +23,8 @@ public class Constants {
     public static final int DIALOG_CLOSE_BUTTON_RIGHT_MARGIN = 10;
     public static final int DIALOG_TITLE_LEFT_MARGIN = 12;
 
+    public static final int IMAGE_BUTTON_WIDTH = 32;
+
     /**
      * расстояние между заголовком и кнопкой "свернуть"
      */
@@ -81,5 +83,9 @@ public class Constants {
     }
     public static String dialogMinWidth() {
         return DIALOG_MIN_WIDTH + "px";
+    }
+
+    public static String imageButtonWidth() {
+        return IMAGE_BUTTON_WIDTH + "px";
     }
 }

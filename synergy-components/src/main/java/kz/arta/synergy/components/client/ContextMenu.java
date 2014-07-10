@@ -8,12 +8,14 @@ import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.util.Selection;
 
 import java.util.ArrayList;
 
-//TODO hook into scroll event and close
+//TODO что делать при скролле?
+//TODO отображать меню слева от мыши у правого края экрана и т. д.
 /**
  * User: vsl
  * Date: 09.07.14
@@ -50,6 +52,10 @@ public class ContextMenu extends PopupPanel {
 
     public void addItem(String text, ImageResource imageResource, Command command) {
         addItem(new ContextMenuItem(text, imageResource, command));
+    }
+
+    public void addSeparator() {
+        addItem(ContextMenuItem.getSeparator());
     }
 
     public void insertItem(int index, String text, Command command) {
@@ -97,13 +103,30 @@ public class ContextMenu extends PopupPanel {
     }
 
     private static class ContextMenuItem implements IsWidget{
+        private static final FlowPanel SEPARATOR = new FlowPanel();
+        private static ContextMenuItem separator;
+
         private String text;
         private Command command;
         private ImageResource imageResource;
 
         private FlowPanel itemPanel;
 
-        private FlowPanel row;
+        public static ContextMenuItem getSeparator() {
+            if (separator == null) {
+                separator = new ContextMenuItem() {
+                    @Override
+                    public Widget asWidget() {
+                        return SEPARATOR;
+                    }
+                };
+            }
+            return separator;
+        }
+
+        private ContextMenuItem() {
+            SEPARATOR.setStyleName(SynergyComponents.resources.cssComponents().menuSeparator());
+        }
 
         public ContextMenuItem(String text, Command command) {
             this.text = text;
@@ -134,18 +157,17 @@ public class ContextMenu extends PopupPanel {
         @Override
         public Widget asWidget() {
             if (itemPanel == null) {
-                row = new FlowPanel();
                 itemPanel = new FlowPanel();
                 MouseOverHandler over = new MouseOverHandler() {
                     @Override
                     public void onMouseOver(MouseOverEvent event) {
-                        row.addStyleName(SynergyComponents.resources.cssComponents().over());
+                        itemPanel.addStyleName(SynergyComponents.resources.cssComponents().over());
                     }
                 };
                 MouseOutHandler out = new MouseOutHandler() {
                     @Override
                     public void onMouseOut(MouseOutEvent event) {
-                        row.removeStyleName(SynergyComponents.resources.cssComponents().over());
+                        itemPanel.removeStyleName(SynergyComponents.resources.cssComponents().over());
                     }
                 };
                 itemPanel.addDomHandler(over, MouseOverEvent.getType());
@@ -168,9 +190,15 @@ public class ContextMenu extends PopupPanel {
                 itemPanel.addStyleName(SynergyComponents.resources.cssComponents().contextMenuItem());
             }
 
-            row.setStyleName(SynergyComponents.resources.cssComponents().contextMenuRow());
-            row.add(itemPanel);
-            return row;
+            return itemPanel;
+        }
+    }
+
+    @Override
+    protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+        super.onPreviewNativeEvent(event);
+        if (event.getTypeInt() == Event.ONSCROLL) {
+            hide();
         }
     }
 }

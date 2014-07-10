@@ -416,10 +416,19 @@ public class ShowCasePanel extends LayoutPanel {
         iconButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         iconButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         iconButton7.setContextMenu(menu4);
+        
+        ContextMenu menu5 = createSimpleMenu();
+        ContextMenuButton iconButton8 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SCImageResources.IMPL.zoom(), ButtonBase.IconPosition.RIGHT);
+        iconButton8.setWidth("400px");
+        iconButtonPanel.add(iconButton8);
+        iconButton8.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton8.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        iconButton8.setContextMenu(menu5);
 
         new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопка с иконкой"), SCMessages.i18n.tr("Кнопка с иконкой"), iconButtonPanel);
 
         FlowPanel colorButtonPanel = new FlowPanel();
+        colorButtonPanel.setHeight("2000px");
 
         SimpleButton colorButton = new SimpleButton((SCMessages.i18n.tr("Создать")), SimpleButton.Type.APPROVE);
         colorButtonPanel.add(colorButton);
@@ -467,7 +476,9 @@ public class ShowCasePanel extends LayoutPanel {
         ContextMenu menu3 = createSimpleMenu();
         colorButton7.setContextMenu(menu3);
 
-        new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), colorButtonPanel);
+        ScrollPanel scroll = new ScrollPanel();
+        scroll.setWidget(colorButtonPanel);
+        new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), scroll);
 
         cnt++;
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));
@@ -479,6 +490,7 @@ public class ShowCasePanel extends LayoutPanel {
         ContextMenu menu = new ContextMenu();
         menu.addItem("Zoom", ImageResources.IMPL.zoom(), null);
         menu.addItem("Left", ImageResources.IMPL.navigationLeft(), null);
+        menu.addSeparator();
         menu.addItem("Right", ImageResources.IMPL.navigationRight(), null);
         return menu;
     }

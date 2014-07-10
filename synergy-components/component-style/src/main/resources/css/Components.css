@@ -51,7 +51,7 @@
 @def tabBg2 #f9f9f9;
 
 @eval buttonHeight kz.arta.synergy.components.style.client.Constants.buttonHeight();
-.buttonSimple, .approveButton, .declineButton, .contextMenuButton {
+.buttonSimple, .approveButton, .declineButton, .dropDownButton {
     height: buttonHeight;
     line-height: buttonHeight;
     min-width: 32px;
@@ -316,37 +316,30 @@
     margin-right: dialogButtonMargin;
 }
 
-.contextMenuButton {
+.dropDownButton {
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
     border: 0px;
     background-color: buttonBG;
 }
 
-.approveButton .contextMenuButton {
+.approveButton .dropDownButton {
     background-color: approveButtonBG4;
 }
 
 .contextMenuItem {
     display: block;
     border: 0px;
-    border-bottom: 1px tabBg2 solid;
-    margin-left: 10px;
-    margin-right: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
     height: 32px;
     line-height: 32px;
 }
 
-.contextMenuRow {
-    display: block;
-    border: 0px;
-    height: 32px;
-    line-height: 32px;
-}
-.contextMenuRow.over {
+.contextMenuItem.over {
     background-color: selectColor;
 }
-.green .contextMenuRow.over{
+.green .contextMenuItem.over{
     background-color: approveButtonBG2;
 }
 
@@ -364,5 +357,17 @@
 
 .contextMenu.green {
     background-color: approveButtonBG4;
+    color: whiteBG;
+}
+
+.menuSeparator {
+    background-color: tabBg2;
+    height : 1px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.green .menuSeparator {
+    background-color: #49b885;
 }
 

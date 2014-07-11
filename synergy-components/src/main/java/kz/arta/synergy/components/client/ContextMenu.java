@@ -15,7 +15,6 @@ import kz.arta.synergy.components.client.util.Selection;
 
 import java.util.ArrayList;
 
-//TODO что делать при скролле?
 /**
  * User: vsl
  * Date: 09.07.14
@@ -205,11 +204,13 @@ public class ContextMenu extends PopupPanel {
         }
     }
 
+
     @Override
     protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
-        super.onPreviewNativeEvent(event);
-        if (event.getTypeInt() == Event.ONSCROLL) {
+        Event nativeEvent = Event.as(event.getNativeEvent());
+        if (nativeEvent.getTypeInt() == Event.ONMOUSEWHEEL) {
             hide();
         }
+        super.onPreviewNativeEvent(event);
     }
 }

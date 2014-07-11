@@ -2,10 +2,7 @@ package kz.arta.synergy.components.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
@@ -29,6 +26,8 @@ public class ContextMenu extends PopupPanel {
 
     private boolean mouseOver = false;
 
+    private int selectedIndex = -1;
+
     public ContextMenu() {
         super(true);
         panel = GWT.create(FlowPanel.class);
@@ -48,8 +47,68 @@ public class ContextMenu extends PopupPanel {
                 mouseOver = false;
             }
         };
+
         addDomHandler(over, MouseOverEvent.getType());
         addDomHandler(out, MouseOutEvent.getType());
+    }
+
+    private void selectItem(int index) {
+        ContextMenuItem item = items.get(index);
+        if (item.isSeparator()) {
+            return;
+        }
+        for (ContextMenuItem i: items) {
+            i.asWidget().removeStyleName(SynergyComponents.resources.cssComponents().over());
+        }
+        selectedIndex = index;
+        item.asWidget().addStyleName(SynergyComponents.resources.cssComponents().over());
+    }
+
+    private int getFirstReal() {
+        return getNextReal(-1);
+    }
+
+    private int getLastReal() {
+        return getPreviousReal(items.size());
+    }
+
+    private int getNextReal(int start) {
+        int i = start + 1;
+        if (i < 0) {
+            return -1;
+        }
+        while (i < items.size() && items.get(i).isSeparator()) {
+            i++;
+        }
+        if (i == items.size()) {
+            i = 0;
+            while (i < start && items.get(i).isSeparator()) {
+                i++;
+            }
+            return i >= start ? -1 : i;
+        } else {
+            return i;
+        }
+    }
+
+    private int getPreviousReal(int start) {
+        int i = start - 1;
+        if (i >= items.size()) {
+            return -1;
+        }
+        while (i >= 0 && items.get(i).isSeparator()) {
+            i--;
+        }
+        if (i == -1) {
+            i = items.size() - 1;
+            while (i > start && items.get(i).isSeparator()) {
+                i--;
+            }
+            return i <= start ? -1 : i;
+
+        } else {
+            return i;
+        }
     }
 
     public ContextMenu(Widget relativeWidget) {
@@ -140,6 +199,8 @@ public class ContextMenu extends PopupPanel {
 
         protected FlowPanel itemPanel;
 
+        private boolean isSeparator;
+
         public static ContextMenuItem getSeparator() {
             FlowPanel separatorPanel = new FlowPanel();
             separatorPanel.setStyleName(SynergyComponents.resources.cssComponents().menuSeparator());
@@ -153,11 +214,13 @@ public class ContextMenu extends PopupPanel {
 
         private ContextMenuItem(FlowPanel itemPanel) {
             this.itemPanel = itemPanel;
+            isSeparator = true;
         }
 
         public ContextMenuItem(String text, Command command) {
             this.text = text;
             this.command = command;
+            isSeparator = false;
         }
 
         public ContextMenuItem(String text, ImageResource imgResource, Command command) {
@@ -179,6 +242,10 @@ public class ContextMenu extends PopupPanel {
 
         public void setCommand(Command command) {
             this.command = command;
+        }
+
+        public boolean isSeparator() {
+            return isSeparator;
         }
 
         @Override
@@ -225,9 +292,39 @@ public class ContextMenu extends PopupPanel {
     @Override
     protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
         Event nativeEvent = Event.as(event.getNativeEvent());
-        if (!mouseOver && nativeEvent.getTypeInt() == Event.ONMOUSEWHEEL) {
-            hide();
+
+        switch (nativeEvent.getTypeInt()) {
+            case Event.ONMOUSEWHEEL:
+                if (!mouseOver) {
+                    hide();
+                }
+                break;
+            case Event.ONKEYDOWN:
+                switch (nativeEvent.getKeyCode()) {
+                    case KeyCodes.KEY_DOWN:
+                        event.consume();
+                        selectItem(getNextReal(selectedIndex));
+                        break;
+                    case KeyCodes.KEY_UP:
+                        event.consume();
+                        selectItem(getPreviousReal(selectedIndex));
+                        break;
+                    case KeyCodes.KEY_LEFT:
+                        event.consume();
+                        selectItem(getFirstReal());
+                        break;
+                    case KeyCodes.KEY_RIGHT:
+                        event.consume();
+                        selectItem(getLastReal());
+                        break;
+                    case KeyCodes.KEY_ESCAPE:
+                        event.consume();
+                        hide();
+                        break;
+                    default:
+                }
         }
+
         super.onPreviewNativeEvent(event);
     }
 }

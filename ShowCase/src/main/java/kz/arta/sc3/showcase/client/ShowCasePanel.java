@@ -469,6 +469,7 @@ public class ShowCasePanel extends LayoutPanel {
         colorButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         colorButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         ContextMenu menu3 = createSimpleMenu();
+        menu3.addItem(SCMessages.i18n.tr("Очень-очень длинный текст"), null);
         colorButton7.setContextMenu(menu3);
 
         ScrollPanel scroll = new ScrollPanel();

@@ -27,12 +27,29 @@ public class ContextMenu extends PopupPanel {
 
     protected Widget relativeWidget;
 
+    private boolean mouseOver = false;
+
     public ContextMenu() {
         super(true);
         panel = GWT.create(FlowPanel.class);
         setStyleName(SynergyComponents.resources.cssComponents().contextMenu());
         items = new ArrayList<ContextMenuItem>();
         setWidget(panel);
+
+        MouseOverHandler over = new MouseOverHandler() {
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                mouseOver = true;
+            }
+        };
+        MouseOutHandler out = new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                mouseOver = false;
+            }
+        };
+        addDomHandler(over, MouseOverEvent.getType());
+        addDomHandler(out, MouseOutEvent.getType());
     }
 
     public ContextMenu(Widget relativeWidget) {
@@ -208,7 +225,7 @@ public class ContextMenu extends PopupPanel {
     @Override
     protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
         Event nativeEvent = Event.as(event.getNativeEvent());
-        if (nativeEvent.getTypeInt() == Event.ONMOUSEWHEEL) {
+        if (!mouseOver && nativeEvent.getTypeInt() == Event.ONMOUSEWHEEL) {
             hide();
         }
         super.onPreviewNativeEvent(event);

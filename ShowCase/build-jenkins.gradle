@@ -71,4 +71,9 @@ processResources {
                                        version: ant.properties[ext.buildNumber]
         ])
     }
+    new File('build/resources/main/droid').mkdirs();
+    copy {
+        from '../synergy-components/component-style/src/main/resources/css/droid'
+        into 'build/resources/main/droid'
+    }
 }

@@ -5,7 +5,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -143,10 +142,6 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         }
     }
 
-    public void setSizeCallback(Command callback) {
-        textLabel.setSizeCallback(callback);
-    }
-
     public String getText() {
         return text;
     }
@@ -201,5 +196,9 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
 
     protected int getMinWidth() {
         return Constants.BUTTON_MIN_WIDTH;
+    }
+
+    public HasClickHandlers getButton() {
+        return this;
     }
 }

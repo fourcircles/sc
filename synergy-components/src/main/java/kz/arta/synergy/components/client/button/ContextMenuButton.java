@@ -15,6 +15,9 @@ import kz.arta.synergy.components.style.client.Constants;
  * Time: 10:49
  */
 public class ContextMenuButton extends SimpleButton {
+    //todo 1. открепляется контекстное меню при измении размера окна браузера
+//    todo 2. контекстное меню появляется не всегда ровно на нижнем краю кнопки
+//    todo 3. при нажатии на вверх-вних кнопки с контектсным меню прокручивается страница при наличии скролла
     private ImageButton contextButton;
     private ContextMenu contextMenu;
 

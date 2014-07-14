@@ -19,7 +19,7 @@ import kz.arta.synergy.components.client.util.Selection;
 import kz.arta.synergy.components.style.client.Constants;
 
 //TODO при открытии диалога кнопкой у кнопки остается стиль over
-//TODO исправить высоту кнопки
+
 /**
  * User: user
  * Date: 23.06.14
@@ -27,8 +27,6 @@ import kz.arta.synergy.components.style.client.Constants;
  * Базовый класс для кнопок
  */
 public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusHandlers, HasEnabled{
-
-    private final IconPosition DEFAULT_ICON_POSITION = IconPosition.LEFT;
 
     /**
      * Активна ли кнопка
@@ -57,12 +55,16 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
 
     protected Image icon;
 
-    private Integer customWidth;
-
+    /**
+     * Позиция иконки
+     */
     public enum IconPosition {
         LEFT, RIGHT;
     }
 
+    /**
+     * Текущая позиция иконки
+     */
     protected IconPosition iconPosition = IconPosition.LEFT;
 
     protected ButtonBase() {
@@ -97,6 +99,9 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         sinkEvents(Event.ONCLICK);
     }
 
+    /**
+     * Добавляет элементы в базовую панель кнопки в порядке, который соответствует указанной позиции иконки
+     */
     private void buildButton() {
         clear();
         if (iconPosition == IconPosition.RIGHT) {
@@ -149,6 +154,10 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         return enabled;
     }
 
+    /**
+     * Переключает кнопку между состояниями 'disabled' и 'enabled'
+     * @param enabled true - 'enabled', false - 'disabled'
+     */
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
@@ -172,6 +181,13 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         return text;
     }
 
+    /**
+     * Создает или изменяет текст кнопки, задает стили и запрещает выделение.
+     * В случае если до этого у кнопки не было текста - возвращает true, чтобы можно было
+     * произвести перестройку кнопки в зависимости от позиции иконки.
+     * @param text текст кнопки
+     * @return true - если до этого у кнопки не было текста
+     */
     private boolean setTextInternal(String text) {
         boolean needRebuild = false;
         if (text == null) {
@@ -193,12 +209,21 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         return needRebuild;
     }
 
+    /**
+     * Создает или изменяет текст кнопки
+     * @param text текст кнопки
+     */
     public void setText(String text) {
         if (setTextInternal(text)) {
             buildButton();
         }
     }
 
+    /**
+     * Создает или изменяет иконку для кнопки.
+     * @param iconResource рисунок для иконки
+     * @return true - в случае, если кнопка до этого не имела иконки
+     */
     private boolean setIconInternal(ImageResource iconResource) {
         boolean needRebuild = false;
         if (iconResource == null) {
@@ -220,12 +245,20 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         return needRebuild;
     }
 
+    /**
+     * Создает или изменяет иконку для кнопки.
+     * @param iconResource рисунок для иконки
+     */
     public void setIcon(ImageResource iconResource) {
         if (setIconInternal(iconResource)) {
             buildButton();
         }
     }
 
+    /**
+     * Указывает позицию иконки
+     * @param position позиция
+     */
     public void setIconPosition(IconPosition position) {
         if (position == null) {
             return;
@@ -244,11 +277,8 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
             case Event.ONMOUSEDOWN:
                 MouseStyle.setPressed(this);
                 break;
-            case Event.ONMOUSEOVER:
-                MouseStyle.setOver(this);
-                break;
             case Event.ONMOUSEUP:
-                MouseStyle.setOver(this);
+                MouseStyle.removeAll(this);
                 break;
             case Event.ONMOUSEOUT:
                 MouseStyle.removeAll(this);
@@ -257,6 +287,11 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         super.onBrowserEvent(event);
     }
 
+    /**
+     * Вычисляет ширину текстового элемента в зависимости от ширины кнопки и
+     * наличия дополнительных элементов (иконка, кнопка для открытия меню и т.д.)
+     * @return ширина текста
+     */
     protected int getTextLabelWidth() {
         int textLabelWidth = getOffsetWidth() - 2 * Constants.BUTTON_PADDING;
         if (icon != null) {
@@ -266,6 +301,9 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         return textLabelWidth;
     }
 
+    /**
+     * Изменяет ширину текста
+     */
     protected void adjustMargins() {
         if (!isAttached()) {
             return;
@@ -280,16 +318,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
 
     @Override
     public void setWidth(String width) {
-        if (!width.substring(width.length() - 2, width.length()).equals("px")) {
-            throw new IllegalArgumentException();
-        }
-        int intWidth = Integer.parseInt(width.substring(0, width.length() - 2));
-        customWidth = Math.max(getMinWidth(), intWidth);
-        super.setWidth(customWidth + "px");
+        super.setWidth(width);
         adjustMargins();
-    }
-
-    protected int getMinWidth() {
-        return Constants.BUTTON_MIN_WIDTH;
     }
 }

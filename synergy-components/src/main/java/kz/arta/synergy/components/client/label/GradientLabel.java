@@ -4,7 +4,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -14,12 +13,17 @@ import kz.arta.synergy.components.style.client.Constants;
  * User: vsl
  * Date: 02.07.14
  * Time: 18:02
+ * Label с градиентом
  */
 public class GradientLabel extends FlowPanel {
+    /**
+     * Градиент
+     */
     protected FlowPanel gradient = GWT.create(FlowPanel.class);
 
-    Command callback;
-
+    /**
+     * Текст
+     */
     private InlineLabel textLabel = GWT.create(InlineLabel.class);
 
     public GradientLabel() {
@@ -38,6 +42,10 @@ public class GradientLabel extends FlowPanel {
         textLabel.setText(text);
     }
 
+    /**
+     * Определяент влезает ли текст элемент.
+     * @return
+     */
     protected boolean textFits() {
         textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
         int oldHeight = textLabel.getOffsetHeight();
@@ -47,6 +55,9 @@ public class GradientLabel extends FlowPanel {
         return oldHeight == newHeight;
     }
 
+    /**
+     * Добавляет градиент, если текст слишком длинный для текущей ширины элемента.
+     */
     protected void adjustGradient() {
         if (!textFits()) {
             if (LocaleInfo.getCurrentLocale().isRTL()) {
@@ -64,18 +75,14 @@ public class GradientLabel extends FlowPanel {
             @Override
             public void execute() {
                 adjustGradient();
-
-                if (callback != null) {
-                    callback.execute();
-                }
             }
         });
     }
 
-    public void setSizeCallback(Command callback) {
-        this.callback = callback;
-    }
-
+    /**
+     * Задает текст элемента, в случае надобности добавляется градиент.
+     * @param text текст
+     */
     public void setText(String text) {
         textLabel.setText(text);
         adjustGradient();
@@ -85,6 +92,10 @@ public class GradientLabel extends FlowPanel {
         return textLabel.getText();
     }
 
+    /**
+     * Изменяет ширину, в случае надобности добавляется градиент.
+     * @param width
+     */
     @Override
     public void setWidth(String width) {
         super.setWidth(width);

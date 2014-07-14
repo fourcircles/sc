@@ -13,9 +13,18 @@ import kz.arta.synergy.components.style.client.Constants;
  * User: vsl
  * Date: 10.07.14
  * Time: 10:49
+ * Кнопка с контекстным меню
  */
 public class ContextMenuButton extends SimpleButton {
+
+    /**
+     * Кнопка для открытия контекстного меню
+     */
     private ImageButton contextButton;
+
+    /**
+     * Контекстное меню
+     */
     private ContextMenu contextMenu;
 
     public ContextMenuButton() {
@@ -64,12 +73,21 @@ public class ContextMenuButton extends SimpleButton {
         add(contextButton);
     }
 
+    /**
+     * В кнопке новый элемент - кнопка для открытия контекстного меню, ее ширину надо учитывать
+     * при вычислении длины текста.
+     * @return
+     */
     @Override
     protected int getTextLabelWidth() {
         int width = super.getTextLabelWidth();
         return width - Constants.IMAGE_BUTTON_WIDTH;
     }
 
+    /**
+     * Если ширина кнопки большая, то все элементы должны центрироваться. Кроме кнопки открытия контекстного
+     * меню. В этом случае вычисляется необходимый сдвиг для этой кнопки.
+     */
     @Override
     protected void adjustMargins() {
         if (!isAttached()) {
@@ -84,6 +102,10 @@ public class ContextMenuButton extends SimpleButton {
         super.adjustMargins();
     }
 
+    /**
+     * Указывает контекстное меню кнопки
+     * @param contextMenu контекстное меню
+     */
     public void setContextMenu(ContextMenu contextMenu) {
         if (type == Type.APPROVE) {
             contextMenu.addStyleName(SynergyComponents.resources.cssComponents().green());

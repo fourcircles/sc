@@ -165,7 +165,7 @@
 }
 
 
-.buttonSimple.over {
+.buttonSimple:hover {
     background-color: whiteBG;
     border-color: border1;
     color: textColor3;

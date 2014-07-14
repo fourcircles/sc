@@ -46,9 +46,4 @@ public class TextColorButton extends ButtonBase {
             setStyleName(SynergyComponents.resources.cssComponents().declineButton());
         }
     }
-
-    @Override
-    protected int getMinWidth() {
-        return Constants.BUTTON_APPROVE_MIN_WIDTH;
-    }
 }

@@ -123,7 +123,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
     protected void onLoad() {
         super.onLoad();
         if (icon != null) {
-            icon.getElement().getStyle().setMarginTop(((double) Constants.BUTTON_HEIGHT - icon.getHeight()) / 2, Style.Unit.PX);
+            icon.getElement().getStyle().setMarginTop(8, Style.Unit.PX);
         }
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override

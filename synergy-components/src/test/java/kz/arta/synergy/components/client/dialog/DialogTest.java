@@ -90,17 +90,6 @@ public class DialogTest {
     }
 
     @Test
-    public void minWidthOnlyLeftButtonVisible() {
-        when(leftButton.isVisible()).thenReturn(true);
-        when(leftButton.getOffsetWidth()).thenReturn(50);
-        when(rightButton.isVisible()).thenReturn(false);
-        when(rightButton.getOffsetWidth()).thenReturn(1000);
-        when(saveButton.getOffsetWidth()).thenReturn(33);
-
-        assertEquals((50 + 20 + 20) * 2 + 33, dialog.getMinWidth());
-    }
-
-    @Test
     public void testAdjustMargin() {
         when(leftButton.isVisible()).thenReturn(true);
         when(leftButton.getOffsetWidth()).thenReturn(50);

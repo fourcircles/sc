@@ -19,7 +19,6 @@ import kz.arta.synergy.components.client.util.Selection;
 import kz.arta.synergy.components.style.client.Constants;
 
 //TODO при открытии диалога кнопкой у кнопки остается стиль over
-
 /**
  * User: user
  * Date: 23.06.14
@@ -320,5 +319,9 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
     public void setWidth(String width) {
         super.setWidth(width);
         adjustMargins();
+    }
+
+    public HasClickHandlers getButton() {
+        return this;
     }
 }

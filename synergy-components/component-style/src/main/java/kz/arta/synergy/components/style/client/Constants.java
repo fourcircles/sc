@@ -6,7 +6,7 @@ package kz.arta.synergy.components.style.client;
  * Time: 9:48
  */
 public class Constants {
-    public static final int BUTTON_HEIGHT = 32;
+    public static final int BUTTON_HEIGHT = 30;
     public static final int BUTTON_MIN_WIDTH = 32;
     public static final int BUTTON_APPROVE_MIN_WIDTH = 150;
     public static final int BUTTON_PADDING = 10;

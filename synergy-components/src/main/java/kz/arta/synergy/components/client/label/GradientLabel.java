@@ -8,6 +8,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.style.client.Constants;
 
 /**
  * User: vsl
@@ -29,7 +30,7 @@ public class GradientLabel extends FlowPanel {
 
         gradient.setStyleName(SynergyComponents.resources.cssComponents().gradient());
         gradient.getElement().getStyle().setMarginRight(-10, Style.Unit.PX);
-        setHeight("32px");
+        setHeight(Constants.buttonHeight());
     }
 
     public GradientLabel(String text) {

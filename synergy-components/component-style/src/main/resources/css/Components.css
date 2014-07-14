@@ -181,6 +181,12 @@
     color: border1;
 }
 
+.buttonSimple.disabled img {
+    /*без фона ie странно применяет фильтр прозрачности*/
+    background-color: whiteBG;
+}
+
+
 .buttonSimple.pressed {
     background-color: buttonBG;
     border-color: border1;

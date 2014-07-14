@@ -56,10 +56,10 @@ public class Dialog extends DialogSimple {
         panel.add(buttonsPanel);
 
         leftButton = makeButton(Messages.i18n.tr("Назад"), ImageResources.IMPL.navigationLeft(), ButtonBase.IconPosition.LEFT);
-        leftButton.getElement().getStyle().setFloat(Style.Float.LEFT);
+//        leftButton.getElement().getStyle().setFloat(Style.Float.LEFT);
         saveButton = makeButton(Messages.i18n.tr("Сохранить"));
         rightButton = makeButton(Messages.i18n.tr("Еще"), ImageResources.IMPL.navigationRight(), ButtonBase.IconPosition.RIGHT);
-        rightButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
+//        rightButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
         buttonsPanel.add(leftButton);
         buttonsPanel.add(saveButton);
@@ -100,60 +100,73 @@ public class Dialog extends DialogSimple {
     }
 
     /**
-     * Метод вычисляет минимальную возможную ширину при которой могут выполняться следующие два условия:
-     * 1. Кнопка "сохранить" должна быть равноудалена от левой и правой границы диалога.
-     * 2. Минимальное расстояние между кнопкой навигации и кнопкой "сохранить" = {@value #MIN_INNER_MARGIN}
-     */
-    protected int getMinWidth() {
-        int minLeft = (leftButton.isVisible() ? leftButton.getOffsetWidth() + HORIZONTAL_BUTTON_MARGIN: 0) + HORIZONTAL_BUTTON_MARGIN;
-        int minRight = (rightButton.isVisible() ? rightButton.getOffsetWidth() + HORIZONTAL_BUTTON_MARGIN : 0) + HORIZONTAL_BUTTON_MARGIN;
-
-        int minSaveButtonBaseMargin = Math.max(minLeft, minRight);
-        int minButtonsPanelWidth = minSaveButtonBaseMargin * 2 + saveButton.getOffsetWidth();
-
-        return minButtonsPanelWidth;
-    }
-
-    /**
-     * Вычисляется величина соответствующего margin'а для кнопки "сохранить",
-     * чтобы она оставалась в середине диалога.
-     * @param navButton кнопка навигации
-     * @return величина margin'а
-     */
-    protected double getSaveButtonMargin(SimpleButton navButton) {
-        if (navButton.isVisible()) {
-            return saveButtonBaseMargin - navButton.getOffsetWidth() - HORIZONTAL_BUTTON_MARGIN;
-        } else {
-            return saveButtonBaseMargin;
-        }
-    }
-
-    /**
      * Изменяет значения левого и правого отступов для кнопки "сохранить", чтобы она оставалась в середине
      * вне зависимости от отображения и ширины кнопок навигации. При необходимости ширина диалога изменяется
      * на минимальную удовлетворяющую требованиям.
      */
     protected void adjustSaveButtonMargin() {
-        if (!isAttached()) {
-            return;
+        double freeSpace = (double) getOffsetWidth() -
+                Constants.DIALOG_BORDER_WIDTH * 2 -
+                saveButton.getOffsetWidth();
+
+        double leftMargin;
+        double rightMargin;
+
+        if (leftButton.isVisible() && rightButton.isVisible()) {
+            freeSpace -= leftButton.getOffsetWidth() + Constants.DIALOG_NAV_BUTTON_HMARGIN;
+            freeSpace -= rightButton.getOffsetWidth() + Constants.DIALOG_NAV_BUTTON_HMARGIN;
+            freeSpace /= 2;
+            if (freeSpace < MIN_INNER_MARGIN) {
+                setWidth(getOffsetWidth() - Constants.DIALOG_BORDER_WIDTH * 2 +
+                        (MIN_INNER_MARGIN - freeSpace) * 2 + "px");
+                leftMargin = rightMargin = MIN_INNER_MARGIN;
+            } else {
+                leftMargin = rightMargin = freeSpace;
+            }
+        } else {
+            if (!leftButton.isVisible() && !rightButton.isVisible()) {
+                freeSpace /= 2;
+                if (freeSpace < MIN_INNER_MARGIN) {
+                    setWidth(saveButton.getOffsetWidth() + Constants.DIALOG_NAV_BUTTON_HMARGIN * 2 + "px");
+                    leftMargin = rightMargin = MIN_INNER_MARGIN;
+                } else {
+                    leftMargin = rightMargin = freeSpace;
+                }
+            } else {
+                double noButtonSideMargin = freeSpace / 2;
+                double buttonWidth;
+
+                if (leftButton.isVisible()) {
+                    buttonWidth = leftButton.getOffsetWidth();
+                } else {
+                    buttonWidth = rightButton.getOffsetWidth();
+                }
+
+                double buttonSideMargin = noButtonSideMargin - buttonWidth - Constants.DIALOG_NAV_BUTTON_HMARGIN;
+
+                if (buttonSideMargin < MIN_INNER_MARGIN) {
+                    setWidth(saveButton.getOffsetWidth() +
+                            (MIN_INNER_MARGIN + buttonWidth + Constants.DIALOG_NAV_BUTTON_HMARGIN) * 2 +
+                            "px");
+                    leftMargin = MIN_INNER_MARGIN;
+                    rightMargin = ((double) getOffsetWidth() -
+                            Constants.DIALOG_BORDER_WIDTH * 2 -
+                            saveButton.getOffsetWidth()) / 2;
+                } else {
+                    leftMargin = buttonSideMargin;
+                    rightMargin = noButtonSideMargin;
+                }
+                if (rightButton.isVisible()) {
+                    double tmp = leftMargin;
+                    leftMargin = rightMargin;
+                    rightMargin = tmp;
+                }
+            }
         }
-
-        saveButtonBaseMargin = ((double) getOffsetWidth() -
-                saveButton.getOffsetWidth() -
-                Constants.DIALOG_BORDER_WIDTH * 2) / 2;
-
-        double leftMargin = getSaveButtonMargin(leftButton);
-        double rightMargin = getSaveButtonMargin(rightButton);
-
-        if (leftMargin < MIN_INNER_MARGIN || rightMargin < MIN_INNER_MARGIN) {
-            //в случае когда ширины диалога не хватает, ширина устанавливается минимальная возможная
-            setWidth(getMinWidth() + "px");
-            leftMargin = MIN_INNER_MARGIN;
-            rightMargin = MIN_INNER_MARGIN;
-        }
-
         saveButton.getElement().getStyle().setMarginLeft(leftMargin, Style.Unit.PX);
-        saveButton.getElement().getStyle().setMarginRight(rightMargin, Style.Unit.PX);
+        //ширина элементов + отступы равна ширине содержащего элемента
+        //ie в этом случае переносит последний элемент на следующую строку, для этого -0.5
+        saveButton.getElement().getStyle().setMarginRight(rightMargin - 0.5, Style.Unit.PX);
     }
 
     public void setLeftButtonVisible(boolean visible) {

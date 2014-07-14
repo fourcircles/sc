@@ -18,11 +18,10 @@ import kz.arta.synergy.components.style.client.Constants;
  * Диалог с кнопкой "сохранить" и кнопками навигации.
  */
 public class Dialog extends DialogSimple {
-    /**
-     * margin слева для навигационных кнопок
-     */
-    private static final int HORIZONTAL_BUTTON_MARGIN = 20;
 
+    /**
+     * минимальное расстояние между кнопкой "сохранить" и навигационными кнопками
+     */
     private static final int MIN_INNER_MARGIN = 20;
 
     /**
@@ -56,10 +55,8 @@ public class Dialog extends DialogSimple {
         panel.add(buttonsPanel);
 
         leftButton = makeButton(Messages.i18n.tr("Назад"), ImageResources.IMPL.navigationLeft(), ButtonBase.IconPosition.LEFT);
-//        leftButton.getElement().getStyle().setFloat(Style.Float.LEFT);
         saveButton = makeButton(Messages.i18n.tr("Сохранить"));
         rightButton = makeButton(Messages.i18n.tr("Еще"), ImageResources.IMPL.navigationRight(), ButtonBase.IconPosition.RIGHT);
-//        rightButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
         buttonsPanel.add(leftButton);
         buttonsPanel.add(saveButton);
@@ -105,6 +102,9 @@ public class Dialog extends DialogSimple {
      * на минимальную удовлетворяющую требованиям.
      */
     protected void adjustSaveButtonMargin() {
+        if (!isAttached()) {
+            return;
+        }
         double freeSpace = (double) getOffsetWidth() -
                 Constants.DIALOG_BORDER_WIDTH * 2 -
                 saveButton.getOffsetWidth();

@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.button;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -17,13 +18,14 @@ import kz.arta.synergy.components.client.util.MouseStyle;
 import kz.arta.synergy.components.client.util.Selection;
 import kz.arta.synergy.components.style.client.Constants;
 
+//TODO при открытии диалога кнопкой у кнопки остается стиль over
 /**
  * User: user
  * Date: 23.06.14
  * Time: 18:20
  * Базовый класс для кнопок
  */
-public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusHandlers, HasEnabled {
+public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusHandlers, HasEnabled{
 
     private final IconPosition DEFAULT_ICON_POSITION = IconPosition.LEFT;
 
@@ -40,7 +42,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
     /**
      * Надпись кнопки
      */
-    protected GradientLabel textLabel = GWT.create(GradientLabel.class);
+    protected GradientLabel textLabel;
 
     /**
      * Текст кнопки
@@ -54,58 +56,81 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
 
     protected Image icon;
 
+    private Integer customWidth;
+
     public enum IconPosition {
         LEFT, RIGHT;
     }
 
-    protected IconPosition iconPosition = null;
+    protected IconPosition iconPosition = IconPosition.LEFT;
 
-    protected void init() {
-        textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
-        textLabel.addStyleName(SynergyComponents.resources.cssComponents().buttonText());
-
-        if (iconResource != null) {
-            icon = new Image(iconResource.getSafeUri());
-            icon.addDragStartHandler(new DragStartHandler() {
-                @Override
-                public void onDragStart(DragStartEvent event) {
-                    event.preventDefault();
-                }
-            });
-            icon.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
-            setIconPosition(iconPosition == null ? DEFAULT_ICON_POSITION : iconPosition, true);
-        } else {
-            add(textLabel);
-        }
-        textLabel.getElement().getStyle().setMarginRight(Constants.BUTTON_PADDING, Style.Unit.PX);
-        textLabel.getElement().getStyle().setMarginLeft(Constants.BUTTON_PADDING, Style.Unit.PX);
-        textLabel.setText(text);
-
-        Selection.disableTextSelectInternal(getElement());
+    protected ButtonBase() {
+        textLabel = GWT.create(GradientLabel.class);
+        icon = GWT.create(Image.class);
+        buildButton();
         sinkEvents(Event.MOUSEEVENTS);
         sinkEvents(Event.ONCLICK);
     }
 
-    public void setIconPosition(IconPosition position) {
-        setIconPosition(position, false);
+    public ButtonBase(String text) {
+        this(text, null, null);
     }
 
-    private void setIconPosition(IconPosition position, boolean init) {
-        if (init || (iconPosition != position & icon != null)) {
-            iconPosition = position;
-            clear();
-            if (iconPosition == IconPosition.RIGHT) {
+    public ButtonBase(ImageResource iconResource) {
+        this(null, iconResource, null);
+    }
+
+    public ButtonBase(String text, ImageResource iconResource) {
+        this(text, iconResource, null);
+    }
+
+    public ButtonBase(String text, ImageResource iconResource, IconPosition iconPosition) {
+        setTextInternal(text);
+        setIconInternal(iconResource);
+        if (iconPosition != null) {
+            this.iconPosition = iconPosition;
+        }
+        buildButton();
+
+        sinkEvents(Event.MOUSEEVENTS);
+        sinkEvents(Event.ONCLICK);
+    }
+
+    private void buildButton() {
+        clear();
+        if (iconPosition == IconPosition.RIGHT) {
+            if (textLabel != null) {
                 add(textLabel);
+            }
+            if (icon != null) {
                 add(icon);
                 icon.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
                 icon.getElement().getStyle().setMarginRight(Constants.BUTTON_PADDING, Style.Unit.PX);
-            } else {
+            }
+        } else {
+            if (icon != null) {
                 add(icon);
-                add(textLabel);
                 icon.getElement().getStyle().setMarginRight(0, Style.Unit.PX);
                 icon.getElement().getStyle().setMarginLeft(Constants.BUTTON_PADDING, Style.Unit.PX);
             }
+            if (textLabel != null) {
+                add(textLabel);
+            }
         }
+    }
+
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        if (icon != null) {
+            icon.getElement().getStyle().setMarginTop(((double) Constants.BUTTON_HEIGHT - icon.getHeight()) / 2, Style.Unit.PX);
+        }
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                adjustMargins();
+            }
+        });
     }
 
     @Override
@@ -146,9 +171,68 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         return text;
     }
 
-    public void setText(String text) {
+    private boolean setTextInternal(String text) {
+        boolean needRebuild = false;
+        if (text == null) {
+            return false;
+        }
         this.text = text;
+        if (textLabel == null) {
+            needRebuild = true;
+            textLabel = GWT.create(GradientLabel.class);
+            textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
+            textLabel.addStyleName(SynergyComponents.resources.cssComponents().buttonText());
+
+            textLabel.getElement().getStyle().setMarginRight(Constants.BUTTON_PADDING, Style.Unit.PX);
+            textLabel.getElement().getStyle().setMarginLeft(Constants.BUTTON_PADDING, Style.Unit.PX);
+
+            Selection.disableTextSelectInternal(getElement());
+        }
         textLabel.setText(text);
+        return needRebuild;
+    }
+
+    public void setText(String text) {
+        if (setTextInternal(text)) {
+            buildButton();
+        }
+    }
+
+    private boolean setIconInternal(ImageResource iconResource) {
+        boolean needRebuild = false;
+        if (iconResource == null) {
+            return false;
+        }
+        this.iconResource = iconResource;
+        if (icon == null) {
+            needRebuild = true;
+            icon = GWT.create(Image.class);
+            icon.addDragStartHandler(new DragStartHandler() {
+                @Override
+                public void onDragStart(DragStartEvent event) {
+                    event.preventDefault();
+                }
+            });
+            icon.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
+        }
+        icon.setUrl(iconResource.getSafeUri());
+        return needRebuild;
+    }
+
+    public void setIcon(ImageResource iconResource) {
+        if (setIconInternal(iconResource)) {
+            buildButton();
+        }
+    }
+
+    public void setIconPosition(IconPosition position) {
+        if (position == null) {
+            return;
+        }
+        if (iconPosition != position) {
+            iconPosition = position;
+            buildButton();
+        }
     }
 
     public void onBrowserEvent(Event event) {
@@ -168,19 +252,29 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
             case Event.ONMOUSEOUT:
                 MouseStyle.removeAll(this);
                 break;
-            default:
-                super.onBrowserEvent(event);
-
         }
+        super.onBrowserEvent(event);
     }
 
-    private void setWidth(int width) {
-        int textLabelWidth = width;
+    protected int getTextLabelWidth() {
+        int textLabelWidth = getOffsetWidth() - 2 * Constants.BUTTON_PADDING;
         if (icon != null) {
             textLabelWidth -= icon.getWidth();
             textLabelWidth -= Constants.BUTTON_PADDING;
         }
-        textLabel.setWidth(textLabelWidth + "px");
+        return textLabelWidth;
+    }
+
+    protected void adjustMargins() {
+        if (!isAttached()) {
+            return;
+        }
+        if (textLabel != null) {
+            int width = getTextLabelWidth();
+            if (width < textLabel.getOffsetWidth()) {
+                textLabel.setWidth(width + "px");
+            }
+        }
     }
 
     @Override
@@ -189,9 +283,9 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
             throw new IllegalArgumentException();
         }
         int intWidth = Integer.parseInt(width.substring(0, width.length() - 2));
-        intWidth = Math.max(getMinWidth(), intWidth);
-        super.setWidth(intWidth + "px");
-        setWidth(intWidth - 2 * Constants.BUTTON_PADDING);
+        customWidth = Math.max(getMinWidth(), intWidth);
+        super.setWidth(customWidth + "px");
+        adjustMargins();
     }
 
     protected int getMinWidth() {

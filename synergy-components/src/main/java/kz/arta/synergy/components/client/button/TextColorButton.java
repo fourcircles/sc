@@ -34,14 +34,12 @@ public class TextColorButton extends ButtonBase {
      *              @see kz.arta.synergy.components.client.button.TextColorButton#DECLINE_BUTTON
      */
     public TextColorButton(String text, int type) {
-        super();
-        this.text = text;
+        super(text);
         this.type = type;
         init();
     }
 
     public void init() {
-        super.init();
         if (type == APPROVE_BUTTON) {
             setStyleName(SynergyComponents.resources.cssComponents().approveButton());
         } else {

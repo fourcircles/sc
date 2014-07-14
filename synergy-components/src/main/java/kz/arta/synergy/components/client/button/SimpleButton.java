@@ -10,8 +10,9 @@ import kz.arta.synergy.components.client.SynergyComponents;
  * Кнопка простая
  */
 public class SimpleButton extends ButtonBase {
+    protected Type type;
 
-    public SimpleButton() {
+    protected SimpleButton() {
         super();
         init();
     }
@@ -21,8 +22,7 @@ public class SimpleButton extends ButtonBase {
      * @param text  текст кнопки
      */
     public SimpleButton(String text) {
-        super();
-        this.text = text;
+        super(text);
         init();
     }
 
@@ -32,9 +32,7 @@ public class SimpleButton extends ButtonBase {
      * @param iconResource  иконка кнопки
      */
     public SimpleButton(String text, ImageResource iconResource) {
-        super();
-        this.text = text;
-        this.iconResource = iconResource;
+        super(text, iconResource);
         init();
     }
 
@@ -42,23 +40,51 @@ public class SimpleButton extends ButtonBase {
      * Кнопка с иконкой
      * @param text  текст кнопки
      * @param iconResource  иконка кнопки
-     * @param placement положение иконки (слева или справа)
+     * @param position положение иконки (слева или справа)
      */
 
-    public SimpleButton(String text, ImageResource iconResource, IconPosition placement) {
-        super();
-        this.text = text;
-        this.iconResource = iconResource;
-        iconPosition = placement;
+    public SimpleButton(String text, ImageResource iconResource, IconPosition position) {
+        super(text, iconResource, position);
+        init();
+    }
+
+    public SimpleButton(String text, Type type) {
+        super(text);
+        this.type = type;
         init();
     }
 
     protected void init() {
-        super.init();
+        if (type == null) {
+            type = Type.REGULAR;
+        }
+        switch (type) {
+            case APPROVE:
+                regularButton();
+                break;
+            case DECLINE:
+                declineButton();
+                break;
+            default:
+                approveButton();
+        }
+    }
 
+    protected void approveButton() {
         setStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
     }
 
+    protected void declineButton() {
+        setStyleName(SynergyComponents.resources.cssComponents().declineButton());
+    }
 
+    protected void regularButton() {
+        setStyleName(SynergyComponents.resources.cssComponents().approveButton());
+    }
 
+    public enum Type {
+        APPROVE,
+        DECLINE,
+        REGULAR;
+    }
 }

@@ -11,6 +11,7 @@ public class Constants {
     public static final int BUTTON_APPROVE_MIN_WIDTH = 150;
     public static final int BUTTON_PADDING = 10;
 
+    public static final int DIALOG_MIN_WIDTH = 116;
     public static final int DIALOG_TITLE_HEIGHT = 32;
     public static final int DIALOG_CONTENT_PADDING = 8;
     public static final int DIALOG_NAV_BUTTON_HMARGIN = 20;
@@ -21,6 +22,8 @@ public class Constants {
     public static final int DIALOG_CLOSE_BUTTON_PADDING = 4;
     public static final int DIALOG_CLOSE_BUTTON_RIGHT_MARGIN = 10;
     public static final int DIALOG_TITLE_LEFT_MARGIN = 12;
+
+    public static final int IMAGE_BUTTON_WIDTH = 32;
 
     /**
      * расстояние между заголовком и кнопкой "свернуть"
@@ -77,5 +80,12 @@ public class Constants {
     }
     public static String dialogContentPadding() {
         return DIALOG_CONTENT_PADDING + "px";
+    }
+    public static String dialogMinWidth() {
+        return DIALOG_MIN_WIDTH + "px";
+    }
+
+    public static String imageButtonWidth() {
+        return IMAGE_BUTTON_WIDTH + "px";
     }
 }

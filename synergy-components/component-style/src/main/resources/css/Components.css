@@ -1,9 +1,10 @@
 @font-face {
     font-family: 'DroidSansBold';
     src: url('droid/bold/DroidSans-Bold-webfont.eot');
-    src: url('droid/bold/DroidSans-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+    src: local('Droid Sans Bold'),
+    url('droid/bold/DroidSans-Bold.ttf') format('truetype'),
+    url('droid/bold/DroidSans-Bold-webfont.eot?#iefix') format('embedded-opentype'),
     url('droid/bold/DroidSans-Bold-webfont.woff') format('woff'),
-    url('droid/bold/DroidSans-Bold-webfont.ttf') format('truetype'),
     url('droid/bold/DroidSans-Bold-webfont.svg#DroidSansBold') format('svg');
     font-weight: normal;
     font-style: normal;
@@ -13,9 +14,10 @@
 @font-face {
     font-family: 'DroidSans';
     src: url('droid/regular/DroidSans-webfont.eot');
-    src: url('droid/regular/DroidSans-webfont.eot?#iefix') format('embedded-opentype'),
+    src: local('Droid Sans'),
+    url('droid/regular/DroidSans.ttf') format('truetype'),
+    url('droid/regular/DroidSans-webfont.eot?#iefix') format('embedded-opentype'),
     url('droid/regular/DroidSans-webfont.woff') format('woff'),
-    url('droid/regular/DroidSans-webfont.ttf') format('truetype'),
     url('droid/regular/DroidSans-webfont.svg#DroidSans') format('svg');
     font-weight: normal;
     font-style: normal;
@@ -238,8 +240,23 @@
 
 
 .mainTextBold {
-    font-family: 'DroidSansBold';
-    font-size:13pt;
+    font-family: DroidSansBold;
+    font-size:14px;
+}
+
+.mainText {
+    font-family: DroidSans;
+    font-size:14px;
+}
+
+.bigText {
+    font-family: DroidSansBold;
+    font-size:16px;
+}
+
+.indicatorNumber {
+    font-family: DroidSans;
+    font-size:13px;
 }
 
 @eval dialogTitleHeight kz.arta.synergy.components.style.client.Constants.dialogTitleHeight();
@@ -254,8 +271,8 @@
 @eval dialogTitleLabelRightPadding kz.arta.synergy.components.style.client.Constants.dialogTitleLabelRightPadding();
 
 .dialogTitleLabel {
-    font-family: 'DroidSansBold';
-    font-size:15pt;
+    font-family: DroidSansBold;
+    font-size:16px;
     margin-left: dialogTitleLeftMargin;
     padding-right: dialogTitleLabelRightPadding;
     vertical-align: middle;
@@ -346,8 +363,8 @@
 }
 
 .contextMenu {
-    font-family: DroidSansBold, sans-serif ;
-    font-size:13pt;
+    font-family: DroidSans;
+    font-size:14px;
 
     min-width: 100px;
     min-height: 32px;

@@ -90,28 +90,6 @@ public class DialogTest {
     }
 
     @Test
-    public void minWidthBasic() {
-        when(leftButton.isVisible()).thenReturn(true);
-        when(leftButton.getOffsetWidth()).thenReturn(50);
-        when(rightButton.isVisible()).thenReturn(true);
-        when(rightButton.getOffsetWidth()).thenReturn(100);
-        when(saveButton.getOffsetWidth()).thenReturn(20);
-
-        assertEquals(140 * 2 + 20, dialog.getMinWidth());
-    }
-
-    @Test
-    public void minWidthOnlySaveButton() {
-        when(leftButton.isVisible()).thenReturn(false);
-        when(leftButton.getOffsetWidth()).thenReturn(50);
-        when(rightButton.isVisible()).thenReturn(false);
-        when(rightButton.getOffsetWidth()).thenReturn(100);
-        when(saveButton.getOffsetWidth()).thenReturn(20);
-
-        assertEquals(20 + 20 * 2, dialog.getMinWidth());
-    }
-
-    @Test
     public void minWidthOnlyLeftButtonVisible() {
         when(leftButton.isVisible()).thenReturn(true);
         when(leftButton.getOffsetWidth()).thenReturn(50);

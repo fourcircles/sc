@@ -7,7 +7,10 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.user.client.*;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
@@ -18,6 +21,8 @@ import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.button.SimpleButton;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
+import kz.arta.synergy.components.client.input.ArtaTextArea;
+import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.theme.Theme;
 
@@ -309,6 +314,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         TreeItem category1 = addCategory(SCMessages.i18n.tr("Кнопки"));
         TreeItem category2 = addCategory(SCMessages.i18n.tr("Диалог"));
+        TreeItem category3 = addCategory(SCMessages.i18n.tr("Поля ввода"));
 
         int cnt = 0;
 
@@ -480,6 +486,103 @@ public class ShowCasePanel extends LayoutPanel {
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));
         cnt++;
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог с кнопками"), SCMessages.i18n.tr("Диалог с кнопками"), setUpDialogs(true));
+        cnt++;
+        new ShowComponent(this, category3, SCMessages.i18n.tr("Поле ввода текста"), SCMessages.i18n.tr("Поле ввода текста"), getTextInputs());
+    }
+
+    /**
+     * Текстовые поля
+     * @return панель с текстовыми полями
+     */
+    private Widget getTextInputs() {
+        FlowPanel panel = new FlowPanel();
+        final TextInput textInput = new TextInput();
+        textInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        textInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(textInput);
+        textInput.setPlaceHolder(SCMessages.i18n.tr("Необязательное поле"));
+
+        final TextInput input = new TextInput();
+        input.setEnabled(false);
+        panel.add(input);
+        input.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        input.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        input.setPlaceHolder(SCMessages.i18n.tr("Неактивное поле"));
+
+        final TextInput inputAllow = new TextInput(false);
+        panel.add(inputAllow);
+        inputAllow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        inputAllow.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        inputAllow.setPlaceHolder(SCMessages.i18n.tr("Обязательное поле"));
+
+        final TextInput widthInput = new TextInput(false);
+        panel.add(widthInput);
+        widthInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        widthInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        widthInput.setPlaceHolder(SCMessages.i18n.tr("Широкое поле ввода"));
+        widthInput.setWidth("300px");
+
+        final TextInput smallWidthInput = new TextInput(false);
+        panel.add(smallWidthInput);
+        smallWidthInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        smallWidthInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        smallWidthInput.setPlaceHolder(SCMessages.i18n.tr("Маленькое поле ввода"));
+        smallWidthInput.setWidth("100px");
+
+        Panel textAreaPanel = new FlowPanel();
+        textAreaPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+
+        final ArtaTextArea textArea = new ArtaTextArea();
+        textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        textArea.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        textArea.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода"));
+        textAreaPanel.add(textArea);
+
+        final ArtaTextArea disableTextArea = new ArtaTextArea(false);
+        disableTextArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        disableTextArea.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        disableTextArea.setPlaceHolder(SCMessages.i18n.tr("Неактивное многострочное поле ввода"));
+        disableTextArea.setEnabled(false);
+        textAreaPanel.add(disableTextArea);
+
+        final ArtaTextArea textAreaEmpty = new ArtaTextArea(false);
+        textAreaEmpty.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        textAreaEmpty.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        textAreaEmpty.setPlaceHolder(SCMessages.i18n.tr("Обязательное многострочное поле ввода"));
+        textAreaPanel.add(textAreaEmpty);
+
+        final ArtaTextArea textAreaSize = new ArtaTextArea(false);
+        textAreaSize.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        textAreaSize.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        textAreaSize.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода с заданным размером"));
+        textAreaSize.setSize("300px", "300px");
+        textAreaPanel.add(textAreaSize);
+
+
+        panel.add(textAreaPanel);
+
+        SimpleButton button = new SimpleButton(SCMessages.i18n.tr("Валидация полей"), SimpleButton.Type.APPROVE);
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                textInput.checkInput();
+                input.checkInput();
+                inputAllow.checkInput();
+                widthInput.checkInput();
+                smallWidthInput.checkInput();
+                textArea.checkInput();
+            }
+        });
+        Panel buttonPanel = new FlowPanel();
+        buttonPanel.add(button);
+        button.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        button.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        buttonPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+        panel.add(buttonPanel);
+
+        panel.setSize("100%", "100%");
+
+        return panel;
     }
 
     private ContextMenu createSimpleMenu() {

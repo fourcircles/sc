@@ -392,7 +392,44 @@
     margin-right: 10px;
 }
 
+/*todo перенести цвет в константы*/
 .green .menuSeparator {
     background-color: #49b885;
+}
+
+
+.commonInput, .artaText {
+    border-color: buttonBorder;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+    background-color: whiteBG;
+    color: textColor2;
+    padding: 8px;
+    vertical-align: top;
+}
+
+.commonInput {
+    height: 30px;
+    padding: 0 8px;
+}
+
+.commonInput.disabled, .artaText.disabled {
+    background-color: buttonBG;
+    color: border1;
+}
+
+.commonInput:focus, .artaText:focus{
+    border-color: border1;
+    color: textColor2;
+}
+
+.commonInput.invalid, .artaText.invalid {
+    border-color: declineButtonBG1;
+    color: textColor2;
+}
+
+.commonInput.placeHolder, .artaText.placeHolder{
+    color: border1;
 }
 

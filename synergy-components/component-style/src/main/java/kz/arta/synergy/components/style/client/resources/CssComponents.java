@@ -33,6 +33,8 @@ public interface CssComponents extends CssResource {
 
     String buttonText();
 
+    String commonInput();
+
     String contextMenu();
 
     String contextMenuItem();
@@ -75,6 +77,8 @@ public interface CssComponents extends CssResource {
 
     String indicatorNumber();
 
+    String invalid();
+
     String mainBg();
 
     String mainText();
@@ -84,6 +88,8 @@ public interface CssComponents extends CssResource {
     String menuSeparator();
 
     String over();
+
+    String placeHolder();
 
     String popupPanel();
 
@@ -102,4 +108,6 @@ public interface CssComponents extends CssResource {
     String textColor3();
 
     String whiteBG();
+
+    String artaText();
 }

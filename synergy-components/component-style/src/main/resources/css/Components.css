@@ -32,6 +32,7 @@
 @def border1 #afafaf;
 @def mainBg #373d49;
 @eval mainBg_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#373d49","0");
+@def buttonPressed #d6d6d6;
 
 @def approveButtonBG1 #93c5ae;
 @def approveButtonBG2 #55cc95;
@@ -114,16 +115,7 @@
     background: linear-gradient(to right,  approveButtonBG3_0 0%,approveButtonBG3 50%,approveButtonBG3 100%);
 }
 
-.pressed.approveButton .gradient{
-    background: -moz-linear-gradient(left,  approveButtonBG4_0 0%, approveButtonBG4 50%, approveButtonBG4 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG4_0), color-stop(50%,approveButtonBG4), color-stop(100%,approveButtonBG4));
-    background: -webkit-linear-gradient(left,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
-    background: -o-linear-gradient(left,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
-    background: -ms-linear-gradient(left,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
-    background: linear-gradient(to right,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
-}
-
-.over.approveButton .gradient{
+.approveButton:hover .gradient{
     background: -moz-linear-gradient(left,  approveButtonBG2_0 0%, approveButtonBG2 50%, approveButtonBG2 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG2_0), color-stop(50%,approveButtonBG2), color-stop(100%,approveButtonBG2));
     background: -webkit-linear-gradient(left,  approveButtonBG2_0 0%,approveButtonBG2 50%,approveButtonBG2 100%);
@@ -132,13 +124,22 @@
     background: linear-gradient(to right,  approveButtonBG2_0 0%,approveButtonBG2 50%,approveButtonBG2 100%);
 }
 
-.declineButton .gradient{
-    background: -moz-linear-gradient(left,  declineButtonBG3_0 0%, declineButtonBG3 50%, declineButtonBG3 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG3_0), color-stop(50%,declineButtonBG3), color-stop(100%,declineButtonBG3)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(left,  declineButtonBG3_0 0%,declineButtonBG3 50%,declineButtonBG3 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(left,  declineButtonBG3_0 0%,declineButtonBG3 50%,declineButtonBG3 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(left,  declineButtonBG3_0 0%,declineButtonBG3 50%,declineButtonBG3 100%); /* IE10+ */
-    background: linear-gradient(to right,  declineButtonBG3_0 0%,declineButtonBG3 50%,declineButtonBG3 100%); /* W3C */
+.approveButton.pressed .gradient{
+    background: -moz-linear-gradient(left,  approveButtonBG4_0 0%, approveButtonBG4 50%, approveButtonBG4 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG4_0), color-stop(50%,approveButtonBG4), color-stop(100%,approveButtonBG4));
+    background: -webkit-linear-gradient(left,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
+    background: -o-linear-gradient(left,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
+    background: -ms-linear-gradient(left,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
+    background: linear-gradient(to right,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
+}
+
+.declineButton:hover .gradient{
+    background: -moz-linear-gradient(left,  declineButtonBG2_0 0%, declineButtonBG2 50%, declineButtonBG2 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG2_0), color-stop(50%,declineButtonBG2), color-stop(100%,declineButtonBG2)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* IE10+ */
+    background: linear-gradient(to right,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* W3C */
 }
 
 .pressed.declineButton .gradient{
@@ -150,15 +151,6 @@
     background: linear-gradient(to right,  declineButtonBG4_0 0%,declineButtonBG4 50%,declineButtonBG4 100%); /* W3C */
 }
 
-.over.declineButton .gradient{
-    background: -moz-linear-gradient(left,  declineButtonBG2_0 0%, declineButtonBG2 50%, declineButtonBG2 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG2_0), color-stop(50%,declineButtonBG2), color-stop(100%,declineButtonBG2)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(left,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(left,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(left,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* IE10+ */
-    background: linear-gradient(to right,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* W3C */
-}
-
 .dialogTitle .gradient{
     background: -moz-linear-gradient(left,  mainBg_0 0%, mainBg 50%, mainBg 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,mainBg_0), color-stop(50%,mainBg), color-stop(100%,mainBg)); /* Chrome,Safari4+ */
@@ -167,7 +159,6 @@
     background: -ms-linear-gradient(left,  mainBg_0 0%,mainBg 50%,mainBg 100%); /* IE10+ */
     background: linear-gradient(to right,  mainBg_0 0%,mainBg 50%,mainBg 100%); /* W3C */
 }
-
 
 .buttonSimple:hover {
     background-color: whiteBG;
@@ -201,15 +192,9 @@
     min-width: approveButtonMinWidth;
 }
 
-.approveButton.over {
+.approveButton:hover {
     background-color: approveButtonBG2;
     border-color: approveButtonBG2;
-    color: whiteBG;
-}
-
-.approveButton.disabled {
-    background-color: approveButtonBG1;
-    border-color: approveButtonBG1;
     color: whiteBG;
 }
 
@@ -219,6 +204,13 @@
     color: whiteBG;
 }
 
+.approveButton.disabled {
+    background-color: approveButtonBG1;
+    border-color: approveButtonBG1;
+    color: whiteBG;
+}
+
+
 .declineButton {
     background-color: declineButtonBG3;
     border-color: declineButtonBG3;
@@ -226,7 +218,7 @@
     min-width: approveButtonMinWidth;
 }
 
-.declineButton.over {
+.declineButton:hover {
     background-color: declineButtonBG2;
     border-color: declineButtonBG2;
     color: whiteBG;
@@ -345,11 +337,29 @@
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
     border: 0px;
+    border-left: 1px solid buttonBorder;
     background-color: buttonBG;
+}
+.dropDownButton:hover {
+    border-color: border1;
+}
+.dropDownButton:active {
+    background-color: buttonPressed;
+    border-color: border1;
+}
+.disabled .dropDownButton {
+    background-color: whiteBG;
 }
 
 .approveButton .dropDownButton {
     background-color: approveButtonBG4;
+    border-color: approveButtonBG4;
+}
+.approveButton .dropDownButton:active {
+    background-color: approveButtonBG5;
+}
+.approveButton.disabled .dropDownButton {
+    background-color: approveButtonBG1;
 }
 
 .contextMenuItem {
@@ -361,6 +371,7 @@
     line-height: 32px;
 }
 
+/*здесь не используется :hover из-за возможности выделения клавиатурой*/
 .contextMenuItem.over {
     background-color: selectColor;
 }
@@ -370,7 +381,7 @@
 
 .contextMenu {
     font-family: DroidSans;
-    font-size:14px;
+    font-size: 14px;
 
     min-width: 100px;
     min-height: 32px;
@@ -383,6 +394,7 @@
 .contextMenu.green {
     background-color: approveButtonBG4;
     color: whiteBG;
+    border-color: approveButtonBG4;
 }
 
 .menuSeparator {

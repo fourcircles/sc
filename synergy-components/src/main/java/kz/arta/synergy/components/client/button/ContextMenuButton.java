@@ -1,11 +1,13 @@
 package kz.arta.synergy.components.client.button;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.resources.client.ImageResource;
-import kz.arta.synergy.components.client.ContextMenu;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.menu.ContextMenu;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -18,7 +20,6 @@ import kz.arta.synergy.components.style.client.Constants;
 public class ContextMenuButton extends SimpleButton {
     //todo 1. открепляется контекстное меню при измении размера окна браузера
 //    todo 2. контекстное меню появляется не всегда ровно на нижнем краю кнопки
-//    todo 3. при нажатии на вверх-вних кнопки с контектсным меню прокручивается страница при наличии скролла
 
     /**
      * Кнопка для открытия контекстного меню
@@ -61,6 +62,12 @@ public class ContextMenuButton extends SimpleButton {
             @Override
             public void onMouseDown(MouseDownEvent event) {
                 event.stopPropagation();
+            }
+        };
+        ClickHandler click = new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                event.stopPropagation();
                 if (contextMenu != null) {
                     if (contextMenu.isShowing()) {
                         contextMenu.hide();
@@ -68,12 +75,22 @@ public class ContextMenuButton extends SimpleButton {
                         contextMenu.showUnderParent();
                     }
                 }
-
             }
         };
         contextButton.addDomHandler(down, MouseDownEvent.getType());
+        contextButton.addDomHandler(click, ClickEvent.getType());
+
         contextButton.setStyleName(SynergyComponents.resources.cssComponents().dropDownButton());
         add(contextButton);
+
+        addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (contextMenu != null) {
+                    contextMenu.hide();
+                }
+            }
+        });
     }
 
     /**
@@ -116,4 +133,5 @@ public class ContextMenuButton extends SimpleButton {
         contextMenu.setRelativeWidget(this);
         this.contextMenu = contextMenu;
     }
+
 }

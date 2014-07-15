@@ -1,38 +1,47 @@
-package kz.arta.synergy.components.client;
+package kz.arta.synergy.components.client.menu;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.util.Selection;
 
 import java.util.ArrayList;
 
 /**
  * User: vsl
- * Date: 09.07.14
- * Time: 15:14
+ * Date: 15.07.14
+ * Time: 10:48
  */
-public class ContextMenu extends PopupPanel {
+//TODO document
+//TODO move smartshow to contextmenu
+public abstract class MenuBase extends PopupPanel{
     protected FlowPanel panel;
 
-    protected ArrayList<ContextMenuItem> items;
+    protected ArrayList<MenuItem> items;
 
     protected Widget relativeWidget;
 
     private boolean mouseOver = false;
 
-    private int selectedIndex = -1;
+    protected int selectedIndex = -1;
 
-    public ContextMenu() {
+    private ResizeHandler resizeHandler;
+    private HandlerRegistration resizeRegistration;
+
+    public MenuBase() {
         super(true);
         panel = GWT.create(FlowPanel.class);
-        setStyleName(SynergyComponents.resources.cssComponents().contextMenu());
-        items = new ArrayList<ContextMenuItem>();
+        setStyleName(getMainStyle());
+        items = new ArrayList<MenuItem>();
         setWidget(panel);
 
         MouseOverHandler over = new MouseOverHandler() {
@@ -50,103 +59,93 @@ public class ContextMenu extends PopupPanel {
 
         addDomHandler(over, MouseOverEvent.getType());
         addDomHandler(out, MouseOutEvent.getType());
+
+        resizeHandler = new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                hide();
+            }
+        };
     }
 
-    private void selectItem(int index) {
-        ContextMenuItem item = items.get(index);
-        if (item.isSeparator()) {
+    protected void selectItem(int index) {
+        if (index < 0 || index >= items.size()) {
             return;
         }
-        for (ContextMenuItem i: items) {
+        MenuItem item = items.get(index);
+        for (MenuItem i: items) {
             i.asWidget().removeStyleName(SynergyComponents.resources.cssComponents().over());
         }
         selectedIndex = index;
         item.asWidget().addStyleName(SynergyComponents.resources.cssComponents().over());
     }
 
-    private int getFirstReal() {
-        return getNextReal(-1);
-    }
 
-    private int getLastReal() {
-        return getPreviousReal(items.size());
-    }
-
-    private int getNextReal(int start) {
-        int i = start + 1;
-        if (i < 0) {
-            return -1;
-        }
-        while (i < items.size() && items.get(i).isSeparator()) {
-            i++;
-        }
-        if (i == items.size()) {
-            i = 0;
-            while (i < start && items.get(i).isSeparator()) {
-                i++;
-            }
-            return i >= start ? -1 : i;
-        } else {
-            return i;
-        }
-    }
-
-    private int getPreviousReal(int start) {
-        int i = start - 1;
-        if (i >= items.size()) {
-            return -1;
-        }
-        while (i >= 0 && items.get(i).isSeparator()) {
-            i--;
-        }
-        if (i == -1) {
-            i = items.size() - 1;
-            while (i > start && items.get(i).isSeparator()) {
-                i--;
-            }
-            return i <= start ? -1 : i;
-
-        } else {
-            return i;
-        }
-    }
-
-    public ContextMenu(Widget relativeWidget) {
+    public MenuBase(Widget relativeWidget) {
         this();
         this.relativeWidget = relativeWidget;
     }
 
-    private void addItem(ContextMenuItem item) {
+    private void addItem(MenuItem item) {
         items.add(item);
         panel.add(item.asWidget());
     }
 
+    public void addItem(String text) {
+        addItem(new MenuItem(text));
+    }
+
+    public void addItem(String text, ImageResource imageResource) {
+        addItem(new MenuItem(text, imageResource));
+    }
+
     public void addItem(String text, Command command) {
-        addItem(new ContextMenuItem(text, command));
+        addItem(new MenuItem(text, command));
     }
 
-    public void addItem(String text, ImageResource imageResource, Command command) {
-        addItem(new ContextMenuItem(text, imageResource, command));
-    }
-
-    public void addSeparator() {
-        addItem(ContextMenuItem.getSeparator());
-    }
-
-    public void insertItem(int index, String text, Command command) {
-        items.add(index, new ContextMenuItem(text, command));
+    public void addItem(String text, ImageResource icon, Command command) {
+        addItem(new MenuItem(text, icon, command));
     }
 
     public void removeItem(int index) {
         items.remove(index);
+        panel.remove(index);
     }
 
     public String getText(int index) {
         return items.get(index).getText();
     }
 
-    public void setItem(int index, String text, Command command) {
-        items.set(index, new ContextMenuItem(text, command));
+    public void setItemText(int index, String text) {
+        items.get(index).setText(text);
+    }
+
+    protected int getNext() {
+        if (items.isEmpty()) {
+            return -1;
+        }
+        return (selectedIndex + 1) % items.size();
+    }
+
+    protected int getPrevious() {
+        if (items.isEmpty()) {
+            return -1;
+        }
+        return (selectedIndex - 1) % items.size();
+    }
+
+    protected int getFirst() {
+        if (items.isEmpty()) {
+            return -1;
+        }
+        return 0;
+    }
+
+    protected int getLast() {
+        if (items.isEmpty()) {
+            return -1;
+        }
+        return items.size();
     }
 
     public void clearItems() {
@@ -160,10 +159,32 @@ public class ContextMenu extends PopupPanel {
         }
         relativeWidget = widget;
         addAutoHidePartner(relativeWidget.getElement());
-
-        getElement().getStyle().setProperty("borderTop", "0px");
     }
 
+    @Override
+    public void show() {
+        super.show();
+        if (resizeRegistration == null) {
+            resizeRegistration = Window.addResizeHandler(resizeHandler);
+        }
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        if (resizeRegistration != null) {
+            resizeRegistration.removeHandler();
+            resizeRegistration = null;
+        }
+    }
+
+    /**
+     * Выравнивает меню так, чтобы его верхний левый угол имел заданные координаты. Если при этом
+     * меню выходит за пределы окна браузера, например за правую границу, заданные координаты будет
+     * иметь верхний правый угол и т. д.
+     * @param posX координата X
+     * @param posY координата Y
+     */
     public void smartShow(int posX, int posY) {
         show();
         int lenX = getOffsetWidth();
@@ -179,53 +200,57 @@ public class ContextMenu extends PopupPanel {
         setPopupPosition(posX, posY);
     }
 
+    /**
+     * Показывает меню под родителем.
+     */
     public void showUnderParent() {
         if (relativeWidget != null && relativeWidget.isAttached()) {
             getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - 8 + "px");
 
             int x = relativeWidget.getAbsoluteLeft() + 4;
-            int y = relativeWidget.getAbsoluteTop() + relativeWidget.getOffsetHeight();
+            int y = relativeWidget.getAbsoluteTop() + relativeWidget.getOffsetHeight() + 1;
             setPopupPosition(x, y);
-        } else {
-            getElement().getStyle().setProperty("minWidth", "");
+            show();
         }
-        show();
     }
 
-    private static class ContextMenuItem implements IsWidget{
-        private String text;
-        private Command command;
-        private ImageResource imageResource;
+    /**
+     * Пункт меню
+     */
+    protected static class MenuItem implements IsWidget {
+        /**
+         * Текст пункта меню
+         */
+        protected String text;
+
+        /**
+         * Иконка пункта меню
+         */
+        protected ImageResource icon;
+
+        /**
+         * Действие пункта меню
+         */
+        protected Command command;
 
         protected FlowPanel itemPanel;
 
-        private boolean isSeparator;
-
-        public static ContextMenuItem getSeparator() {
-            FlowPanel separatorPanel = new FlowPanel();
-            separatorPanel.setStyleName(SynergyComponents.resources.cssComponents().menuSeparator());
-            return new ContextMenuItem(separatorPanel) {
-                @Override
-                public Widget asWidget() {
-                    return this.itemPanel;
-                }
-            };
+        public MenuItem(String text) {
+            this(text, null, null);
         }
 
-        private ContextMenuItem(FlowPanel itemPanel) {
-            this.itemPanel = itemPanel;
-            isSeparator = true;
+        public MenuItem(String text, ImageResource icon) {
+            this(text, icon, null);
         }
 
-        public ContextMenuItem(String text, Command command) {
+        public MenuItem(String text, Command command) {
+            this(text, null, command);
+        }
+
+        public MenuItem(String text, ImageResource icon, Command command) {
             this.text = text;
+            this.icon = icon;
             this.command = command;
-            isSeparator = false;
-        }
-
-        public ContextMenuItem(String text, ImageResource imgResource, Command command) {
-            this(text, command);
-            this.imageResource = imgResource;
         }
 
         public String getText() {
@@ -236,18 +261,11 @@ public class ContextMenu extends PopupPanel {
             this.text = text;
         }
 
-        public Command getCommand() {
-            return command;
-        }
-
-        public void setCommand(Command command) {
-            this.command = command;
-        }
-
-        public boolean isSeparator() {
-            return isSeparator;
-        }
-
+        /**
+         * Создает и наполняет FlowPanel, который представляет этот пункт меню.
+         *
+         * @return панель пункта меню
+         */
         @Override
         public Widget asWidget() {
             if (itemPanel == null) {
@@ -272,9 +290,9 @@ public class ContextMenu extends PopupPanel {
                 label.getElement().getStyle().setCursor(Style.Cursor.DEFAULT);
                 label.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
-                if (imageResource != null) {
+                if (icon != null) {
                     Image image = GWT.create(Image.class);
-                    image.setResource(imageResource);
+                    image.setResource(icon);
                     image.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
                     itemPanel.add(image);
                     image.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
@@ -285,6 +303,14 @@ public class ContextMenu extends PopupPanel {
             }
 
             return itemPanel;
+        }
+
+        /**
+         * Название стиля для пункта меню
+         * @return название стиля
+         */
+        protected String getMainStyle() {
+            return SynergyComponents.resources.cssComponents().contextMenuItem();
         }
     }
 
@@ -302,29 +328,34 @@ public class ContextMenu extends PopupPanel {
             case Event.ONKEYDOWN:
                 switch (nativeEvent.getKeyCode()) {
                     case KeyCodes.KEY_DOWN:
-                        event.consume();
-                        selectItem(getNextReal(selectedIndex));
+                        event.cancel();
+                        selectItem(getNext());
                         break;
                     case KeyCodes.KEY_UP:
-                        event.consume();
-                        selectItem(getPreviousReal(selectedIndex));
+                        event.cancel();
+                        selectItem(getPrevious());
                         break;
                     case KeyCodes.KEY_LEFT:
-                        event.consume();
-                        selectItem(getFirstReal());
+                        event.cancel();
+                        selectItem(getFirst());
                         break;
                     case KeyCodes.KEY_RIGHT:
-                        event.consume();
-                        selectItem(getLastReal());
+                        event.cancel();
+                        selectItem(getLast());
                         break;
                     case KeyCodes.KEY_ESCAPE:
-                        event.consume();
+                        event.cancel();
                         hide();
                         break;
                     default:
                 }
         }
-
         super.onPreviewNativeEvent(event);
     }
+
+    /**
+     * Возвращает главный стиль компонента
+     * @return название стиля
+     */
+    abstract protected String getMainStyle();
 }

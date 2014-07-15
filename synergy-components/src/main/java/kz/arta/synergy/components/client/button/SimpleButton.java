@@ -48,6 +48,11 @@ public class SimpleButton extends ButtonBase {
         init();
     }
 
+    /**
+     * Кнопка с текстом и указанием типа
+     * @param text текст кнопки
+     * @param type тип кнопки
+     */
     public SimpleButton(String text, Type type) {
         super(text);
         this.type = type;
@@ -82,9 +87,21 @@ public class SimpleButton extends ButtonBase {
         setStyleName(SynergyComponents.resources.cssComponents().approveButton());
     }
 
+    /**
+     * Тип кнопки
+     */
     public enum Type {
+        /**
+         * зеленая кнопка "approve"
+         */
         APPROVE,
+        /**
+         * красная кнопка "decline"
+         */
         DECLINE,
+        /**
+         * обычная кнопка
+         */
         REGULAR;
     }
 }

@@ -13,12 +13,21 @@ import kz.arta.synergy.components.style.client.Constants;
  * User: vsl
  * Date: 10.07.14
  * Time: 10:49
+ * Кнопка с контекстным меню
  */
 public class ContextMenuButton extends SimpleButton {
     //todo 1. открепляется контекстное меню при измении размера окна браузера
 //    todo 2. контекстное меню появляется не всегда ровно на нижнем краю кнопки
 //    todo 3. при нажатии на вверх-вних кнопки с контектсным меню прокручивается страница при наличии скролла
+
+    /**
+     * Кнопка для открытия контекстного меню
+     */
     private ImageButton contextButton;
+
+    /**
+     * Контекстное меню
+     */
     private ContextMenu contextMenu;
 
     public ContextMenuButton() {
@@ -67,12 +76,21 @@ public class ContextMenuButton extends SimpleButton {
         add(contextButton);
     }
 
+    /**
+     * В кнопке новый элемент - кнопка для открытия контекстного меню, ее ширину надо учитывать
+     * при вычислении длины текста.
+     * @return
+     */
     @Override
     protected int getTextLabelWidth() {
         int width = super.getTextLabelWidth();
         return width - Constants.IMAGE_BUTTON_WIDTH;
     }
 
+    /**
+     * Если ширина кнопки большая, то все элементы должны центрироваться. Кроме кнопки открытия контекстного
+     * меню. В этом случае вычисляется необходимый сдвиг для этой кнопки.
+     */
     @Override
     protected void adjustMargins() {
         if (!isAttached()) {
@@ -87,6 +105,10 @@ public class ContextMenuButton extends SimpleButton {
         super.adjustMargins();
     }
 
+    /**
+     * Указывает контекстное меню кнопки
+     * @param contextMenu контекстное меню
+     */
     public void setContextMenu(ContextMenu contextMenu) {
         if (type == Type.APPROVE) {
             contextMenu.addStyleName(SynergyComponents.resources.cssComponents().green());

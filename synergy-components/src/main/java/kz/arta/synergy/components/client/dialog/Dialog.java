@@ -18,11 +18,10 @@ import kz.arta.synergy.components.style.client.Constants;
  * Диалог с кнопкой "сохранить" и кнопками навигации.
  */
 public class Dialog extends DialogSimple {
-    /**
-     * margin слева для навигационных кнопок
-     */
-    private static final int HORIZONTAL_BUTTON_MARGIN = 20;
 
+    /**
+     * минимальное расстояние между кнопкой "сохранить" и навигационными кнопками
+     */
     private static final int MIN_INNER_MARGIN = 20;
 
     /**
@@ -56,10 +55,8 @@ public class Dialog extends DialogSimple {
         panel.add(buttonsPanel);
 
         leftButton = makeButton(Messages.i18n.tr("Назад"), ImageResources.IMPL.navigationLeft(), ButtonBase.IconPosition.LEFT);
-//        leftButton.getElement().getStyle().setFloat(Style.Float.LEFT);
         saveButton = makeButton(Messages.i18n.tr("Сохранить"));
         rightButton = makeButton(Messages.i18n.tr("Еще"), ImageResources.IMPL.navigationRight(), ButtonBase.IconPosition.RIGHT);
-//        rightButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
         buttonsPanel.add(leftButton);
         buttonsPanel.add(saveButton);
@@ -105,6 +102,9 @@ public class Dialog extends DialogSimple {
      * на минимальную удовлетворяющую требованиям.
      */
     protected void adjustSaveButtonMargin() {
+        if (!isAttached()) {
+            return;
+        }
         double freeSpace = (double) getOffsetWidth() -
                 Constants.DIALOG_BORDER_WIDTH * 2 -
                 saveButton.getOffsetWidth();
@@ -113,6 +113,8 @@ public class Dialog extends DialogSimple {
         double rightMargin;
 
         if (leftButton.isVisible() && rightButton.isVisible()) {
+            //случай, когда присутствуют обе навигационные кнопки
+            //кнопка "сохранить" равноудалена от левой и правой навигационных кнопок
             freeSpace -= leftButton.getOffsetWidth() + Constants.DIALOG_NAV_BUTTON_HMARGIN;
             freeSpace -= rightButton.getOffsetWidth() + Constants.DIALOG_NAV_BUTTON_HMARGIN;
             freeSpace /= 2;
@@ -124,7 +126,9 @@ public class Dialog extends DialogSimple {
                 leftMargin = rightMargin = freeSpace;
             }
         } else {
+            //в обоих следующих случаях кнопка "сохранить" равноудалена от левого и правого границ диалога
             if (!leftButton.isVisible() && !rightButton.isVisible()) {
+                //случай, когда присутствует только кнопка "сохранить"
                 freeSpace /= 2;
                 if (freeSpace < MIN_INNER_MARGIN) {
                     setWidth(saveButton.getOffsetWidth() + Constants.DIALOG_NAV_BUTTON_HMARGIN * 2 + "px");
@@ -133,6 +137,7 @@ public class Dialog extends DialogSimple {
                     leftMargin = rightMargin = freeSpace;
                 }
             } else {
+                //случай, когда присутствует только одна навигационная кнопка
                 double noButtonSideMargin = freeSpace / 2;
                 double buttonWidth;
 
@@ -169,11 +174,19 @@ public class Dialog extends DialogSimple {
         saveButton.getElement().getStyle().setMarginRight(rightMargin - 0.5, Style.Unit.PX);
     }
 
+    /**
+     * Изменяет видимость левой кнопки
+     * @param visible
+     */
     public void setLeftButtonVisible(boolean visible) {
         leftButton.setVisible(visible);
         adjustSaveButtonMargin();
     }
 
+    /**
+     * Изменяет видимость правой кнопки
+     * @param visible
+     */
     public void setRightButtonVisible(boolean visible) {
         rightButton.setVisible(visible);
         adjustSaveButtonMargin();

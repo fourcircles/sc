@@ -46,6 +46,8 @@ public class DialogSimple extends PopupPanel {
      */
     protected FlowPanel contentPanel;
 
+    private boolean modal = true;
+
     protected Widget content;
 
     private boolean dragging = false;
@@ -77,7 +79,17 @@ public class DialogSimple extends PopupPanel {
     }
 
     public DialogSimple() {
-        setModal(true);
+        this(true);
+    }
+
+    public DialogSimple(boolean modal) {
+
+        this.modal = modal;
+        setModal(this.modal);
+
+        if (this.modal) {
+            setGlassEnabled(true);
+        }
         panel = GWT.create(FlowPanel.class);
 
         closeButton = makeTitleButton(ImageResources.IMPL.dialogCloseButton(), ImageResources.IMPL.dialogCloseButtonOver());

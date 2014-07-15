@@ -169,7 +169,7 @@
 }
 
 
-.buttonSimple.over {
+.buttonSimple:hover {
     background-color: whiteBG;
     border-color: border1;
     color: textColor3;
@@ -201,7 +201,7 @@
     min-width: approveButtonMinWidth;
 }
 
-.approveButton.over {
+.approveButton:hover {
     background-color: approveButtonBG2;
     border-color: approveButtonBG2;
     color: whiteBG;
@@ -226,7 +226,7 @@
     min-width: approveButtonMinWidth;
 }
 
-.declineButton.over {
+.declineButton:hover {
     background-color: declineButtonBG2;
     border-color: declineButtonBG2;
     color: whiteBG;

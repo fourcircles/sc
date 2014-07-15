@@ -14,13 +14,15 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
-import kz.arta.synergy.components.client.ContextMenu;
 import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.ContextMenuButton;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.button.SimpleButton;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
+import kz.arta.synergy.components.client.input.ArtaTextArea;
+import kz.arta.synergy.components.client.input.TextInput;
+import kz.arta.synergy.components.client.menu.ContextMenu;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.theme.Theme;
 

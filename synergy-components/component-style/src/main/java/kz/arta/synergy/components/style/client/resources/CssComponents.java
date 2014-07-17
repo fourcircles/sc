@@ -33,6 +33,8 @@ public interface CssComponents extends CssResource {
 
     String buttonText();
 
+    String comboBox();
+
     String commonInput();
 
     String contextMenu();
@@ -108,6 +110,10 @@ public interface CssComponents extends CssResource {
     String textColor3();
 
     String whiteBG();
+
+    String vscroll();
+
+    String scrollbar();
 
     String artaText();
 }

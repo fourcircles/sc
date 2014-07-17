@@ -29,6 +29,9 @@ public class Constants {
      * расстояние между заголовком и кнопкой "свернуть"
      */
     public static final int DIALOG_TITLE_LABEL_RIGHT_PADDING = 10;
+
+    public static final int SCROLL_BAR_WIDTH = 17;
+    public static final int COMBO_LIST_DEFAULT_HEIGHT = 200;
     
     
     public static String buttonHeight() {
@@ -87,5 +90,9 @@ public class Constants {
 
     public static String imageButtonWidth() {
         return IMAGE_BUTTON_WIDTH + "px";
+    }
+
+    public static String scrollBarWidth() {
+        return SCROLL_BAR_WIDTH + "px";
     }
 }

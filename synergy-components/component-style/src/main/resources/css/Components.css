@@ -369,12 +369,17 @@
     padding-right: 10px;
     height: 32px;
     line-height: 32px;
+    overflow: hidden;
+}
+.contextMenuItem > * {
+    vertical-align: middle;
 }
 
 /*здесь не используется :hover из-за возможности выделения клавиатурой*/
 .contextMenuItem.over {
     background-color: selectColor;
 }
+
 .green .contextMenuItem.over{
     background-color: approveButtonBG2;
 }
@@ -389,6 +394,7 @@
     background-color: whiteBG;
     color: stackPanelText2;
     vertical-align: middle;
+    margin-right: 0px;
 }
 
 .contextMenu.green {
@@ -404,9 +410,8 @@
     margin-right: 10px;
 }
 
-/*todo перенести цвет в константы*/
 .green .menuSeparator {
-    background-color: #49b885;
+    background-color: approveButtonBG3;
 }
 
 
@@ -424,6 +429,7 @@
 .commonInput {
     height: 30px;
     padding: 0 8px;
+    outline: none;
 }
 
 .commonInput.disabled, .artaText.disabled {
@@ -443,5 +449,73 @@
 
 .commonInput.placeHolder, .artaText.placeHolder{
     color: border1;
+}
+
+.comboBox{
+    min-width: 200px;
+    text-align: left;
+    height: 30px;
+    line-height: 30px;
+    border: solid 1px buttonPressed;
+    border-radius: 4px;
+
+    display:inline-block;
+}
+
+.comboBox .buttonSimple {
+    margin-top: -1px;
+    margin-right: -1px;
+
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
+    border: 1px solid buttonPressed;
+    background-color: buttonBG;
+
+    display: inline-block;
+}
+
+.comboBox .buttonSimple:hover {
+    border-color: border1;
+
+}
+
+.comboBox:active .buttonSimple {
+    border-color: border1;
+    background-color: buttonPressed;
+}
+
+.comboBox .buttonSimple:active {
+    border-color: border1;
+    background-color: buttonPressed;
+}
+
+.comboBox .commonInput {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border: 0px;
+    margin: 0px;
+}
+
+.vscroll {
+    width: 17px;
+    height: 200px;
+    background-color: buttonBG;
+}
+.vscroll img {
+    width: 17px;
+    height: 17px;
+    display: block;
+    background-color: buttonBG;
+}
+
+.vscroll .scrollbar {
+    width: 17px;
+    background-color: buttonBorder;
+    display: block;
+    cursor: default;
+}
+
+.scrollbar.pressed {
+    background-color: buttonPressed;
 }
 

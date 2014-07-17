@@ -19,6 +19,7 @@ import kz.arta.synergy.components.style.client.Constants;
  * Date: 27.06.14
  * Time: 12:26
  */
+//todo изменить dnd
 public class DialogSimple extends PopupPanel {
     /**
      * панель для диалога

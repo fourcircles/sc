@@ -18,9 +18,6 @@ import kz.arta.synergy.components.style.client.Constants;
  * Кнопка с контекстным меню
  */
 public class ContextMenuButton extends SimpleButton {
-    //todo 1. открепляется контекстное меню при измении размера окна браузера
-//    todo 2. контекстное меню появляется не всегда ровно на нижнем краю кнопки
-
     /**
      * Кнопка для открытия контекстного меню
      */

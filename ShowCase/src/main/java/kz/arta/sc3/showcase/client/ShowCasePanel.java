@@ -14,6 +14,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.ContextMenuButton;
 import kz.arta.synergy.components.client.button.ImageButton;
@@ -482,12 +483,27 @@ public class ShowCasePanel extends LayoutPanel {
         scroll.setWidget(colorButtonPanel);
         new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), scroll);
 
+        FlowPanel comboBoxPanel = new FlowPanel();
+
+        ComboBox combo1 = new ComboBox();
+        combo1.addItem("hello", ImageResources.IMPL.zoom());
+        combo1.addItem("goodbye", ImageResources.IMPL.navigationLeft());
+        combo1.addItem("oh hai again", ImageResources.IMPL.navigationRight());
+        combo1.addItem("oh hello there how are you where did you go last time");
+        for (int i = 1; i < 10; i++) {
+            combo1.addItem("item " + i);
+        }
+
+        comboBoxPanel.add(combo1);
+
         cnt++;
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));
         cnt++;
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог с кнопками"), SCMessages.i18n.tr("Диалог с кнопками"), setUpDialogs(true));
         cnt++;
         new ShowComponent(this, category3, SCMessages.i18n.tr("Поле ввода текста"), SCMessages.i18n.tr("Поле ввода текста"), getTextInputs());
+        cnt++;
+        new ShowComponent(this, category3, SCMessages.i18n.tr("Комбобокс"), SCMessages.i18n.tr("Комбобокс"), comboBoxPanel);
     }
 
     /**

@@ -213,7 +213,7 @@ public abstract class MenuBase extends PopupPanel{
         if (selectedIndex == -1) {
             return getLast();
         }
-        return (selectedIndex - 1) % items.size();
+        return (selectedIndex - 1 + items.size()) % items.size();
     }
 
     /**

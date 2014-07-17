@@ -451,7 +451,7 @@
     color: border1;
 }
 
-.comboBox{
+.comboBox {
     min-width: 200px;
     text-align: left;
     height: 30px;
@@ -496,11 +496,22 @@
     margin: 0px;
 }
 
+.comboBox.disabled  .commonInput{
+    background-color: buttonBG;
+    color: border1;
+}
+
+.comboBox.disabled .buttonSimple {
+    border-color: buttonPressed;
+    background-color: buttonBG;
+}
+
 .vscroll {
     width: 17px;
     height: 200px;
     background-color: buttonBG;
 }
+
 .vscroll img {
     width: 17px;
     height: 17px;

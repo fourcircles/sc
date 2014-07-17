@@ -486,15 +486,20 @@ public class ShowCasePanel extends LayoutPanel {
         FlowPanel comboBoxPanel = new FlowPanel();
 
         ComboBox combo1 = new ComboBox();
-        combo1.addItem("hello", ImageResources.IMPL.zoom());
-        combo1.addItem("goodbye", ImageResources.IMPL.navigationLeft());
-        combo1.addItem("oh hai again", ImageResources.IMPL.navigationRight());
-        combo1.addItem("oh hello there how are you where did you go last time");
-        for (int i = 1; i < 10; i++) {
-            combo1.addItem("item " + i);
+        combo1.addItem(SCMessages.i18n.tr("Приблизить"), ImageResources.IMPL.zoom());
+        combo1.addItem(SCMessages.i18n.tr("Налево"), ImageResources.IMPL.navigationLeft());
+        combo1.addItem(SCMessages.i18n.tr("Направо"), ImageResources.IMPL.navigationRight());
+        combo1.addItem(SCMessages.i18n.tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"));
+        for (int i = 1; i < 30; i++) {
+            combo1.addItem(SCMessages.i18n.tr("Пункт меню ") + i);
         }
-
+        combo1.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
         comboBoxPanel.add(combo1);
+
+        ComboBox comboDisabled = new ComboBox();
+        comboDisabled.setEnabled(false);
+        comboBoxPanel.add(comboDisabled);
+
 
         cnt++;
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));

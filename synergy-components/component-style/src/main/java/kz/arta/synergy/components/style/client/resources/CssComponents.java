@@ -21,6 +21,8 @@ public interface CssComponents extends CssResource {
 
     String approveButtonBG5();
 
+    String artaText();
+
     String bigText();
 
     String border1();
@@ -28,6 +30,8 @@ public interface CssComponents extends CssResource {
     String buttonBG();
 
     String buttonBorder();
+
+    String buttonPressed();
 
     String buttonSimple();
 
@@ -71,13 +75,19 @@ public interface CssComponents extends CssResource {
 
     String dropDownButton();
 
+    String edge();
+
     String gradient();
 
     String green();
 
+    String groupButtonPanel();
+
     String indicatorNumber();
 
     String invalid();
+
+    String left();
 
     String mainBg();
 
@@ -95,6 +105,8 @@ public interface CssComponents extends CssResource {
 
     String pressed();
 
+    String right();
+
     String selectColor();
 
     String stackPanelText2();
@@ -108,6 +120,4 @@ public interface CssComponents extends CssResource {
     String textColor3();
 
     String whiteBG();
-
-    String artaText();
 }

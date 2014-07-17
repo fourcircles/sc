@@ -14,10 +14,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.button.ButtonBase;
-import kz.arta.synergy.components.client.button.ContextMenuButton;
-import kz.arta.synergy.components.client.button.ImageButton;
-import kz.arta.synergy.components.client.button.SimpleButton;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
@@ -316,178 +314,151 @@ public class ShowCasePanel extends LayoutPanel {
         TreeItem category2 = addCategory(SCMessages.i18n.tr("Диалог"));
         TreeItem category3 = addCategory(SCMessages.i18n.tr("Поля ввода"));
 
-        int cnt = 0;
+        new ShowComponent(this, category1, SCMessages.i18n.tr("Простая кнопка"), SCMessages.i18n.tr("Простая кнопка"), getSimpleButtonPanel());
 
-        final ContextMenu menu = createSimpleMenu();
+        new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопка с иконкой"), SCMessages.i18n.tr("Кнопка с иконкой"), getIconButtonPanel());
 
-        FlowPanel simpleButtonPanel = new FlowPanel_() {
-            @Override
-            public void onBrowserEvent(Event event) {
-                switch(DOM.eventGetType(event)) {
-                    case Event.ONCONTEXTMENU :
-                        event.preventDefault();
-                        menu.smartShow(event.getClientX(), event.getClientY());
-                        break;
-                }
-                super.onBrowserEvent(event);
-            }
-        };
+        new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), getColorButtonPanel());
 
-        SimpleButton simpleButton = new SimpleButton(SCMessages.i18n.tr("Простая кнопка"));
-        simpleButton.setWidth("140px");
-        simpleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        simpleButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        simpleButtonPanel.add(simpleButton);
+        new ShowComponent(this, category1, SCMessages.i18n.tr("Групповые кнопки"), SCMessages.i18n.tr("Групповые кнопки"), getGroupButton());
 
-        SimpleButton simpleButton1 = new SimpleButton(SCMessages.i18n.tr("Неактивная кнопка"));
-        simpleButton1.setEnabled(false);
-        simpleButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        simpleButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        simpleButtonPanel.add(simpleButton1);
+        new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));
 
-        SimpleButton simpleButton2 = new SimpleButton(SCMessages.i18n.tr("Кнопка с кликом"));
-        simpleButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        simpleButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        simpleButtonPanel.add(simpleButton2);
-        simpleButton2.addClickHandler(new ClickHandler() {
+        new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог с кнопками"), SCMessages.i18n.tr("Диалог с кнопками"), setUpDialogs(true));
+
+        new ShowComponent(this, category3, SCMessages.i18n.tr("Поле ввода текста"), SCMessages.i18n.tr("Поле ввода текста"), getTextInputs());
+    }
+
+    private Widget getGroupButton() {
+        FlowPanel panel = new FlowPanel();
+        SimpleToggleButton toggleButton = new SimpleToggleButton("Кнопка");
+        toggleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        toggleButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(toggleButton);
+
+
+        GroupButtonPanel groupButtonPanel = new GroupButtonPanel(true);
+        groupButtonPanel.addButton("Первая", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                Window.alert(SCMessages.i18n.tr("Кнопка была нажата!"));
+
             }
         });
+        groupButtonPanel.addButton("Вторая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        ContextMenu menuForSimple = createSimpleMenu();
-        ContextMenuButton simpleButton4 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"));
-        simpleButton4.setWidth("140px");
-        simpleButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        simpleButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        simpleButtonPanel.add(simpleButton4);
-        simpleButton4.setContextMenu(menuForSimple);
+            }
+        });
+        groupButtonPanel.addButton("Третья", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        new ShowComponent(this, category1, SCMessages.i18n.tr("Простая кнопка"), SCMessages.i18n.tr("Простая кнопка"), simpleButtonPanel);
+            }
+        });
+        groupButtonPanel.buildPanel();
+        groupButtonPanel.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        groupButtonPanel.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(groupButtonPanel);
 
-        FlowPanel iconButtonPanel = new FlowPanel();
+        GroupButtonPanel groupButtonPanel1 = new GroupButtonPanel(true, true);
+        groupButtonPanel1.addButton("Первая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        SimpleButton iconButton = new SimpleButton(SCMessages.i18n.tr("Кнопка с иконкой"), SCImageResources.IMPL.zoom());
-        iconButtonPanel.add(iconButton);
-        iconButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+            }
+        });
+        groupButtonPanel1.addButton("Вторая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        SimpleButton iconButton1 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SCImageResources.IMPL.zoom());
-        iconButtonPanel.add(iconButton1);
-        iconButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+            }
+        });
+        groupButtonPanel1.addButton("Третья", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        SimpleButton iconButton2 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SCImageResources.IMPL.zoom(), ButtonBase.IconPosition.RIGHT);
-        iconButton2.setWidth("150px");
-        iconButtonPanel.add(iconButton2);
-        iconButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+            }
+        });
+        groupButtonPanel1.buildPanel();
+        groupButtonPanel1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        groupButtonPanel1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(groupButtonPanel1);
 
-        SimpleButton iconButton3 = new SimpleButton(SCMessages.i18n.tr("Кнопка неактивная"), SCImageResources.IMPL.zoom());
-        iconButton3.setWidth("200px");
-        iconButtonPanel.add(iconButton3);
-        iconButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton3.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        iconButton3.setEnabled(false);
+        GroupButtonPanel groupButtonPanel2 = new GroupButtonPanel(true);
+        groupButtonPanel2.setAllowEmptyToggle(false);
+        groupButtonPanel2.addButton("Первая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        ImageButton iconButton4 = new ImageButton(SCImageResources.IMPL.zoom());
-        iconButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        iconButtonPanel.add(iconButton4);
+            }
+        });
+        groupButtonPanel2.addButton("Вторая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        ImageButton iconButton5 = new ImageButton(SCImageResources.IMPL.zoom());
-        iconButton5.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton5.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        iconButton5.setEnabled(false);
-        iconButtonPanel.add(iconButton5);
+            }
+        });
+        groupButtonPanel2.addButton("Третья", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        ContextMenu menu2 = createSimpleMenu();
-        ContextMenuButton iconButton6 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SCImageResources.IMPL.zoom());
-        iconButton6.setWidth("150px");
-        iconButtonPanel.add(iconButton6);
-        iconButton6.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton6.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        iconButton6.setContextMenu(menu2);
+            }
+        });
+        groupButtonPanel2.buildPanel();
+        groupButtonPanel2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        groupButtonPanel2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(groupButtonPanel2);
 
-        ContextMenu menu4 = createSimpleMenu();
-        ContextMenuButton iconButton7 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SCImageResources.IMPL.zoom(), ButtonBase.IconPosition.RIGHT);
-        iconButton7.setWidth("150px");
-        iconButtonPanel.add(iconButton7);
-        iconButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        iconButton7.setContextMenu(menu4);
-        
-        ContextMenu menu5 = createSimpleMenu();
-        ContextMenuButton iconButton8 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SCImageResources.IMPL.zoom(), ButtonBase.IconPosition.RIGHT);
-        iconButton8.setWidth("400px");
-        iconButtonPanel.add(iconButton8);
-        iconButton8.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton8.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        iconButton8.setContextMenu(menu5);
+        GroupButtonPanel groupButtonPanel3 = new GroupButtonPanel(true, true);
+        groupButtonPanel3.addButton("Первая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопка с иконкой"), SCMessages.i18n.tr("Кнопка с иконкой"), iconButtonPanel);
+            }
+        });
+        groupButtonPanel3.addButton("Вторая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        FlowPanel colorButtonPanel = new FlowPanel();
-        colorButtonPanel.setHeight("2000px");
+            }
+        });
+        groupButtonPanel3.addButton("Третья", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        SimpleButton colorButton = new SimpleButton((SCMessages.i18n.tr("Создать")), SimpleButton.Type.APPROVE);
-        colorButtonPanel.add(colorButton);
-        colorButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+            }
+        });
+        groupButtonPanel3.buildPanel();
+        groupButtonPanel3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        groupButtonPanel3.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(groupButtonPanel3);
 
-        SimpleButton colorButton1 = new SimpleButton(SCMessages.i18n.tr("Удалить"), SimpleButton.Type.DECLINE);
-        colorButtonPanel.add(colorButton1);
-        colorButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        GroupButtonPanel groupButtonPanel4 = new GroupButtonPanel();
+        groupButtonPanel4.addButton("Первая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        SimpleButton colorButton2 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SimpleButton.Type.DECLINE);
-        colorButtonPanel.add(colorButton2);
-        colorButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+            }
+        });
+        groupButtonPanel4.addButton("Вторая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        SimpleButton colorButton3 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SimpleButton.Type.DECLINE);
-        colorButton3.setWidth("100px");
-        colorButtonPanel.add(colorButton3);
-        colorButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton3.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+            }
+        });
+        groupButtonPanel4.addButton("Третья", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
 
-        SimpleButton colorButton4 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SimpleButton.Type.APPROVE);
-        colorButton4.setWidth("100px");
-        colorButtonPanel.add(colorButton4);
-        colorButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+            }
+        });
+        groupButtonPanel4.buildPanel();
+        groupButtonPanel4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        groupButtonPanel4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(groupButtonPanel4);
 
-        SimpleButton colorButton5 = new SimpleButton(SCMessages.i18n.tr("Кнопка неактивная"), SimpleButton.Type.APPROVE);
-        colorButton5.setEnabled(false);
-        colorButtonPanel.add(colorButton5);
-        colorButton5.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton5.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-
-        SimpleButton colorButton6 = new SimpleButton(SCMessages.i18n.tr("Кнопка неактивная"), SimpleButton.Type.DECLINE);
-        colorButton6.setEnabled(false);
-        colorButtonPanel.add(colorButton6);
-        colorButton6.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton6.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-
-        ContextMenuButton colorButton7 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SimpleButton.Type.APPROVE);
-        colorButtonPanel.add(colorButton7);
-        colorButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        ContextMenu menu3 = createSimpleMenu();
-        menu3.addItem(SCMessages.i18n.tr("Очень-очень длинный текст"));
-        colorButton7.setContextMenu(menu3);
-
-        ScrollPanel scroll = new ScrollPanel();
-        scroll.setWidget(colorButtonPanel);
-        new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), scroll);
-
-        cnt++;
-        new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));
-        cnt++;
-        new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог с кнопками"), SCMessages.i18n.tr("Диалог с кнопками"), setUpDialogs(true));
-        cnt++;
-        new ShowComponent(this, category3, SCMessages.i18n.tr("Поле ввода текста"), SCMessages.i18n.tr("Поле ввода текста"), getTextInputs());
+        return panel;
     }
 
     /**
@@ -583,6 +554,186 @@ public class ShowCasePanel extends LayoutPanel {
         panel.setSize("100%", "100%");
 
         return panel;
+    }
+
+    /**
+     * Простые кнопки
+     * @return
+     */
+    private Widget getSimpleButtonPanel() {
+        final ContextMenu menu = createSimpleMenu();
+
+        FlowPanel simpleButtonPanel = new FlowPanel_() {
+            @Override
+            public void onBrowserEvent(Event event) {
+                switch(DOM.eventGetType(event)) {
+                    case Event.ONCONTEXTMENU :
+                        event.preventDefault();
+                        menu.smartShow(event.getClientX(), event.getClientY());
+                        break;
+                }
+                super.onBrowserEvent(event);
+            }
+        };
+
+        SimpleButton simpleButton = new SimpleButton(SCMessages.i18n.tr("Простая кнопка"));
+        simpleButton.setWidth("140px");
+        simpleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        simpleButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        simpleButtonPanel.add(simpleButton);
+
+        SimpleButton simpleButton1 = new SimpleButton(SCMessages.i18n.tr("Неактивная кнопка"));
+        simpleButton1.setEnabled(false);
+        simpleButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        simpleButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        simpleButtonPanel.add(simpleButton1);
+
+        SimpleButton simpleButton2 = new SimpleButton(SCMessages.i18n.tr("Кнопка с кликом"));
+        simpleButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        simpleButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        simpleButtonPanel.add(simpleButton2);
+        simpleButton2.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Window.alert(SCMessages.i18n.tr("Кнопка была нажата!"));
+            }
+        });
+
+        ContextMenu menuForSimple = createSimpleMenu();
+        ContextMenuButton simpleButton4 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"));
+        simpleButton4.setWidth("140px");
+        simpleButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        simpleButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        simpleButtonPanel.add(simpleButton4);
+        simpleButton4.setContextMenu(menuForSimple);
+        return simpleButtonPanel;
+    }
+
+    /**
+     * Кнопки с иконками
+     * @return
+     */
+    private Widget getIconButtonPanel() {
+        FlowPanel iconButtonPanel = new FlowPanel();
+
+        SimpleButton iconButton = new SimpleButton(SCMessages.i18n.tr("Кнопка с иконкой"), SCImageResources.IMPL.zoom());
+        iconButtonPanel.add(iconButton);
+        iconButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+        SimpleButton iconButton1 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SCImageResources.IMPL.zoom());
+        iconButtonPanel.add(iconButton1);
+        iconButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+        SimpleButton iconButton2 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SCImageResources.IMPL.zoom(), ButtonBase.IconPosition.RIGHT);
+        iconButton2.setWidth("150px");
+        iconButtonPanel.add(iconButton2);
+        iconButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+        SimpleButton iconButton3 = new SimpleButton(SCMessages.i18n.tr("Кнопка неактивная"), SCImageResources.IMPL.zoom());
+        iconButton3.setWidth("200px");
+        iconButtonPanel.add(iconButton3);
+        iconButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton3.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        iconButton3.setEnabled(false);
+
+        ImageButton iconButton4 = new ImageButton(SCImageResources.IMPL.zoom());
+        iconButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        iconButtonPanel.add(iconButton4);
+
+        ImageButton iconButton5 = new ImageButton(SCImageResources.IMPL.zoom());
+        iconButton5.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton5.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        iconButton5.setEnabled(false);
+        iconButtonPanel.add(iconButton5);
+
+        ContextMenu menu2 = createSimpleMenu();
+        ContextMenuButton iconButton6 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SCImageResources.IMPL.zoom());
+        iconButton6.setWidth("150px");
+        iconButtonPanel.add(iconButton6);
+        iconButton6.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton6.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        iconButton6.setContextMenu(menu2);
+
+        ContextMenu menu4 = createSimpleMenu();
+        ContextMenuButton iconButton7 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SCImageResources.IMPL.zoom(), ButtonBase.IconPosition.RIGHT);
+        iconButton7.setWidth("150px");
+        iconButtonPanel.add(iconButton7);
+        iconButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        iconButton7.setContextMenu(menu4);
+
+        ContextMenu menu5 = createSimpleMenu();
+        ContextMenuButton iconButton8 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SCImageResources.IMPL.zoom(), ButtonBase.IconPosition.RIGHT);
+        iconButton8.setWidth("400px");
+        iconButtonPanel.add(iconButton8);
+        iconButton8.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        iconButton8.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        iconButton8.setContextMenu(menu5);
+        return iconButtonPanel;
+    }
+
+    /**
+     * Цветные кнопки
+     * @return
+     */
+    private Widget getColorButtonPanel() {
+        FlowPanel colorButtonPanel = new FlowPanel();
+        colorButtonPanel.setHeight("2000px");
+
+        SimpleButton colorButton = new SimpleButton((SCMessages.i18n.tr("Создать")), SimpleButton.Type.APPROVE);
+        colorButtonPanel.add(colorButton);
+        colorButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+        SimpleButton colorButton1 = new SimpleButton(SCMessages.i18n.tr("Удалить"), SimpleButton.Type.DECLINE);
+        colorButtonPanel.add(colorButton1);
+        colorButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+        SimpleButton colorButton2 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SimpleButton.Type.DECLINE);
+        colorButtonPanel.add(colorButton2);
+        colorButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+        SimpleButton colorButton3 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SimpleButton.Type.DECLINE);
+        colorButton3.setWidth("100px");
+        colorButtonPanel.add(colorButton3);
+        colorButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton3.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+        SimpleButton colorButton4 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SimpleButton.Type.APPROVE);
+        colorButton4.setWidth("100px");
+        colorButtonPanel.add(colorButton4);
+        colorButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+        SimpleButton colorButton5 = new SimpleButton(SCMessages.i18n.tr("Кнопка неактивная"), SimpleButton.Type.APPROVE);
+        colorButton5.setEnabled(false);
+        colorButtonPanel.add(colorButton5);
+        colorButton5.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton5.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+        SimpleButton colorButton6 = new SimpleButton(SCMessages.i18n.tr("Кнопка неактивная"), SimpleButton.Type.DECLINE);
+        colorButton6.setEnabled(false);
+        colorButtonPanel.add(colorButton6);
+        colorButton6.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton6.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+        ContextMenuButton colorButton7 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SimpleButton.Type.APPROVE);
+        colorButtonPanel.add(colorButton7);
+        colorButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        colorButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        ContextMenu menu3 = createSimpleMenu();
+        menu3.addItem(SCMessages.i18n.tr("Очень-очень длинный текст"));
+        colorButton7.setContextMenu(menu3);
+
+        ScrollPanel scroll = new ScrollPanel();
+        scroll.setWidget(colorButtonPanel);
+        return scroll;
     }
 
     private ContextMenu createSimpleMenu() {

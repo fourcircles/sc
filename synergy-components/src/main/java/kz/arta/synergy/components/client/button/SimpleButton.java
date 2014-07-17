@@ -11,6 +11,7 @@ import kz.arta.synergy.components.client.SynergyComponents;
  */
 public class SimpleButton extends ButtonBase {
     protected Type type;
+    protected BorderType borderType;
 
     protected SimpleButton() {
         super();
@@ -59,9 +60,23 @@ public class SimpleButton extends ButtonBase {
         init();
     }
 
+    /**
+     * Кнопка простая с текстом и указанием типа границы
+     * @param text  текст кнопки
+     * @param borderType  тип границы
+     */
+    public SimpleButton(String text, BorderType borderType) {
+        super(text);
+        this.borderType = borderType;
+        init();
+    }
+
     protected void init() {
         if (type == null) {
             type = Type.REGULAR;
+        }
+        if (borderType == null) {
+            borderType = BorderType.ALL;
         }
         switch (type) {
             case APPROVE:
@@ -72,6 +87,19 @@ public class SimpleButton extends ButtonBase {
                 break;
             default:
                 approveButton();
+        }
+        switch (borderType) {
+            case EDGE:
+                addStyleName(SynergyComponents.resources.cssComponents().edge());
+                break;
+            case LEFT:
+                addStyleName(SynergyComponents.resources.cssComponents().left());
+                break;
+            case RIGHT:
+                addStyleName(SynergyComponents.resources.cssComponents().right());
+                break;
+            default:
+                break;
         }
     }
 
@@ -104,4 +132,27 @@ public class SimpleButton extends ButtonBase {
          */
         REGULAR;
     }
+
+    /**
+     * Тип границ кнопки
+     */
+    public enum BorderType {
+        /**
+         *  Границы не закруглены
+         */
+        EDGE,
+        /**
+         * Только правая граница закруглена
+         */
+        RIGHT,
+        /**
+         * Только левая граница закруглена
+         */
+        LEFT,
+        /**
+         * Все  границы закруглены
+         */
+        ALL
+    }
 }
+

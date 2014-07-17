@@ -40,4 +40,17 @@ public interface ImageResources extends ClientBundle {
 
     @Source("images/buttons/green_button_dropdown_icon.png")
     ImageResource greenButtonDropdown();
+
+    @Source("images/buttons/combobox_dropdown_icon.png")
+    ImageResource comboBoxDropDown();
+
+    /**
+     * временная стрелка вверх
+     * @return
+     */
+    @Source("images/buttons/navigation_up.png")
+    ImageResource navigationUp();
+
+    @Source("images/buttons/navigation_down.png")
+    ImageResource navigationDown();
 }

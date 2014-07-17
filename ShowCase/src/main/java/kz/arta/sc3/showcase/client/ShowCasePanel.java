@@ -14,8 +14,12 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.button.ButtonBase;
+import kz.arta.synergy.components.client.button.ContextMenuButton;
+import kz.arta.synergy.components.client.button.ImageButton;
+import kz.arta.synergy.components.client.button.SimpleButton;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
@@ -327,6 +331,19 @@ public class ShowCasePanel extends LayoutPanel {
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог с кнопками"), SCMessages.i18n.tr("Диалог с кнопками"), setUpDialogs(true));
 
         new ShowComponent(this, category3, SCMessages.i18n.tr("Поле ввода текста"), SCMessages.i18n.tr("Поле ввода текста"), getTextInputs());
+
+        FlowPanel comboBoxPanel = new FlowPanel();
+
+        ComboBox combo1 = new ComboBox();
+        combo1.addItem("hello", ImageResources.IMPL.zoom());
+        combo1.addItem("goodbye", ImageResources.IMPL.navigationLeft());
+        combo1.addItem("oh hai again", ImageResources.IMPL.navigationRight());
+        combo1.addItem("oh hello there how are you where did you go last time");
+        for (int i = 1; i < 10; i++) {
+            combo1.addItem("item " + i);
+        }
+
+        comboBoxPanel.add(combo1);
     }
 
     private Widget getGroupButton() {
@@ -665,7 +682,7 @@ public class ShowCasePanel extends LayoutPanel {
         iconButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         iconButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         iconButton7.setContextMenu(menu4);
-
+        
         ContextMenu menu5 = createSimpleMenu();
         ContextMenuButton iconButton8 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SCImageResources.IMPL.zoom(), ButtonBase.IconPosition.RIGHT);
         iconButton8.setWidth("400px");

@@ -200,20 +200,6 @@ public class DialogSimple extends PopupPanel {
     }
 
     /**
-     * Подключение к предпросмотру событий PopupPanel.
-     *
-     * @param nativeEvent
-     */
-    @Override
-    protected void onPreviewNativeEvent(Event.NativePreviewEvent nativeEvent) {
-        if (dragging && nativeEvent.getTypeInt() == Event.ONMOUSEMOVE) {
-            Event event = Event.as(nativeEvent.getNativeEvent());
-            moveDialog(event.getClientX(), event.getClientY());
-        }
-        super.onPreviewNativeEvent(nativeEvent);
-    }
-
-    /**
      * Создание обработчиков событий мыши для начала и конца drag-n-drop диалога.
      */
     private void setUpDragging() {
@@ -223,17 +209,29 @@ public class DialogSimple extends PopupPanel {
                 dragging = true;
                 dragStartX = event.getX();
                 dragStartY = event.getY();
+                Event.setCapture(titlePanel.getElement());
             }
         };
         MouseUpHandler up = new MouseUpHandler() {
             @Override
             public void onMouseUp(MouseUpEvent event) {
                 dragging = false;
+                Event.releaseCapture(titlePanel.getElement());
+            }
+        };
+        MouseMoveHandler move = new MouseMoveHandler() {
+            @Override
+            public void onMouseMove(MouseMoveEvent event) {
+                if (dragging) {
+                    event.preventDefault();
+                    moveDialog(event.getClientX(), event.getClientY());
+                }
             }
         };
 
         titlePanel.addDomHandler(down, MouseDownEvent.getType());
         titlePanel.addDomHandler(up, MouseUpEvent.getType());
+        titlePanel.addDomHandler(move, MouseMoveEvent.getType());
     }
 
     protected void collapse() {

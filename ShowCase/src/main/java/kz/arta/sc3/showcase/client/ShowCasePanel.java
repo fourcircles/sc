@@ -344,6 +344,8 @@ public class ShowCasePanel extends LayoutPanel {
         }
 
         comboBoxPanel.add(combo1);
+
+        new ShowComponent(this, category3, SCMessages.i18n.tr("Комбобокс"), SCMessages.i18n.tr("Комбобокс"), comboBoxPanel);
     }
 
     private Widget getGroupButton() {

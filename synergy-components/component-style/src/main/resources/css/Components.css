@@ -24,8 +24,10 @@
 }
 /**/
 @def whiteBG #ffffff;
+@eval whiteBG_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#ffffff","0");
 @def buttonBorder #e2e2e2;
 @def buttonBG #ebebeb;
+@eval buttonBG_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#ebebeb","0");
 @def textColor1 #757575;
 @def textColor2 #606060;
 @def textColor3 #404040;
@@ -55,6 +57,11 @@
 @def selectColor #deefff;
 @def tabBg2 #f9f9f9;
 
+/* переписывает direction даже если не подгружается standard_rtl.css */
+*[dir="rtl"] {
+    direction: rtl;
+}
+
 @eval buttonHeight kz.arta.synergy.components.style.client.Constants.buttonHeight();
 .buttonSimple, .approveButton, .declineButton, .dropDownButton {
     height: buttonHeight;
@@ -80,6 +87,8 @@
     vertical-align: top;
     white-space:nowrap;
     text-align: center;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 @eval gradientTopMargin kz.arta.synergy.components.style.client.Constants.gradientTopMargin();
@@ -93,62 +102,149 @@
 }
 
 .buttonSimple .gradient {
-    background: -webkit-linear-gradient(right, whiteBG 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(left, whiteBG 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(left, whiteBG 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to left, whiteBG 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
+    background: -moz-linear-gradient(left, whiteBG_0 0%, whiteBG 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,whiteBG_0), color-stop(100%,whiteBG));
+    background: -webkit-linear-gradient(left, whiteBG_0 0%,whiteBG 100%);
+    background: -o-linear-gradient(left, whiteBG_0 0%,whiteBG 100%);
+    background: -ms-linear-gradient(left, whiteBG_0 0%,whiteBG 100%);
+    background: linear-gradient(to right, whiteBG_0 0%,whiteBG 100%);
+}
+
+*[dir="rtl"] .buttonSimple .gradient {
+    background: -moz-linear-gradient(left, whiteBG 0%, whiteBG_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,whiteBG), color-stop(100%,whiteBG_0));
+    background: -webkit-linear-gradient(left, whiteBG 0%,whiteBG_0 100%);
+    background: -o-linear-gradient(left, whiteBG 0%,whiteBG_0 100%);
+    background: -ms-linear-gradient(left, whiteBG 0%,whiteBG_0 100%);
+    background: linear-gradient(to right, whiteBG 0%,whiteBG_0 100%);
 }
 
 .pressed.buttonSimple .gradient{
-    background: -webkit-linear-gradient(right, buttonBG 50%, rgba(255, 255, 255, 0) 50%); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(left, buttonBG 50%, rgba(255, 255, 255, 0)); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(left, buttonBG 50%, rgba(255, 255, 255, 0)); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to left, buttonBG 50% , rgba(255, 255, 255, 0)); /* Standard syntax */
+    background: -moz-linear-gradient(left, buttonBG_0 0%, buttonBG 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,buttonBG_0), color-stop(100%,buttonBG));
+    background: -webkit-linear-gradient(left, buttonBG_0 0%,buttonBG 100%);
+    background: -o-linear-gradient(left, buttonBG_0 0%,buttonBG 100%);
+    background: -ms-linear-gradient(left, buttonBG_0 0%,buttonBG 100%);
+    background: linear-gradient(to right, buttonBG_0 0%,buttonBG 100%);
+}
+
+*[dir="rtl"] .pressed.buttonSimple .gradient{
+    background: -moz-linear-gradient(left, buttonBG 0%, buttonBG_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,buttonBG), color-stop(100%,buttonBG_0));
+    background: -webkit-linear-gradient(left, buttonBG 0%,buttonBG_0 100%);
+    background: -o-linear-gradient(left, buttonBG 0%,buttonBG_0 100%);
+    background: -ms-linear-gradient(left, buttonBG 0%,buttonBG_0 100%);
+    background: linear-gradient(to right, buttonBG 0%,buttonBG_0 100%);
 }
 
 .approveButton .gradient{
-    background: -moz-linear-gradient(left,  approveButtonBG3_0 0%, approveButtonBG3 50%, approveButtonBG3 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG3_0), color-stop(50%,approveButtonBG3), color-stop(100%,approveButtonBG3));
-    background: -webkit-linear-gradient(left,  approveButtonBG3_0 0%,approveButtonBG3 50%,approveButtonBG3 100%);
-    background: -o-linear-gradient(left,  approveButtonBG3_0 0%,approveButtonBG3 50%,approveButtonBG3 100%);
-    background: -ms-linear-gradient(left,  approveButtonBG3_0 0%,approveButtonBG3 50%,approveButtonBG3 100%);
-    background: linear-gradient(to right,  approveButtonBG3_0 0%,approveButtonBG3 50%,approveButtonBG3 100%);
+    background: -moz-linear-gradient(left, approveButtonBG3_0 0%, approveButtonBG3 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG3_0), color-stop(100%,approveButtonBG3));
+    background: -webkit-linear-gradient(left, approveButtonBG3_0 0%,approveButtonBG3 100%);
+    background: -o-linear-gradient(left, approveButtonBG3_0 0%,approveButtonBG3 100%);
+    background: -ms-linear-gradient(left, approveButtonBG3_0 0%,approveButtonBG3 100%);
+    background: linear-gradient(to right, approveButtonBG3_0 0%,approveButtonBG3 100%);
+}
+
+*[dir="rtl"] .approveButton .gradient{
+    background: -moz-linear-gradient(left, approveButtonBG3 0%, approveButtonBG3_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG3), color-stop(100%,approveButtonBG3_0));
+    background: -webkit-linear-gradient(left, approveButtonBG3 0%,approveButtonBG3_0 100%);
+    background: -o-linear-gradient(left, approveButtonBG3 0%,approveButtonBG3_0 100%);
+    background: -ms-linear-gradient(left, approveButtonBG3 0%,approveButtonBG3_0 100%);
+    background: linear-gradient(to right, approveButtonBG3 0%,approveButtonBG3_0 100%);
 }
 
 .approveButton:hover .gradient{
-    background: -moz-linear-gradient(left,  approveButtonBG2_0 0%, approveButtonBG2 50%, approveButtonBG2 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG2_0), color-stop(50%,approveButtonBG2), color-stop(100%,approveButtonBG2));
-    background: -webkit-linear-gradient(left,  approveButtonBG2_0 0%,approveButtonBG2 50%,approveButtonBG2 100%);
-    background: -o-linear-gradient(left,  approveButtonBG2_0 0%,approveButtonBG2 50%,approveButtonBG2 100%);
-    background: -ms-linear-gradient(left,  approveButtonBG2_0 0%,approveButtonBG2 50%,approveButtonBG2 100%);
-    background: linear-gradient(to right,  approveButtonBG2_0 0%,approveButtonBG2 50%,approveButtonBG2 100%);
+    background: -moz-linear-gradient(left, approveButtonBG2_0 0%, approveButtonBG2 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG2_0), color-stop(100%,approveButtonBG2));
+    background: -webkit-linear-gradient(left, approveButtonBG2_0 0%,approveButtonBG2 100%);
+    background: -o-linear-gradient(left, approveButtonBG2_0 0%,approveButtonBG2 100%);
+    background: -ms-linear-gradient(left, approveButtonBG2_0 0%,approveButtonBG2 100%);
+    background: linear-gradient(to right, approveButtonBG2_0 0%,approveButtonBG2 100%);
 }
 
+*[dir="rtl"] .approveButton:hover .gradient{
+    background: -moz-linear-gradient(left, approveButtonBG2 0%, approveButtonBG2_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG2), color-stop(100%,approveButtonBG2_0));
+    background: -webkit-linear-gradient(left, approveButtonBG2 0%,approveButtonBG2_0 100%);
+    background: -o-linear-gradient(left, approveButtonBG2 0%,approveButtonBG2_0 100%);
+    background: -ms-linear-gradient(left, approveButtonBG2 0%,approveButtonBG2_0 100%);
+    background: linear-gradient(to right, approveButtonBG2 0%,approveButtonBG2_0 100%);
+}
+
+
 .approveButton.pressed .gradient{
-    background: -moz-linear-gradient(left,  approveButtonBG4_0 0%, approveButtonBG4 50%, approveButtonBG4 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG4_0), color-stop(50%,approveButtonBG4), color-stop(100%,approveButtonBG4));
-    background: -webkit-linear-gradient(left,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
-    background: -o-linear-gradient(left,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
-    background: -ms-linear-gradient(left,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
-    background: linear-gradient(to right,  approveButtonBG4_0 0%,approveButtonBG4 50%,approveButtonBG4 100%);
+    background: -moz-linear-gradient(left, approveButtonBG4_0 0%, approveButtonBG4 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG4_0), color-stop(100%,approveButtonBG4));
+    background: -webkit-linear-gradient(left, approveButtonBG4_0 0%,approveButtonBG4 100%);
+    background: -o-linear-gradient(left, approveButtonBG4_0 0%,approveButtonBG4 100%);
+    background: -ms-linear-gradient(left, approveButtonBG4_0 0%,approveButtonBG4 100%);
+    background: linear-gradient(to right, approveButtonBG4_0 0%,approveButtonBG4 100%);
+}
+
+*[dir="rtl"] .approveButton.pressed .gradient{
+    background: -moz-linear-gradient(left, approveButtonBG4 0%, approveButtonBG4_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,approveButtonBG4), color-stop(100%,approveButtonBG4_0));
+    background: -webkit-linear-gradient(left, approveButtonBG4 0%,approveButtonBG4_0 100%);
+    background: -o-linear-gradient(left, approveButtonBG4 0%,approveButtonBG4_0 100%);
+    background: -ms-linear-gradient(left, approveButtonBG4 0%,approveButtonBG4_0 100%);
+    background: linear-gradient(to right, approveButtonBG4 0%,approveButtonBG4_0 100%);
+}
+
+
+.declineButton .gradient {
+    background: -moz-linear-gradient(left, declineButtonBG3_0 0%, declineButtonBG3 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG3_0), color-stop(100%,declineButtonBG3));
+    background: -webkit-linear-gradient(left, declineButtonBG3_0 0%,declineButtonBG3 100%);
+    background: -o-linear-gradient(left, declineButtonBG3_0 0%,declineButtonBG3 100%);
+    background: -ms-linear-gradient(left, declineButtonBG3_0 0%,declineButtonBG3 100%);
+    background: linear-gradient(to right, declineButtonBG3_0 0%,declineButtonBG3 100%);
+}
+
+*[dir="rtl"] .declineButton .gradient{
+    background: -moz-linear-gradient(left, declineButtonBG3 0%, declineButtonBG3_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG3), color-stop(100%,declineButtonBG3_0));
+    background: -webkit-linear-gradient(left, declineButtonBG3 0%,declineButtonBG3_0 100%);
+    background: -o-linear-gradient(left, declineButtonBG3 0%,declineButtonBG3_0 100%);
+    background: -ms-linear-gradient(left, declineButtonBG3 0%,declineButtonBG3_0 100%);
+    background: linear-gradient(to right, declineButtonBG3 0%,declineButtonBG3_0 100%);
 }
 
 .declineButton:hover .gradient{
-    background: -moz-linear-gradient(left,  declineButtonBG2_0 0%, declineButtonBG2 50%, declineButtonBG2 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG2_0), color-stop(50%,declineButtonBG2), color-stop(100%,declineButtonBG2)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(left,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(left,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(left,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* IE10+ */
-    background: linear-gradient(to right,  declineButtonBG2_0 0%,declineButtonBG2 50%,declineButtonBG2 100%); /* W3C */
+    background: -moz-linear-gradient(left, declineButtonBG2_0 0%, declineButtonBG2 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG2_0), color-stop(100%,declineButtonBG2));
+    background: -webkit-linear-gradient(left, declineButtonBG2_0 0%,declineButtonBG2 100%);
+    background: -o-linear-gradient(left, declineButtonBG2_0 0%,declineButtonBG2 100%);
+    background: -ms-linear-gradient(left, declineButtonBG2_0 0%,declineButtonBG2 100%);
+    background: linear-gradient(to right, declineButtonBG2_0 0%,declineButtonBG2 100%);
+}
+
+*[dir="rtl"] .declineButton:hover .gradient{
+    background: -moz-linear-gradient(left, declineButtonBG2 0%, declineButtonBG2_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG2), color-stop(100%,declineButtonBG2_0));
+    background: -webkit-linear-gradient(left, declineButtonBG2 0%,declineButtonBG2_0 100%);
+    background: -o-linear-gradient(left, declineButtonBG2 0%,declineButtonBG2_0 100%);
+    background: -ms-linear-gradient(left, declineButtonBG2 0%,declineButtonBG2_0 100%);
+    background: linear-gradient(to right, declineButtonBG2 0%,declineButtonBG2_0 100%);
 }
 
 .pressed.declineButton .gradient{
-    background: -moz-linear-gradient(left,  declineButtonBG4_0 0%, declineButtonBG4 50%, declineButtonBG4 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG4_0), color-stop(50%,declineButtonBG4), color-stop(100%,declineButtonBG4)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(left,  declineButtonBG4_0 0%,declineButtonBG4 50%,declineButtonBG4 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(left,  declineButtonBG4_0 0%,declineButtonBG4 50%,declineButtonBG4 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(left,  declineButtonBG4_0 0%,declineButtonBG4 50%,declineButtonBG4 100%); /* IE10+ */
-    background: linear-gradient(to right,  declineButtonBG4_0 0%,declineButtonBG4 50%,declineButtonBG4 100%); /* W3C */
+    background: -moz-linear-gradient(left, declineButtonBG4_0 0%, declineButtonBG4 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG4_0), color-stop(100%,declineButtonBG4));
+    background: -webkit-linear-gradient(left, declineButtonBG4_0 0%,declineButtonBG4 100%);
+    background: -o-linear-gradient(left, declineButtonBG4_0 0%,declineButtonBG4 100%);
+    background: -ms-linear-gradient(left, declineButtonBG4_0 0%,declineButtonBG4 100%);
+    background: linear-gradient(to right, declineButtonBG4_0 0%,declineButtonBG4 100%);
+}
+
+*[dir="rtl"] .declineButton.pressed .gradient{
+    background: -moz-linear-gradient(left, declineButtonBG4 0%, declineButtonBG4_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,declineButtonBG4), color-stop(100%,declineButtonBG4_0));
+    background: -webkit-linear-gradient(left, declineButtonBG4 0%,declineButtonBG4_0 100%);
+    background: -o-linear-gradient(left, declineButtonBG4 0%,declineButtonBG4_0 100%);
+    background: -ms-linear-gradient(left, declineButtonBG4 0%,declineButtonBG4_0 100%);
+    background: linear-gradient(to right, declineButtonBG4 0%,declineButtonBG4_0 100%);
 }
 
 .dialogTitle .gradient{

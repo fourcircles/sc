@@ -25,6 +25,7 @@ public class ImageButton extends ButtonBase {
     protected void init() {
         setStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
         icon.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
+        icon.getElement().getStyle().setMarginRight(0, Style.Unit.PX);
         setWidth(Constants.imageButtonWidth());
     }
 }

@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.ContextMenu;
@@ -114,7 +115,11 @@ public class ContextMenuButton extends SimpleButton {
         int delta = textLabelWidth - textLabel.getOffsetWidth();
         if (delta > 0) {
             contextButton.getElement().getStyle().setPosition(Style.Position.RELATIVE);
-            contextButton.getElement().getStyle().setLeft((double) delta / 2, Style.Unit.PX);
+            if (LocaleInfo.getCurrentLocale().isRTL()) {
+                contextButton.getElement().getStyle().setRight((double) delta / 2, Style.Unit.PX);
+            } else {
+                contextButton.getElement().getStyle().setLeft((double) delta / 2, Style.Unit.PX);
+            }
         }
         super.adjustMargins();
     }

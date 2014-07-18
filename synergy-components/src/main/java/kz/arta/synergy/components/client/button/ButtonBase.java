@@ -5,6 +5,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -109,13 +110,21 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
             if (icon != null) {
                 add(icon);
                 icon.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
-                icon.getElement().getStyle().setMarginRight(Constants.BUTTON_PADDING, Style.Unit.PX);
+                if (LocaleInfo.getCurrentLocale().isRTL()) {
+                    icon.getElement().getStyle().setMarginLeft(Constants.BUTTON_PADDING, Style.Unit.PX);
+                } else {
+                    icon.getElement().getStyle().setMarginRight(Constants.BUTTON_PADDING, Style.Unit.PX);
+                }
             }
         } else {
             if (icon != null) {
                 add(icon);
                 icon.getElement().getStyle().setMarginRight(0, Style.Unit.PX);
-                icon.getElement().getStyle().setMarginLeft(Constants.BUTTON_PADDING, Style.Unit.PX);
+                if (LocaleInfo.getCurrentLocale().isRTL()) {
+                    icon.getElement().getStyle().setMarginRight(Constants.BUTTON_PADDING, Style.Unit.PX);
+                } else {
+                    icon.getElement().getStyle().setMarginLeft(Constants.BUTTON_PADDING, Style.Unit.PX);
+                }
             }
             if (textLabel != null) {
                 add(textLabel);
@@ -198,8 +207,8 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
             textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
             textLabel.addStyleName(SynergyComponents.resources.cssComponents().buttonText());
 
-            textLabel.getElement().getStyle().setMarginRight(Constants.BUTTON_PADDING, Style.Unit.PX);
-            textLabel.getElement().getStyle().setMarginLeft(Constants.BUTTON_PADDING, Style.Unit.PX);
+//            textLabel.getElement().getStyle().setMarginRight(Constants.BUTTON_PADDING, Style.Unit.PX);
+//            textLabel.getElement().getStyle().setMarginLeft(Constants.BUTTON_PADDING, Style.Unit.PX);
 
             Selection.disableTextSelectInternal(getElement());
         }

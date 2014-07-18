@@ -182,8 +182,6 @@ public class ShowCasePanel extends LayoutPanel {
                 }
             }
         });
-
-        getElement().getStyle().setProperty("direction", "ltr");
     }
 
     public void closeTab(ShowComponent component) {

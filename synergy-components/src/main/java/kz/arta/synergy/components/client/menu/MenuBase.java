@@ -43,7 +43,7 @@ public abstract class MenuBase extends PopupPanel{
      * Показывает находится ли мышь над списком, в этом случае колесо мыши
      * не закрывает список
      */
-    private boolean mouseOver = false;
+    boolean mouseOver = false;
 
     /**
      * Индекс выбранного элемента, если -1 -- не выбран.
@@ -105,7 +105,7 @@ public abstract class MenuBase extends PopupPanel{
     private void clearOverStyles() {
         for (MenuItem i: items) {
             if (i != null) {
-                i.asWidget().removeStyleName(SynergyComponents.resources.cssComponents().over());
+                i.setOver(false);
             }
         }
     }
@@ -116,9 +116,10 @@ public abstract class MenuBase extends PopupPanel{
      * @param mouseSelected true - если выбран мышью, false - клавиатурой
      */
     protected void overItem(MenuItem item, boolean mouseSelected) {
-        if (items.contains(item)) {
+        if (items.contains(item) && getSelectedItem() != item) {
             clearOverStyles();
             selectedIndex = items.indexOf(item);
+            item.setOver(true);
             item.asWidget().addStyleName(SynergyComponents.resources.cssComponents().over());
         }
     }
@@ -193,6 +194,7 @@ public abstract class MenuBase extends PopupPanel{
 
     /**
      * Возвращает индекс элемента следующего за выбранным.
+     * Индекс должен находится в пределах списка или быть равным -1.
      * @return индекс следующего элемента, -1 если список пуст
      */
     protected int getNext() {
@@ -204,6 +206,7 @@ public abstract class MenuBase extends PopupPanel{
 
     /**
      * Возвращает индекс элемент идущего до выбранного.
+     * Индекс должен находится в пределах списка или быть равным -1.
      * @return индекс элемента до выбранного, -1 если список пуст
      */
     protected int getPrevious() {
@@ -362,6 +365,19 @@ public abstract class MenuBase extends PopupPanel{
         }
 
         /**
+         * Добавляет или удаляет стиль over для элемента списка
+         * @param over
+         */
+        public void setOver(boolean over) {
+            if (over) {
+                itemPanel.addStyleName(SynergyComponents.resources.cssComponents().over());
+            } else {
+                itemPanel.removeStyleName(SynergyComponents.resources.cssComponents().over());
+            }
+
+        }
+
+        /**
          * Создает и наполняет FlowPanel, который представляет этот пункт меню.
          *
          * @return панель пункта меню
@@ -369,12 +385,11 @@ public abstract class MenuBase extends PopupPanel{
         @Override
         public Widget asWidget() {
             if (itemPanel == null) {
-                itemPanel = new FlowPanel();
+                itemPanel = GWT.create(FlowPanel.class);
                 MouseOverHandler over = new MouseOverHandler() {
                     @Override
                     public void onMouseOver(MouseOverEvent event) {
                         overItem(MenuItem.this, true);
-                        itemPanel.addStyleName(SynergyComponents.resources.cssComponents().over());
                     }
                 };
                 ClickHandler click = new ClickHandler() {
@@ -383,10 +398,18 @@ public abstract class MenuBase extends PopupPanel{
                         itemSelected(MenuItem.this);
                     }
                 };
+                MouseMoveHandler move = new MouseMoveHandler() {
+                    @Override
+                    public void onMouseMove(MouseMoveEvent event) {
+                        overItem(MenuItem.this, true);
+                    }
+                };
                 itemPanel.addDomHandler(over, MouseOverEvent.getType());
                 itemPanel.addDomHandler(click, ClickEvent.getType());
+                itemPanel.addDomHandler(move, MouseMoveEvent.getType());
 
-                Label label = new Label(text);
+                Label label = GWT.create(Label.class);
+                label.setText(text);
                 Selection.disableTextSelectInternal(label.getElement());
                 label.getElement().getStyle().setCursor(Style.Cursor.DEFAULT);
                 label.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);

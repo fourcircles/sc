@@ -1,4 +1,4 @@
-package kz.arta.synergy.components.client.menu;
+package kz.arta.synergy.components.client.scroll;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;

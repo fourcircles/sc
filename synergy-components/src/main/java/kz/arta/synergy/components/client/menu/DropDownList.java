@@ -2,6 +2,7 @@ package kz.arta.synergy.components.client.menu;
 
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
 
 /**
  * User: vsl

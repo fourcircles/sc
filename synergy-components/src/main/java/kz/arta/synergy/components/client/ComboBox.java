@@ -102,6 +102,7 @@ public class ComboBox extends Composite implements HasEnabled{
      */
     private void showItem(MenuBase.MenuItem item) {
         textLabel.setText(item.getText());
+        shownItem = item;
     }
 
     /**

@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.menu;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -15,7 +16,7 @@ public class ContextMenu extends MenuBase {
     /**
      * Разделитель
      */
-    private final static MenuItem SEPARATOR = null;
+    final static MenuItem SEPARATOR = null;
 
     @Override
     protected void overItem(MenuItem item, boolean mouseSelected) {
@@ -43,7 +44,7 @@ public class ContextMenu extends MenuBase {
      */
     public void addSeparator() {
         items.add(SEPARATOR);
-        FlowPanel separatorPanel =  new FlowPanel();
+        FlowPanel separatorPanel = GWT.create(FlowPanel.class);
         separatorPanel.setStyleName(SynergyComponents.resources.cssComponents().menuSeparator());
         panel.add(separatorPanel);
     }

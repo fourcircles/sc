@@ -24,9 +24,9 @@ public class ArtaVerticalScrollPanel extends CustomScrollPanel {
      */
     ArtaVerticalScroll vScroll;
 
-    public ArtaVerticalScrollPanel(int height) {
+    public ArtaVerticalScrollPanel() {
         super();
-        vScroll = new ArtaVerticalScroll(height, this);
+        vScroll = new ArtaVerticalScroll(this);
         setVerticalScrollbar(vScroll, Constants.SCROLL_BAR_WIDTH);
         addScrollHandler(new ScrollHandler() {
             @Override
@@ -38,8 +38,8 @@ public class ArtaVerticalScrollPanel extends CustomScrollPanel {
         getScrollableElement().getStyle().setOverflowX(com.google.gwt.dom.client.Style.Overflow.HIDDEN);
     }
 
-    public ArtaVerticalScrollPanel(int height, Widget widget) {
-        this(height);
+    public ArtaVerticalScrollPanel(Widget widget) {
+        this();
         setWidget(widget);
     }
 }

@@ -1,12 +1,21 @@
 package kz.arta.synergy.components.client.scroll;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.CustomScrollPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.VerticalScrollbar;
+import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.style.client.resources.ComponentResources;
 
 /**
  * User: vsl
@@ -15,6 +24,9 @@ import kz.arta.synergy.components.client.resources.ImageResources;
  * Вертикальный скролл
  */
 class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
+    interface VerticalScrollBinder extends UiBinder<ArtaFlowPanel, ArtaVerticalScroll> {}
+    private static VerticalScrollBinder binder = GWT.create(VerticalScrollBinder.class);
+
     /**
      * Часть экрана, которая будет пролистываться при нажатии кнопок
      * или при клике вне бегунка
@@ -24,31 +36,41 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
     /**
      * Основная панель
      */
-    FlowPanel panel;
+    @UiField ArtaFlowPanel panel;
 
     /**
      * Кнопка вверх
      */
-    Image up;
+    @UiField Image up;
 
     /**
      * Кнопка вниз
      */
-    Image down;
+    @UiField Image down;
 
     /**
      * Бегунок
      */
-    FlowPanel bar;
+    @UiField ArtaFlowPanel bar;
+
+    @UiField(provided = true) ImageResources images;
+    @UiField(provided = true) ComponentResources resources;
 
     /**
      * Высота скроллбара
      */
     int height;
 
+    /**
+     * Координата начала dnd относительно начала бегунка
+     */
     private int dragStartY;
+
     boolean dragging = false;
 
+    /**
+     * Панель к которой относится данный скроллбар
+     */
     private CustomScrollPanel scrollPanel;
 
     /**
@@ -62,76 +84,77 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
     private int freeTrackSpace;
 
     public ArtaVerticalScroll(final CustomScrollPanel scrollPanel) {
-        this.scrollPanel = scrollPanel;
+        images = ImageResources.IMPL;
+        resources = SynergyComponents.resources;
 
-        panel = new FlowPanel();
+        panel = binder.createAndBindUi(this);
         initWidget(panel);
 
-        up = new Image(ImageResources.IMPL.navigationUp());
-        up.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                event.stopPropagation();
-                scrollUp();
-            }
-        });
+        this.scrollPanel = scrollPanel;
+    }
 
-        down = new Image(ImageResources.IMPL.navigationDown());
-        down.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                event.stopPropagation();
-                scrollDown();
-            }
-        });
+    @UiHandler("up")
+    void up(ClickEvent event) {
+        event.stopPropagation();
+        scrollUp();
+    }
 
-        bar = new FlowPanel();
-        bar.setStyleName(SynergyComponents.resources.cssComponents().scrollbar());
-        MouseDownHandler barMouseDown = new MouseDownHandler() {
-            @Override
-            public void onMouseDown(MouseDownEvent event) {
-                event.stopPropagation();
-                barDown(event.getY());
-            }
-        };
-        MouseUpHandler barMouseUp = new MouseUpHandler() {
-            @Override
-            public void onMouseUp(MouseUpEvent event) {
-                event.stopPropagation();
-                barUp();
-            }
-        };
-        MouseMoveHandler barMouseMove = new MouseMoveHandler() {
-            @Override
-            public void onMouseMove(MouseMoveEvent event) {
-                event.preventDefault();
-                barMove(event.getClientY());
-            }
-        };
-        bar.addDomHandler(barMouseDown, MouseDownEvent.getType());
-        bar.addDomHandler(barMouseUp, MouseUpEvent.getType());
-        bar.addDomHandler(barMouseMove, MouseMoveEvent.getType());
+    @UiHandler("down")
+    void down(ClickEvent event) {
+        event.stopPropagation();
+        scrollDown();
+    }
 
-        panel.add(up);
-        panel.add(bar);
-        panel.add(down);
+    /**
+     * Нажатие на бегунок, начало его перемещения
+     */
+    @UiHandler("bar")
+    void barDown(MouseDownEvent event) {
+        event.stopPropagation();
+        bar.addStyleName(SynergyComponents.resources.cssComponents().pressed());
+        dragging = true;
+        dragStartY = event.getY();
+        Event.setCapture(bar.getElement());
+    }
 
-        ClickHandler panelClick = new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                //клик по свободной части скроллбара
-                int barTop = bar.getAbsoluteTop();
-                int barBottom = bar.getAbsoluteTop() + barHeight;
-                if (event.getClientY() < barTop) {
-                    scrollUp();
-                } else if (event.getClientY() > barBottom) {
-                    scrollDown();
-                }
-            }
-        };
-        panel.addDomHandler(panelClick, ClickEvent.getType());
+    /**
+     * Завершение перемещения бегунка
+     */
+    @UiHandler("bar")
+    void barUp(MouseUpEvent event) {
+        event.stopPropagation();
+        bar.removeStyleName(SynergyComponents.resources.cssComponents().pressed());
+        dragging = false;
+        Event.releaseCapture(bar.getElement());
+    }
 
-        panel.setStyleName(SynergyComponents.resources.cssComponents().vscroll());
+    /**
+     * Перемещение бегунка
+     */
+    @UiHandler("bar")
+    void barMove(MouseMoveEvent event) {
+        event.preventDefault();
+
+        if (dragging) {
+            int dragAreaStart = up.getAbsoluteTop() + up.getOffsetHeight();
+
+            int barTop = event.getClientY() - dragStartY;
+            int marginTop = barTop - dragAreaStart;
+
+            scrollPanel.setVerticalScrollPosition((int) getScrollPosition(marginTop));
+        }
+    }
+
+    @UiHandler("panel")
+    void panelClick(ClickEvent event) {
+        event.preventDefault();
+        int barTop = bar.getAbsoluteTop();
+        int barBottom = bar.getAbsoluteTop() + barHeight;
+        if (event.getClientY() < barTop) {
+            scrollUp();
+        } else if (event.getClientY() > barBottom) {
+            scrollDown();
+        }
     }
 
     /**
@@ -152,41 +175,6 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
         pos -= SCROLL_STEP * height;
         pos = Math.max(pos, getMinimumVerticalScrollPosition());
         scrollPanel.setVerticalScrollPosition(pos);
-    }
-
-    /**
-     * Нажатие на бегунок, начало его перемещения
-     * @param y координата y относительно бегунка
-     */
-    private void barDown(int y) {
-        bar.addStyleName(SynergyComponents.resources.cssComponents().pressed());
-        dragging = true;
-        dragStartY = y;
-        Event.setCapture(bar.getElement());
-    }
-
-    /**
-     * Завершение перемещения бегунка
-     */
-    private void barUp() {
-        bar.removeStyleName(SynergyComponents.resources.cssComponents().pressed());
-        dragging = false;
-        Event.releaseCapture(bar.getElement());
-    }
-
-    /**
-     * Перемещение бегунка
-     * @param clientY координата Y мыши
-     */
-    private void barMove(int clientY) {
-        if (dragging) {
-            int dragAreaStart = up.getAbsoluteTop() + up.getOffsetHeight();
-
-            int barTop = clientY - dragStartY;
-            int marginTop = barTop - dragAreaStart;
-
-            scrollPanel.setVerticalScrollPosition((int) getScrollPosition(marginTop));
-        }
     }
 
     /**

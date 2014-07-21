@@ -28,6 +28,7 @@ public class ArtaVerticalScrollPanel extends CustomScrollPanel {
         super();
         vScroll = new ArtaVerticalScroll(this);
         setVerticalScrollbar(vScroll, Constants.SCROLL_BAR_WIDTH);
+        removeHorizontalScrollbar();
         addScrollHandler(new ScrollHandler() {
             @Override
             public void onScroll(ScrollEvent event) {

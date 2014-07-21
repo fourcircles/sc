@@ -19,7 +19,7 @@ public abstract class DropDownList extends MenuBase {
 
     public DropDownList(Widget parent) {
         super();
-        scroll = new ArtaVerticalScrollPanel(200, panel);
+        scroll = new ArtaVerticalScrollPanel(panel);
         setWidget(scroll);
 
         setRelativeWidget(parent);

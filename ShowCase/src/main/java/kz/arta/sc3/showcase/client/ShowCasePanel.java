@@ -23,6 +23,7 @@ import kz.arta.synergy.components.client.input.ArtaTextArea;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.menu.ContextMenu;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
 import kz.arta.synergy.components.client.theme.Theme;
 
 import java.util.ArrayList;
@@ -626,7 +627,7 @@ public class ShowCasePanel extends LayoutPanel {
         menu3.addItem(SCMessages.i18n.tr("Очень-очень длинный текст"));
         colorButton7.setContextMenu(menu3);
 
-        ScrollPanel scroll = new ScrollPanel();
+        ArtaVerticalScrollPanel scroll = new ArtaVerticalScrollPanel();
         scroll.setWidget(colorButtonPanel);
         return scroll;
     }

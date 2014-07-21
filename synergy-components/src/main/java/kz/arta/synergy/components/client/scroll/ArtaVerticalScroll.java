@@ -61,9 +61,8 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
      */
     private int freeTrackSpace;
 
-    public ArtaVerticalScroll(int height, final CustomScrollPanel scrollPanel) {
+    public ArtaVerticalScroll(final CustomScrollPanel scrollPanel) {
         this.scrollPanel = scrollPanel;
-        this.height = height;
 
         panel = new FlowPanel();
         initWidget(panel);
@@ -112,8 +111,6 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
         bar.addDomHandler(barMouseDown, MouseDownEvent.getType());
         bar.addDomHandler(barMouseUp, MouseUpEvent.getType());
         bar.addDomHandler(barMouseMove, MouseMoveEvent.getType());
-
-        panel.setHeight(height + "px");
 
         panel.add(up);
         panel.add(bar);
@@ -201,9 +198,19 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
         return height + getMaximumVerticalScrollPosition();
     }
 
+    /**
+     * Метод вызывается ScrollPanel при открытии и задает высоту контента.
+     * @param height высота
+     */
     @Override
     public void setScrollHeight(int height) {
-        System.out.println(height);
+        this.height = scrollPanel.getOffsetHeight();
+        panel.setHeight(scrollPanel.getOffsetHeight() + "px");
+
+        barHeight = (int) ((double) this.height / (this.height + getMaximumVerticalScrollPosition()) * this.height);
+        bar.setHeight(barHeight + "px");
+        freeTrackSpace = this.height - barHeight - 17 * 2;
+        setVerticalScrollPosition(0);
     }
 
     @Override
@@ -256,14 +263,5 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
         double barPosition = getBarPosition(position);
         bar.getElement().getStyle().setMarginTop(barPosition, Style.Unit.PX);
         bar.getElement().getStyle().setMarginBottom(freeTrackSpace - barPosition, Style.Unit.PX);
-    }
-
-    @Override
-    protected void onLoad() {
-        super.onLoad();
-        barHeight = (int) ((double) height / (height + getMaximumVerticalScrollPosition()) * height);
-        bar.setHeight(barHeight + "px");
-        freeTrackSpace = height - barHeight - 17 * 2;
-        setVerticalScrollPosition(0);
     }
 }

@@ -15,11 +15,8 @@ import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
 import kz.arta.synergy.components.client.ComboBox;
-import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.button.ButtonBase;
-import kz.arta.synergy.components.client.button.ContextMenuButton;
-import kz.arta.synergy.components.client.button.ImageButton;
-import kz.arta.synergy.components.client.button.SimpleButton;
+import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
@@ -348,9 +345,23 @@ public class ShowCasePanel extends LayoutPanel {
         new ShowComponent(this, category3, SCMessages.i18n.tr("Комбобокс"), SCMessages.i18n.tr("Комбобокс"), comboBoxPanel);
     }
 
+    /**
+     * Групповые кнопки
+     * @return
+     */
     private Widget getGroupButton() {
         FlowPanel panel = new FlowPanel();
-        SimpleToggleButton toggleButton = new SimpleToggleButton("Кнопка");
+        final SimpleToggleButton toggleButton = new SimpleToggleButton("Кнопка");
+        toggleButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (toggleButton.isPressed()) {
+                    toggleButton.setText("Нажата");
+                } else {
+                    toggleButton.setText("Не нажата");
+                }
+            }
+        });
         toggleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         toggleButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         panel.add(toggleButton);
@@ -360,19 +371,19 @@ public class ShowCasePanel extends LayoutPanel {
         groupButtonPanel.addButton("Первая", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-
+                Window.alert("Первая кнопка");
             }
         });
         groupButtonPanel.addButton("Вторая", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-
+                Window.alert("Вторая кнопка");
             }
         });
         groupButtonPanel.addButton("Третья", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-
+                Window.alert("Третья кнопка");
             }
         });
         groupButtonPanel.buildPanel();
@@ -522,31 +533,33 @@ public class ShowCasePanel extends LayoutPanel {
         Panel textAreaPanel = new FlowPanel();
         textAreaPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
 
-        final ArtaTextArea textArea = new ArtaTextArea();
-        textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        textArea.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        textArea.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода"));
-        textAreaPanel.add(textArea);
+        textAreaPanel.add(new ArtaTextArea());
 
-        final ArtaTextArea disableTextArea = new ArtaTextArea(false);
-        disableTextArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        disableTextArea.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        disableTextArea.setPlaceHolder(SCMessages.i18n.tr("Неактивное многострочное поле ввода"));
-        disableTextArea.setEnabled(false);
-        textAreaPanel.add(disableTextArea);
-
-        final ArtaTextArea textAreaEmpty = new ArtaTextArea(false);
-        textAreaEmpty.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        textAreaEmpty.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        textAreaEmpty.setPlaceHolder(SCMessages.i18n.tr("Обязательное многострочное поле ввода"));
-        textAreaPanel.add(textAreaEmpty);
-
-        final ArtaTextArea textAreaSize = new ArtaTextArea(false);
-        textAreaSize.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        textAreaSize.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        textAreaSize.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода с заданным размером"));
-        textAreaSize.setSize("300px", "300px");
-        textAreaPanel.add(textAreaSize);
+//        final ArtaTextArea textArea = new ArtaTextArea();
+//        textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+//        textArea.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+//        textArea.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода"));
+//        textAreaPanel.add(textArea);
+//
+//        final ArtaTextArea disableTextArea = new ArtaTextArea(false);
+//        disableTextArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+//        disableTextArea.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+//        disableTextArea.setPlaceHolder(SCMessages.i18n.tr("Неактивное многострочное поле ввода"));
+//        disableTextArea.setEnabled(false);
+//        textAreaPanel.add(disableTextArea);
+//
+//        final ArtaTextArea textAreaEmpty = new ArtaTextArea(false);
+//        textAreaEmpty.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+//        textAreaEmpty.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+//        textAreaEmpty.setPlaceHolder(SCMessages.i18n.tr("Обязательное многострочное поле ввода"));
+//        textAreaPanel.add(textAreaEmpty);
+//
+//        final ArtaTextArea textAreaSize = new ArtaTextArea(false);
+//        textAreaSize.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+//        textAreaSize.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+//        textAreaSize.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода с заданным размером"));
+//        textAreaSize.setSize("300px", "300px");
+//        textAreaPanel.add(textAreaSize);
 
 
         panel.add(textAreaPanel);
@@ -560,7 +573,7 @@ public class ShowCasePanel extends LayoutPanel {
                 inputAllow.checkInput();
                 widthInput.checkInput();
                 smallWidthInput.checkInput();
-                textArea.checkInput();
+//                textArea.checkInput();
             }
         });
         Panel buttonPanel = new FlowPanel();

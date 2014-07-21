@@ -1,6 +1,8 @@
 package kz.arta.synergy.components.client.button;
 
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 
@@ -13,12 +15,22 @@ import java.util.List;
  * Time: 9:15
  * Группа кнопок
  */
-public class GroupButtonPanel extends FlowPanel {
+public class GroupButtonPanel extends Composite {
 
+    FlowPanel panel;
+    /**
+     * режим переключателей
+     */
     private boolean toggle = false;
 
+    /**
+     * множественный выбор при режиме переключателей
+     */
     private boolean multiToggle = false;
 
+    /**
+     * обязательное нажатие хотя одной кнопки в группе
+     */
     private boolean allowEmptyToggle = true;
 
     /**
@@ -39,16 +51,18 @@ public class GroupButtonPanel extends FlowPanel {
     }
 
     /**
-     * Группа кнопок
+     * Группа toggle кнопок
      */
     public GroupButtonPanel(boolean toggle) {
         this(toggle, false);
     }
 
     /**
-     * Группа кнопок
+     * Группа toggle кнопок с множественным выбором
      */
     public GroupButtonPanel(boolean toggle, boolean multiToggle) {
+        panel = new FlowPanel();
+        initWidget(panel);
         this.toggle = toggle;
         this.multiToggle = multiToggle;
         init();
@@ -58,22 +72,30 @@ public class GroupButtonPanel extends FlowPanel {
         setStyleName(SynergyComponents.resources.cssComponents().groupButtonPanel());
     }
 
+    /**
+     * Добавление кнопки на панель
+     * @param buttonText  текст кнопки
+     * @param handler     хендлер
+     */
     public void addButton(String buttonText, ClickHandler handler) {
         TempButton buttonBase = new TempButton(buttonText, handler);
         buttons.add(buttonBase);
     }
 
+    /**
+     * Построение панели групповых кнопок
+     */
     public void buildPanel() {
         int i = 0;
         for (TempButton button: buttons) {
             SimpleButton simpleButton;
-            if (i == 0) {
+            if ((i == 0 && !LocaleInfo.getCurrentLocale().isRTL()) || (i == buttons.size() - 1 && LocaleInfo.getCurrentLocale().isRTL())) {
                 if (toggle) {
                     simpleButton = new SimpleToggleButton(button.getText(), SimpleButton.BorderType.LEFT);
                 } else {
                     simpleButton = new SimpleButton(button.getText(), SimpleButton.BorderType.LEFT);
                 }
-            } else if (i == buttons.size() - 1) {
+            } else if ((i == 0 && LocaleInfo.getCurrentLocale().isRTL()) || (i == buttons.size() - 1 && !LocaleInfo.getCurrentLocale().isRTL())) {
                 if (toggle) {
                     simpleButton = new SimpleToggleButton(button.getText(), SimpleButton.BorderType.RIGHT);
                 } else {
@@ -90,7 +112,7 @@ public class GroupButtonPanel extends FlowPanel {
             if (simpleButton instanceof  SimpleToggleButton) {
                 ((SimpleToggleButton) simpleButton).setGroupPanel(this);
             }
-            add(simpleButton);
+            panel.add(simpleButton);
             i++;
         }
     }

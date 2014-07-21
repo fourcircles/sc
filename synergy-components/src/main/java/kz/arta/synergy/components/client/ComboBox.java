@@ -1,8 +1,11 @@
 package kz.arta.synergy.components.client;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -13,13 +16,15 @@ import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.MenuBase;
 import kz.arta.synergy.components.client.resources.ImageResources;
 
+import java.util.HashMap;
+
 /**
  * User: vsl
  * Date: 15.07.14
  * Time: 14:58
  * Комбо-бокс
  */
-public class ComboBox extends Composite implements HasEnabled{
+public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandlers{
 
     /**
      * Основная панель
@@ -30,11 +35,6 @@ public class ComboBox extends Composite implements HasEnabled{
      * Выпадающий список
      */
     private DropDownList list;
-
-    /**
-     * Выбранный элемент списка, который показывается в комбобоксе
-     */
-    private MenuBase.MenuItem shownItem;
 
     /**
      * Текст
@@ -51,8 +51,12 @@ public class ComboBox extends Composite implements HasEnabled{
      */
     private boolean isEnabled;
 
+    private HashMap<MenuBase.MenuItem, V> values;
+
     public ComboBox() {
         panel = new FlowPanel();
+        values = new HashMap<MenuBase.MenuItem, V>();
+
         initWidget(panel);
 
         isEnabled = true;
@@ -102,15 +106,15 @@ public class ComboBox extends Composite implements HasEnabled{
      */
     private void showItem(MenuBase.MenuItem item) {
         textLabel.setText(item.getText());
-        shownItem = item;
     }
 
     /**
      * Добавить элемент в список комбобокса
      * @param text текст элемента
      */
-    public void addItem(String text) {
-        list.addItem(text);
+    public void addItem(String text, V value) {
+        MenuBase.MenuItem item = list.addItem(text);
+        values.put(item, value);
     }
 
     /**
@@ -118,8 +122,30 @@ public class ComboBox extends Composite implements HasEnabled{
      * @param text текст элемента
      * @param iconResource иконка элемента в списке
      */
-    public void addItem(String text, ImageResource iconResource) {
-        list.addItem(text, iconResource);
+    public void addItem(String text, ImageResource iconResource, V value) {
+        MenuBase.MenuItem item = list.addItem(text, iconResource);
+        values.put(item, value);
+    }
+
+    /**
+     * Возвращает значение выбранного элемента комбобокса
+     * @return выбранное значение
+     */
+    public V getSelectedValue() {
+        MenuBase.MenuItem item = list.getSelectedItem();
+        if (item != null) {
+            return values.get(list.getSelectedItem());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Возвращает текст выбранного пункта меню
+     * @return выбранный текст
+     */
+    public String getSelectedText() {
+        return list.getSelectedItem().getText();
     }
 
     @Override
@@ -135,6 +161,11 @@ public class ComboBox extends Composite implements HasEnabled{
         } else {
             removeStyleName(SynergyComponents.resources.cssComponents().disabled());
         }
+    }
+
+    @Override
+    public HandlerRegistration addChangeHandler(ChangeHandler handler) {
+        return textLabel.addChangeHandler(handler);
     }
 }
 

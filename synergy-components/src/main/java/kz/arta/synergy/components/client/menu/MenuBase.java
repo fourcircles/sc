@@ -139,40 +139,45 @@ public abstract class MenuBase extends PopupPanel{
     /**
      * Добавляет элемент в конец списка
      * @param item элемент списка
+     * @return новый элемент списка
      */
-    private void addItem(MenuItem item) {
+    private MenuItem addItem(MenuItem item) {
         items.add(item);
         panel.add(item.asWidget());
+        return item;
     }
 
     /**
      * Добавляет элемент с заданным текстом в конец списка
      * @param text текст
+     * @return новый элемент списка
      */
-    public void addItem(String text) {
-        addItem(new MenuItem(text));
+    public MenuItem addItem(String text) {
+        return addItem(new MenuItem(text));
     }
 
     /**
      * Добавляет элемент с заданным текстом и иконкой в конец списка
      * @param text текст
      * @param imageResource иконка
+     * @return новый элемент списка
      */
-    public void addItem(String text, ImageResource imageResource) {
-        addItem(new MenuItem(text, imageResource));
+    public MenuItem addItem(String text, ImageResource imageResource) {
+        return addItem(new MenuItem(text, imageResource));
     }
 
     /**
      * Добавляет элемент с текстом и командой для выполнения при выборе в конец списка.
      * @param text текст
      * @param command команда
+     * @return новый элемент списка
      */
-    public void addItem(String text, Command command) {
-        addItem(new MenuItem(text, command));
+    public MenuItem addItem(String text, Command command) {
+        return addItem(new MenuItem(text, command));
     }
 
-    public void addItem(String text, ImageResource icon, Command command) {
-        addItem(new MenuItem(text, icon, command));
+    public MenuItem addItem(String text, ImageResource icon, Command command) {
+        return addItem(new MenuItem(text, icon, command));
     }
 
     /**

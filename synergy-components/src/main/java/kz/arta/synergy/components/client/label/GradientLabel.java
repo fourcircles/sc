@@ -3,7 +3,8 @@ package kz.arta.synergy.components.client.label;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.i18n.client.HasDirection;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -15,9 +16,15 @@ import kz.arta.synergy.components.style.client.Constants;
  * Time: 18:02
  * Label с градиентом
  */
-public class GradientLabel extends FlowPanel {
+public class GradientLabel extends Composite implements HasDirection {
 
     //todo применять градиент к границе кнопки или текста
+    
+    /**
+     * Главная панель
+     */
+    FlowPanel panel;
+
     /**
      * Градиент
      */
@@ -29,13 +36,15 @@ public class GradientLabel extends FlowPanel {
     private InlineLabel textLabel = GWT.create(InlineLabel.class);
 
     public GradientLabel() {
-        add(textLabel);
+        panel = new FlowPanel();
+        initWidget(panel);
+
+        panel.add(textLabel);
         getElement().getStyle().setProperty("wordWrap", "break-word");
         getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
 
         gradient.setStyleName(SynergyComponents.resources.cssComponents().gradient());
-        gradient.getElement().getStyle().setMarginRight(-10, Style.Unit.PX);
         setHeight(Constants.buttonHeight());
     }
 
@@ -62,11 +71,17 @@ public class GradientLabel extends FlowPanel {
      */
     protected void adjustGradient() {
         if (!textFits()) {
-            if (LocaleInfo.getCurrentLocale().isRTL()) {
-                insert(gradient, 0);
-            } else {
-                add(gradient);
-            }
+            panel.add(gradient);
+//            if (LocaleInfo.getCurrentLocale().isRTL()) {
+//                gradient.getElement().getStyle().setMarginRight(0, Style.Unit.PX);
+//                gradient.getElement().getStyle().setMarginLeft(-Constants.BUTTON_PADDING, Style.Unit.PX);
+//            } else {
+//                gradient.getElement().getStyle().setMarginRight(-Constants.BUTTON_PADDING, Style.Unit.PX);
+//                gradient.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
+//            }
+            textLabel.getElement().getStyle().setOverflowX(Style.Overflow.VISIBLE);
+        } else {
+            textLabel.getElement().getStyle().setOverflowX(Style.Overflow.VISIBLE);
         }
     }
 
@@ -102,5 +117,15 @@ public class GradientLabel extends FlowPanel {
     public void setWidth(String width) {
         super.setWidth(width);
         adjustGradient();
+    }
+
+    @Override
+    public void setDirection(Direction direction) {
+        System.out.println(direction.toString());
+    }
+
+    @Override
+    public Direction getDirection() {
+        return null;
     }
 }

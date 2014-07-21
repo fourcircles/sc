@@ -1,4 +1,4 @@
-package kz.arta.synergy.components.client.menu;
+package kz.arta.synergy.components.client.scroll;
 
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
@@ -10,7 +10,8 @@ import kz.arta.synergy.components.style.client.Constants;
  * User: vsl
  * Date: 17.07.14
  * Time: 10:50
- * Панель с вертикальным скролом
+ * Панель с вертикальным скролом.
+ * Горизонтальный скролл не отображается.
  */
 public class ArtaVerticalScrollPanel extends CustomScrollPanel {
     /**
@@ -33,6 +34,8 @@ public class ArtaVerticalScrollPanel extends CustomScrollPanel {
                 vScroll.setVerticalScrollPosition(getVerticalScrollPosition());
             }
         });
+
+        getScrollableElement().getStyle().setOverflowX(com.google.gwt.dom.client.Style.Overflow.HIDDEN);
     }
 
     public ArtaVerticalScrollPanel(int height, Widget widget) {

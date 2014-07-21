@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasEnabled;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.menu.DropDownList;
@@ -18,7 +19,7 @@ import kz.arta.synergy.components.client.resources.ImageResources;
  * Time: 14:58
  * Комбо-бокс
  */
-public class ComboBox extends Composite {
+public class ComboBox extends Composite implements HasEnabled{
 
     /**
      * Основная панель
@@ -45,9 +46,16 @@ public class ComboBox extends Composite {
      */
     private ImageButton dropDownButton;
 
+    /**
+     * Отключен или включен комбобокс
+     */
+    private boolean isEnabled;
+
     public ComboBox() {
         panel = new FlowPanel();
         initWidget(panel);
+
+        isEnabled = true;
 
         list = new DropDownList(this) {
             @Override
@@ -68,11 +76,13 @@ public class ComboBox extends Composite {
         ClickHandler click = new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                event.stopPropagation();
-                if (list.isShowing()) {
-                    list.hide();
-                } else {
-                    list.showUnderParent();
+                if (isEnabled) {
+                    event.stopPropagation();
+                    if (list.isShowing()) {
+                        list.hide();
+                    } else {
+                        list.showUnderParent();
+                    }
                 }
             }
         };
@@ -92,6 +102,7 @@ public class ComboBox extends Composite {
      */
     private void showItem(MenuBase.MenuItem item) {
         textLabel.setText(item.getText());
+        shownItem = item;
     }
 
     /**
@@ -110,4 +121,20 @@ public class ComboBox extends Composite {
     public void addItem(String text, ImageResource iconResource) {
         list.addItem(text, iconResource);
     }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+        if (!enabled) {
+            addStyleName(SynergyComponents.resources.cssComponents().disabled());
+        } else {
+            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+        }
+    }
 }
+

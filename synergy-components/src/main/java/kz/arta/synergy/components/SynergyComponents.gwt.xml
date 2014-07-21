@@ -13,6 +13,7 @@
     <extend-property name="locale" values="ru"/>
     <extend-property name="locale" values="kk"/>
     <extend-property name="locale" values="en"/>
+    <extend-property name="locale" values="ar"/>
 
     <set-property-fallback name="locale" value="ru"/>
 

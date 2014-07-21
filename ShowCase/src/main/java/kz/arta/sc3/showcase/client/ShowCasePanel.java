@@ -16,9 +16,7 @@ import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
 import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.button.ButtonBase;
-import kz.arta.synergy.components.client.button.ContextMenuButton;
-import kz.arta.synergy.components.client.button.ImageButton;
-import kz.arta.synergy.components.client.button.SimpleButton;
+import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
@@ -317,8 +315,284 @@ public class ShowCasePanel extends LayoutPanel {
         TreeItem category2 = addCategory(SCMessages.i18n.tr("Диалог"));
         TreeItem category3 = addCategory(SCMessages.i18n.tr("Поля ввода"));
 
-        int cnt = 0;
+        new ShowComponent(this, category1, SCMessages.i18n.tr("Простая кнопка"), SCMessages.i18n.tr("Простая кнопка"), getSimpleButtonPanel());
 
+        new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопка с иконкой"), SCMessages.i18n.tr("Кнопка с иконкой"), getIconButtonPanel());
+
+        new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), getColorButtonPanel());
+
+        new ShowComponent(this, category1, SCMessages.i18n.tr("Групповые кнопки"), SCMessages.i18n.tr("Групповые кнопки"), getGroupButton());
+
+        new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));
+
+        new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог с кнопками"), SCMessages.i18n.tr("Диалог с кнопками"), setUpDialogs(true));
+
+        new ShowComponent(this, category3, SCMessages.i18n.tr("Поле ввода текста"), SCMessages.i18n.tr("Поле ввода текста"), getTextInputs());
+
+        FlowPanel comboBoxPanel = new FlowPanel();
+
+        ComboBox combo1 = new ComboBox();
+        combo1.addItem("hello", ImageResources.IMPL.zoom());
+        combo1.addItem("goodbye", ImageResources.IMPL.navigationLeft());
+        combo1.addItem("oh hai again", ImageResources.IMPL.navigationRight());
+        combo1.addItem("oh hello there how are you where did you go last time");
+        for (int i = 1; i < 10; i++) {
+            combo1.addItem("item " + i);
+        }
+
+        comboBoxPanel.add(combo1);
+
+        new ShowComponent(this, category3, SCMessages.i18n.tr("Комбобокс"), SCMessages.i18n.tr("Комбобокс"), comboBoxPanel);
+    }
+
+    /**
+     * Групповые кнопки
+     * @return
+     */
+    private Widget getGroupButton() {
+        FlowPanel panel = new FlowPanel();
+        final SimpleToggleButton toggleButton = new SimpleToggleButton("Кнопка");
+        toggleButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (toggleButton.isPressed()) {
+                    toggleButton.setText("Нажата");
+                } else {
+                    toggleButton.setText("Не нажата");
+                }
+            }
+        });
+        toggleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        toggleButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(toggleButton);
+
+
+        GroupButtonPanel groupButtonPanel = new GroupButtonPanel(true);
+        groupButtonPanel.addButton("Первая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Window.alert("Первая кнопка");
+            }
+        });
+        groupButtonPanel.addButton("Вторая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Window.alert("Вторая кнопка");
+            }
+        });
+        groupButtonPanel.addButton("Третья", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Window.alert("Третья кнопка");
+            }
+        });
+        groupButtonPanel.buildPanel();
+        groupButtonPanel.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        groupButtonPanel.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(groupButtonPanel);
+
+        GroupButtonPanel groupButtonPanel1 = new GroupButtonPanel(true, true);
+        groupButtonPanel1.addButton("Первая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+            }
+        });
+        groupButtonPanel1.addButton("Вторая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+            }
+        });
+        groupButtonPanel1.addButton("Третья", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+            }
+        });
+        groupButtonPanel1.buildPanel();
+        groupButtonPanel1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        groupButtonPanel1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(groupButtonPanel1);
+
+        GroupButtonPanel groupButtonPanel2 = new GroupButtonPanel(true);
+        groupButtonPanel2.setAllowEmptyToggle(false);
+        groupButtonPanel2.addButton("Первая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+            }
+        });
+        groupButtonPanel2.addButton("Вторая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+            }
+        });
+        groupButtonPanel2.addButton("Третья", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+            }
+        });
+        groupButtonPanel2.buildPanel();
+        groupButtonPanel2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        groupButtonPanel2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(groupButtonPanel2);
+
+        GroupButtonPanel groupButtonPanel3 = new GroupButtonPanel(true, true);
+        groupButtonPanel3.addButton("Первая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+            }
+        });
+        groupButtonPanel3.addButton("Вторая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+            }
+        });
+        groupButtonPanel3.addButton("Третья", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+            }
+        });
+        groupButtonPanel3.buildPanel();
+        groupButtonPanel3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        groupButtonPanel3.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(groupButtonPanel3);
+
+        GroupButtonPanel groupButtonPanel4 = new GroupButtonPanel();
+        groupButtonPanel4.addButton("Первая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+            }
+        });
+        groupButtonPanel4.addButton("Вторая", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+            }
+        });
+        groupButtonPanel4.addButton("Третья", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+
+            }
+        });
+        groupButtonPanel4.buildPanel();
+        groupButtonPanel4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        groupButtonPanel4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(groupButtonPanel4);
+
+        return panel;
+    }
+
+    /**
+     * Текстовые поля
+     * @return панель с текстовыми полями
+     */
+    private Widget getTextInputs() {
+        FlowPanel panel = new FlowPanel();
+        final TextInput textInput = new TextInput();
+        textInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        textInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(textInput);
+        textInput.setPlaceHolder(SCMessages.i18n.tr("Необязательное поле"));
+
+        final TextInput input = new TextInput();
+        input.setEnabled(false);
+        panel.add(input);
+        input.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        input.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        input.setPlaceHolder(SCMessages.i18n.tr("Неактивное поле"));
+
+        final TextInput inputAllow = new TextInput(false);
+        panel.add(inputAllow);
+        inputAllow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        inputAllow.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        inputAllow.setPlaceHolder(SCMessages.i18n.tr("Обязательное поле"));
+
+        final TextInput widthInput = new TextInput(false);
+        panel.add(widthInput);
+        widthInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        widthInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        widthInput.setPlaceHolder(SCMessages.i18n.tr("Широкое поле ввода"));
+        widthInput.setWidth("300px");
+
+        final TextInput smallWidthInput = new TextInput(false);
+        panel.add(smallWidthInput);
+        smallWidthInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        smallWidthInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        smallWidthInput.setPlaceHolder(SCMessages.i18n.tr("Маленькое поле ввода"));
+        smallWidthInput.setWidth("100px");
+
+        Panel textAreaPanel = new FlowPanel();
+        textAreaPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+
+        textAreaPanel.add(new ArtaTextArea());
+
+//        final ArtaTextArea textArea = new ArtaTextArea();
+//        textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+//        textArea.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+//        textArea.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода"));
+//        textAreaPanel.add(textArea);
+//
+//        final ArtaTextArea disableTextArea = new ArtaTextArea(false);
+//        disableTextArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+//        disableTextArea.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+//        disableTextArea.setPlaceHolder(SCMessages.i18n.tr("Неактивное многострочное поле ввода"));
+//        disableTextArea.setEnabled(false);
+//        textAreaPanel.add(disableTextArea);
+//
+//        final ArtaTextArea textAreaEmpty = new ArtaTextArea(false);
+//        textAreaEmpty.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+//        textAreaEmpty.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+//        textAreaEmpty.setPlaceHolder(SCMessages.i18n.tr("Обязательное многострочное поле ввода"));
+//        textAreaPanel.add(textAreaEmpty);
+//
+//        final ArtaTextArea textAreaSize = new ArtaTextArea(false);
+//        textAreaSize.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+//        textAreaSize.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+//        textAreaSize.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода с заданным размером"));
+//        textAreaSize.setSize("300px", "300px");
+//        textAreaPanel.add(textAreaSize);
+
+
+        panel.add(textAreaPanel);
+
+        SimpleButton button = new SimpleButton(SCMessages.i18n.tr("Валидация полей"), SimpleButton.Type.APPROVE);
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                textInput.checkInput();
+                input.checkInput();
+                inputAllow.checkInput();
+                widthInput.checkInput();
+                smallWidthInput.checkInput();
+//                textArea.checkInput();
+            }
+        });
+        Panel buttonPanel = new FlowPanel();
+        buttonPanel.add(button);
+        button.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        button.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        buttonPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+        panel.add(buttonPanel);
+
+        panel.setSize("100%", "100%");
+
+        return panel;
+    }
+
+    /**
+     * Простые кнопки
+     * @return
+     */
+    private Widget getSimpleButtonPanel() {
         final ContextMenu menu = createSimpleMenu();
 
         FlowPanel simpleButtonPanel = new FlowPanel_() {
@@ -364,9 +638,14 @@ public class ShowCasePanel extends LayoutPanel {
         simpleButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton4);
         simpleButton4.setContextMenu(menuForSimple);
+        return simpleButtonPanel;
+    }
 
-        new ShowComponent(this, category1, SCMessages.i18n.tr("Простая кнопка"), SCMessages.i18n.tr("Простая кнопка"), simpleButtonPanel);
-
+    /**
+     * Кнопки с иконками
+     * @return
+     */
+    private Widget getIconButtonPanel() {
         FlowPanel iconButtonPanel = new FlowPanel();
 
         SimpleButton iconButton = new SimpleButton(SCMessages.i18n.tr("Кнопка с иконкой"), SCImageResources.IMPL.zoom());
@@ -426,9 +705,14 @@ public class ShowCasePanel extends LayoutPanel {
         iconButton8.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         iconButton8.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         iconButton8.setContextMenu(menu5);
+        return iconButtonPanel;
+    }
 
-        new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопка с иконкой"), SCMessages.i18n.tr("Кнопка с иконкой"), iconButtonPanel);
-
+    /**
+     * Цветные кнопки
+     * @return
+     */
+    private Widget getColorButtonPanel() {
         FlowPanel colorButtonPanel = new FlowPanel();
         colorButtonPanel.setHeight("2000px");
 
@@ -481,129 +765,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         ScrollPanel scroll = new ScrollPanel();
         scroll.setWidget(colorButtonPanel);
-        new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), scroll);
-
-        FlowPanel comboBoxPanel = new FlowPanel();
-
-        ComboBox combo1 = new ComboBox();
-        combo1.addItem(SCMessages.i18n.tr("Приблизить"), ImageResources.IMPL.zoom());
-        combo1.addItem(SCMessages.i18n.tr("Налево"), ImageResources.IMPL.navigationLeft());
-        combo1.addItem(SCMessages.i18n.tr("Направо"), ImageResources.IMPL.navigationRight());
-        combo1.addItem(SCMessages.i18n.tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"));
-        for (int i = 1; i < 30; i++) {
-            combo1.addItem(SCMessages.i18n.tr("Пункт меню ") + i);
-        }
-        combo1.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
-        comboBoxPanel.add(combo1);
-
-        ComboBox comboDisabled = new ComboBox();
-        comboDisabled.setEnabled(false);
-        comboBoxPanel.add(comboDisabled);
-
-
-        cnt++;
-        new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));
-        cnt++;
-        new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог с кнопками"), SCMessages.i18n.tr("Диалог с кнопками"), setUpDialogs(true));
-        cnt++;
-        new ShowComponent(this, category3, SCMessages.i18n.tr("Поле ввода текста"), SCMessages.i18n.tr("Поле ввода текста"), getTextInputs());
-        cnt++;
-        new ShowComponent(this, category3, SCMessages.i18n.tr("Комбобокс"), SCMessages.i18n.tr("Комбобокс"), comboBoxPanel);
-    }
-
-    /**
-     * Текстовые поля
-     * @return панель с текстовыми полями
-     */
-    private Widget getTextInputs() {
-        FlowPanel panel = new FlowPanel();
-        final TextInput textInput = new TextInput();
-        textInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        textInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        panel.add(textInput);
-        textInput.setPlaceHolder(SCMessages.i18n.tr("Необязательное поле"));
-
-        final TextInput input = new TextInput();
-        input.setEnabled(false);
-        panel.add(input);
-        input.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        input.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        input.setPlaceHolder(SCMessages.i18n.tr("Неактивное поле"));
-
-        final TextInput inputAllow = new TextInput(false);
-        panel.add(inputAllow);
-        inputAllow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        inputAllow.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        inputAllow.setPlaceHolder(SCMessages.i18n.tr("Обязательное поле"));
-
-        final TextInput widthInput = new TextInput(false);
-        panel.add(widthInput);
-        widthInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        widthInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        widthInput.setPlaceHolder(SCMessages.i18n.tr("Широкое поле ввода"));
-        widthInput.setWidth("300px");
-
-        final TextInput smallWidthInput = new TextInput(false);
-        panel.add(smallWidthInput);
-        smallWidthInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        smallWidthInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        smallWidthInput.setPlaceHolder(SCMessages.i18n.tr("Маленькое поле ввода"));
-        smallWidthInput.setWidth("100px");
-
-        Panel textAreaPanel = new FlowPanel();
-        textAreaPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
-
-        final ArtaTextArea textArea = new ArtaTextArea();
-        textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        textArea.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        textArea.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода"));
-        textAreaPanel.add(textArea);
-
-        final ArtaTextArea disableTextArea = new ArtaTextArea(false);
-        disableTextArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        disableTextArea.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        disableTextArea.setPlaceHolder(SCMessages.i18n.tr("Неактивное многострочное поле ввода"));
-        disableTextArea.setEnabled(false);
-        textAreaPanel.add(disableTextArea);
-
-        final ArtaTextArea textAreaEmpty = new ArtaTextArea(false);
-        textAreaEmpty.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        textAreaEmpty.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        textAreaEmpty.setPlaceHolder(SCMessages.i18n.tr("Обязательное многострочное поле ввода"));
-        textAreaPanel.add(textAreaEmpty);
-
-        final ArtaTextArea textAreaSize = new ArtaTextArea(false);
-        textAreaSize.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        textAreaSize.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        textAreaSize.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода с заданным размером"));
-        textAreaSize.setSize("300px", "300px");
-        textAreaPanel.add(textAreaSize);
-
-
-        panel.add(textAreaPanel);
-
-        SimpleButton button = new SimpleButton(SCMessages.i18n.tr("Валидация полей"), SimpleButton.Type.APPROVE);
-        button.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                textInput.checkInput();
-                input.checkInput();
-                inputAllow.checkInput();
-                widthInput.checkInput();
-                smallWidthInput.checkInput();
-                textArea.checkInput();
-            }
-        });
-        Panel buttonPanel = new FlowPanel();
-        buttonPanel.add(button);
-        button.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        button.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        buttonPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
-        panel.add(buttonPanel);
-
-        panel.setSize("100%", "100%");
-
-        return panel;
+        return scroll;
     }
 
     private ContextMenu createSimpleMenu() {

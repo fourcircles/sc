@@ -77,6 +77,19 @@
     display: inline-block;
 }
 
+.buttonSimple.edge, .approveButton.edge, .declineButton.edge {
+    border-radius: 0;
+}
+
+.buttonSimple.left, .approveButton.left, .declineButton.left {
+    border-radius: 4px 0 0 4px;
+}
+
+
+.buttonSimple.right, .approveButton.right, .declineButton.right {
+    border-radius: 0 4px 4px 0;
+}
+
 .buttonSimple {
     background-color: whiteBG;
     border-color: buttonBorder;
@@ -520,12 +533,12 @@
     color: textColor2;
     padding: 8px;
     vertical-align: top;
+    outline: none;
 }
 
 .commonInput {
     height: 30px;
     padding: 0 8px;
-    outline: none;
 }
 
 .commonInput.disabled, .artaText.disabled {
@@ -626,3 +639,6 @@
     background-color: buttonPressed;
 }
 
+.groupButtonPanel {
+    display: inline-block;
+}

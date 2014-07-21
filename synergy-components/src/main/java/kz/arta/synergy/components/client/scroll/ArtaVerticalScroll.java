@@ -193,7 +193,7 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
     }
 
     /**
-     * Возвращает вышину контролируемого контента
+     * Возвращает высоту контролируемого контента
      * @return
      */
     @Override
@@ -203,6 +203,7 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
 
     @Override
     public void setScrollHeight(int height) {
+        System.out.println(height);
     }
 
     @Override

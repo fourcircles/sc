@@ -489,9 +489,9 @@ public class ShowCasePanel extends LayoutPanel {
         combo1.addItem(SCMessages.i18n.tr("Приблизить"), ImageResources.IMPL.zoom());
         combo1.addItem(SCMessages.i18n.tr("Налево"), ImageResources.IMPL.navigationLeft());
         combo1.addItem(SCMessages.i18n.tr("Направо"), ImageResources.IMPL.navigationRight());
-        combo1.addItem(SCMessages.i18n.tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"));
+        combo1.addItem(SCMessages.i18n.tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"), null);
         for (int i = 1; i < 30; i++) {
-            combo1.addItem(SCMessages.i18n.tr("Пункт меню ") + i);
+            combo1.addItem(SCMessages.i18n.tr("Пункт меню ") + i, null);
         }
         combo1.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
         comboBoxPanel.add(combo1);

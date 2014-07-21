@@ -17,6 +17,9 @@ import kz.arta.synergy.components.style.client.Constants;
  * Label с градиентом
  */
 public class GradientLabel extends Composite implements HasDirection {
+
+    //todo применять градиент к границе кнопки или текста
+    
     /**
      * Главная панель
      */

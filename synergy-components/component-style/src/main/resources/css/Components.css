@@ -536,22 +536,36 @@
     outline: none;
 }
 
+.artaText {
+    border: none;
+    overflow: hidden;
+    width: 100%;
+}
+
+.artaTextPanel {
+    border-color: buttonBorder;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+    background-color: whiteBG;
+}
+
 .commonInput {
     height: 30px;
     padding: 0 8px;
 }
 
-.commonInput.disabled, .artaText.disabled {
+.commonInput.disabled, .artaText.disabled, .artaTextPanel.disabled {
     background-color: buttonBG;
     color: border1;
 }
 
-.commonInput:focus, .artaText:focus{
+.commonInput:focus, .artaText:focus, .artaTextPanel.focus {
     border-color: border1;
     color: textColor2;
 }
 
-.commonInput.invalid, .artaText.invalid {
+.commonInput.invalid, .artaText.invalid, .artaTextPanel.invalid {
     border-color: declineButtonBG1;
     color: textColor2;
 }

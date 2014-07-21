@@ -62,6 +62,11 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
     int height;
 
     /**
+     * Высота скролируемой области
+     */
+    int contentHeight;
+
+    /**
      * Координата начала dnd относительно начала бегунка
      */
     private int dragStartY;
@@ -91,6 +96,8 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
         initWidget(panel);
 
         this.scrollPanel = scrollPanel;
+        down.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
+        down.getElement().getStyle().setBottom(1, Style.Unit.PX);
     }
 
     @UiHandler("up")
@@ -183,7 +190,7 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
      */
     @Override
     public int getScrollHeight() {
-        return height + getMaximumVerticalScrollPosition();
+        return scrollPanel.getWidget().getOffsetHeight();
     }
 
     /**
@@ -192,13 +199,18 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
      */
     @Override
     public void setScrollHeight(int height) {
+
+        contentHeight = height;
         this.height = scrollPanel.getOffsetHeight();
         panel.setHeight(scrollPanel.getOffsetHeight() + "px");
-
-        barHeight = (int) ((double) this.height / (this.height + getMaximumVerticalScrollPosition()) * this.height);
+        barHeight = (int) Math.ceil ((scrollPanel.getOffsetHeight() / (double) height) * (scrollPanel.getOffsetHeight() - 16 * 2));
         bar.setHeight(barHeight + "px");
         freeTrackSpace = this.height - barHeight - 17 * 2;
-        setVerticalScrollPosition(0);
+        if (getVerticalScrollPosition() == 0) {
+            setVerticalScrollPosition(0);
+        } else {
+            setVerticalScrollPosition(getMaximumVerticalScrollPosition());
+        }
     }
 
     @Override
@@ -251,5 +263,10 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
         double barPosition = getBarPosition(position);
         bar.getElement().getStyle().setMarginTop(barPosition, Style.Unit.PX);
         bar.getElement().getStyle().setMarginBottom(freeTrackSpace - barPosition, Style.Unit.PX);
+    }
+
+    public void onLoad() {
+        super.onLoad();
+        setVerticalScrollPosition(0);
     }
 }

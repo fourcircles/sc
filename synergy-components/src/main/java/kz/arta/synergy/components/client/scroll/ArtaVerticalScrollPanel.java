@@ -36,7 +36,7 @@ public class ArtaVerticalScrollPanel extends CustomScrollPanel {
             }
         });
 
-        getScrollableElement().getStyle().setOverflowX(com.google.gwt.dom.client.Style.Overflow.HIDDEN);
+//        getScrollableElement().getStyle().setOverflowX(com.google.gwt.dom.client.Style.Overflow.HIDDEN);
     }
 
     public ArtaVerticalScrollPanel(Widget widget) {

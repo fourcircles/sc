@@ -1,11 +1,12 @@
 package kz.arta.synergy.components.client.input;
 
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.Composite;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.input.handlers.PlaceHolderFocusHandler;
+import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
 
 /**
  * User: user
@@ -13,7 +14,25 @@ import kz.arta.synergy.components.client.input.handlers.PlaceHolderFocusHandler;
  * Time: 17:04
  * Поле ввода для многострочного текста
  */
-public class ArtaTextArea extends TextArea {
+public class ArtaTextArea extends Composite {
+
+    /**
+     *
+     */
+    private int height = 77;
+
+    private int width = 200;
+
+    /**
+     * Сам компонент для ввода текста
+     */
+    private StretchyTextArea textArea = GWT.create(StretchyTextArea.class);
+
+    /**
+     * Скролл
+     */
+    private ArtaVerticalScrollPanel verticalScroll;
+
 
     /**
      * Можно ли оставить пустым поле ввода
@@ -47,19 +66,39 @@ public class ArtaTextArea extends TextArea {
     }
 
     private void init() {
-        sinkEvents(Event.KEYEVENTS);
-        sinkEvents(Event.FOCUSEVENTS);
-        sinkEvents(Event.MOUSEEVENTS);
+        textArea.setMinVisibleLines(3);
+        verticalScroll = new ArtaVerticalScrollPanel();
+        verticalScroll.setWidget(textArea);
+        setPixelSize(width, height);
+        initWidget(verticalScroll);
 
-        setStyleName(SynergyComponents.resources.cssComponents().artaText());
-        addStyleName(SynergyComponents.resources.cssComponents().mainText());
-        getElement().getStyle().setProperty("resize", "none");
-        addKeyUpHandler(new KeyUpHandler() {
+        textArea.sinkEvents(Event.KEYEVENTS);
+        textArea.sinkEvents(Event.FOCUSEVENTS);
+        textArea.sinkEvents(Event.MOUSEEVENTS);
+
+        textArea.setStyleName(SynergyComponents.resources.cssComponents().artaText());
+        textArea.addStyleName(SynergyComponents.resources.cssComponents().mainText());
+        textArea.getElement().getStyle().setProperty("resize", "none");
+        textArea.addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
                 checkInput();
             }
         });
+        setStyleName(SynergyComponents.resources.cssComponents().artaTextPanel());
+        textArea.addFocusHandler(new FocusHandler() {
+            @Override
+            public void onFocus(FocusEvent event) {
+                addStyleName(SynergyComponents.resources.cssComponents().focus());
+            }
+        });
+        textArea.addBlurHandler(new BlurHandler() {
+            @Override
+            public void onBlur(BlurEvent event) {
+                removeStyleName(SynergyComponents.resources.cssComponents().focus());
+            }
+        });
+
     }
 
     public boolean isAllowEmpty() {
@@ -71,12 +110,14 @@ public class ArtaTextArea extends TextArea {
     }
 
     public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-        setReadOnly(!enabled);
+        textArea.setEnabled(enabled);
+        textArea.setReadOnly(!enabled);
         this.enabled = enabled;
         if (enabled) {
+            textArea.removeStyleName(SynergyComponents.resources.cssComponents().disabled());
             removeStyleName(SynergyComponents.resources.cssComponents().disabled());
         } else {
+            textArea.addStyleName(SynergyComponents.resources.cssComponents().disabled());
             addStyleName(SynergyComponents.resources.cssComponents().disabled());
         }
 
@@ -100,9 +141,9 @@ public class ArtaTextArea extends TextArea {
      */
     public void setPlaceHolder(String placeHolder) {
         if (placeHolderHandler == null){
-            placeHolderHandler = new PlaceHolderFocusHandler(this);
-            addFocusHandler(placeHolderHandler);
-            addBlurHandler(placeHolderHandler);
+            placeHolderHandler = new PlaceHolderFocusHandler(textArea);
+            textArea.addFocusHandler(placeHolderHandler);
+            textArea.addBlurHandler(placeHolderHandler);
         }
         placeHolderHandler.setPlaceHolder(placeHolder);
     }
@@ -128,14 +169,19 @@ public class ArtaTextArea extends TextArea {
         return correct;
     }
 
-    @Override
     public String getText() {
         if (placeHolderHandler != null) {
-            if (super.getText().equals(placeHolderHandler.getPlaceHolder())) {
+            if (textArea.getText().equals(placeHolderHandler.getPlaceHolder())) {
                 return "";
             }
         }
-        return super.getText();
+        return textArea.getText();
+    }
+
+    //todo setSize()
+    public void setPixelSize(int width, int height) {
+        textArea.setPixelSize(width - 16, height - 16);
+        verticalScroll.setPixelSize(width, height);
     }
 
 }

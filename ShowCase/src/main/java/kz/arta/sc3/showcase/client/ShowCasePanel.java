@@ -338,12 +338,25 @@ public class ShowCasePanel extends LayoutPanel {
             combo1.addItem(SCMessages.i18n.tr("Пункт меню ") + i, null);
         }
         combo1.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
+        combo1.setReadOnly(false);
         comboBoxPanel.add(combo1);
 
         ComboBox comboDisabled = new ComboBox();
+        comboDisabled.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
         comboDisabled.setEnabled(false);
         comboBoxPanel.add(comboDisabled);
 
+        ComboBox comboReadOnly = new ComboBox();
+        comboReadOnly.addItem(SCMessages.i18n.tr("Приблизить"), ImageResources.IMPL.zoom());
+        comboReadOnly.addItem(SCMessages.i18n.tr("Налево"), ImageResources.IMPL.navigationLeft());
+        comboReadOnly.addItem(SCMessages.i18n.tr("Направо"), ImageResources.IMPL.navigationRight());
+        comboReadOnly.addItem(SCMessages.i18n.tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"), null);
+        for (int i = 1; i < 30; i++) {
+            comboReadOnly.addItem(SCMessages.i18n.tr("Пункт меню ") + i, null);
+        }
+        comboReadOnly.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
+        comboReadOnly.setReadOnly(true);
+        comboBoxPanel.add(comboReadOnly);
 
         cnt++;
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));

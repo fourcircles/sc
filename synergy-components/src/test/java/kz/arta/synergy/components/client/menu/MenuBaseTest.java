@@ -54,6 +54,11 @@ public class MenuBaseTest {
             protected String getMainStyle() {
                 return "style";
             }
+
+            @Override
+            protected boolean canBeChosen(MenuItem item) {
+                return true;
+            }
         };
         spy = Mockito.spy(menu);
     }

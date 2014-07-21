@@ -1,12 +1,10 @@
 package kz.arta.synergy.components.client;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
@@ -18,6 +16,7 @@ import kz.arta.synergy.components.client.resources.ImageResources;
 
 import java.util.HashMap;
 
+//todo add proper changehandler
 /**
  * User: vsl
  * Date: 15.07.14
@@ -51,6 +50,25 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      */
     private boolean isEnabled;
 
+    /**
+     * Можно ли вводит значения в комбобокс для поиска нужных значений
+     */
+    private boolean readOnly;
+
+    /**
+     * Обработка событий в зависимости от статуса read-only. При изменении статуса
+     * прекращается обработка ненужных событий.
+     */
+    MouseDownHandler textLabelMouseDown;
+    HandlerRegistration textLabelMouseDownRegistration;
+    ClickHandler textLabelClick;
+    HandlerRegistration textLabelClickRegistration;
+    Timer textChangeTimer;
+    KeyPressHandler textPressKey;
+    HandlerRegistration textPressKeyRegistration;
+    KeyUpHandler textUpKey;
+    HandlerRegistration textUpKeyRegistration;
+
     private HashMap<MenuBase.MenuItem, V> values;
 
     public ComboBox() {
@@ -71,17 +89,17 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         list.setRelativeWidget(this);
 
         textLabel = new TextInput();
-        textLabel.setReadOnly(true);
         textLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
         dropDownButton = new ImageButton(ImageResources.IMPL.comboBoxDropDown());
         dropDownButton.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
-        ClickHandler click = new ClickHandler() {
+        textLabelClick = new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 if (isEnabled) {
                     event.stopPropagation();
+                    removeStyleName(SynergyComponents.resources.cssComponents().pressed());
                     if (list.isShowing()) {
                         list.hide();
                     } else {
@@ -90,11 +108,64 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                 }
             }
         };
-        textLabel.addClickHandler(click);
-        dropDownButton.addClickHandler(click);
+        textLabelMouseDown = new MouseDownHandler() {
+            @Override
+            public void onMouseDown(MouseDownEvent event) {
+                addStyleName(SynergyComponents.resources.cssComponents().pressed());
+            }
+        };
+
+
+        textChangeTimer = new Timer() {
+            @Override
+            public void run() {
+                String prefix = textLabel.getText();
+                if (prefix.isEmpty()) {
+                    list.removePrefix();
+                } else {
+                    String firstItemText = list.applyPrefix(prefix);
+                    if (firstItemText != null) {
+                        textLabel.setText(firstItemText);
+                        textLabel.setCursorPos(prefix.length());
+                        textLabel.setSelectionRange(prefix.length(), firstItemText.length() - prefix.length());
+                    }
+                    list.showUnderParent();
+                }
+            }
+        };
+
+        textPressKey = new KeyPressHandler() {
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                textChangeTimer.cancel();
+                textChangeTimer.schedule(200);
+            }
+        };
+
+        textUpKey = new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                switch (event.getNativeKeyCode()) {
+                    case KeyCodes.KEY_BACKSPACE:
+                    case KeyCodes.KEY_DELETE:
+                        textChangeTimer.cancel();
+                        textChangeTimer.schedule(200);
+                        break;
+                    case KeyCodes.KEY_DOWN:
+                        list.showUnderParent();
+                        textChangeTimer.cancel();
+                        textChangeTimer.schedule(200);
+                        break;
+                }
+            }
+        };
+
+        dropDownButton.addClickHandler(textLabelClick);
 
         panel.add(textLabel);
         panel.add(dropDownButton);
+
+        setReadOnly(true);
 
         setStyleName(SynergyComponents.resources.cssComponents().comboBox());
         addStyleName(SynergyComponents.resources.cssComponents().mainText());
@@ -106,6 +177,9 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      */
     private void showItem(MenuBase.MenuItem item) {
         textLabel.setText(item.getText());
+        ChangeEvent event = new ChangeEvent() {
+
+        };
     }
 
     /**
@@ -166,6 +240,38 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
     @Override
     public HandlerRegistration addChangeHandler(ChangeHandler handler) {
         return textLabel.addChangeHandler(handler);
+    }
+
+    /**
+     * Изменяет состояние read-only комбобокса.
+     * @param readOnly true - нельзя вводить значения, false - можно.
+     */
+    public void setReadOnly(boolean readOnly) {
+        if (readOnly != this.readOnly) {
+            this.readOnly = readOnly;
+            textLabel.setReadOnly(readOnly);
+            if (readOnly) {
+                textLabelClickRegistration = textLabel.addClickHandler(textLabelClick);
+                textLabelMouseDownRegistration = textLabel.addMouseDownHandler(textLabelMouseDown);
+                if (textPressKeyRegistration != null) {
+                    textPressKeyRegistration.removeHandler();
+                }
+                if (textUpKeyRegistration != null) {
+                    textUpKeyRegistration.removeHandler();
+                }
+
+            } else {
+                textPressKeyRegistration = textLabel.addKeyPressHandler(textPressKey);
+                textUpKeyRegistration = textLabel.addKeyUpHandler(textUpKey);
+
+                if (textLabelClickRegistration != null) {
+                    textLabelClickRegistration.removeHandler();
+                }
+                if (textLabelMouseDownRegistration != null) {
+                    textLabelMouseDownRegistration.removeHandler();
+                }
+            }
+        }
     }
 }
 

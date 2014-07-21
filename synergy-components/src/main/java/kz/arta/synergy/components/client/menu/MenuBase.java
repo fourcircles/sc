@@ -141,7 +141,7 @@ public abstract class MenuBase extends PopupPanel{
      * @param item элемент списка
      * @return новый элемент списка
      */
-    private MenuItem addItem(MenuItem item) {
+    protected MenuItem addItem(MenuItem item) {
         items.add(item);
         panel.add(item.asWidget());
         return item;
@@ -198,30 +198,78 @@ public abstract class MenuBase extends PopupPanel{
     }
 
     /**
-     * Возвращает индекс элемента следующего за выбранным.
-     * Индекс должен находится в пределах списка или быть равным -1.
-     * @return индекс следующего элемента, -1 если список пуст
+     * Метод показывает может ли быть выбран элемент меню.
+     * Участвует в расчетах номера следующего, предыдущего элементов.
+     * Например, в контекстном меню переписывается запрещая выбирать разделители.
+     * @param item элемент списка
+     * @return true - может ли быть выбран, false - нет
      */
-    protected int getNext() {
-        if (items.isEmpty()) {
-            return -1;
-        }
-        return (selectedIndex + 1) % items.size();
+    protected boolean canBeChosen(MenuItem item) {
+        return true;
+    }
+
+    private boolean canBeChosen(int index) {
+        return canBeChosen(items.get(index));
     }
 
     /**
-     * Возвращает индекс элемент идущего до выбранного.
+     * Возвращает индекс элемента следующего за выбранным, который может быть выбран.
      * Индекс должен находится в пределах списка или быть равным -1.
-     * @return индекс элемента до выбранного, -1 если список пуст
+     * @return индекс следующего элемента, -1 если таких элементов нет.
      */
-    protected int getPrevious() {
-        if (items.isEmpty()) {
+    protected int getNext() {
+        return getNext(selectedIndex);
+    }
+
+    private int getNext(int start) {
+        int i = start + 1;
+        if (i < 0) {
             return -1;
         }
-        if (selectedIndex == -1) {
+        while (i < items.size() && !canBeChosen(i)) {
+            i++;
+        }
+        if (i == items.size()) {
+            i = 0;
+            while (i < start && !canBeChosen(i)) {
+                i++;
+            }
+            return i >= start ? -1 : i;
+        } else {
+            return i;
+        }
+    }
+
+    /**
+     * Возвращает индекс элемента перед выбранным. Учитывает может ли элемент быть выбран.
+     * Индекс должен находится в пределах списка или быть равным -1.
+     * @return индекс элемента до выбранного, -1 если таких элементов нет
+     */
+    protected int getPrevious() {
+        return getPrevious(selectedIndex);
+    }
+
+    private int getPrevious(int start) {
+        if (start == -1) {
             return getLast();
         }
-        return (selectedIndex - 1 + items.size()) % items.size();
+        int i = start - 1;
+        if (i >= items.size()) {
+            return -1;
+        }
+        while (i >= 0 && !canBeChosen(i)) {
+            i--;
+        }
+        if (i == -1) {
+            i = items.size() - 1;
+            while (i > start && !canBeChosen(i)) {
+                i--;
+            }
+            return i <= start ? -1 : i;
+
+        } else {
+            return i;
+        }
     }
 
     /**
@@ -229,10 +277,7 @@ public abstract class MenuBase extends PopupPanel{
      * @return индекс первого элемента
      */
     protected int getFirst() {
-        if (items.isEmpty()) {
-            return -1;
-        }
-        return 0;
+        return getNext(-1);
     }
 
     /**
@@ -240,10 +285,7 @@ public abstract class MenuBase extends PopupPanel{
      * @return индекс последнего элемента
      */
     protected int getLast() {
-        if (items.isEmpty()) {
-            return -1;
-        }
-        return items.size() - 1;
+        return getPrevious(items.size());
     }
 
     /**
@@ -444,6 +486,15 @@ public abstract class MenuBase extends PopupPanel{
         }
     }
 
+    protected void keyLeft(Event.NativePreviewEvent event) {
+        event.cancel();
+        overItem(getFirst(), false);
+    }
+
+    protected void keyRight(Event.NativePreviewEvent event) {
+        event.cancel();
+        overItem(getLast(), false);
+    }
 
     /**
      * Механизм предпросмотра событий PopupPanel.
@@ -471,12 +522,10 @@ public abstract class MenuBase extends PopupPanel{
                         overItem(getPrevious(), false);
                         break;
                     case KeyCodes.KEY_LEFT:
-                        event.cancel();
-                        overItem(getFirst(), false);
+                        keyLeft(event);
                         break;
                     case KeyCodes.KEY_RIGHT:
-                        event.cancel();
-                        overItem(getLast(), false);
+                        keyRight(event);
                         break;
                     case KeyCodes.KEY_ESCAPE:
                         event.cancel();

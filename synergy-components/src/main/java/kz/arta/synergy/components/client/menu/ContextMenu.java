@@ -50,86 +50,13 @@ public class ContextMenu extends MenuBase {
     }
 
     /**
-     * Возвращает индекс первого элемента, который не является разделителем.
-     * @return индекс первого элемента
+     * Разделители не могут быть выбраны
+     * @param item элемент списка
+     * @return true - элемент не разделитель и может быть выбран, false - иначе
      */
     @Override
-    protected int getFirst() {
-        return getNext(-1);
-    }
-
-    /**
-     * Возвращает индекс последнего элемента, который не является разделителем.
-     * @return индекс последнего элемента
-     */
-    @Override
-    protected int getLast() {
-        return getPrevious(items.size());
-    }
-
-    @Override
-    protected int getNext() {
-        return getNext(selectedIndex);
-    }
-
-    /**
-     * Возвращает индекс следующего элемента, который не является разделителем.
-     * При достижении конца списка поиск продолжается с начала.
-     * @param start позиция с которой начинается поиск
-     * @return индекс элемента
-     */
-    private int getNext(int start) {
-        int i = start + 1;
-        if (i < 0) {
-            return -1;
-        }
-        while (i < items.size() && isSeparator(i)) {
-            i++;
-        }
-        if (i == items.size()) {
-            i = 0;
-            while (i < start && isSeparator(i)) {
-                i++;
-            }
-            return i >= start ? -1 : i;
-        } else {
-            return i;
-        }
-    }
-
-    @Override
-    protected int getPrevious() {
-        return getPrevious(selectedIndex);
-    }
-
-    /**
-     * Возвращает индекс предыдущего элемента, который не является разделителем.
-     * При достижении начала списка поиск продолжается с конца.
-     * @param start позиция с которой начинается поиск
-     * @return индекс элемента
-     */
-
-    private int getPrevious(int start) {
-        if (start == -1) {
-            return getLast();
-        }
-        int i = start - 1;
-        if (i >= items.size()) {
-            return -1;
-        }
-        while (i >= 0 && isSeparator(i)) {
-            i--;
-        }
-        if (i == -1) {
-            i = items.size() - 1;
-            while (i > start && isSeparator(i)) {
-                i--;
-            }
-            return i <= start ? -1 : i;
-
-        } else {
-            return i;
-        }
+    protected boolean canBeChosen(MenuItem item) {
+        return !isSeparator(item);
     }
 
     /**

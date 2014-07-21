@@ -588,7 +588,7 @@
 
 }
 
-.comboBox:active .buttonSimple {
+.comboBox.pressed .buttonSimple {
     border-color: border1;
     background-color: buttonPressed;
 }

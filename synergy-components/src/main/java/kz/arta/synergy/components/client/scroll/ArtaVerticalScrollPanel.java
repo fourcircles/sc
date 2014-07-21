@@ -35,8 +35,8 @@ public class ArtaVerticalScrollPanel extends CustomScrollPanel {
                 vScroll.setVerticalScrollPosition(getVerticalScrollPosition());
             }
         });
-
-        getScrollableElement().getStyle().setOverflowX(com.google.gwt.dom.client.Style.Overflow.HIDDEN);
+        //без этого если ширина контента меньше ширины родителя, то выделяться будет только часть строки
+        getContainerElement().getStyle().setDisplay(com.google.gwt.dom.client.Style.Display.BLOCK);
     }
 
     public ArtaVerticalScrollPanel(Widget widget) {

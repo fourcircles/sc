@@ -317,7 +317,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), getColorButtonPanel());
 
-        new ShowComponent(this, category1, SCMessages.i18n.tr("Групповые кнопки"), SCMessages.i18n.tr("Кнопки"), getGroupButton());
+        new ShowComponent(this, category1, SCMessages.i18n.tr("Групповые кнопки"), SCMessages.i18n.tr("Групповые кнопки"), getGroupButton());
 
         FlowPanel comboBoxPanel = new FlowPanel();
 
@@ -425,7 +425,7 @@ public class ShowCasePanel extends LayoutPanel {
         textAreaSize.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         textAreaSize.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         textAreaSize.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода с заданным размером"));
-        textAreaSize.setSize("300px", "300px");
+        textAreaSize.setPixelSize(300, 300);
         textAreaPanel.add(textAreaSize);
 
 
@@ -450,9 +450,14 @@ public class ShowCasePanel extends LayoutPanel {
         buttonPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
         panel.add(buttonPanel);
 
-        panel.setSize("100%", "100%");
 
-        return panel;
+        panel.setSize("100%", "100%");
+        panel.setHeight("2000px");
+
+        ArtaVerticalScrollPanel scroll = new ArtaVerticalScrollPanel();
+        scroll.setWidget(panel);
+        return scroll;
+
     }
 
     /**

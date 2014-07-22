@@ -8,7 +8,6 @@ import com.google.gwt.resources.client.CssResource;
  * Time: 16:09
  */
 public interface CssComponents extends CssResource {
-
     String approveButton();
 
     String approveButtonBG1();
@@ -22,6 +21,8 @@ public interface CssComponents extends CssResource {
     String approveButtonBG5();
 
     String artaText();
+
+    String artaTextPanel();
 
     String bigText();
 
@@ -79,6 +80,8 @@ public interface CssComponents extends CssResource {
 
     String edge();
 
+    String focus();
+
     String gradient();
 
     String green();
@@ -109,6 +112,8 @@ public interface CssComponents extends CssResource {
 
     String right();
 
+    String scrollbar();
+
     String selectColor();
 
     String stackPanelText2();
@@ -121,9 +126,7 @@ public interface CssComponents extends CssResource {
 
     String textColor3();
 
-    String whiteBG();
-
     String vscroll();
 
-    String scrollbar();
+    String whiteBG();
 }

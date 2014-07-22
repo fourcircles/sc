@@ -6,8 +6,10 @@ package kz.arta.synergy.components.style.client;
  * Time: 9:48
  */
 public class Constants {
+    public static final int BORDER_WIDTH = 1;
+
     public static final int BUTTON_HEIGHT = 30;
-    public static final int BUTTON_MIN_WIDTH = 32;
+    public static final int BUTTON_MIN_WIDTH = 30;
     public static final int BUTTON_APPROVE_MIN_WIDTH = 150;
     public static final int BUTTON_PADDING = 10;
 
@@ -23,7 +25,9 @@ public class Constants {
     public static final int DIALOG_CLOSE_BUTTON_RIGHT_MARGIN = 10;
     public static final int DIALOG_TITLE_LEFT_MARGIN = 12;
 
-    public static final int IMAGE_BUTTON_WIDTH = 32;
+    public static final int IMAGE_BUTTON_WIDTH = 30;
+
+    public static final int COMMON_INPUT_PADDING = 8;
 
     /**
      * расстояние между заголовком и кнопкой "свернуть"
@@ -31,9 +35,14 @@ public class Constants {
     public static final int DIALOG_TITLE_LABEL_RIGHT_PADDING = 10;
 
     public static final int SCROLL_BAR_WIDTH = 17;
+
     public static final int COMBO_LIST_DEFAULT_HEIGHT = 200;
-    
-    
+    public static final int COMBO_MIN_WIDTH = 198;
+
+    public static String borderWidth() {
+        return BORDER_WIDTH + "px";
+    }
+
     public static String buttonHeight() {
         return BUTTON_HEIGHT + "px";
     }
@@ -94,5 +103,13 @@ public class Constants {
 
     public static String scrollBarWidth() {
         return SCROLL_BAR_WIDTH + "px";
+    }
+
+    public static String commonInputPadding() {
+        return COMMON_INPUT_PADDING + "px";
+    }
+
+    public static String comboMinWidth() {
+        return COMBO_MIN_WIDTH + "px";
     }
 }

@@ -63,11 +63,13 @@
 }
 
 @eval buttonHeight kz.arta.synergy.components.style.client.Constants.buttonHeight();
+@eval buttonMinWidth kz.arta.synergy.components.style.client.Constants.buttonMinWidth();
+@eval borderWidth kz.arta.synergy.components.style.client.Constants.borderWidth();
 .buttonSimple, .approveButton, .declineButton, .dropDownButton {
     height: buttonHeight;
     line-height: buttonHeight;
-    min-width: 32px;
-    border: 1px solid;
+    min-width: buttonMinWidth;
+    border: borderWidth solid;
     border-radius: 4px;
     overflow: hidden;
     cursor: default;
@@ -443,11 +445,14 @@
 }
 
 .dropDownButton {
+    border: borderWidth solid buttonBorder;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
-    border: 0px;
-    border-left: 1px solid buttonBorder;
     background-color: buttonBG;
+
+    position: relative;
+    top: -1px;
+    right: -1px;
 }
 .dropDownButton:hover {
     border-color: border1;
@@ -499,7 +504,7 @@
 
     min-width: 100px;
     min-height: 32px;
-    border: 1px solid buttonBorder;
+    border: borderWidth solid buttonBorder;
     background-color: whiteBG;
     color: stackPanelText2;
     vertical-align: middle;
@@ -524,14 +529,15 @@
 }
 
 
+@eval commonInputPadding kz.arta.synergy.components.style.client.Constants.commonInputPadding();
 .commonInput, .artaText {
     border-color: buttonBorder;
-    border-width: 1px;
+    border-width: borderWidth;
     border-style: solid;
     border-radius: 4px;
     background-color: whiteBG;
     color: textColor2;
-    padding: 8px;
+    padding: commonInputPadding;
     vertical-align: top;
     outline: none;
 }
@@ -560,12 +566,14 @@
     color: border1;
 }
 
+
+@eval comboMinWidth kz.arta.synergy.components.style.client.Constants.comboMinWidth();
 .comboBox {
-    min-width: 200px;
+    min-width: comboMinWidth;
     text-align: left;
     height: 30px;
     line-height: 30px;
-    border: solid 1px buttonPressed;
+    border: solid borderWidth buttonPressed;
     border-radius: 4px;
 
     display:inline-block;
@@ -577,7 +585,7 @@
 
     border-bottom-left-radius: 0px;
     border-top-left-radius: 0px;
-    border: 1px solid buttonPressed;
+    border: borderWidth solid buttonPressed;
     background-color: buttonBG;
 
     display: inline-block;

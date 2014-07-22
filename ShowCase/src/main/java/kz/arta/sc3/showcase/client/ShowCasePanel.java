@@ -4,6 +4,8 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.LocaleInfo;
@@ -34,11 +36,12 @@ import java.util.ArrayList;
  * Time: 12:43
  */
 public class ShowCasePanel extends LayoutPanel {
-    private final static int TITLE_HEIGHT = 5;
+    private final static int TITLE_HEIGHT = 8;
     private final static int TREE_WIDTH = 15;
     private final static int SPACING = 1;
 
     private Theme currentTheme;
+    private ComboBox<Theme> themesCombo;
 
     Tree tree;
 
@@ -47,12 +50,6 @@ public class ShowCasePanel extends LayoutPanel {
     TreeItem selectedItem;
 
     private ArrayList<ShowComponent> tabbedComponents;
-
-    private ListBox themeListBox;
-    private ListBox localeListBox;
-
-    private ArrayList<Theme> themes;
-    private ArrayList<String> locales;
 
     public void setBorder(Widget w) {
         w.getElement().getStyle().setProperty("border", "solid 1px black");
@@ -66,7 +63,6 @@ public class ShowCasePanel extends LayoutPanel {
         }
 
         contentPanel = new TabLayoutPanel(30, Style.Unit.PX);
-        themes = new ArrayList<Theme>();
 
         treeSetUp();
 
@@ -95,49 +91,47 @@ public class ShowCasePanel extends LayoutPanel {
         });
         titlePanel.add(about);
         about.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        themeListBox = new ListBox();
-        addAllThemes();
 
-        themeListBox.addChangeHandler(new ChangeHandler() {
+
+
+        themesCombo = new ComboBox<Theme>();
+        for (Theme th : Theme.values()) {
+            themesCombo.addItem(th.name(), th);
+        }
+        themesCombo.addValueChangeHandler(new ValueChangeHandler<Theme>() {
             @Override
-            public void onChange(ChangeEvent event) {
-                Cookies.setCookie("theme", themes.get(themeListBox.getSelectedIndex()).name());
-                Window.Location.reload();
+            public void onValueChange(ValueChangeEvent<Theme> event) {
+                setTheme(event.getValue());
             }
         });
+        themesCombo.setText(currentTheme.name());
+        titlePanel.add(themesCombo);
 
-        titlePanel.add(themeListBox);
-
-        locales = new ArrayList<String>();
-        localeListBox = new ListBox();
-        for (String locale : LocaleInfo.getAvailableLocaleNames()) {
-            if (!"default".equals(locale)) {
-                locales.add(locale);
-                localeListBox.addItem(locale);
-            }
+        final ComboBox<String> localesCombo = new ComboBox<String>();
+        localesCombo.setReadOnly(true);
+        for (String locale: LocaleInfo.getAvailableLocaleNames()) {
+            localesCombo.addItem(locale, locale);
         }
-
+        localesCombo.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                UrlBuilder newUrl = Window.Location.createUrlBuilder();
+                newUrl.setParameter("locale", event.getValue());
+                Window.Location.assign(newUrl.buildString());
+            }
+        });
         String chosenLocale = Window.Location.getParameter("locale");
         if (chosenLocale == null) {
             chosenLocale = LocaleInfo.getCurrentLocale().getLocaleName();
         }
-        localeListBox.setSelectedIndex(locales.indexOf(chosenLocale));
-
-        localeListBox.addChangeHandler(new ChangeHandler() {
-            @Override
-            public void onChange(ChangeEvent event) {
-                UrlBuilder newUrl = Window.Location.createUrlBuilder();
-                newUrl.setParameter("locale", localeListBox.getItemText(localeListBox.getSelectedIndex()));
-                Window.Location.assign(newUrl.buildString());
-            }
-        });
-
-        titlePanel.add(localeListBox);
+        localesCombo.setText(chosenLocale);
+        localesCombo.getElement().getStyle().setMarginRight(20, Style.Unit.PX);
+        titlePanel.add(localesCombo);
 
         titlePanel.setWidth("100%");
         showCaseLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
-        themeListBox.getElement().getStyle().setFloat(Style.Float.RIGHT);
-        localeListBox.getElement().getStyle().setFloat(Style.Float.RIGHT);
+        themesCombo.getElement().getStyle().setFloat(Style.Float.RIGHT);
+        localesCombo.getElement().getStyle().setFloat(Style.Float.RIGHT);
         about.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
         add(titlePanel);
@@ -159,8 +153,6 @@ public class ShowCasePanel extends LayoutPanel {
         setSize("100%", "100%");
 
         forceLayout();
-
-        setTheme(currentTheme);
 
         tabbedComponents = new ArrayList<ShowComponent>();
 
@@ -800,20 +792,24 @@ public class ShowCasePanel extends LayoutPanel {
         return menu;
     }
 
-    private void addAllThemes() {
-        for (Theme theme : Theme.values()) {
-            addTheme(theme);
-        }
-    }
-
-    private void addTheme(Theme theme) {
-        if (!themes.contains(theme)) {
-            themes.add(theme);
-            themeListBox.addItem(theme.name());
-        }
-    }
-
+//    private void addAllThemes() {
+//        for (Theme theme : Theme.values()) {
+//            addTheme(theme);
+//        }
+//    }
+//
+//    private void addTheme(Theme theme) {
+//        if (!themes.contains(theme)) {
+//            themes.add(theme);
+//            themeListBox.addItem(theme.name());
+//        }
+//    }
+//
     private void setTheme(Theme theme) {
-        themeListBox.setSelectedIndex(themes.indexOf(theme));
+        if (currentTheme != theme) {
+            currentTheme = theme;
+            Cookies.setCookie("theme", theme.name());
+            Window.Location.reload();
+        }
     }
 }

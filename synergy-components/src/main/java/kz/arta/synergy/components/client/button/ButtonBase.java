@@ -300,7 +300,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
      * @return ширина текста
      */
     protected int getTextLabelWidth() {
-        int textLabelWidth = getOffsetWidth() - 2 * Constants.BUTTON_PADDING;
+        int textLabelWidth = getOffsetWidth() - 2 * Constants.BUTTON_PADDING - 2 * Constants.BORDER_WIDTH;
         if (icon != null) {
             textLabelWidth -= icon.getWidth();
             textLabelWidth -= Constants.BUTTON_PADDING;

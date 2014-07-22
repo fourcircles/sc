@@ -2,28 +2,37 @@ package kz.arta.synergy.components.client;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
+import com.google.gwt.user.client.ui.HasText;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.MenuBase;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.HashMap;
 
-//todo add proper changehandler
+//todo mousedown on textfield -> moveout - dropdownbutton is still pressed
 /**
  * User: vsl
  * Date: 15.07.14
  * Time: 14:58
  * Комбо-бокс
  */
-public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandlers{
+public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandlers, HasValueChangeHandlers<V>, HasText{
+    /**
+     * Промежуток времени между изменением текста и изменением списка
+     */
+    private static final int DELAY = 800;
 
     /**
      * Основная панель
@@ -71,6 +80,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
 
     private HashMap<MenuBase.MenuItem, V> values;
 
+
     public ComboBox() {
         panel = new FlowPanel();
         values = new HashMap<MenuBase.MenuItem, V>();
@@ -89,6 +99,9 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         list.setRelativeWidget(this);
 
         textLabel = new TextInput();
+        // -1 потому что правая граница кнопки перекрывает границу комбобокса
+        textLabel.setWidth(Constants.COMBO_MIN_WIDTH - Constants.BUTTON_MIN_WIDTH -
+                Constants.COMMON_INPUT_PADDING * 2 - 1 + "px");
         textLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
         dropDownButton = new ImageButton(ImageResources.IMPL.comboBoxDropDown());
@@ -111,6 +124,8 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         textLabelMouseDown = new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
+                //firefox показывает курсор даже если readonly, поэтому надо preventDefault
+                event.preventDefault();
                 addStyleName(SynergyComponents.resources.cssComponents().pressed());
             }
         };
@@ -138,7 +153,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
             @Override
             public void onKeyPress(KeyPressEvent event) {
                 textChangeTimer.cancel();
-                textChangeTimer.schedule(200);
+                textChangeTimer.schedule(DELAY);
             }
         };
 
@@ -149,12 +164,12 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                     case KeyCodes.KEY_BACKSPACE:
                     case KeyCodes.KEY_DELETE:
                         textChangeTimer.cancel();
-                        textChangeTimer.schedule(200);
+                        textChangeTimer.schedule(DELAY);
                         break;
                     case KeyCodes.KEY_DOWN:
                         list.showUnderParent();
                         textChangeTimer.cancel();
-                        textChangeTimer.schedule(200);
+                        textChangeTimer.schedule(DELAY);
                         break;
                 }
             }
@@ -169,6 +184,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
 
         setStyleName(SynergyComponents.resources.cssComponents().comboBox());
         addStyleName(SynergyComponents.resources.cssComponents().mainText());
+        setWidth(Constants.COMBO_MIN_WIDTH + "px");
     }
 
     /**
@@ -177,9 +193,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      */
     private void showItem(MenuBase.MenuItem item) {
         textLabel.setText(item.getText());
-        ChangeEvent event = new ChangeEvent() {
-
-        };
+        ValueChangeEvent.fire(this, values.get(item));
     }
 
     /**
@@ -242,6 +256,11 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         return textLabel.addChangeHandler(handler);
     }
 
+    @Override
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<V> handler) {
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
     /**
      * Изменяет состояние read-only комбобокса.
      * @param readOnly true - нельзя вводить значения, false - можно.
@@ -272,6 +291,16 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                 }
             }
         }
+    }
+
+    @Override
+    public String getText() {
+        return getSelectedText();
+    }
+
+    @Override
+    public void setText(String text) {
+        textLabel.setText(text);
     }
 }
 

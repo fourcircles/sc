@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.input;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Event;
@@ -66,6 +67,16 @@ public class CommonInput extends TextBox {
 
     public void setAllowEmpty(boolean allowEmpty) {
         this.allowEmpty = allowEmpty;
+    }
+
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        super.setReadOnly(readOnly);
+        if (readOnly) {
+            getElement().getStyle().setCursor(Style.Cursor.DEFAULT);
+        } else {
+            getElement().getStyle().setCursor(Style.Cursor.AUTO);
+        }
     }
 
     public void setEnabled(boolean enabled) {

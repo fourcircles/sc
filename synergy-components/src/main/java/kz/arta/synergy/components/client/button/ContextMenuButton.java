@@ -99,7 +99,8 @@ public class ContextMenuButton extends SimpleButton {
     @Override
     protected int getTextLabelWidth() {
         int width = super.getTextLabelWidth();
-        return width - Constants.IMAGE_BUTTON_WIDTH;
+        //-1 потому что правая граница перекрывает границу кнопки
+        return width - (Constants.IMAGE_BUTTON_WIDTH + 1);
     }
 
     /**

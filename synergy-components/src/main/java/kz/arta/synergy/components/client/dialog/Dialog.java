@@ -52,6 +52,7 @@ public class Dialog extends DialogSimple {
     public Dialog() {
         super();
         buttonsPanel = new FlowPanel();
+        buttonsPanel.setHeight(Constants.DIALOG_BUTTON_PANEL_HEIGHT + "px");
         panel.add(buttonsPanel);
 
         leftButton = makeButton(Messages.i18n.tr("Назад"), ImageResources.IMPL.navigationLeft(), ButtonBase.IconPosition.LEFT);
@@ -168,9 +169,9 @@ public class Dialog extends DialogSimple {
                 }
             }
         }
-        saveButton.getElement().getStyle().setMarginLeft(leftMargin, Style.Unit.PX);
         //ширина элементов + отступы равна ширине содержащего элемента
         //ie в этом случае переносит последний элемент на следующую строку, для этого -0.5
+        saveButton.getElement().getStyle().setMarginLeft(leftMargin - 0.5, Style.Unit.PX);
         saveButton.getElement().getStyle().setMarginRight(rightMargin - 0.5, Style.Unit.PX);
     }
 

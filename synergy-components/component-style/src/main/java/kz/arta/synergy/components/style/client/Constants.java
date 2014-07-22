@@ -14,12 +14,12 @@ public class Constants {
     public static final int BUTTON_PADDING = 10;
 
     public static final int DIALOG_MIN_WIDTH = 116;
-    public static final int DIALOG_TITLE_HEIGHT = 32;
+    public static final int DIALOG_TITLE_HEIGHT = 38;
     public static final int DIALOG_CONTENT_PADDING = 8;
     public static final int DIALOG_NAV_BUTTON_HMARGIN = 20;
     public static final int DIALOG_BUTTON_PANEL_HEIGHT = 72;
     public static final int DIALOG_BORDER_WIDTH = 1;
-    public static final double DIALOG_NAV_BUTTON_VMARGIN = (DIALOG_BUTTON_PANEL_HEIGHT - BUTTON_HEIGHT) / 2;
+    public static final double DIALOG_NAV_BUTTON_VMARGIN = (DIALOG_BUTTON_PANEL_HEIGHT - BUTTON_HEIGHT - BORDER_WIDTH * 2) / 2;
     public static final int DIALOG_CLOSE_BUTTON_SIZE = 16;
     public static final int DIALOG_CLOSE_BUTTON_PADDING = 4;
     public static final int DIALOG_CLOSE_BUTTON_RIGHT_MARGIN = 10;

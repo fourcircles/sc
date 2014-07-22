@@ -8,7 +8,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.style.client.Constants;
 
 /**
  * User: vsl
@@ -45,7 +44,6 @@ public class GradientLabel extends Composite implements HasDirection {
         getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
 
         gradient.setStyleName(SynergyComponents.resources.cssComponents().gradient());
-        setHeight(Constants.buttonHeight());
     }
 
     public GradientLabel(String text) {

@@ -386,6 +386,7 @@
     padding-right: dialogTitleLabelRightPadding;
     vertical-align: middle;
     color: whiteBG;
+    height: dialogTitleHeight;
 
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -411,7 +412,7 @@
 
 .dialogTitleButton {
     padding: dialogCloseButtonPadding;
-    margin-top: 3px;
+    margin-top: 8px;
     float: right;
     background-repeat: no-repeat;
 }

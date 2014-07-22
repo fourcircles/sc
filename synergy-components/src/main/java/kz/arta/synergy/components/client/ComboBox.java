@@ -21,7 +21,6 @@ import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.HashMap;
 
-//todo mousedown on textfield -> moveout - dropdownbutton is still pressed
 /**
  * User: vsl
  * Date: 15.07.14
@@ -68,6 +67,8 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * Обработка событий в зависимости от статуса read-only. При изменении статуса
      * прекращается обработка ненужных событий.
      */
+    MouseOutHandler textLabelMouseOut;
+    HandlerRegistration textLabelMouseOutRegistration;
     MouseDownHandler textLabelMouseDown;
     HandlerRegistration textLabelMouseDownRegistration;
     ClickHandler textLabelClick;
@@ -127,6 +128,12 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                 //firefox показывает курсор даже если readonly, поэтому надо preventDefault
                 event.preventDefault();
                 addStyleName(SynergyComponents.resources.cssComponents().pressed());
+            }
+        };
+        textLabelMouseOut = new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                removeStyleName(SynergyComponents.resources.cssComponents().pressed());
             }
         };
 
@@ -272,6 +279,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
             if (readOnly) {
                 textLabelClickRegistration = textLabel.addClickHandler(textLabelClick);
                 textLabelMouseDownRegistration = textLabel.addMouseDownHandler(textLabelMouseDown);
+                textLabelMouseOutRegistration = textLabel.addMouseOutHandler(textLabelMouseOut);
                 if (textPressKeyRegistration != null) {
                     textPressKeyRegistration.removeHandler();
                 }
@@ -288,6 +296,9 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                 }
                 if (textLabelMouseDownRegistration != null) {
                     textLabelMouseDownRegistration.removeHandler();
+                }
+                if (textLabelMouseOutRegistration != null) {
+                    textLabelMouseOutRegistration.removeHandler();
                 }
             }
         }

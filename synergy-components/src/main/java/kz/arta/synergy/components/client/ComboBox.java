@@ -30,11 +30,6 @@ import java.util.HashMap;
  */
 public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandlers, HasValueChangeHandlers<V>, HasText{
     /**
-     * Промежуток времени между изменением текста и изменением списка
-     */
-    private static final int DELAY = 800;
-
-    /**
      * Основная панель
      */
     private FlowPanel panel;
@@ -137,30 +132,10 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
             }
         };
 
-
-        textChangeTimer = new Timer() {
-            @Override
-            public void run() {
-                String prefix = textLabel.getText();
-                if (prefix.isEmpty()) {
-                    list.removePrefix();
-                } else {
-                    String firstItemText = list.applyPrefix(prefix);
-                    if (firstItemText != null) {
-                        textLabel.setText(firstItemText);
-                        textLabel.setCursorPos(prefix.length());
-                        textLabel.setSelectionRange(prefix.length(), firstItemText.length() - prefix.length());
-                    }
-                    list.showUnderParent();
-                }
-            }
-        };
-
         textPressKey = new KeyPressHandler() {
             @Override
             public void onKeyPress(KeyPressEvent event) {
-                textChangeTimer.cancel();
-                textChangeTimer.schedule(DELAY);
+                changeList();
             }
         };
 
@@ -170,13 +145,10 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                 switch (event.getNativeKeyCode()) {
                     case KeyCodes.KEY_BACKSPACE:
                     case KeyCodes.KEY_DELETE:
-                        textChangeTimer.cancel();
-                        textChangeTimer.schedule(DELAY);
+                        changeList();
                         break;
                     case KeyCodes.KEY_DOWN:
-                        list.showUnderParent();
-                        textChangeTimer.cancel();
-                        textChangeTimer.schedule(DELAY);
+                        changeList();
                         break;
                 }
             }
@@ -192,6 +164,21 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         setStyleName(SynergyComponents.resources.cssComponents().comboBox());
         addStyleName(SynergyComponents.resources.cssComponents().mainText());
         setWidth(Constants.COMBO_MIN_WIDTH);
+    }
+
+    /**
+     * Метод вызывается при изменении текста комбобокса и выполняет действия для
+     * изменения контента выпадающего списка
+     */
+    private void changeList() {
+        String prefix = textLabel.getText();
+        if (prefix.isEmpty()) {
+            list.removePrefix();
+            list.showUnderParent();
+        } else {
+            list.applyPrefix(prefix);
+            list.showUnderParent();
+        }
     }
 
     /**

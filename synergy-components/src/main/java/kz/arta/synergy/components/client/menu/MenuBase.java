@@ -358,7 +358,9 @@ public abstract class MenuBase extends PopupPanel{
      * Вызывается при выборе пункта меню (клавиша enter, клик мыши)
      */
     protected void itemSelected(MenuItem item) {
-        hide();
+        if (item != null) {
+            hide();
+        }
     }
 
     /**

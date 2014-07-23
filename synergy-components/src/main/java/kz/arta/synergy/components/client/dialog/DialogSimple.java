@@ -14,6 +14,7 @@ import kz.arta.synergy.components.client.label.GradientLabel;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.style.client.Constants;
 
+//todo градиент заголовка в 116x84 без кнопок
 /**
  * User: vsl
  * Date: 27.06.14

@@ -1,7 +1,6 @@
 package kz.arta.synergy.components.client.menu;
 
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -37,14 +36,14 @@ public abstract class DropDownList extends MenuBase {
      */
     @Override
     public void showUnderParent() {
-        setHeight(Constants.listMaxHeight());
         if (relativeWidget != null && relativeWidget.isAttached()) {
-            new Timer() {
-                @Override
-                public void run() {
-                    setHeight(Math.min(panel.getOffsetHeight(), Constants.LIST_MAX_HEIGHT) + "px");
+            int cnt = 0;
+            for (MenuItem item : items) {
+                if (hasPrefix(item)) {
+                    cnt++;
                 }
-            }.schedule(100);
+            }
+            setHeight(Math.min(32 * cnt, Constants.LIST_MAX_HEIGHT) + "px");
             getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 4 * 2 + "px");
             super.showUnderParent();
         }
@@ -93,25 +92,16 @@ public abstract class DropDownList extends MenuBase {
      * Применяет префикс к списку, показывая только элементы, текст которых начинается с
      * этого префикса
      * @param prefix префикс
-     * @return текст первого элемента списка, который соответствует префиксу и выбран по умолчанию
      */
-    public String applyPrefix(String prefix) {
+    public void applyPrefix(String prefix) {
         panel.clear();
         this.prefix = prefix;
-        MenuItem first = null;
         for (MenuItem item: items) {
             if (hasPrefix(item)) {
                 panel.add(item.asWidget());
-                if (first == null) {
-                    first = item;
-                }
             }
         }
-        if (first != null) {
-            overItem(first, false);
-            return first.getText();
-        }
-        return null;
+        showUnderParent();
     }
 
     /**

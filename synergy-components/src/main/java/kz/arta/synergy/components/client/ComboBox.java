@@ -101,9 +101,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         list.setRelativeWidget(this);
 
         textLabel = new TextInput();
-        // -1 потому что правая граница кнопки перекрывает границу комбобокса
-        textLabel.setWidth(Constants.COMBO_MIN_WIDTH - Constants.BUTTON_MIN_WIDTH -
-                Constants.COMMON_INPUT_PADDING * 2 - 1 + "px");
+
         textLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
         dropDownButton = new ImageButton(ImageResources.IMPL.comboBoxDropDown());
@@ -193,7 +191,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
 
         setStyleName(SynergyComponents.resources.cssComponents().comboBox());
         addStyleName(SynergyComponents.resources.cssComponents().mainText());
-        setWidth(Constants.COMBO_MIN_WIDTH + "px");
+        setWidth(Constants.COMBO_MIN_WIDTH);
     }
 
     /**
@@ -314,6 +312,23 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
     @Override
     public void setText(String text) {
         textLabel.setText(text);
+    }
+
+    /**
+     * Ширина должна задаваться в пикселях через этот метод.
+     * Изменяется только ширина textbox.
+     */
+    public void setWidth(int width) {
+        width = Math.max(Constants.COMBO_MIN_WIDTH, width);
+        // -1 потому что правая граница кнопки перекрывает границу комбобокса
+        textLabel.setWidth(width - Constants.BUTTON_MIN_WIDTH -
+                Constants.COMMON_INPUT_PADDING * 2 - 1 + "px");
+        super.setWidth(width + "px");
+    }
+
+    @Override
+    public void setWidth(String width) {
+        throw new UnsupportedOperationException("ширина должна задаваться в пикселях");
     }
 }
 

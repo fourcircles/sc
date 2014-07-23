@@ -348,6 +348,7 @@ public class ShowCasePanel extends LayoutPanel {
         }
         comboReadOnly.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
         comboReadOnly.setReadOnly(true);
+        comboReadOnly.setWidth(250);
         comboBoxPanel.add(comboReadOnly);
 
         cnt++;
@@ -797,19 +798,6 @@ public class ShowCasePanel extends LayoutPanel {
         return menu;
     }
 
-//    private void addAllThemes() {
-//        for (Theme theme : Theme.values()) {
-//            addTheme(theme);
-//        }
-//    }
-//
-//    private void addTheme(Theme theme) {
-//        if (!themes.contains(theme)) {
-//            themes.add(theme);
-//            themeListBox.addItem(theme.name());
-//        }
-//    }
-//
     private void setTheme(Theme theme) {
         if (currentTheme != theme) {
             currentTheme = theme;

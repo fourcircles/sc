@@ -39,6 +39,8 @@ public class Constants {
     public static final int COMBO_LIST_DEFAULT_HEIGHT = 200;
     public static final int COMBO_MIN_WIDTH = 198;
 
+    public static final int LIST_MAX_HEIGHT = 200;
+
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
     }
@@ -111,5 +113,9 @@ public class Constants {
 
     public static String comboMinWidth() {
         return COMBO_MIN_WIDTH + "px";
+    }
+
+    public static String listMaxHeight() {
+        return LIST_MAX_HEIGHT + "px";
     }
 }

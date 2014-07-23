@@ -1,9 +1,12 @@
 package kz.arta.synergy.components.client.menu;
 
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
+import kz.arta.synergy.components.style.client.Constants;
 
 /**
  * User: vsl
@@ -16,7 +19,7 @@ public abstract class DropDownList extends MenuBase {
     /**
      * Панель с вертикальным скроллом
      */
-    ArtaVerticalScrollPanel scroll;
+    CustomScrollPanel scroll;
 
     String prefix;
 
@@ -26,7 +29,7 @@ public abstract class DropDownList extends MenuBase {
         setWidget(scroll);
 
         setRelativeWidget(parent);
-        setHeight("200px");
+        getElement().getStyle().setProperty("maxHeight", Constants.listMaxHeight());
     }
 
     /**
@@ -34,7 +37,14 @@ public abstract class DropDownList extends MenuBase {
      */
     @Override
     public void showUnderParent() {
+        setHeight(Constants.listMaxHeight());
         if (relativeWidget != null && relativeWidget.isAttached()) {
+            new Timer() {
+                @Override
+                public void run() {
+                    setHeight(Math.min(panel.getOffsetHeight(), Constants.LIST_MAX_HEIGHT) + "px");
+                }
+            }.schedule(100);
             getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 4 * 2 + "px");
             super.showUnderParent();
         }

@@ -15,11 +15,6 @@ import kz.arta.synergy.components.style.client.Constants;
  */
 public class ArtaVerticalScrollPanel extends CustomScrollPanel {
     /**
-     * Высота панели
-     */
-    int height;
-
-    /**
      * Вертикальный скролл
      */
     ArtaVerticalScroll vScroll;

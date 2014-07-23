@@ -21,6 +21,7 @@ import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.HashMap;
 
+//todo add custom setWidth
 /**
  * User: vsl
  * Date: 15.07.14
@@ -117,6 +118,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                     if (list.isShowing()) {
                         list.hide();
                     } else {
+                        list.removePrefix();
                         list.showUnderParent();
                     }
                 }

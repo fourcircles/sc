@@ -1,7 +1,10 @@
 package kz.arta.sc3.showcase.client;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -22,6 +25,7 @@ import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
+import kz.arta.synergy.components.client.input.NumberInput;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.menu.ContextMenu;
 import kz.arta.synergy.components.client.resources.ImageResources;
@@ -403,6 +407,13 @@ public class ShowCasePanel extends LayoutPanel {
         Panel textAreaPanel = new FlowPanel();
         textAreaPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
 
+        final NumberInput numberInput = new NumberInput();
+        numberInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        numberInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        numberInput.setPlaceHolder(SCMessages.i18n.tr("Числовое поле ввода"));
+        textAreaPanel.add(numberInput);
+
+
         final ArtaTextArea textArea = new ArtaTextArea();
         textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         textArea.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
@@ -428,7 +439,6 @@ public class ShowCasePanel extends LayoutPanel {
         textAreaSize.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода с заданным размером"));
         textAreaSize.setPixelSize(300, 300);
         textAreaPanel.add(textAreaSize);
-
 
         panel.add(textAreaPanel);
 

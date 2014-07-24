@@ -47,10 +47,11 @@ public class CommonInput extends TextBox {
         init();
     }
 
-    private void init() {
+    protected void init() {
         sinkEvents(Event.KEYEVENTS);
         sinkEvents(Event.FOCUSEVENTS);
         sinkEvents(Event.MOUSEEVENTS);
+        sinkEvents(Event.ONPASTE);
         setStyleName(SynergyComponents.resources.cssComponents().commonInput());
         addStyleName(SynergyComponents.resources.cssComponents().mainText());
         addKeyUpHandler(new KeyUpHandler() {

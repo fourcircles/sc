@@ -106,11 +106,33 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
         scrollUp();
     }
 
+    @UiHandler("up")
+    void upPress(MouseDownEvent event) {
+        event.preventDefault();
+        up.setResource(ImageResources.IMPL.scrollBarUpPressed());
+    }
+
+    @UiHandler("up")
+    void upRelease(MouseUpEvent event) {
+        up.setResource(ImageResources.IMPL.scrollBarUp());
+    }
+
     @UiHandler("down")
     void down(ClickEvent event) {
         event.stopPropagation();
         scrollDown();
     }
+
+    @UiHandler("down")
+    void downPress(MouseDownEvent event) {
+        down.setResource(ImageResources.IMPL.scrollBarDownPressed());
+    }
+
+    @UiHandler("down")
+    void downRelease(MouseUpEvent event) {
+        down.setResource(ImageResources.IMPL.scrollBarDown());
+    }
+
 
     /**
      * Нажатие на бегунок, начало его перемещения

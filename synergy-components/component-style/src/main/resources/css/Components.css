@@ -664,4 +664,5 @@
 
 .groupButtonPanel {
     display: inline-block;
+    height: 32px;
 }

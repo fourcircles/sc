@@ -1,13 +1,12 @@
 package kz.arta.synergy.components.client.button;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.util.MouseStyle;
+import kz.arta.synergy.components.client.util.WidthUtil;
 
 /**
  * User: user
@@ -103,7 +102,11 @@ public class SimpleToggleButton extends SimpleButton {
 
     }
 
-    private void setState(boolean state) {
+    /**
+     * Перевести кнопку в нажатое состояние
+     * @param state нажатое состояние или нет
+     */
+    public void setState(boolean state) {
         if (groupPanel != null) {
             if (!groupPanel.isMultiToggle()) {
                 if (groupPanel.pressedButton == this && !groupPanel.isAllowEmptyToggle()) {
@@ -132,10 +135,14 @@ public class SimpleToggleButton extends SimpleButton {
         return pressed;
     }
 
-    public void setPressed(boolean pressed) {
+    /**
+     * Меняется стиль в зависимости от состояния кнопки
+     * @param pressed   нажатое состояние либо нет
+     */
+    private void setPressed(boolean pressed) {
         this.pressed = pressed;
         if (pressed) {
-            getElement().getStyle().setZIndex(5);
+            getElement().getStyle().setZIndex(2);
             MouseStyle.setPressed(this);
             textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
             textLabel.removeStyleName(SynergyComponents.resources.cssComponents().mainText());
@@ -154,21 +161,16 @@ public class SimpleToggleButton extends SimpleButton {
     }
 
     public void onLoad() {
-
+        super.onLoad();
+        if (!isPressed()) {
+            textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
+            textLabel.removeStyleName(SynergyComponents.resources.cssComponents().mainText());
+        }
+        setWidth(WidthUtil.getWidth(getElement()) + "px");
+        if (!isPressed()) {
+            textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainText());
+            textLabel.removeStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
+        }
     }
 
-    /**
-     * Получаем ширину элемента
-     * @param element   элемент
-     * @return  ширина элемента
-     */
-    public int getWidth(Element element) {
-        Element e = DOM.clone(element, true);
-        e.getStyle().setVisibility(Style.Visibility.HIDDEN);
-        e.setClassName(textLabel.getStyleName());
-        Document.get().getBody().appendChild(e);
-        int width = e.getOffsetWidth();
-        Document.get().getBody().removeChild(e);
-        return width;
-    }
 }

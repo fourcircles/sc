@@ -659,39 +659,51 @@ public class ShowCasePanel extends LayoutPanel {
      */
     private Widget getGroupButton() {
         FlowPanel panel = new FlowPanel();
-        final SimpleToggleButton toggleButton = new SimpleToggleButton("Кнопка");
-        toggleButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                if (toggleButton.isPressed()) {
-                    toggleButton.setText("Нажата");
-                } else {
-                    toggleButton.setText("Не нажата");
-                }
-            }
-        });
+        final SimpleToggleButton toggleButton = new SimpleToggleButton("Кнопка с длинным текстом");
         toggleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         toggleButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         panel.add(toggleButton);
 
-
-        GroupButtonPanel groupButtonPanel = new GroupButtonPanel(true);
-        groupButtonPanel.addButton("Первая", new ClickHandler() {
+        final SimpleToggleButton toggleButton1 = new SimpleToggleButton("Не нажата");
+        toggleButton1.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                Window.alert("Первая кнопка");
+                if (toggleButton1.isPressed()) {
+                    toggleButton1.setText("Нажата");
+                } else {
+                    toggleButton1.setText("Не нажата");
+                }
+            }
+        });
+        toggleButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        toggleButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(toggleButton1);
+
+
+        GroupButtonPanel groupButtonPanel = new GroupButtonPanel(true);
+        groupButtonPanel.addButton("Первая кнопка длинная", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
             }
         });
         groupButtonPanel.addButton("Вторая", new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                Window.alert("Вторая кнопка");
+                public void onClick(ClickEvent event) {
+                if (((SimpleToggleButton) event.getSource()).isPressed()) {
+                    ((SimpleToggleButton) event.getSource()).setText("Вторая нажата");
+                } else {
+                    ((SimpleToggleButton) event.getSource()).setText("Вторая");
+                }
             }
         });
         groupButtonPanel.addButton("Третья", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                Window.alert("Третья кнопка");
+                if (((SimpleToggleButton) event.getSource()).isPressed()) {
+                    ((SimpleToggleButton) event.getSource()).setText("Третья нажата");
+                } else {
+                    ((SimpleToggleButton) event.getSource()).setText("Третья");
+                }
             }
         });
         groupButtonPanel.buildPanel();

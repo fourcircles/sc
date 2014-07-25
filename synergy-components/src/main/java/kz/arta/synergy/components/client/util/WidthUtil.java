@@ -27,4 +27,16 @@ public class WidthUtil {
         Document.get().getBody().removeChild(e);
         return width;
     }
+
+    public static int getPXValue(String str) {
+        if (str.indexOf("px") == str.length() - 2) {
+            try {
+                return Integer.parseInt(str.substring(0, str.length() - 2));
+            } catch (Exception ignore) {
+
+            }
+        }
+        return -1;
+    }
+
 }

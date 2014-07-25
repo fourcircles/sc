@@ -208,8 +208,6 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
         freeTrackSpace = this.height - barHeight - 17 * 2;
         if (getVerticalScrollPosition() == 0) {
             setVerticalScrollPosition(0);
-        } else {
-            setVerticalScrollPosition(getMaximumVerticalScrollPosition());
         }
     }
 

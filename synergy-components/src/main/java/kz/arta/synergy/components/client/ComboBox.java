@@ -21,7 +21,7 @@ import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.HashMap;
 
-//todo add custom setWidth
+//todo current min width is 198 not 200
 /**
  * User: vsl
  * Date: 15.07.14
@@ -135,7 +135,12 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         textPressKey = new KeyPressHandler() {
             @Override
             public void onKeyPress(KeyPressEvent event) {
-                changeList();
+                new Timer() {
+                    @Override
+                    public void run() {
+                        changeList();
+                    }
+                }.schedule(20);
             }
         };
 
@@ -145,6 +150,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                 switch (event.getNativeKeyCode()) {
                     case KeyCodes.KEY_BACKSPACE:
                     case KeyCodes.KEY_DELETE:
+                    case KeyCodes.KEY_SPACE:
                         changeList();
                         break;
                     case KeyCodes.KEY_DOWN:
@@ -163,7 +169,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
 
         setStyleName(SynergyComponents.resources.cssComponents().comboBox());
         addStyleName(SynergyComponents.resources.cssComponents().mainText());
-        setWidth(Constants.COMBO_MIN_WIDTH);
+        setWidth(Constants.FIELD_WITH_BUTTON_MIN_WIDTH);
     }
 
     /**
@@ -306,7 +312,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * Изменяется только ширина textbox.
      */
     public void setWidth(int width) {
-        width = Math.max(Constants.COMBO_MIN_WIDTH, width);
+        width = Math.max(Constants.FIELD_WITH_BUTTON_MIN_WIDTH, width);
         // -1 потому что правая граница кнопки перекрывает границу комбобокса
         textLabel.setWidth(width - Constants.BUTTON_MIN_WIDTH -
                 Constants.COMMON_INPUT_PADDING * 2 - 1 + "px");

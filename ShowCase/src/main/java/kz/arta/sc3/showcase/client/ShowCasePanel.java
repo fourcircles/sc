@@ -24,9 +24,8 @@ import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
-import kz.arta.synergy.components.client.input.ArtaTextArea;
-import kz.arta.synergy.components.client.input.NumberInput;
-import kz.arta.synergy.components.client.input.TextInput;
+import kz.arta.synergy.components.client.input.*;
+import kz.arta.synergy.components.client.input.tags.TagInput;
 import kz.arta.synergy.components.client.menu.ContextMenu;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
@@ -413,6 +412,13 @@ public class ShowCasePanel extends LayoutPanel {
         numberInput.setPlaceHolder(SCMessages.i18n.tr("Числовое поле ввода"));
         textAreaPanel.add(numberInput);
 
+        final TagInput tags = new TagInput();
+        tags.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        tags.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        tags.setWidth(300);
+        textAreaPanel.add(tags);
+
+
 
         final ArtaTextArea textArea = new ArtaTextArea();
         textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
@@ -470,6 +476,8 @@ public class ShowCasePanel extends LayoutPanel {
         return scroll;
 
     }
+
+
 
     /**
      * Простые кнопки

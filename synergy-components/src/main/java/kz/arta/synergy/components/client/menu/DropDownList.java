@@ -4,6 +4,9 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.menu.events.HasSelectionEventHandlers;
+import kz.arta.synergy.components.client.menu.events.SelectionEvent;
+import kz.arta.synergy.components.client.menu.events.SelectionEventHandler;
 import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -14,12 +17,15 @@ import kz.arta.synergy.components.style.client.Constants;
  *
  * Выпадающий список
  */
-public abstract class DropDownList extends MenuBase {
+public class DropDownList extends MenuBase implements HasSelectionEventHandlers<MenuBase.MenuItem> {
     /**
      * Панель с вертикальным скроллом
      */
     CustomScrollPanel scroll;
 
+    /**
+     * Примененный префикс
+     */
     String prefix;
 
     public DropDownList(Widget parent) {
@@ -117,18 +123,30 @@ public abstract class DropDownList extends MenuBase {
 
     /**
      * Нажатие кнопки "влево" не выбирает первый элемент списка (поведение по умолчанию)
-     * @param event
      */
     @Override
     protected void keyLeft(Event.NativePreviewEvent event) {
     }
 
+    /**
+     * Нажатие кнопки "вправо" не выбирает последний элемент списка (поведение по умолчанию)
+     */
     @Override
     protected void keyRight(Event.NativePreviewEvent event) {
     }
 
+    /**
+     * При перемещении по списку с помощью клавиатуры элементы без примененного
+     * префикса не отображаются и их нельзя выбрать.
+     * @param item элемент списка
+     */
     @Override
     protected boolean canBeChosen(MenuItem item) {
         return hasPrefix(item);
+    }
+
+    @Override
+    public void addSelectionHandler(SelectionEventHandler<MenuItem> handler) {
+        addHandler(handler, SelectionEvent.TYPE);
     }
 }

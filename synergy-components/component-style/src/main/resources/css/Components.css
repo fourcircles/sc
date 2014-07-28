@@ -57,6 +57,9 @@
 @def selectColor #deefff;
 @def tabBg2 #f9f9f9;
 
+@def tagBg #f2efd0;
+@eval tagBg_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#f2efd0","0");
+
 /* переписывает direction даже если не подгружается standard_rtl.css */
 *[dir="rtl"] {
     direction: rtl;
@@ -542,6 +545,7 @@
     padding: commonInputPadding;
     vertical-align: top;
     outline: none;
+    margin: 0px;
 }
 
 .artaText {
@@ -665,4 +669,88 @@
 
 .groupButtonPanel {
     display: inline-block;
+}
+
+.tagInput {
+    border-radius: 4px;
+    border: 1px buttonBorder solid;
+    line-heigth: 30px;
+    height: 30px;
+    vertical-align: top;
+    overflow: hidden;
+}
+
+.tagInput .buttonSimple {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.tag {
+    margin-left: 2px;
+    display: inline-block;
+    border-radius: 3px;
+    background-color: tagBg;
+    padding-left: 8px;
+    padding-right: 8px;
+    height: 26px;
+    line-height: 26px;
+}
+
+.tag ::selection {
+    background-color: selectColor;
+}
+
+.tag > div {
+    display: inline-block;
+}
+
+.tag img {
+    vertical-align: top;
+    margin-left: 8px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.tagIndicator {
+    margin-top: 10px;
+    position: relative;
+    background: white;
+    border: 1px solid buttonBorder;
+    display: inline-block;
+    line-height: 2px;
+    padding: 6px;
+}
+.tagIndicator:after, .tagIndicator:before {
+    bottom: 100%;
+    left: 17px;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.tagIndicator:after {
+    border-color: rgba(0, 0, 0, 0);
+    border-bottom-color: whiteBG;
+    border-width: 10px;
+    border-left-width: 5px;
+    border-right-width: 5px;
+}
+.tagIndicator:before {
+    border-color: rgba(226, 226, 226, 0);
+    border-bottom-color: #e2e2e2;
+    border-width: 11px;
+    border-left-width: 6px;
+    border-right-width: 6px;
+    margin-left: -1px;
+}
+
+p {
+    margin: 0px;
+}
+
+.tagIndicator > p {
+    margin-bottom: 2px;
 }

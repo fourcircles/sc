@@ -129,4 +129,10 @@ public interface CssComponents extends CssResource {
     String vscroll();
 
     String whiteBG();
+
+    String tagInput();
+
+    String tag();
+
+    String tagIndicator();
 }

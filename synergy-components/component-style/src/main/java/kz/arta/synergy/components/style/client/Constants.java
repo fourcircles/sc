@@ -37,9 +37,21 @@ public class Constants {
     public static final int SCROLL_BAR_WIDTH = 17;
 
     public static final int COMBO_LIST_DEFAULT_HEIGHT = 200;
-    public static final int COMBO_MIN_WIDTH = 198;
+    public static final int FIELD_WITH_BUTTON_MIN_WIDTH = 200;
 
     public static final int LIST_MAX_HEIGHT = 200;
+
+    /**
+     * Минимальная ширина текстового поля для ввода в поле с тэгами
+     */
+    public static final int TAG_INPUT_MIN_TEXT_WIDTH = 40;
+    /**
+     * Максимальная ширина тэга
+     */
+    public static final int TAG_INPUT_MAX_TAG_WIDTH = 100;
+    public static final int INTERVAL_BETWEEN_TAGS = 2;
+    public static final int TAG_PADDING = 8;
+
 
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
@@ -112,7 +124,7 @@ public class Constants {
     }
 
     public static String comboMinWidth() {
-        return COMBO_MIN_WIDTH + "px";
+        return FIELD_WITH_BUTTON_MIN_WIDTH + "px";
     }
 
     public static String listMaxHeight() {

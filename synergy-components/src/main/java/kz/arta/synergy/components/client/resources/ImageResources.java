@@ -68,4 +68,6 @@ public interface ImageResources extends ClientBundle {
     @Source("images/scroll/scrollbar_right_pressed.png")
     ImageResource scrollBarRightPressed();
 
+    @Source("images/tag_close.png")
+    ImageResource tagClose();
 }

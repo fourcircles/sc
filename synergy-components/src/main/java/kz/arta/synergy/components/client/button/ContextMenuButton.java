@@ -70,7 +70,7 @@ public class ContextMenuButton extends SimpleButton {
                     if (contextMenu.isShowing()) {
                         contextMenu.hide();
                     } else {
-                        contextMenu.showUnderParent();
+                        contextMenu.show();
                     }
                 }
             }
@@ -137,4 +137,12 @@ public class ContextMenuButton extends SimpleButton {
         this.contextMenu = contextMenu;
     }
 
+
+    @Override
+    protected void buildButton() {
+        super.buildButton();
+        if (contextButton != null) {
+            add(contextButton);
+        }
+    }
 }

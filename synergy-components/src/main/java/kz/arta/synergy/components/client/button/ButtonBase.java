@@ -101,7 +101,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
     /**
      * Добавляет элементы в базовую панель кнопки в порядке, который соответствует указанной позиции иконки
      */
-    private void buildButton() {
+    protected void buildButton() {
         clear();
         if (iconPosition == IconPosition.RIGHT) {
             if (textLabel != null) {

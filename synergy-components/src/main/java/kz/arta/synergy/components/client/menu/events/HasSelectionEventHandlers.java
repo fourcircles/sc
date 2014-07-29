@@ -6,5 +6,5 @@ package kz.arta.synergy.components.client.menu.events;
  * Time: 17:57
  */
 public interface HasSelectionEventHandlers<V> {
-    void addSelectionHandler(SelectionEventHandler<V> handler);
+    void addSelectionHandler(SelectionEvent.Handler<V> handler);
 }

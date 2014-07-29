@@ -492,7 +492,7 @@ public class ShowCasePanel extends LayoutPanel {
                 switch(DOM.eventGetType(event)) {
                     case Event.ONCONTEXTMENU :
                         event.preventDefault();
-                        menu.smartShow(event.getClientX(), event.getClientY());
+                        menu.show(event.getClientX(), event.getClientY());
                         break;
                 }
                 super.onBrowserEvent(event);
@@ -653,7 +653,7 @@ public class ShowCasePanel extends LayoutPanel {
         colorButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         colorButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         ContextMenu menu3 = createSimpleMenu();
-        menu3.addItem(SCMessages.i18n.tr("Очень-очень длинный текст"));
+        menu3.addItem(SCMessages.i18n.tr("Очень-очень длинный текст"), null);
         colorButton7.setContextMenu(menu3);
 
         ArtaVerticalScrollPanel scroll = new ArtaVerticalScrollPanel();

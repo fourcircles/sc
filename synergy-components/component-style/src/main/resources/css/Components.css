@@ -514,6 +514,7 @@
     vertical-align: middle;
     margin-right: 0px;
     z-index: 10000;
+    padding: 1px 0px 0px;
 }
 
 .contextMenu.green {

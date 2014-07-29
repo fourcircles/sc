@@ -1,77 +1,200 @@
 package kz.arta.synergy.components.client.menu;
 
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.events.HasSelectionEventHandlers;
 import kz.arta.synergy.components.client.menu.events.SelectionEvent;
-import kz.arta.synergy.components.client.menu.events.SelectionEventHandler;
 import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
+import java.util.ArrayList;
+
 /**
  * User: vsl
- * Date: 15.07.14
- * Time: 13:40
+ * Date: 28.07.14
+ * Time: 13:27
  *
  * Выпадающий список
  */
-public class DropDownList extends MenuBase implements HasSelectionEventHandlers<MenuBase.MenuItem> {
+public class DropDownList<V> extends MenuBase implements HasSelectionEventHandlers<V>{
+    private EventBus bus;
+
+    /**
+     * Список добавленных элементов меню
+     */
+    private ArrayList<ListItem> items;
+
     /**
      * Панель с вертикальным скроллом
      */
-    CustomScrollPanel scroll;
+    private ArtaVerticalScrollPanel scroll;
 
     /**
-     * Примененный префикс
+     * Текущий префикс примененный к списку
      */
-    String prefix;
+    private String prefix = "";
 
-    public DropDownList(Widget parent) {
+    /**
+     * Отключены ли кнопки "влево" "вправо"
+     */
+    private boolean leftRightEnabled;
+
+    public DropDownList(Widget relativeWidget, EventBus bus) {
         super();
-        scroll = new ArtaVerticalScrollPanel(panel);
-        setWidget(scroll);
 
-        setRelativeWidget(parent);
-        getElement().getStyle().setProperty("maxHeight", Constants.listMaxHeight());
-    }
+        if (bus == null) {
+            bus = new SimpleEventBus();
+        }
+        this.bus = bus;
 
-    /**
-     * Указывает что максимальная ширина списка равна родительской без границ
-     */
-    @Override
-    public void showUnderParent() {
-        if (relativeWidget != null && relativeWidget.isAttached()) {
-            int cnt = 0;
-            for (MenuItem item : items) {
-                if (hasPrefix(item)) {
-                    cnt++;
-                }
+        scroll = new ArtaVerticalScrollPanel(root);
+        popup.setWidget(scroll);
+        setRelativeWidget(relativeWidget);
+        popup.getElement().getStyle().setProperty("maxHeight", Constants.listMaxHeight());
+
+        items = new ArrayList<ListItem>();
+
+        popup.setStyleName(SynergyComponents.resources.cssComponents().contextMenu());
+
+        SelectionEvent.register(bus, new SelectionEvent.Handler<ListItem>() {
+            @Override
+            public void onSelection(SelectionEvent<ListItem> event) {
+                hide();
             }
-            setHeight(Math.min(32 * cnt, Constants.LIST_MAX_HEIGHT) + "px");
-            getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 4 * 2 + "px");
-            super.showUnderParent();
+        });
+    }
+
+    /**
+     * Возвращает выбранный элемент
+     */
+    public ListItem getSelectedItem() {
+        if (selectedIndex >=0 && selectedIndex < items.size()) {
+            return items.get(selectedIndex);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    ArrayList<ListItem> getItems() {
+        return items;
+    }
+
+    /**
+     * Удаляет все элементы
+     */
+    public void clear() {
+        items.clear();
+        super.clearItems();
+    }
+
+    /**
+     * Создает элемент меню с текстом, добавляет его в список и возращает его.
+     */
+    public ListItem addItem(String text, V value) {
+        ListItem item = new ListItem(bus);
+        item.setText(text);
+        item.setValue(value);
+        items.add(item);
+
+        addItem(item);
+
+        return item;
+    }
+
+    public ListItem addItem(String text, ImageResource icon, V value) {
+        ListItem item = new ListItem(bus);
+        item.setText(text);
+        item.setValue(value);
+        item.setIcon(icon);
+
+        addItem(item);
+
+        return item;
+    }
+
+    /**
+     * Клавиша "вниз"
+     */
+    @Override
+    protected void keyDown(Event.NativePreviewEvent event) {
+        event.cancel();
+        overItemKeyboard(getNext());
+    }
+
+    /**
+     * Клавиша "вверх"
+     */
+    @Override
+    protected void keyUp(Event.NativePreviewEvent event) {
+        event.cancel();
+        overItemKeyboard(getPrevious());
+    }
+
+    public void setLeftRightKeysEnabled(boolean enabled) {
+        leftRightEnabled = enabled;
+    }
+
+
+    /**
+     * Клавиша "влево"
+     */
+    @Override
+    protected void keyLeft(Event.NativePreviewEvent event) {
+        if (leftRightEnabled) {
+            event.cancel();
+            overItemKeyboard(getFirst());
         }
     }
 
     /**
-     * При выборе элемента клавиатурой он должен быть видим
-     * @param item элемент
-     * @param mouseSelected способ выбора
+     * Клавиша "вправо"
      */
     @Override
-    protected void overItem(MenuItem item, boolean mouseSelected) {
-        if (!mouseSelected) {
-            scroll.ensureVisible(item.asWidget());
+    protected void keyRight(Event.NativePreviewEvent event) {
+        if (leftRightEnabled) {
+            event.cancel();
+            overItemKeyboard(getLast());
         }
-        super.overItem(item, mouseSelected);
     }
 
+    /**
+     * Клавиша "Enter"
+     */
+    @Override
+    protected void keyEnter(Event.NativePreviewEvent event) {
+        if (selectedIndex >= 0 && selectedIndex < items.size()) {
+            items.get(selectedIndex).selectItem();
+        }
+    }
 
     @Override
-    protected String getMainStyle() {
-        return SynergyComponents.resources.cssComponents().contextMenu();
+    public void addSelectionHandler(SelectionEvent.Handler<V> handler) {
+        SelectionEvent.register(bus, handler);
+    }
+
+    /**
+     * Показывает список под элементом указанным при создании
+     */
+    public void show() {
+        popup.setHeight(Math.min(32 * root.getWidgetCount(), Constants.LIST_MAX_HEIGHT) + "px");
+        super.showUnderParent();
+    }
+
+    /**
+     * Выделяет элемент на указанной позиции. Вызывается при навигации клавишами.
+     * @param index позиция
+     */
+    private void overItemKeyboard(int index) {
+        if (index >= 0 && index < items.size()) {
+            ListItem item = items.get(index);
+            item.focusItem();
+            scroll.ensureVisible(item);
+        }
     }
 
     /**
@@ -100,14 +223,16 @@ public class DropDownList extends MenuBase implements HasSelectionEventHandlers<
      * @param prefix префикс
      */
     public void applyPrefix(String prefix) {
-        panel.clear();
+        root.clear();
         this.prefix = prefix;
+        int cnt = 0;
         for (MenuItem item: items) {
             if (hasPrefix(item)) {
-                panel.add(item.asWidget());
+                root.add(item.asWidget());
+                cnt++;
             }
         }
-        showUnderParent();
+        popup.setHeight(Math.min(32 * cnt, Constants.LIST_MAX_HEIGHT) + "px");
     }
 
     /**
@@ -115,38 +240,51 @@ public class DropDownList extends MenuBase implements HasSelectionEventHandlers<
      */
     public void removePrefix() {
         prefix = "";
-        panel.clear();
+        root.clear();
         for (MenuItem item: items) {
-            panel.add(item.asWidget());
+            root.add(item);
         }
+        popup.setHeight(Math.min(32 * items.size(), Constants.LIST_MAX_HEIGHT) + "px");
     }
 
     /**
-     * Нажатие кнопки "влево" не выбирает первый элемент списка (поведение по умолчанию)
+     * Элемент списка
      */
-    @Override
-    protected void keyLeft(Event.NativePreviewEvent event) {
-    }
+    public class ListItem extends MenuItem implements HasSelectionEventHandlers<ListItem> {
+        /**
+         * Значение элемента
+         */
+        private V value;
 
-    /**
-     * Нажатие кнопки "вправо" не выбирает последний элемент списка (поведение по умолчанию)
-     */
-    @Override
-    protected void keyRight(Event.NativePreviewEvent event) {
-    }
+        public ListItem(EventBus bus) {
+            this.bus = bus;
+        }
 
-    /**
-     * При перемещении по списку с помощью клавиатуры элементы без примененного
-     * префикса не отображаются и их нельзя выбрать.
-     * @param item элемент списка
-     */
-    @Override
-    protected boolean canBeChosen(MenuItem item) {
-        return hasPrefix(item);
-    }
+        public V getValue() {
+            return value;
+        }
 
-    @Override
-    public void addSelectionHandler(SelectionEventHandler<MenuItem> handler) {
-        addHandler(handler, SelectionEvent.TYPE);
+        public void setValue(V value) {
+            this.value = value;
+        }
+
+        @Override
+        public void addSelectionHandler(SelectionEvent.Handler<ListItem> handler) {
+            if (bus != null) {
+                bus.addHandler(SelectionEvent.TYPE, handler);
+            }
+        }
+
+        @Override
+        protected void focusItem() {
+            clearOverStyles();
+            selectedIndex = items.indexOf(this);
+            super.focusItem();
+        }
+
+        @Override
+        public boolean shouldBeSkipped() {
+            return !hasPrefix(this);
+        }
     }
 }

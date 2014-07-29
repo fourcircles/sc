@@ -5,7 +5,9 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
@@ -15,7 +17,7 @@ import com.google.gwt.user.client.ui.HasText;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.menu.DropDownList;
-import kz.arta.synergy.components.client.menu.MenuBase;
+import kz.arta.synergy.components.client.menu.events.SelectionEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -75,24 +77,26 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
     KeyUpHandler textUpKey;
     HandlerRegistration textUpKeyRegistration;
 
-    private HashMap<MenuBase.MenuItem, V> values;
+    private HashMap<DropDownList.ListItem, V> values;
 
 
     public ComboBox() {
         panel = new FlowPanel();
-        values = new HashMap<MenuBase.MenuItem, V>();
+        values = new HashMap<DropDownList.ListItem, V>();
 
         initWidget(panel);
 
         isEnabled = true;
 
-        list = new DropDownList(this) {
+        EventBus bus = new SimpleEventBus();
+        list = new DropDownList(this, bus);
+        bus.addHandler(SelectionEvent.TYPE, new SelectionEvent.Handler<DropDownList<V>.ListItem>() {
             @Override
-            protected void itemSelected(MenuItem item) {
-                super.itemSelected(item);
-                showItem(item);
+            public void onSelection(SelectionEvent<DropDownList<V>.ListItem> event) {
+                showItem(event.getValue());
+                list.hide();
             }
-        };
+        });
         list.setRelativeWidget(this);
 
         textLabel = new TextInput();
@@ -112,7 +116,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                         list.hide();
                     } else {
                         list.removePrefix();
-                        list.showUnderParent();
+                        list.show();
                     }
                 }
             }
@@ -135,12 +139,14 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         textPressKey = new KeyPressHandler() {
             @Override
             public void onKeyPress(KeyPressEvent event) {
-                new Timer() {
-                    @Override
-                    public void run() {
-                        changeList();
-                    }
-                }.schedule(20);
+                if (event.getNativeEvent().getKeyCode() != KeyCodes.KEY_ENTER) {
+                    new Timer() {
+                        @Override
+                        public void run() {
+                            changeList();
+                        }
+                    }.schedule(20);
+                }
             }
         };
 
@@ -154,7 +160,10 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                         changeList();
                         break;
                     case KeyCodes.KEY_DOWN:
-                        changeList();
+                        if (!list.isShowing()) {
+                            list.show();
+                            list.selectFirst();
+                        }
                         break;
                 }
             }
@@ -180,10 +189,11 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         String prefix = textLabel.getText();
         if (prefix.isEmpty()) {
             list.removePrefix();
-            list.showUnderParent();
         } else {
             list.applyPrefix(prefix);
-            list.showUnderParent();
+        }
+        if (!list.isShowing()) {
+            list.show();
         }
     }
 
@@ -191,7 +201,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * Показать элемент списка в комбобоксе
      * @param item элемент списка
      */
-    private void showItem(MenuBase.MenuItem item) {
+    private void showItem(DropDownList.ListItem item) {
         textLabel.setText(item.getText());
         ValueChangeEvent.fire(this, values.get(item));
     }
@@ -201,7 +211,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @param text текст элемента
      */
     public void addItem(String text, V value) {
-        MenuBase.MenuItem item = list.addItem(text);
+        DropDownList.ListItem item = list.addItem(text, null);
         values.put(item, value);
     }
 
@@ -211,7 +221,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @param iconResource иконка элемента в списке
      */
     public void addItem(String text, ImageResource iconResource, V value) {
-        MenuBase.MenuItem item = list.addItem(text, iconResource);
+        DropDownList.ListItem item = list.addItem(text, iconResource, null);
         values.put(item, value);
     }
 
@@ -220,7 +230,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @return выбранное значение
      */
     public V getSelectedValue() {
-        MenuBase.MenuItem item = list.getSelectedItem();
+        DropDownList.ListItem item = list.getSelectedItem();
         if (item != null) {
             return values.get(list.getSelectedItem());
         } else {
@@ -269,6 +279,9 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         if (readOnly != this.readOnly) {
             this.readOnly = readOnly;
             textLabel.setReadOnly(readOnly);
+            //кнопки влево-вправо выделяют первый-последний элементы только для
+            //readonly комбобокса
+            list.setLeftRightKeysEnabled(readOnly);
             if (readOnly) {
                 textLabelClickRegistration = textLabel.addClickHandler(textLabelClick);
                 textLabelMouseDownRegistration = textLabel.addMouseDownHandler(textLabelMouseDown);

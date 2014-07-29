@@ -4,7 +4,9 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Composite;
@@ -13,6 +15,8 @@ import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.input.tags.events.*;
+import kz.arta.synergy.components.client.menu.DropDownList;
+import kz.arta.synergy.components.client.menu.events.SelectionEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
@@ -27,7 +31,7 @@ import java.util.ArrayList;
  * Поле с тегами
  */
 public class TagInput extends Composite implements HasText,
-        HasClickHandlers, HasTagAddEventHandler, HasTagRemoveEventHandler {
+        HasTagAddEventHandler, HasTagRemoveEventHandler {
     /**
      * Корневая панель
      */
@@ -64,11 +68,6 @@ public class TagInput extends Composite implements HasText,
     private ArrayList<Tag> tags;
 
     /**
-     * Обработчик закрытия тега
-     */
-    private CloseHandler<Tag> closeTagHandler;
-
-    /**
      * Ширина элемента для ввода текста (без всех отступов и границ)
      */
     private int inputWidth;
@@ -95,10 +94,18 @@ public class TagInput extends Composite implements HasText,
      */
     private TagIndicator tagIndicator;
 
+    /**
+     * Выпадающий список для поля
+     */
+    private DropDownList<String> dropDownList;
+
+    private EventBus bus;
+
     public TagInput() {
         root = new FlowPanel();
         initWidget(root);
 
+        bus = new SimpleEventBus();
         tags = new ArrayList<Tag>();
 
         input = new TextInput();
@@ -126,12 +133,6 @@ public class TagInput extends Composite implements HasText,
         root.add(tagsPanel);
 
         tagIndicator = new TagIndicator();
-        tagIndicator.addTagRemoveHandler(new TagRemoveEvent.TagRemoveEventHandler() {
-            @Override
-            public void onTagRemove(TagRemoveEvent event) {
-                removeTag(event.getTag());
-            }
-        });
 
         input.addKeyPressHandler(new KeyPressHandler() {
             @Override
@@ -149,14 +150,13 @@ public class TagInput extends Composite implements HasText,
             public void onKeyUp(KeyUpEvent event) {
                 switch (event.getNativeKeyCode()) {
                     case KeyCodes.KEY_ENTER:
-                        String inputText = input.getText();
-                        if (!input.getText().isEmpty()) {
-                            input.setText("");
-
-                            Tag tag = addTag(inputText);
-                            tag.addCloseHandler(closeTagHandler);
-
-                            textChanged();
+                        if (dropDownList == null) {
+                            String inputText = input.getText();
+                            if (!input.getText().isEmpty()) {
+                                input.setText("");
+                                addTag(inputText);
+                                textChanged();
+                            }
                         }
                         break;
                     case KeyCodes.KEY_BACKSPACE:
@@ -168,16 +168,24 @@ public class TagInput extends Composite implements HasText,
                         input.setText("");
                         textChanged();
                         break;
+                    case KeyCodes.KEY_DOWN:
+                        if (dropDownList != null && !dropDownList.isShowing()) {
+                            dropDownList.show();
+                        }
                 }
             }
         });
 
-        closeTagHandler = new CloseHandler<Tag>() {
+        bus.addHandler(TagRemoveEvent.TYPE, new TagRemoveEvent.Handler() {
             @Override
-            public void onClose(CloseEvent<Tag> event) {
-                removeTag(event.getTarget());
+            public void onTagRemove(TagRemoveEvent event) {
+                removeTag(event.getTag());
+                if (event.getTag().listItem != null) {
+                    event.getTag().listItem.removeStyleName(SynergyComponents.resources.cssComponents().selected());
+                    event.getTag().listItem.setSelected(false);
+                }
             }
-        };
+        });
     }
 
     /**
@@ -195,6 +203,13 @@ public class TagInput extends Composite implements HasText,
             tagsPanel.getElement().getStyle().setLeft(2, Style.Unit.PX);
             setInputOffset(tagsPanel.getOffsetWidth());
         }
+
+        if (dropDownList != null) {
+            dropDownList.applyPrefix(input.getText());
+            if (!dropDownList.isShowing()) {
+                dropDownList.show();
+            }
+        }
     }
 
     /**
@@ -203,9 +218,13 @@ public class TagInput extends Composite implements HasText,
     private void removeTag(Tag tag) {
         tags.remove(tag);
         tagsPanel.remove(tag);
+        if (dropDownList != null) {
+            DropDownList<?>.ListItem item = dropDownList.getItemWidthText(tag.getText());
+            if (item != null) {
+                item.getElement().getStyle().setBackgroundColor("");
+            }
+        }
         placeTags();
-
-        fireEvent(new TagRemoveEvent(tag));
     }
 
     /**
@@ -300,12 +319,13 @@ public class TagInput extends Composite implements HasText,
      */
     private Tag addTag(String text) {
         Tag tag = new Tag(text);
+        tag.setBus(bus);
 
         tags.add(tag);
         tagsPanel.add(tag);
         placeTags();
 
-        fireEvent(new TagAddEvent(tag));
+        bus.fireEvent(new TagAddEvent(tag));
         return tag;
     }
 
@@ -355,11 +375,6 @@ public class TagInput extends Composite implements HasText,
     }
 
     @Override
-    public HandlerRegistration addClickHandler(ClickHandler handler) {
-        return button.addClickHandler(handler);
-    }
-
-    @Override
     public String getText() {
         return input.getText();
     }
@@ -370,13 +385,47 @@ public class TagInput extends Composite implements HasText,
         textChanged();
     }
 
+    public DropDownList<String> getDropDownList() {
+        return dropDownList;
+    }
+
+    public void setDropDownList(final DropDownList<String> dropDownList) {
+        this.dropDownList = dropDownList;
+        dropDownList.addSelectionHandler(new SelectionEvent.Handler<DropDownList<String>.ListItem>() {
+            @Override
+            public void onSelection(SelectionEvent<DropDownList<String>.ListItem> event) {
+                final DropDownList<?>.ListItem item = event.getValue();
+                if (!item.isSelected()) {
+                    item.addStyleName(SynergyComponents.resources.cssComponents().selected());
+
+                    Tag tag = addTag(event.getValue().getText());
+                    tag.setListItem(item);
+
+                    input.setText("");
+                    textChanged();
+                    dropDownList.hide();
+                }
+            }
+        });
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (dropDownList.isShowing()) {
+                    dropDownList.hide();
+                } else {
+                    dropDownList.show();
+                }
+            }
+        });
+    }
+
     @Override
     public HandlerRegistration addTagAddHandler(TagAddEvent.TagAddEventHandler handler) {
         return addHandler(handler, TagAddEvent.TYPE);
     }
 
     @Override
-    public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.TagRemoveEventHandler handler) {
+    public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler handler) {
         return addHandler(handler, TagRemoveEvent.TYPE);
     }
 }

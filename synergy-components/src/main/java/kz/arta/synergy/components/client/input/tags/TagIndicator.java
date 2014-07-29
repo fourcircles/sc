@@ -86,13 +86,6 @@ public class TagIndicator implements HasTagRemoveEventHandler {
         ptag.setWidget(tag);
         root.add(ptag);
 
-        tag.addCloseHandler(new CloseHandler<Tag>() {
-            @Override
-            public void onClose(CloseEvent<Tag> event) {
-                removeTag(tag);
-            }
-        });
-
         lastTag = tag;
         lastTag.getElement().getStyle().setMarginBottom(0, Style.Unit.PX);
     }
@@ -109,7 +102,7 @@ public class TagIndicator implements HasTagRemoveEventHandler {
     }
 
     @Override
-    public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.TagRemoveEventHandler handler) {
+    public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler handler) {
         return handlerManager.addHandler(TagRemoveEvent.TYPE, handler);
     }
 
@@ -118,9 +111,9 @@ public class TagIndicator implements HasTagRemoveEventHandler {
         handlerManager.fireEvent(event);
     }
 
-    public void removeTag(Tag tag) {
-        tag.removeFromParent();
-        root.remove(tag.getParent());
-        handlerManager.fireEvent(new TagRemoveEvent(tag));
-    }
+//    public void removeTag(Tag tag) {
+//        tag.removeFromParent();
+//        root.remove(tag.getParent());
+//        handlerManager.fireEvent(new TagRemoveEvent(tag));
+//    }
 }

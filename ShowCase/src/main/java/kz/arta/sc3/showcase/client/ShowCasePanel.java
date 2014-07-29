@@ -27,6 +27,7 @@ import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.*;
 import kz.arta.synergy.components.client.input.tags.TagInput;
 import kz.arta.synergy.components.client.menu.ContextMenu;
+import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
 import kz.arta.synergy.components.client.theme.Theme;
@@ -418,7 +419,20 @@ public class ShowCasePanel extends LayoutPanel {
         tags.setWidth(300);
         textAreaPanel.add(tags);
 
+        final TagInput tagInputList = new TagInput();
+        tagInputList.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        tagInputList.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        tagInputList.setWidth(300);
 
+        DropDownList<String> tagList = new DropDownList<String>(tagInputList, null);
+        for (int i = 0; i < 5; i++) {
+            tagList.addItem("аа " + i, "value " + i);
+            tagList.addItem("аб" + i, "value " + i);
+            tagList.addItem("пб" + i, "value " + i);
+        }
+        tagInputList.setDropDownList(tagList);
+
+        textAreaPanel.add(tagInputList);
 
         final ArtaTextArea textArea = new ArtaTextArea();
         textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);

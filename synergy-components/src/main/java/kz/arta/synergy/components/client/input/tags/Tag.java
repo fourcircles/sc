@@ -1,13 +1,17 @@
 package kz.arta.synergy.components.client.input.tags;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
+import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.Utils;
@@ -20,7 +24,7 @@ import kz.arta.synergy.components.style.client.Constants;
  *
  * Тег для поля с тегами.
  */
-public class Tag<V> extends Composite implements ArtaHasText, HasCloseHandlers<Tag>{
+public class Tag<V> extends Composite implements ArtaHasText {
     /**
      * Корневая панель
      */
@@ -47,6 +51,13 @@ public class Tag<V> extends Composite implements ArtaHasText, HasCloseHandlers<T
     private Image image;
 
     /**
+     * Элемент списка которому соответствует этот тег
+     */
+    DropDownList.ListItem listItem;
+
+    private EventBus bus;
+
+    /**
      * Конструктор для случая когда у тега нет значения
      * @param text текст тега
      */
@@ -60,7 +71,7 @@ public class Tag<V> extends Composite implements ArtaHasText, HasCloseHandlers<T
         image.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                CloseEvent.fire(Tag.this, Tag.this);
+                bus.fireEvent(new TagRemoveEvent(Tag.this));
             }
         });
         root.add(label);
@@ -77,11 +88,6 @@ public class Tag<V> extends Composite implements ArtaHasText, HasCloseHandlers<T
     public Tag(String text, V value) {
         this(text);
         this.value = value;
-    }
-
-    @Override
-    public HandlerRegistration addCloseHandler(CloseHandler<Tag> handler) {
-        return addHandler(handler, CloseEvent.getType());
     }
 
     @Override
@@ -116,5 +122,21 @@ public class Tag<V> extends Composite implements ArtaHasText, HasCloseHandlers<T
 
     public void setValue(V value) {
         this.value = value;
+    }
+
+    public void setListItem(DropDownList.ListItem item) {
+        listItem = item;
+    }
+
+    public DropDownList<?>.ListItem getListItem() {
+        return listItem;
+    }
+
+    public EventBus getBus() {
+        return bus;
+    }
+
+    public void setBus(EventBus bus) {
+        this.bus = bus;
     }
 }

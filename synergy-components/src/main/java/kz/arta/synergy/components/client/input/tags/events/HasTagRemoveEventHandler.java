@@ -9,5 +9,5 @@ import com.google.gwt.event.shared.HasHandlers;
  * Time: 17:12
  */
 public interface HasTagRemoveEventHandler extends HasHandlers {
-    public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.TagRemoveEventHandler handler);
+    public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler handler);
 }

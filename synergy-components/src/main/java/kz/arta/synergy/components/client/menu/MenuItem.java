@@ -4,7 +4,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
@@ -17,7 +16,7 @@ import kz.arta.synergy.components.client.util.Selection;
 /**
  * Пункт меню
  */
-class MenuItem extends Composite {
+public class MenuItem extends Composite {
     /**
      * Корневая панель
      */

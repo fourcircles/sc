@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.events.HasSelectionEventHandlers;
 import kz.arta.synergy.components.client.menu.events.SelectionEvent;
+import kz.arta.synergy.components.client.menu.filters.ListFilter;
 import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -20,13 +21,15 @@ import java.util.ArrayList;
  *
  * Выпадающий список
  */
-public class DropDownList<V> extends MenuBase implements HasSelectionEventHandlers<V>{
+public class DropDownList<V> extends MenuBase implements HasSelectionEventHandlers<DropDownList<V>.ListItem>{
     private EventBus bus;
 
     /**
      * Список добавленных элементов меню
      */
     private ArrayList<ListItem> items;
+
+    private ArrayList<ListFilter> filters;
 
     /**
      * Панель с вертикальным скроллом
@@ -59,13 +62,10 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
         items = new ArrayList<ListItem>();
 
         popup.setStyleName(SynergyComponents.resources.cssComponents().contextMenu());
+    }
 
-        SelectionEvent.register(bus, new SelectionEvent.Handler<ListItem>() {
-            @Override
-            public void onSelection(SelectionEvent<ListItem> event) {
-                hide();
-            }
-        });
+    public EventBus getBus() {
+        return bus;
     }
 
     /**
@@ -167,13 +167,14 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
      */
     @Override
     protected void keyEnter(Event.NativePreviewEvent event) {
+        event.cancel();
         if (selectedIndex >= 0 && selectedIndex < items.size()) {
             items.get(selectedIndex).selectItem();
         }
     }
 
     @Override
-    public void addSelectionHandler(SelectionEvent.Handler<V> handler) {
+    public void addSelectionHandler(SelectionEvent.Handler<ListItem> handler) {
         SelectionEvent.register(bus, handler);
     }
 
@@ -236,7 +237,7 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
     }
 
     /**
-     * Убирает примененный префикс, все элементы показываются.
+     * Убирает примененный префикс, отображаются все элементы.
      */
     public void removePrefix() {
         prefix = "";
@@ -245,6 +246,15 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
             root.add(item);
         }
         popup.setHeight(Math.min(32 * items.size(), Constants.LIST_MAX_HEIGHT) + "px");
+    }
+
+    public ListItem getItemWidthText(String text) {
+        for (ListItem item : items) {
+            if (item.getText().equals(text)) {
+                return item;
+            }
+        }
+        return null;
     }
 
     /**
@@ -256,6 +266,8 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
          */
         private V value;
 
+        private boolean isSelected;
+
         public ListItem(EventBus bus) {
             this.bus = bus;
         }
@@ -266,6 +278,13 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
 
         public void setValue(V value) {
             this.value = value;
+        }
+
+        public void setSelected(boolean isSelected) {
+            this.isSelected = isSelected;
+        }
+        public boolean isSelected() {
+            return isSelected;
         }
 
         @Override
@@ -283,8 +302,18 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
         }
 
         @Override
+        protected void selectItem() {
+            if (!isSelected) {
+                super.selectItem();
+                isSelected = true;
+            }
+        }
+
+        @Override
         public boolean shouldBeSkipped() {
             return !hasPrefix(this);
         }
+
+
     }
 }

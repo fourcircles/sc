@@ -11,14 +11,14 @@ import kz.arta.synergy.components.client.input.tags.Tag;
  *
  * Событие для удаления тега
  */
-public class TagRemoveEvent extends GwtEvent<TagRemoveEvent.TagRemoveEventHandler> {
-    public static Type<TagRemoveEventHandler> TYPE = new Type<TagRemoveEventHandler>();
+public class TagRemoveEvent extends GwtEvent<TagRemoveEvent.Handler> {
+    public static Type<Handler> TYPE = new Type<Handler>();
 
-    public Type<TagRemoveEventHandler> getAssociatedType() {
+    public Type<Handler> getAssociatedType() {
         return TYPE;
     }
 
-    protected void dispatch(TagRemoveEventHandler handler) {
+    protected void dispatch(Handler handler) {
         handler.onTagRemove(this);
     }
 
@@ -32,7 +32,7 @@ public class TagRemoveEvent extends GwtEvent<TagRemoveEvent.TagRemoveEventHandle
         return tag;
     }
 
-    public static interface TagRemoveEventHandler extends EventHandler {
+    public static interface Handler extends EventHandler {
         void onTagRemove(TagRemoveEvent event);
     }
 }

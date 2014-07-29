@@ -498,6 +498,10 @@
     background-color: selectColor;
 }
 
+.contextMenuItem.selected {
+    background-color: selectColor;
+}
+
 .green .contextMenuItem.over{
     background-color: approveButtonBG2;
 }

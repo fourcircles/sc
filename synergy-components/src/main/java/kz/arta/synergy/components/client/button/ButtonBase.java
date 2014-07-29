@@ -317,7 +317,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         }
         if (textLabel != null) {
             int width = getTextLabelWidth();
-            if (width < textLabel.getOffsetWidth()) {
+            if (width < textLabel.getOffsetWidth() && width > 0) {
                 textLabel.setWidth(width + "px");
             }
         }

@@ -17,10 +17,13 @@ import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
 public class ArtaTextArea extends Composite {
 
     /**
-     *
+     * высота
      */
-    private int height = 77;
+    private int height = 59;
 
+    /**
+     * ширина
+     */
     private int width = 200;
 
     /**
@@ -178,10 +181,18 @@ public class ArtaTextArea extends Composite {
         return textArea.getText();
     }
 
-    //todo setSize()
     public void setPixelSize(int width, int height) {
-        textArea.setPixelSize(width - 16, height - 16);
         verticalScroll.setPixelSize(width, height);
+        textArea.setHeight(height + "px");
+    }
+
+    public void setSize(String width, String height) {
+        verticalScroll.setSize(width, height);
+        textArea.setHeight(height);
+    }
+
+    public void setWidth(String width) {
+        verticalScroll.setWidth(width);
     }
 
 }

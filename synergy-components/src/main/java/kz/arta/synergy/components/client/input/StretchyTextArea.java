@@ -1,8 +1,12 @@
 package kz.arta.synergy.components.client.input;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.TextArea;
+import kz.arta.synergy.components.client.util.WidthUtil;
+import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +36,19 @@ public class StretchyTextArea extends TextArea {
 
     private final double PX_PER_CHAR = 7.9;
 
+    /**
+     * Ширина компонента
+     */
+    private int width = 200;
+
+    /**
+     * Высота компонента
+     */
+    private int height = 59;
+
+    /**
+     * События, на которые реагирует компонент для расстягивания
+     */
     private static final int TEXTBOX_VALUECHANGE_EVENTS = Event.ONKEYUP | Event.ONCHANGE | Event.ONPASTE;
 
     private int minVisibleLines;
@@ -57,6 +74,7 @@ public class StretchyTextArea extends TextArea {
             maxVisibleLines = THRESHOLD;
         this.maxVisibleLines = maxVisibleLines;
 
+        getElement().getStyle().setProperty("direction", LocaleInfo.getCurrentLocale().isRTL() ? Direction.RTL.name() : Direction.LTR.name());
         sinkEvents(TEXTBOX_VALUECHANGE_EVENTS);
     }
 
@@ -67,14 +85,15 @@ public class StretchyTextArea extends TextArea {
         if ((DOM.eventGetType(evt) & TEXTBOX_VALUECHANGE_EVENTS) != 0) {
             getElement().getStyle().clearProperty("height");
             if (isStretchingEnabled()){
-                maybeChangeVisibleLines();
-                if (getVisibleLines()>minVisibleLines) {
+                maybeChangeVisibleLines(evt.getKeyCode());
+                if (getVisibleLines() > minVisibleLines) {
                     if (!changed) {
-                        setWidth(getOffsetWidth() - 24 + "px");
+                        setWidth(getOffsetWidth() - 2 * Constants.COMMON_INPUT_PADDING + "px");
                     }
                     changed = true;
                 } else {
                     setWidth("100%");
+                    setHeight(height + "px");
                     changed = false;
                 }
             }
@@ -117,7 +136,7 @@ public class StretchyTextArea extends TextArea {
         if (text != null && text.length() > 0) {
             super.setText(text);
             if (isStretchingEnabled()) {
-                maybeChangeVisibleLines();
+                maybeChangeVisibleLines(-1);
             }
         }
     }
@@ -145,7 +164,7 @@ public class StretchyTextArea extends TextArea {
      * <b>Important:</b> If the textarea's CSS <code>height</code> attribute is set this will
      * not work.
      */
-    private void maybeChangeVisibleLines() {
+    private void maybeChangeVisibleLines(int keyCode) {
         int charSize = totalChars();
         int lineLength = (int) (getOffsetWidth()/PX_PER_CHAR);
         int textLength = getText().length();
@@ -156,7 +175,7 @@ public class StretchyTextArea extends TextArea {
             }
             for (int i=charSize; i<textLength; i++) {
                 char c = getText().charAt(i);
-                if (lineLength == getLastLine().inc() || c == '\n') {
+                if (lineLength == getLastLine().inc() || (keyCode == KeyCodes.KEY_ENTER)) {
                     if (canAddNewVisibleLine()){
                         lineArray.add(new Line(true));
                         setVisibleLines(getVisibleLines()+1);
@@ -234,6 +253,25 @@ public class StretchyTextArea extends TextArea {
         public boolean isVisible() {
             return visible;
         }
+    }
+
+    public void setPixelSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+        super.setPixelSize(this.width, this.height);
+    }
+
+    public void setSize(String width, String height) {
+        super.setSize(width, height);
+    }
+
+    public void setWidth(String width) {
+        super.setWidth(width);
+    }
+
+    public void setHeight(String height) {
+        this.height = WidthUtil.getPXValue(height);
+        super.setHeight(height);
     }
 
 }

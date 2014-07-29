@@ -11,6 +11,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
+import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DOM;
@@ -131,6 +132,9 @@ public class ShowCasePanel extends LayoutPanel {
         localesCombo.setText(chosenLocale);
         localesCombo.getElement().getStyle().setMarginRight(20, Style.Unit.PX);
         titlePanel.add(localesCombo);
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            RootPanel.getBodyElement().getStyle().setProperty("direction", HasDirection.Direction.RTL.name());
+        }
 
         titlePanel.setWidth("100%");
         showCaseLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
@@ -460,6 +464,12 @@ public class ShowCasePanel extends LayoutPanel {
         textAreaSize.setPixelSize(300, 300);
         textAreaPanel.add(textAreaSize);
 
+        final ArtaTextArea textAreaWidth = new ArtaTextArea(false);
+        textAreaWidth.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        textAreaWidth.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        textAreaWidth.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода с заданной шириной"));
+        textAreaWidth.setWidth("500px");
+        textAreaPanel.add(textAreaWidth);
         panel.add(textAreaPanel);
 
         SimpleButton button = new SimpleButton(SCMessages.i18n.tr("Валидация полей"), SimpleButton.Type.APPROVE);
@@ -472,6 +482,9 @@ public class ShowCasePanel extends LayoutPanel {
                 widthInput.checkInput();
                 smallWidthInput.checkInput();
                 textArea.checkInput();
+                textAreaEmpty.checkInput();
+                textAreaSize.checkInput();
+                textAreaWidth.checkInput();
             }
         });
         Panel buttonPanel = new FlowPanel();
@@ -482,12 +495,10 @@ public class ShowCasePanel extends LayoutPanel {
         panel.add(buttonPanel);
 
 
-        panel.setSize("100%", "100%");
-        panel.setHeight("2000px");
-
         ArtaVerticalScrollPanel scroll = new ArtaVerticalScrollPanel();
         scroll.setWidget(panel);
-        return scroll;
+
+        return panel;
 
     }
 
@@ -538,6 +549,12 @@ public class ShowCasePanel extends LayoutPanel {
 
         ContextMenu menuForSimple = createSimpleMenu();
         ContextMenuButton simpleButton4 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"));
+        simpleButton4.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Window.alert(SCMessages.i18n.tr("Кнопка с меню была нажата!"));
+            }
+        });
         simpleButton4.setWidth("140px");
         simpleButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         simpleButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
@@ -664,6 +681,12 @@ public class ShowCasePanel extends LayoutPanel {
 
         ContextMenuButton colorButton7 = new ContextMenuButton(SCMessages.i18n.tr("Кнопка с меню"), SimpleButton.Type.APPROVE);
         colorButtonPanel.add(colorButton7);
+        colorButton7.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Window.alert(SCMessages.i18n.tr("Кнопка с меню была нажата!"));
+            }
+        });
         colorButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         colorButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         ContextMenu menu3 = createSimpleMenu();
@@ -681,39 +704,51 @@ public class ShowCasePanel extends LayoutPanel {
      */
     private Widget getGroupButton() {
         FlowPanel panel = new FlowPanel();
-        final SimpleToggleButton toggleButton = new SimpleToggleButton("Кнопка");
-        toggleButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                if (toggleButton.isPressed()) {
-                    toggleButton.setText("Нажата");
-                } else {
-                    toggleButton.setText("Не нажата");
-                }
-            }
-        });
+        final SimpleToggleButton toggleButton = new SimpleToggleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"));
         toggleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         toggleButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         panel.add(toggleButton);
 
+        final SimpleToggleButton toggleButton1 = new SimpleToggleButton(SCMessages.i18n.tr("Не нажата"));
+        toggleButton1.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (toggleButton1.isPressed()) {
+                    toggleButton1.setText(SCMessages.i18n.tr("Нажата"));
+                } else {
+                    toggleButton1.setText(SCMessages.i18n.tr("Не нажата"));
+                }
+            }
+        });
+        toggleButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        toggleButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        panel.add(toggleButton1);
+
 
         GroupButtonPanel groupButtonPanel = new GroupButtonPanel(true);
-        groupButtonPanel.addButton("Первая", new ClickHandler() {
+        groupButtonPanel.addButton(SCMessages.i18n.tr("Первая кнопка длинная"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                Window.alert("Первая кнопка");
             }
         });
-        groupButtonPanel.addButton("Вторая", new ClickHandler() {
+        groupButtonPanel.addButton(SCMessages.i18n.tr("Вторая"), new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                Window.alert("Вторая кнопка");
+                public void onClick(ClickEvent event) {
+                if (((SimpleToggleButton) event.getSource()).isPressed()) {
+                    ((SimpleToggleButton) event.getSource()).setText(SCMessages.i18n.tr("Вторая нажата"));
+                } else {
+                    ((SimpleToggleButton) event.getSource()).setText(SCMessages.i18n.tr("Вторая"));
+                }
             }
         });
-        groupButtonPanel.addButton("Третья", new ClickHandler() {
+        groupButtonPanel.addButton(SCMessages.i18n.tr("Третья"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                Window.alert("Третья кнопка");
+                if (((SimpleToggleButton) event.getSource()).isPressed()) {
+                    ((SimpleToggleButton) event.getSource()).setText(SCMessages.i18n.tr("Третья нажата"));
+                } else {
+                    ((SimpleToggleButton) event.getSource()).setText(SCMessages.i18n.tr("Третья"));
+                }
             }
         });
         groupButtonPanel.buildPanel();
@@ -722,19 +757,19 @@ public class ShowCasePanel extends LayoutPanel {
         panel.add(groupButtonPanel);
 
         GroupButtonPanel groupButtonPanel1 = new GroupButtonPanel(true, true);
-        groupButtonPanel1.addButton("Первая", new ClickHandler() {
+        groupButtonPanel1.addButton(SCMessages.i18n.tr("Первая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel1.addButton("Вторая", new ClickHandler() {
+        groupButtonPanel1.addButton(SCMessages.i18n.tr("Вторая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel1.addButton("Третья", new ClickHandler() {
+        groupButtonPanel1.addButton(SCMessages.i18n.tr("Третья"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
@@ -747,19 +782,19 @@ public class ShowCasePanel extends LayoutPanel {
 
         GroupButtonPanel groupButtonPanel2 = new GroupButtonPanel(true);
         groupButtonPanel2.setAllowEmptyToggle(false);
-        groupButtonPanel2.addButton("Первая", new ClickHandler() {
+        groupButtonPanel2.addButton(SCMessages.i18n.tr("Первая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel2.addButton("Вторая", new ClickHandler() {
+        groupButtonPanel2.addButton(SCMessages.i18n.tr("Вторая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel2.addButton("Третья", new ClickHandler() {
+        groupButtonPanel2.addButton(SCMessages.i18n.tr("Третья"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
@@ -771,19 +806,19 @@ public class ShowCasePanel extends LayoutPanel {
         panel.add(groupButtonPanel2);
 
         GroupButtonPanel groupButtonPanel3 = new GroupButtonPanel(true, true);
-        groupButtonPanel3.addButton("Первая", new ClickHandler() {
+        groupButtonPanel3.addButton(SCMessages.i18n.tr("Первая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel3.addButton("Вторая", new ClickHandler() {
+        groupButtonPanel3.addButton(SCMessages.i18n.tr("Вторая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel3.addButton("Третья", new ClickHandler() {
+        groupButtonPanel3.addButton(SCMessages.i18n.tr("Третья"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
@@ -795,19 +830,19 @@ public class ShowCasePanel extends LayoutPanel {
         panel.add(groupButtonPanel3);
 
         GroupButtonPanel groupButtonPanel4 = new GroupButtonPanel();
-        groupButtonPanel4.addButton("Первая", new ClickHandler() {
+        groupButtonPanel4.addButton(SCMessages.i18n.tr("Первая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel4.addButton("Вторая", new ClickHandler() {
+        groupButtonPanel4.addButton(SCMessages.i18n.tr("Вторая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel4.addButton("Третья", new ClickHandler() {
+        groupButtonPanel4.addButton(SCMessages.i18n.tr("Третья"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 

@@ -8,7 +8,6 @@ import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.events.HasSelectionEventHandlers;
 import kz.arta.synergy.components.client.menu.events.SelectionEvent;
-import kz.arta.synergy.components.client.menu.filters.ListFilter;
 import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -28,8 +27,6 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
      * Список добавленных элементов меню
      */
     private ArrayList<ListItem> items;
-
-    private ArrayList<ListFilter> filters;
 
     /**
      * Панель с вертикальным скроллом

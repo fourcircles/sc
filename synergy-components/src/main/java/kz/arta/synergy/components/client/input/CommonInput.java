@@ -3,6 +3,7 @@ package kz.arta.synergy.components.client.input;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.TextBox;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -61,6 +62,7 @@ public class CommonInput extends TextBox implements ArtaHasText{
                 checkInput();
             }
         });
+        getElement().getStyle().setProperty("direction", LocaleInfo.getCurrentLocale().isRTL() ? Direction.RTL.name() : Direction.LTR.name());
     }
 
     public boolean isAllowEmpty() {

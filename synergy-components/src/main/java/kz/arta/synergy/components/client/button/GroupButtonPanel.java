@@ -5,6 +5,7 @@ import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.util.WidthUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +113,9 @@ public class GroupButtonPanel extends Composite {
             if (simpleButton instanceof  SimpleToggleButton) {
                 ((SimpleToggleButton) simpleButton).setGroupPanel(this);
             }
+            if (i == 0 && !allowEmptyToggle) {
+                ((SimpleToggleButton) simpleButton).setState(true);
+            }
             panel.add(simpleButton);
             i++;
         }
@@ -123,6 +127,13 @@ public class GroupButtonPanel extends Composite {
 
     public void setAllowEmptyToggle(boolean allowEmptyToggle) {
         this.allowEmptyToggle = allowEmptyToggle;
+        if (!allowEmptyToggle && panel.getWidgetCount() != 0) {
+            try {
+                ((SimpleToggleButton)panel.getWidget(0)).setState(true);
+            } catch (Exception ignore) {
+
+            }
+        }
     }
 
     public boolean isMultiToggle() {
@@ -151,5 +162,24 @@ public class GroupButtonPanel extends Composite {
             return text;
         }
 
+    }
+
+    /**
+     * Выравниваем ширину кнопок
+     */
+    public void onLoad() {
+        super.onLoad();
+        int maxWidth = 0;
+        int maxI = 0;
+        for (int i = 0; i < panel.getWidgetCount(); i++) {
+            if (((ButtonBase) panel.getWidget(i)).getText().length() > maxWidth) {
+                maxWidth = ((ButtonBase) panel.getWidget(i)).getText().length();
+                maxI = i;
+            }
+        }
+        maxWidth = WidthUtil.getWidth(panel.getWidget(maxI).getElement());
+        for (int i = 0; i < panel.getWidgetCount(); i++) {
+            panel.getWidget(i).setWidth(maxWidth + "px");
+        }
     }
 }

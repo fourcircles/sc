@@ -25,10 +25,10 @@ import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
-import kz.arta.synergy.components.client.input.ArtaTextArea;
-import kz.arta.synergy.components.client.input.NumberInput;
-import kz.arta.synergy.components.client.input.TextInput;
+import kz.arta.synergy.components.client.input.*;
+import kz.arta.synergy.components.client.input.tags.TagInput;
 import kz.arta.synergy.components.client.menu.ContextMenu;
+import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.theme.Theme;
@@ -419,6 +419,26 @@ public class ShowCasePanel extends LayoutPanel {
         numberInput.setPlaceHolder(SCMessages.i18n.tr("Числовое поле ввода"));
         textAreaPanel.add(numberInput);
 
+        final TagInput tags = new TagInput();
+        tags.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        tags.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        tags.setWidth(300);
+        textAreaPanel.add(tags);
+
+        final TagInput tagInputList = new TagInput();
+        tagInputList.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        tagInputList.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        tagInputList.setWidth(300);
+
+        DropDownList<String> tagList = new DropDownList<String>(tagInputList, null);
+        for (int i = 0; i < 5; i++) {
+            tagList.addItem("аа " + i, "value " + i);
+            tagList.addItem("аб" + i, "value " + i);
+            tagList.addItem("пб" + i, "value " + i);
+        }
+        tagInputList.setDropDownList(tagList);
+
+        textAreaPanel.add(tagInputList);
 
         final ArtaTextArea textArea = new ArtaTextArea();
         textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
@@ -484,6 +504,8 @@ public class ShowCasePanel extends LayoutPanel {
 
     }
 
+
+
     /**
      * Простые кнопки
      * @return
@@ -497,7 +519,7 @@ public class ShowCasePanel extends LayoutPanel {
                 switch(DOM.eventGetType(event)) {
                     case Event.ONCONTEXTMENU :
                         event.preventDefault();
-                        menu.smartShow(event.getClientX(), event.getClientY());
+                        menu.show(event.getClientX(), event.getClientY());
                         break;
                 }
                 super.onBrowserEvent(event);
@@ -671,7 +693,7 @@ public class ShowCasePanel extends LayoutPanel {
         colorButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         colorButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         ContextMenu menu3 = createSimpleMenu();
-        menu3.addItem(SCMessages.i18n.tr("Очень-очень длинный текст"));
+        menu3.addItem(SCMessages.i18n.tr("Очень-очень длинный текст"), null);
         colorButton7.setContextMenu(menu3);
 
         ArtaScrollPanel scroll = new ArtaScrollPanel();

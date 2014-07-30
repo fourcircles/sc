@@ -8,6 +8,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.TextBox;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.input.handlers.PlaceHolderFocusHandler;
+import kz.arta.synergy.components.client.util.ArtaHasText;
 
 /**
  * User: user
@@ -15,7 +16,7 @@ import kz.arta.synergy.components.client.input.handlers.PlaceHolderFocusHandler;
  * Time: 10:52
  * Общий класс для однострочных полей ввода
  */
-public class CommonInput extends TextBox {
+public class CommonInput extends TextBox implements ArtaHasText{
 
     /**
      * Можно ли оставить пустым поле ввода
@@ -54,7 +55,7 @@ public class CommonInput extends TextBox {
         sinkEvents(Event.MOUSEEVENTS);
         sinkEvents(Event.ONPASTE);
         setStyleName(SynergyComponents.resources.cssComponents().commonInput());
-        addStyleName(SynergyComponents.resources.cssComponents().mainText());
+        addStyleName(getFontStyle());
         addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
@@ -150,4 +151,8 @@ public class CommonInput extends TextBox {
         return super.getText();
     }
 
+    @Override
+    public String getFontStyle() {
+        return SynergyComponents.resources.cssComponents().mainText();
+    }
 }

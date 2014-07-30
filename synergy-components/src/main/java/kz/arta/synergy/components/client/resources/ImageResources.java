@@ -44,41 +44,30 @@ public interface ImageResources extends ClientBundle {
     @Source("images/buttons/combobox_dropdown_icon.png")
     ImageResource comboBoxDropDown();
 
-    /**
-     * временная стрелка вверх
-     * @return
-     */
-    @Source("images/buttons/navigation_up.png")
-    ImageResource navigationUp();
-
-    @Source("images/buttons/navigation_down.png")
-    ImageResource navigationDown();
-
     @Source("images/scroll/scrollbar_down.png")
     ImageResource scrollBarDown();
-
-    @Source("images/scroll/scrollbar_down_pressed.png")
-    ImageResource scrollBarDownPress();
 
     @Source("images/scroll/scrollbar_up.png")
     ImageResource scrollBarUp();
 
-    @Source("images/scroll/scrollbar_up_pressed.png")
-    ImageResource scrollBarUpPress();
-
     @Source("images/scroll/scrollbar_left.png")
-    @ImageResource.ImageOptions(flipRtl = true)
     ImageResource scrollBarLeft();
 
-    @Source("images/scroll/scrollbar_left_pressed.png")
-    @ImageResource.ImageOptions(flipRtl = true)
-    ImageResource scrollBarLeftPress();
-
     @Source("images/scroll/scrollbar_right.png")
-    @ImageResource.ImageOptions(flipRtl = true)
     ImageResource scrollBarRight();
 
+    @Source("images/scroll/scrollbar_down_pressed.png")
+    ImageResource scrollBarDownPressed();
+
+    @Source("images/scroll/scrollbar_up_pressed.png")
+    ImageResource scrollBarUpPressed();
+
+    @Source("images/scroll/scrollbar_left_pressed.png")
+    ImageResource scrollBarLeftPressed();
+
     @Source("images/scroll/scrollbar_right_pressed.png")
-    @ImageResource.ImageOptions(flipRtl = true)
-    ImageResource scrollBarRightPress();
+    ImageResource scrollBarRightPressed();
+
+    @Source("images/tag_close.png")
+    ImageResource tagClose();
 }

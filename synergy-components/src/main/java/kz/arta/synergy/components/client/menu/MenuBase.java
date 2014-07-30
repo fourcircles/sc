@@ -1,59 +1,51 @@
 package kz.arta.synergy.components.client.menu;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
-import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.client.util.Selection;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.Widget;
+import kz.arta.synergy.components.client.ArtaFlowPanel;
 
 import java.util.ArrayList;
 
 /**
  * User: vsl
- * Date: 15.07.14
- * Time: 10:48
+ * Date: 28.07.14
+ * Time: 11:16
  *
- * Базовый класс для выпадающего списка и контекстного меню
+ * Базовый класс для выпадающего списка и меню
  */
-public abstract class MenuBase extends PopupPanel{
+public abstract class MenuBase {
+
+    /**
+     * Индекс выбранного элемента, если -1 -- не выбран.
+     */
+    protected int selectedIndex;
+
+    /**
+     * Попап в котором находится основная панель
+     */
+    protected PopupPanel popup;
+
     /**
      * Основная панель
      */
-    protected FlowPanel panel;
-
-    /**
-     * Логический контейнер элементов списка
-     */
-    protected ArrayList<MenuItem> items;
-
-    /**
-     * Родительский компонент
-     */
-    protected Widget relativeWidget;
+    protected ArtaFlowPanel root;
 
     /**
      * Показывает находится ли мышь над списком, в этом случае колесо мыши
      * не закрывает список
      */
-    boolean mouseOver = false;
+    protected boolean mouseOver = false;
 
     /**
-     * Индекс выбранного элемента, если -1 -- не выбран.
+     * Родительский компонент
      */
-    protected int selectedIndex = -1;
-
-    /**
-     * При изменении размера окна список закрывается
-     */
-    private ResizeHandler resizeHandler;
+    protected Widget relativeWidget;
 
     /**
      * Наблюдение за событиями изменения размера окна ведется только при
@@ -62,30 +54,46 @@ public abstract class MenuBase extends PopupPanel{
      */
     private HandlerRegistration resizeRegistration;
 
-    public MenuBase() {
-        super(true);
-        panel = GWT.create(FlowPanel.class);
-        setStyleName(getMainStyle());
-        items = new ArrayList<MenuItem>();
+    /**
+     * При изменении размера окна список закрывается
+     */
+    private ResizeHandler resizeHandler;
 
-        setWidget(panel);
+    protected MenuBase() {
+        root = new ArtaFlowPanel();
 
-        MouseOverHandler over = new MouseOverHandler() {
+        popup = new PopupPanel(true) {
+            @Override
+            protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+                MenuBase.this.onPreview(event);
+            }
+            @Override
+            public void hide(boolean auto) {
+                clearOverStyles();
+                if (resizeRegistration != null) {
+                    resizeRegistration.removeHandler();
+                    resizeRegistration = null;
+                }
+                mouseOver = false;
+                super.hide(auto);
+            }
+        };
+        popup.setWidget(root);
+
+        root.addMouseOverHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
                 mouseOver = true;
             }
-        };
-        MouseOutHandler out = new MouseOutHandler() {
+        });
+        root.addMouseOutHandler(new MouseOutHandler() {
             @Override
             public void onMouseOut(MouseOutEvent event) {
                 mouseOver = false;
+                clearOverStyles();
+                selectedIndex = -1;
             }
-        };
-
-        addDomHandler(over, MouseOverEvent.getType());
-        addDomHandler(out, MouseOutEvent.getType());
-
+        });
         resizeHandler = new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {
@@ -94,122 +102,29 @@ public abstract class MenuBase extends PopupPanel{
         };
     }
 
-    public MenuBase(Widget relativeWidget) {
-        this();
-        this.relativeWidget = relativeWidget;
+    /**
+     * Удаляет все элементы списка
+     */
+    protected void clearItems() {
+        root.clear();
+        getItems().clear();
     }
 
     /**
-     * Удаляет класс over у всег элементов списка.
+     * Удаляет класс over у всех элементов списка.
      */
-    private void clearOverStyles() {
-        for (MenuItem i: items) {
-            if (i != null) {
-                i.setOver(false);
-            }
+    protected void clearOverStyles() {
+        for (MenuItem item : getItems()) {
+            item.blurItem();
         }
-    }
-
-    /**
-     * Вызывается при наведении мыши на элемент или выборе клавиатурой.
-     * @param item элемент списка
-     * @param mouseSelected true - если выбран мышью, false - клавиатурой
-     */
-    protected void overItem(MenuItem item, boolean mouseSelected) {
-        if (items.contains(item) && getSelectedItem() != item) {
-            clearOverStyles();
-            selectedIndex = items.indexOf(item);
-            item.setOver(true);
-            item.asWidget().addStyleName(SynergyComponents.resources.cssComponents().over());
-        }
-    }
-
-    /**
-     * Вызывается при наведении мыши на элемент или выборе клавиатурой.
-     * @param index индекс элемента списка
-     * @param mouseSelected true - если выбран мышью, false - клавиатурой
-     */
-    protected void overItem(int index, boolean mouseSelected) {
-        if (index < 0 || index >= items.size()) {
-            return;
-        }
-        overItem(items.get(index), mouseSelected);
     }
 
     /**
      * Добавляет элемент в конец списка
-     * @param item элемент списка
-     * @return новый элемент списка
+     * @param item элемент
      */
-    protected MenuItem addItem(MenuItem item) {
-        items.add(item);
-        panel.add(item.asWidget());
-        return item;
-    }
-
-    /**
-     * Добавляет элемент с заданным текстом в конец списка
-     * @param text текст
-     * @return новый элемент списка
-     */
-    public MenuItem addItem(String text) {
-        return addItem(new MenuItem(text));
-    }
-
-    /**
-     * Добавляет элемент с заданным текстом и иконкой в конец списка
-     * @param text текст
-     * @param imageResource иконка
-     * @return новый элемент списка
-     */
-    public MenuItem addItem(String text, ImageResource imageResource) {
-        return addItem(new MenuItem(text, imageResource));
-    }
-
-    /**
-     * Добавляет элемент с текстом и командой для выполнения при выборе в конец списка.
-     * @param text текст
-     * @param command команда
-     * @return новый элемент списка
-     */
-    public MenuItem addItem(String text, Command command) {
-        return addItem(new MenuItem(text, command));
-    }
-
-    public MenuItem addItem(String text, ImageResource icon, Command command) {
-        return addItem(new MenuItem(text, icon, command));
-    }
-
-    /**
-     * Удаляет элемент списка с заданным индексом
-     * @param index
-     */
-    public void removeItem(int index) {
-        items.remove(index);
-        panel.remove(index);
-    }
-
-    /**
-     * Возвращает текущий выбранный элемент
-     * @return выбранный элемент, null - если ничего не выбрано
-     */
-    public MenuItem getSelectedItem() {
-        return selectedIndex == -1 ? null : items.get(selectedIndex);
-    }
-
-    /**
-     * Метод показывает может ли быть выбран элемент меню.
-     * Участвует в расчетах номера следующего, предыдущего элементов.
-     * Например, в контекстном меню переписывается запрещая выбирать разделители.
-     * @param item элемент списка
-     * @return true - может ли быть выбран, false - нет
-     */
-    protected boolean canBeChosen(MenuItem item) {
-        return true;
-    }
-
-    private boolean canBeChosen(int index) {
-        return canBeChosen(items.get(index));
+    protected void addItem(MenuItem item) {
+        root.add(item);
     }
 
     /**
@@ -222,16 +137,18 @@ public abstract class MenuBase extends PopupPanel{
     }
 
     private int getNext(int start) {
+        ArrayList<? extends MenuItem> items = getItems();
+
         int i = start + 1;
         if (i < 0) {
             return -1;
         }
-        while (i < items.size() && !canBeChosen(i)) {
+        while (i < items.size() && items.get(i).shouldBeSkipped()) {
             i++;
         }
         if (i == items.size()) {
             i = 0;
-            while (i < start && !canBeChosen(i)) {
+            while (i < start && items.get(i).shouldBeSkipped()) {
                 i++;
             }
             return i >= start ? -1 : i;
@@ -250,6 +167,7 @@ public abstract class MenuBase extends PopupPanel{
     }
 
     private int getPrevious(int start) {
+        ArrayList<? extends MenuItem> items = getItems();
         if (start == -1) {
             return getLast();
         }
@@ -257,12 +175,12 @@ public abstract class MenuBase extends PopupPanel{
         if (i >= items.size()) {
             return -1;
         }
-        while (i >= 0 && !canBeChosen(i)) {
+        while (i >= 0 && items.get(i).shouldBeSkipped()) {
             i--;
         }
         if (i == -1) {
             i = items.size() - 1;
-            while (i > start && !canBeChosen(i)) {
+            while (i > start && items.get(i).shouldBeSkipped()) {
                 i--;
             }
             return i <= start ? -1 : i;
@@ -285,15 +203,17 @@ public abstract class MenuBase extends PopupPanel{
      * @return индекс последнего элемента
      */
     protected int getLast() {
-        return getPrevious(items.size());
+        return getPrevious(getItems().size());
     }
 
     /**
-     * Удаляет все элементы списка
+     * Выделяет первый элемент списка.
      */
-    public void clearItems() {
-        items.clear();
-        panel.clear();
+    public void selectFirst() {
+        int first = getFirst();
+        if (first >= 0 && first <= getItems().size()) {
+            getItems().get(first).focusItem();
+        }
     }
 
     /**
@@ -302,36 +222,27 @@ public abstract class MenuBase extends PopupPanel{
      */
     public void setRelativeWidget(Widget widget) {
         if (relativeWidget != null) {
-            removeAutoHidePartner(relativeWidget.getElement());
+            popup.removeAutoHidePartner(widget.getElement());
         }
         relativeWidget = widget;
-        addAutoHidePartner(relativeWidget.getElement());
-        getElement().getStyle().setProperty("borderTop", "0px");
-    }
-
-    /**
-     * При показе списка начинаем следить за изменением размера окна браузера.
-     */
-    @Override
-    public void show() {
-        super.show();
-        if (resizeRegistration == null) {
-            resizeRegistration = Window.addResizeHandler(resizeHandler);
+        if (widget != null) {
+            popup.addAutoHidePartner(widget.getElement());
+            popup.getElement().getStyle().setProperty("borderTop", "0px");
+        } else {
+            popup.getElement().getStyle().setProperty("borderTop", "1px");
         }
     }
 
+    public Widget getRelativeWidget() {
+        return relativeWidget;
+    }
+
     /**
-     * При скрытии списка перестаем следить за изменением размера окна браузера.
-     * Также удаляем over стили для всех элементов списка.
-     * @param autoClosed
+     * Выполняет операции перед тем как показать список
      */
-    @Override
-    public void hide(boolean autoClosed) {
-        super.hide(autoClosed);
-        clearOverStyles();
-        if (resizeRegistration != null) {
-            resizeRegistration.removeHandler();
-            resizeRegistration = null;
+    private void beforeShow() {
+        if (resizeRegistration == null) {
+            resizeRegistration = Window.addResizeHandler(resizeHandler);
         }
         selectedIndex = -1;
     }
@@ -339,189 +250,67 @@ public abstract class MenuBase extends PopupPanel{
     /**
      * Показывает меню под родителем.
      */
-    public void showUnderParent() {
+    protected void showUnderParent() {
         if (relativeWidget != null && relativeWidget.isAttached()) {
-            getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - 8 + "px");
+            beforeShow();
+            popup.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - 8 + "px");
 
-            setPopupPositionAndShow(new PositionCallback() {
+            popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
                 @Override
                 public void setPosition(int offsetWidth, int offsetHeight) {
                     int x = relativeWidget.getAbsoluteLeft() + 4;
-                    int y = relativeWidget.getAbsoluteTop() + relativeWidget.getOffsetHeight() + 1;
-                    setPopupPosition(x, y);
+                    int y = relativeWidget.getAbsoluteTop() + relativeWidget.getOffsetHeight();
+                    popup.setPopupPosition(x, y);
                 }
             });
         }
     }
 
+
     /**
-     * Вызывается при выборе пункта меню (клавиша enter, клик мыши)
+     * Показан ли список
      */
-    protected void itemSelected(MenuItem item) {
-        if (item != null) {
-            hide();
-        }
+    public boolean isShowing() {
+        return popup.isShowing();
     }
 
     /**
-     * Пункт меню
+     * При показе списка начинаем следить за изменением размера окна браузера.
      */
-    public class MenuItem implements IsWidget {
-        /**
-         * Текст пункта меню
-         */
-        protected String text;
-
-        /**
-         * Иконка пункта меню
-         */
-        protected ImageResource icon;
-
-        /**
-         * Действие пункта меню
-         */
-        protected Command command;
-
-        /**
-         * Основная панель элемента списка
-         */
-        protected FlowPanel itemPanel;
-
-        public MenuItem(String text) {
-            this(text, null, null);
-        }
-
-        public MenuItem(String text, ImageResource icon) {
-            this(text, icon, null);
-        }
-
-        public MenuItem(String text, Command command) {
-            this(text, null, command);
-        }
-
-        public MenuItem(String text, ImageResource icon, Command command) {
-            this.text = text;
-            this.icon = icon;
-            this.command = command;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public ImageResource getIcon() {
-            return icon;
-        }
-
-        /**
-         * Добавляет или удаляет стиль over для элемента списка
-         * @param over
-         */
-        public void setOver(boolean over) {
-            if (over) {
-                itemPanel.addStyleName(SynergyComponents.resources.cssComponents().over());
-            } else {
-                itemPanel.removeStyleName(SynergyComponents.resources.cssComponents().over());
-            }
-
-        }
-
-        /**
-         * Создает и наполняет FlowPanel, который представляет этот пункт меню.
-         *
-         * @return панель пункта меню
-         */
-        @Override
-        public Widget asWidget() {
-            if (itemPanel == null) {
-                itemPanel = GWT.create(FlowPanel.class);
-                MouseOverHandler over = new MouseOverHandler() {
-                    @Override
-                    public void onMouseOver(MouseOverEvent event) {
-                        overItem(MenuItem.this, true);
-                    }
-                };
-                ClickHandler click = new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        itemSelected(MenuItem.this);
-                    }
-                };
-                MouseMoveHandler move = new MouseMoveHandler() {
-                    @Override
-                    public void onMouseMove(MouseMoveEvent event) {
-                        overItem(MenuItem.this, true);
-                    }
-                };
-                itemPanel.addDomHandler(over, MouseOverEvent.getType());
-                itemPanel.addDomHandler(click, ClickEvent.getType());
-                itemPanel.addDomHandler(move, MouseMoveEvent.getType());
-
-                Label label = GWT.create(Label.class);
-                label.setText(text);
-                Selection.disableTextSelectInternal(label.getElement());
-                label.getElement().getStyle().setCursor(Style.Cursor.DEFAULT);
-                label.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
-                label.getElement().getStyle().setProperty("wordBreak", "break-all");
-
-                if (icon != null) {
-                    Image image = GWT.create(Image.class);
-                    image.setResource(icon);
-                    image.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
-                    itemPanel.add(image);
-                    image.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
-                }
-
-                itemPanel.add(label);
-                itemPanel.addStyleName(SynergyComponents.resources.cssComponents().contextMenuItem());
-            }
-
-            return itemPanel;
-        }
-
-        /**
-         * Название стиля для пункта меню
-         * @return название стиля
-         */
-        protected String getMainStyle() {
-            return SynergyComponents.resources.cssComponents().contextMenuItem();
-        }
-    }
-
-    protected void keyLeft(Event.NativePreviewEvent event) {
-        event.cancel();
-        overItem(getFirst(), false);
-    }
-
-    protected void keyRight(Event.NativePreviewEvent event) {
-        event.cancel();
-        overItem(getLast(), false);
+    public void show() {
+        beforeShow();
+        popup.show();
     }
 
     /**
-     * Механизм предпросмотра событий PopupPanel.
-     * Обрабатываются события колеса мыши и навигационных кнопок клавиатуры.
+     * Скрывает список
+     */
+    public void hide() {
+        popup.hide();
+    }
+
+
+    /**
+     * Предпросмотр событий при открытом меню. Обрабатываются события колеса мыши и
+     * навигация клавиатурой.
      * @param event событие
      */
-    @Override
-    protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+    protected void onPreview(Event.NativePreviewEvent event) {
         Event nativeEvent = Event.as(event.getNativeEvent());
 
         switch (nativeEvent.getTypeInt()) {
             case Event.ONMOUSEWHEEL:
                 if (!mouseOver) {
-                    hide();
+                    popup.hide();
                 }
                 break;
             case Event.ONKEYDOWN:
                 switch (nativeEvent.getKeyCode()) {
                     case KeyCodes.KEY_DOWN:
-                        event.cancel();
-                        overItem(getNext(), false);
+                        keyDown(event);
                         break;
                     case KeyCodes.KEY_UP:
-                        event.cancel();
-                        overItem(getPrevious(), false);
+                        keyUp(event);
                         break;
                     case KeyCodes.KEY_LEFT:
                         keyLeft(event);
@@ -529,23 +318,29 @@ public abstract class MenuBase extends PopupPanel{
                     case KeyCodes.KEY_RIGHT:
                         keyRight(event);
                         break;
-                    case KeyCodes.KEY_ESCAPE:
-                        event.cancel();
-                        hide();
-                        break;
                     case KeyCodes.KEY_ENTER:
-                        event.cancel();
-                        itemSelected(getSelectedItem());
+                        keyEnter(event);
                         break;
-                    default:
                 }
         }
-        super.onPreviewNativeEvent(event);
     }
 
     /**
-     * Возвращает главный стиль компонента
-     * @return название стиля
+     * Добавляет стиль к списку
+     * @param style стиль
      */
-    abstract protected String getMainStyle();
+    public void addStyleName(String style) {
+        popup.addStyleName(style);
+    }
+
+    /**
+     * Возвращает логическое представление списка
+     */
+    abstract ArrayList<? extends MenuItem> getItems();
+
+    protected abstract void keyDown(Event.NativePreviewEvent event);
+    protected abstract void keyUp(Event.NativePreviewEvent event);
+    protected abstract void keyLeft(Event.NativePreviewEvent event);
+    protected abstract void keyRight(Event.NativePreviewEvent event);
+    protected abstract void keyEnter(Event.NativePreviewEvent event);
 }

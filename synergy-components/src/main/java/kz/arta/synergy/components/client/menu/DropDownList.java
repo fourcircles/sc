@@ -43,7 +43,7 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
      */
     private boolean leftRightEnabled;
 
-    public DropDownList(Widget relativeWidget, EventBus bus) {
+    public DropDownList(EventBus bus) {
         super();
 
         if (bus == null) {
@@ -59,6 +59,11 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
         items = new ArrayList<ListItem>();
 
         popup.setStyleName(SynergyComponents.resources.cssComponents().contextMenu());
+    }
+
+    public DropDownList(Widget relativeWidget, EventBus bus) {
+        this(bus);
+        setRelativeWidget(relativeWidget);
     }
 
     public EventBus getBus() {
@@ -179,7 +184,7 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
      * Показывает список под элементом указанным при создании
      */
     public void show() {
-        popup.setHeight(Math.min(32 * root.getWidgetCount(), Constants.LIST_MAX_HEIGHT) + "px");
+        popup.setHeight(getHeight() + "px");
         super.showUnderParent();
     }
 
@@ -230,19 +235,14 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
                 cnt++;
             }
         }
-        popup.setHeight(Math.min(32 * cnt, Constants.LIST_MAX_HEIGHT) + "px");
+        popup.setHeight(getHeight() + "px");
     }
 
     /**
      * Убирает примененный префикс, отображаются все элементы.
      */
     public void removePrefix() {
-        prefix = "";
-        root.clear();
-        for (MenuItem item: items) {
-            root.add(item);
-        }
-        popup.setHeight(Math.min(32 * items.size(), Constants.LIST_MAX_HEIGHT) + "px");
+        applyPrefix("");
     }
 
     public ListItem getItemWidthText(String text) {
@@ -308,9 +308,16 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
 
         @Override
         public boolean shouldBeSkipped() {
-            return !hasPrefix(this);
+            return !hasPrefix(this) || isSelected();
         }
+    }
 
-
+    /**
+     * Определяет высоту из количества добавленых элементов
+     * @return высота
+     */
+    private int getHeight() {
+        int cnt = root.getWidgetCount();
+        return Math.min(cnt * 32 + Math.max((cnt - 1), 0) * 2, Constants.LIST_MAX_HEIGHT);
     }
 }

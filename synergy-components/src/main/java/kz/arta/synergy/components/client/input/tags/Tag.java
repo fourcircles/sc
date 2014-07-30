@@ -71,6 +71,10 @@ public class Tag<V> extends Composite implements ArtaHasText {
         image.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                if (listItem != null) {
+                    listItem.removeStyleName(SynergyComponents.resources.cssComponents().selected());
+                    listItem.setSelected(false);
+                }
                 bus.fireEvent(new TagRemoveEvent(Tag.this));
             }
         });
@@ -96,7 +100,7 @@ public class Tag<V> extends Composite implements ArtaHasText {
     }
 
     /**
-     * Ширина определяется из ширины текста, ширины кнопки и отступов.
+     * Ширина определяется из ширины текста, ширины кнопки и внутренних отступов.
      * Возможно узнать ширину до присоединения элемента к DOM.
      * @return ширина
      */

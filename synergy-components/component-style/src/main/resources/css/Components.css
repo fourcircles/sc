@@ -488,10 +488,19 @@
     height: 32px;
     line-height: 32px;
     overflow: hidden;
+
+    margin-bottom: 2px;
 }
 .contextMenuItem > * {
     vertical-align: middle;
 }
+.contextMenuItem:last-child {
+    margin-bottom: 0px;
+}
+/* у элементов меню начиная со второго есть отступ вверху*/
+/*.contextMenuItem + .contextMenuItem {*/
+    /*margin-top: 2px;*/
+/*}*/
 
 /*здесь не используется :hover из-за возможности выделения клавиатурой*/
 .contextMenuItem.over {
@@ -499,7 +508,7 @@
 }
 
 .contextMenuItem.selected {
-    background-color: selectColor;
+    background-color: tagBg;
 }
 
 .green .contextMenuItem.over{
@@ -518,7 +527,6 @@
     vertical-align: middle;
     margin-right: 0px;
     z-index: 10000;
-    padding: 1px 0px 0px;
 }
 
 .contextMenu.green {
@@ -693,13 +701,23 @@
     overflow: hidden;
 }
 
+
+
 .tagInput .buttonSimple {
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
 }
 
-.tag {
+.tagInput .buttonSimple.disabled,
+.tagInput.disabled,
+.tagInput .buttonSimple.disabled img {
+    background-color: buttonBG;
+}
+
+.tagInput .tag {
     margin-left: 2px;
+}
+.tag {
     display: inline-block;
     border-radius: 3px;
     background-color: tagBg;
@@ -764,6 +782,10 @@ p {
     margin: 0px;
 }
 
-.tagIndicator > p {
+.tagIndicator p:last-child {
+    margin-bottom: 0px;
+}
+
+.tagIndicator p {
     margin-bottom: 2px;
 }

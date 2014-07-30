@@ -420,7 +420,6 @@ public class ShowCasePanel extends LayoutPanel {
         final TagInput tags = new TagInput();
         tags.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         tags.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        tags.setWidth(300);
         textAreaPanel.add(tags);
 
         final TagInput tagInputList = new TagInput();

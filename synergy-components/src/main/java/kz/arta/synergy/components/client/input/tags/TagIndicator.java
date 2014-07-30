@@ -2,17 +2,17 @@ package kz.arta.synergy.components.client.input.tags;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.UIObject;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.client.input.tags.events.*;
+import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
+import kz.arta.synergy.components.client.util.ArtaHasText;
+import kz.arta.synergy.components.client.util.Utils;
+import kz.arta.synergy.components.style.client.Constants;
+
+import java.util.List;
 
 /**
  * User: vsl
@@ -21,38 +21,67 @@ import kz.arta.synergy.components.client.input.tags.events.*;
  *
  * Индикатор количества скрытых тегов
  */
-public class TagIndicator implements HasTagRemoveEventHandler {
+public class TagIndicator extends Composite implements ArtaHasText {
 
     /**
-     * Корневая панель
+     * Корневая панель попапа
      */
-    private FlowPanel root;
+    private FlowPanel popupRootPanel;
 
+    /**
+     * Индикатор
+     */
+    private Label label;
+
+    /**
+     * Попап индикатора
+     */
     private PopupPanel popupPanel;
 
-    /**
-     * Последний тег в индикаторе у которого не должно быть нижнего отступа
-     */
-    private Tag lastTag;
+    private EventBus bus;
 
-    private HandlerManager handlerManager;
+    public TagIndicator(EventBus bus) {
+        label = new Label();
+        initWidget(label);
+        label.setStyleName(SynergyComponents.resources.cssComponents().tag());
+        label.addStyleName(getFontStyle());
+        label.getElement().getStyle().setCursor(Style.Cursor.POINTER);
 
-    public TagIndicator() {
-        handlerManager = new HandlerManager(this);
+        label.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (popupPanel.isShowing()) {
+                    hide();
+                } else {
+                    show();
+                }
+            }
+        });
 
         popupPanel = new PopupPanel(true);
+        popupPanel.addAutoHidePartner(label.getElement());
 
-        root = new FlowPanel();
-        popupPanel.setWidget(root);
+        popupRootPanel = new FlowPanel();
+        popupPanel.setWidget(popupRootPanel);
 
         popupPanel.addStyleName(SynergyComponents.resources.cssComponents().tagIndicator());
+
+        TagRemoveEvent.register(bus, new TagRemoveEvent.Handler() {
+            @Override
+            public void onTagRemove(TagRemoveEvent event) {
+                popupRootPanel.remove(event.getTag().getParent());
+                if (popupRootPanel.getWidgetCount() == 0) {
+                    popupPanel.hide();
+                }
+            }
+        });
     }
 
     /**
-     * Показывает индикатор под объектом
+     * Показывает попап под индикатором
      */
-    public void showRelativeTo(UIObject o) {
-        popupPanel.showRelativeTo(o);
+    public void show() {
+        popupPanel.showRelativeTo(label);
     }
 
     /**
@@ -63,6 +92,54 @@ public class TagIndicator implements HasTagRemoveEventHandler {
     }
 
     /**
+     * Добавляет тег в индикатор.
+     * Используется для добавления уже существующего тега.
+     * @param tag тег
+     */
+    public void add(final Tag tag) {
+        PPanel ptag = new PPanel();
+        ptag.setWidget(tag);
+        popupRootPanel.add(ptag);
+    }
+
+    /**
+     * Добавляет все теги из списка
+     * @param tags список тегов
+     */
+    public void addAll(List<Tag> tags) {
+        for (Tag tag : tags) {
+            add(tag);
+        }
+    }
+
+    /**
+     * Удаляет все теги
+     */
+    public void clear() {
+        popupRootPanel.clear();
+    }
+
+    @Override
+    public String getFontStyle() {
+        return SynergyComponents.resources.cssComponents().mainText();
+    }
+
+    @Override
+    public String getText() {
+        return label.getText();
+    }
+
+    @Override
+    public void setText(String text) {
+        label.setText(text);
+    }
+
+    @Override
+    public int getOffsetWidth() {
+        return Utils.getTextWidth(this) + Constants.TAG_PADDING * 2;
+    }
+
+    /**
      * Класс для тега <p>, в который добавляется каждый тег.
      */
     private class PPanel extends SimplePanel {
@@ -70,50 +147,4 @@ public class TagIndicator implements HasTagRemoveEventHandler {
             super(Document.get().createPElement());
         }
     }
-
-    /**
-     * Добавляет тег в индикатор.
-     * Используется для добавления уже существующего тега.
-     * @param tag тег
-     */
-    public void addTag(final Tag tag) {
-        tag.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
-        if (lastTag != null) {
-            lastTag.getElement().getStyle().setMarginBottom(2, Style.Unit.PX);
-        }
-
-        PPanel ptag = new PPanel();
-        ptag.setWidget(tag);
-        root.add(ptag);
-
-        lastTag = tag;
-        lastTag.getElement().getStyle().setMarginBottom(0, Style.Unit.PX);
-    }
-
-    /**
-     * Создает и добавляет тег с текстом из аргумента
-     * @param text текст для тега
-     * @return созданный тег
-     */
-    public Tag addTag(String text) {
-        Tag tag = new Tag(text);
-        addTag(tag);
-        return tag;
-    }
-
-    @Override
-    public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler handler) {
-        return handlerManager.addHandler(TagRemoveEvent.TYPE, handler);
-    }
-
-    @Override
-    public void fireEvent(GwtEvent<?> event) {
-        handlerManager.fireEvent(event);
-    }
-
-//    public void removeTag(Tag tag) {
-//        tag.removeFromParent();
-//        root.remove(tag.getParent());
-//        handlerManager.fireEvent(new TagRemoveEvent(tag));
-//    }
 }

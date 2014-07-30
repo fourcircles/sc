@@ -36,6 +36,8 @@ public class Constants {
 
     public static final int SCROLL_BAR_WIDTH = 17;
 
+    public static final int SCROLL_BAR_HEIGHT = 17;
+
     public static final int COMBO_LIST_DEFAULT_HEIGHT = 200;
     public static final int COMBO_MIN_WIDTH = 198;
 

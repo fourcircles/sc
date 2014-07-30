@@ -6,7 +6,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.input.handlers.PlaceHolderFocusHandler;
-import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
+import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 
 /**
  * User: user
@@ -34,7 +34,7 @@ public class ArtaTextArea extends Composite {
     /**
      * Скролл
      */
-    private ArtaVerticalScrollPanel verticalScroll;
+    private ArtaScrollPanel verticalScroll;
 
 
     /**
@@ -70,7 +70,7 @@ public class ArtaTextArea extends Composite {
 
     private void init() {
         textArea.setMinVisibleLines(3);
-        verticalScroll = new ArtaVerticalScrollPanel();
+        verticalScroll = new ArtaScrollPanel();
         verticalScroll.setWidget(textArea);
         setPixelSize(width, height);
         initWidget(verticalScroll);

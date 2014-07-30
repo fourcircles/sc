@@ -4,9 +4,9 @@
     <ui:with type="kz.arta.synergy.components.client.resources.ImageResources" field="images" />
     <ui:with type="kz.arta.synergy.components.style.client.resources.ComponentResources" field="resources" />
 
-    <arta:ArtaFlowPanel styleName="{resources.cssComponents.vscroll}" ui:field="panel">
-        <g:Image ui:field="up" resource="{images.scrollBarUp}"/>
+    <arta:ArtaFlowPanel styleName="{resources.cssComponents.hscroll}" ui:field="panel">
+        <g:Image ui:field="left" resource="{images.scrollBarLeft}"/>
         <arta:ArtaFlowPanel styleName="{resources.cssComponents.scrollbar}" ui:field="bar"/>
-        <g:Image ui:field="down" resource="{images.scrollBarDown}"/>
+        <g:Image ui:field="right" resource="{images.scrollBarRight}"/>
     </arta:ArtaFlowPanel>
 </ui:UiBinder>

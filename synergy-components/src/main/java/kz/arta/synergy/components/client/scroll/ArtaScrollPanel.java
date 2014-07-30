@@ -13,28 +13,38 @@ import kz.arta.synergy.components.style.client.Constants;
  * Панель с вертикальным скролом.
  * Горизонтальный скролл не отображается.
  */
-public class ArtaVerticalScrollPanel extends CustomScrollPanel {
+public class ArtaScrollPanel extends CustomScrollPanel {
     /**
      * Вертикальный скролл
      */
     ArtaVerticalScroll vScroll;
 
-    public ArtaVerticalScrollPanel() {
+    /**
+     * Горизонтальный скролл
+     */
+    ArtaHorizontalScroll hScroll;
+
+    public ArtaScrollPanel() {
         super();
         vScroll = new ArtaVerticalScroll(this);
+        hScroll = new ArtaHorizontalScroll(this);
+
         setVerticalScrollbar(vScroll, Constants.SCROLL_BAR_WIDTH);
-        removeHorizontalScrollbar();
+        setHorizontalScrollbar(hScroll, Constants.SCROLL_BAR_HEIGHT);
+        vScroll.setVerticalScrollPosition(0);
+        hScroll.setHorizontalScrollPosition(0);
         addScrollHandler(new ScrollHandler() {
             @Override
             public void onScroll(ScrollEvent event) {
                 vScroll.setVerticalScrollPosition(getVerticalScrollPosition());
+                hScroll.setHorizontalScrollPosition(getHorizontalScrollPosition());
             }
         });
         //без этого если ширина контента меньше ширины родителя, то выделяться будет только часть строки
-        getContainerElement().getStyle().setDisplay(com.google.gwt.dom.client.Style.Display.BLOCK);
+//        getContainerElement().getStyle().setDisplay(com.google.gwt.dom.client.Style.Display.BLOCK);
     }
 
-    public ArtaVerticalScrollPanel(Widget widget) {
+    public ArtaScrollPanel(Widget widget) {
         this();
         setWidget(widget);
     }

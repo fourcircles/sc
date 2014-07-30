@@ -4,7 +4,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
+import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
 /**
@@ -24,7 +24,7 @@ public abstract class DropDownList extends MenuBase {
 
     public DropDownList(Widget parent) {
         super();
-        scroll = new ArtaVerticalScrollPanel(panel);
+        scroll = new ArtaScrollPanel(panel);
         setWidget(scroll);
 
         setRelativeWidget(parent);

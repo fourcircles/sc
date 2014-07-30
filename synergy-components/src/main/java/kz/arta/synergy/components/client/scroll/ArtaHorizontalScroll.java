@@ -10,12 +10,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.HorizontalScrollbar;
 import com.google.gwt.user.client.ui.Image;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.style.client.Constants;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
 
 /**
@@ -81,7 +81,7 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
     /**
      * Панель к которой относится данный скроллбар
      */
-    private CustomScrollPanel scrollPanel;
+    private ArtaScrollPanel scrollPanel;
 
     /**
      * Ширина бегунка
@@ -93,7 +93,7 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
      */
     private int freeTrackSpace;
 
-    public ArtaHorizontalScroll(final CustomScrollPanel scrollPanel) {
+    public ArtaHorizontalScroll(final ArtaScrollPanel scrollPanel) {
         images = ImageResources.IMPL;
         resources = SynergyComponents.resources;
 
@@ -128,6 +128,27 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
             scrollRight();
         }
     }
+
+    @UiHandler("left")
+    void onPress(MouseDownEvent event) {
+        left.setResource(ImageResources.IMPL.scrollBarLeftPressed());
+    }
+
+    @UiHandler("left")
+    void onUp(MouseUpEvent event) {
+        left.setResource(ImageResources.IMPL.scrollBarLeft());
+    }
+
+    @UiHandler("right")
+    void onDownPress(MouseDownEvent event) {
+        right.setResource(ImageResources.IMPL.scrollBarRightPressed());
+    }
+
+    @UiHandler("right")
+    void onDownUp(MouseUpEvent event) {
+        right.setResource(ImageResources.IMPL.scrollBarRight());
+    }
+
 
     /**
      * Нажатие на бегунок, начало его перемещения
@@ -228,13 +249,20 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
         contentWidth = width;
         this.width = scrollPanel.getOffsetWidth();
 
-        if (scrollPanel.getOffsetHeight() < scrollPanel.getWidget().getOffsetHeight()) {
-            //todo перенести в константы
-            this.width -= 18;
+        if (scrollPanel.getOffsetHeight() < scrollPanel.getWidget().getOffsetHeight() + 2) {
+            this.width -= Constants.SCROLL_BAR_WIDTH;
+            if (LocaleInfo.getCurrentLocale().isRTL()) {
+                scrollPanel.getWidget().getElement().getStyle().setMarginLeft(Constants.SCROLL_BAR_WIDTH, Style.Unit.PX);
+            } else {
+                scrollPanel.getWidget().getElement().getStyle().setMarginRight(Constants.SCROLL_BAR_WIDTH, Style.Unit.PX);
+            }
+        } else {
+            scrollPanel.getWidget().getElement().getStyle().clearMarginLeft();
+            scrollPanel.getWidget().getElement().getStyle().clearMarginRight();
         }
         panel.setWidth(this.width + "px");
-        barWidth = (int) Math.ceil (((this.width) / (double) width) * (this.width - 17 * 2));
-        freeTrackSpace = this.width - barWidth - 18 * 2;
+        barWidth = (int) Math.ceil (((this.width) / (double) width) * (this.width - Constants.SCROLL_BAR_WIDTH * 2));
+        freeTrackSpace = this.width - barWidth - (Constants.SCROLL_BAR_WIDTH + 1) * 2;
         bar.setWidth(barWidth + "px");
 
         if (getHorizontalScrollPosition() == 0) {

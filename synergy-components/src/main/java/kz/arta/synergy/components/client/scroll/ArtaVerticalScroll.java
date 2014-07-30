@@ -9,12 +9,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalScrollbar;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.style.client.Constants;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
 
 /**
@@ -76,7 +76,7 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
     /**
      * Панель к которой относится данный скроллбар
      */
-    private CustomScrollPanel scrollPanel;
+    private ArtaScrollPanel scrollPanel;
 
     /**
      * Высота бегунка
@@ -88,7 +88,7 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
      */
     private int freeTrackSpace;
 
-    public ArtaVerticalScroll(final CustomScrollPanel scrollPanel) {
+    public ArtaVerticalScroll(final ArtaScrollPanel scrollPanel) {
         images = ImageResources.IMPL;
         resources = SynergyComponents.resources;
 
@@ -144,6 +144,26 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
         dragging = true;
         dragStartY = event.getY();
         Event.setCapture(bar.getElement());
+    }
+
+    @UiHandler("up")
+    void onPress(MouseDownEvent event) {
+        up.setResource(ImageResources.IMPL.scrollBarUpPressed());
+    }
+
+    @UiHandler("up")
+    void onUp(MouseUpEvent event) {
+        up.setResource(ImageResources.IMPL.scrollBarUp());
+    }
+
+    @UiHandler("down")
+    void onDownPress(MouseDownEvent event) {
+        down.setResource(ImageResources.IMPL.scrollBarDownPressed());
+    }
+
+    @UiHandler("down")
+    void onDownUp(MouseUpEvent event) {
+        down.setResource(ImageResources.IMPL.scrollBarDown());
     }
 
     /**
@@ -224,14 +244,14 @@ class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
 
         contentHeight = height;
         this.height = scrollPanel.getOffsetHeight();
-        if (scrollPanel.getOffsetWidth() < scrollPanel.getWidget().getOffsetWidth()) {
-            //todo вынести числа в переменные
-            this.height -= 18;
+        if (scrollPanel.getOffsetWidth() < scrollPanel.getWidget().getOffsetWidth() + 2) {
+            this.height -= Constants.SCROLL_BAR_HEIGHT;
+            height += Constants.SCROLL_BAR_HEIGHT;
         }
         panel.setHeight(this.height + "px");
-        barHeight = (int) Math.ceil ((this.height / (double) height) * (this.height - 17 * 2));
+        barHeight = (int) Math.ceil ((this.height / (double) height) * (this.height - Constants.SCROLL_BAR_HEIGHT * 2));
         bar.setHeight(barHeight + "px");
-        freeTrackSpace = this.height - barHeight - 18 * 2;
+        freeTrackSpace = this.height - barHeight - (Constants.SCROLL_BAR_HEIGHT + 1) * 2;
         if (getVerticalScrollPosition() == 0) {
             setVerticalScrollPosition(0);
         }

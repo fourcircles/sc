@@ -75,10 +75,10 @@ public class ShowCasePanel extends LayoutPanel {
         FlowPanel navigationPanel = new FlowPanel();
         navigationPanel.add(navigationLabel);
         navigationPanel.add(tree);
-//        navigationPanel.setWidth("100px");
 
         navigationLabel.setWidth("100%");
         tree.setWidth("100%");
+        navigationPanel.setWidth("100%");
         navigationLabel.getElement().getStyle().setProperty("borderBottom", "solid 1px");
 
         FlowPanel titlePanel = new FlowPanel();

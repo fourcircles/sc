@@ -32,7 +32,7 @@ import kz.arta.synergy.components.client.input.tags.TagInput;
 import kz.arta.synergy.components.client.menu.ContextMenu;
 import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.resources.ImageResources;
-import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
+import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.client.util.PPanel;
 
@@ -81,6 +81,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         navigationLabel.setWidth("100%");
         tree.setWidth("100%");
+        navigationPanel.setWidth("100%");
         navigationLabel.getElement().getStyle().setProperty("borderBottom", "solid 1px");
 
         FlowPanel titlePanel = new FlowPanel();
@@ -145,19 +146,20 @@ public class ShowCasePanel extends LayoutPanel {
         localesCombo.getElement().getStyle().setFloat(Style.Float.RIGHT);
         about.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
+        ArtaScrollPanel treeScroll = new ArtaScrollPanel(navigationPanel);
         add(titlePanel);
-        add(navigationPanel);
+        add(treeScroll);
         add(contentPanel);
 
-        setWidgetLeftWidth(navigationPanel, 0, Style.Unit.PCT, TREE_WIDTH, Style.Unit.PCT);
-        setWidgetTopBottom(navigationPanel, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
+        setWidgetLeftWidth(treeScroll, 0, Style.Unit.PCT, TREE_WIDTH, Style.Unit.PCT);
+        setWidgetTopBottom(treeScroll, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
 
         setWidgetRightWidth(contentPanel, 0, Style.Unit.PCT, 100 - TREE_WIDTH - SPACING, Style.Unit.PCT);
         setWidgetTopBottom(contentPanel, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
 
         setWidgetTopBottom(titlePanel, 0, Style.Unit.PCT, 100 - TITLE_HEIGHT, Style.Unit.PCT);
 
-        setBorder(navigationPanel);
+        setBorder(treeScroll);
         setBorder(titlePanel);
         setBorder(contentPanel);
 
@@ -545,7 +547,7 @@ public class ShowCasePanel extends LayoutPanel {
         panel.add(buttonPanel);
 
 
-        ArtaVerticalScrollPanel scroll = new ArtaVerticalScrollPanel();
+        ArtaScrollPanel scroll = new ArtaScrollPanel();
         scroll.setWidget(panel);
 
         return panel;
@@ -689,6 +691,7 @@ public class ShowCasePanel extends LayoutPanel {
     private Widget getColorButtonPanel() {
         FlowPanel colorButtonPanel = new FlowPanel();
         colorButtonPanel.setHeight("2000px");
+        colorButtonPanel.setWidth("2000px");
 
         SimpleButton colorButton = new SimpleButton((SCMessages.i18n.tr("Создать")), SimpleButton.Type.APPROVE);
         colorButtonPanel.add(colorButton);
@@ -743,7 +746,7 @@ public class ShowCasePanel extends LayoutPanel {
         menu3.addItem(SCMessages.i18n.tr("Очень-очень длинный текст"), null);
         colorButton7.setContextMenu(menu3);
 
-        ArtaVerticalScrollPanel scroll = new ArtaVerticalScrollPanel();
+        ArtaScrollPanel scroll = new ArtaScrollPanel();
         scroll.setWidget(colorButtonPanel);
         return scroll;
     }

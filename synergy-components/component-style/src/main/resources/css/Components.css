@@ -670,7 +670,7 @@
 
 .vscroll img {
     width: 17px;
-    height: 17px;
+    height: 18px;
     display: block;
     background-color: buttonBG;
 }
@@ -682,7 +682,32 @@
     cursor: default;
 }
 
-.scrollbar.pressed {
+.vscroll .scrollbar.pressed {
+    background-color: buttonPressed;
+}
+
+.hscroll {
+    width: 200px;
+    height: 17px;
+    background-color: buttonBG;
+    display: inline-block;
+}
+
+.hscroll img {
+    width: 18px;
+    height: 17px;
+    display: inline-block;
+    background-color: buttonBG;
+}
+
+.hscroll .scrollbar {
+    height: 17px;
+    background-color: buttonBorder;
+    display: inline-block;
+    cursor: default;
+}
+
+.hscroll .scrollbar.pressed {
     background-color: buttonPressed;
 }
 

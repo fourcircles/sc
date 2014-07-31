@@ -88,6 +88,8 @@ public interface CssComponents extends CssResource {
 
     String groupButtonPanel();
 
+    String hscroll();
+
     String indicatorNumber();
 
     String invalid();

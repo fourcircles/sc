@@ -51,21 +51,27 @@ public interface ImageResources extends ClientBundle {
     ImageResource scrollBarUp();
 
     @Source("images/scroll/scrollbar_left.png")
+    @ImageResource.ImageOptions(flipRtl = true)
     ImageResource scrollBarLeft();
 
     @Source("images/scroll/scrollbar_right.png")
+    @ImageResource.ImageOptions(flipRtl = true)
     ImageResource scrollBarRight();
 
     @Source("images/scroll/scrollbar_down_pressed.png")
+    @ImageResource.ImageOptions(flipRtl = true)
     ImageResource scrollBarDownPressed();
 
     @Source("images/scroll/scrollbar_up_pressed.png")
+    @ImageResource.ImageOptions(flipRtl = true)
     ImageResource scrollBarUpPressed();
 
     @Source("images/scroll/scrollbar_left_pressed.png")
+    @ImageResource.ImageOptions(flipRtl = true)
     ImageResource scrollBarLeftPressed();
 
     @Source("images/scroll/scrollbar_right_pressed.png")
+    @ImageResource.ImageOptions(flipRtl = true)
     ImageResource scrollBarRightPressed();
 
     @Source("images/tag_close.png")

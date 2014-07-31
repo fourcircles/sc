@@ -1,0 +1,12 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:arta='urn:import:kz.arta.synergy.components.client'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <ui:with type="kz.arta.synergy.components.client.resources.ImageResources" field="images" />
+    <ui:with type="kz.arta.synergy.components.style.client.resources.ComponentResources" field="resources" />
+
+    <arta:ArtaFlowPanel styleName="{resources.cssComponents.hscroll}" ui:field="panel">
+        <g:Image ui:field="left" resource="{images.scrollBarLeft}"/>
+        <arta:ArtaFlowPanel styleName="{resources.cssComponents.scrollbar}" ui:field="bar"/>
+        <g:Image ui:field="right" resource="{images.scrollBarRight}"/>
+    </arta:ArtaFlowPanel>
+</ui:UiBinder>

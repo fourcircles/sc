@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.events.HasSelectionEventHandlers;
 import kz.arta.synergy.components.client.menu.events.SelectionEvent;
-import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
+import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
     /**
      * Панель с вертикальным скроллом
      */
-    private ArtaVerticalScrollPanel scroll;
+    private ArtaScrollPanel scroll;
 
     /**
      * Текущий префикс примененный к списку
@@ -51,7 +51,7 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
         }
         this.bus = bus;
 
-        scroll = new ArtaVerticalScrollPanel(root);
+        scroll = new ArtaScrollPanel(root);
         popup.setWidget(scroll);
         setRelativeWidget(relativeWidget);
         popup.getElement().getStyle().setProperty("maxHeight", Constants.listMaxHeight());

@@ -8,7 +8,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
-import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
+import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.PPanel;
 import kz.arta.synergy.components.client.util.Utils;
@@ -87,7 +87,7 @@ public class TagIndicator extends Composite implements ArtaHasText {
         popupRootPanel = new FlowPanel();
         popupRootPanel.getElement().getStyle().setPadding(6, Style.Unit.PX);
 
-        ArtaVerticalScrollPanel vScroll = new ArtaVerticalScrollPanel(popupRootPanel);
+        ArtaScrollPanel vScroll = new ArtaScrollPanel(popupRootPanel);
 
         popupPanel.setWidget(vScroll);
 

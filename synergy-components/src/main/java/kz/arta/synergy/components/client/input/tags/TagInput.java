@@ -103,6 +103,13 @@ public class TagInput<V> extends Composite implements HasText,
      */
     private ClickHandler buttonClick;
 
+    /**
+     * Мультикомбобокс отличается от поля с тегами у которого есть список и кнопка двумя вещами
+     * 1. Картинкой кнопки
+     * 2. После выбора значения из списка список не закрывается
+     */
+    private boolean isMultiComboBox;
+
     public TagInput() {
         this(true, true);
     }
@@ -361,7 +368,9 @@ public class TagInput<V> extends Composite implements HasText,
                     tag.setBus(innerBus);
                     innerBus.fireEvent(new TagAddEvent(tag));
 
-                    dropDownList.hide();
+                    if (!isMultiComboBox) {
+                        dropDownList.hide();
+                    }
                 }
             }
         });
@@ -386,6 +395,19 @@ public class TagInput<V> extends Composite implements HasText,
         root.addStyleName(SynergyComponents.resources.cssComponents().disabled());
         input.setEnabled(enabled);
         button.setEnabled(enabled);
+    }
+
+    public boolean isMultiComboBox() {
+        return isMultiComboBox;
+    }
+
+    public void setMultiComboBox(boolean isMultiComboBox) {
+        this.isMultiComboBox = isMultiComboBox;
+        if (isMultiComboBox) {
+            if (button != null) {
+                button.setIcon(ImageResources.IMPL.comboBoxDropDown());
+            }
+        }
     }
 
     @Override

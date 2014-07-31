@@ -95,7 +95,7 @@ public class ShowCasePanel extends LayoutPanel {
             @Override
             public void onClick(ClickEvent event) {
                 Window.alert("About: \nSynergy components ShowCase\n\nVersion: " + theme.get("version") +
-                        "\nRevision: " + theme.get("revision") +"\nBuild stamp: " + theme.get("build_stamp"));
+                        "\nRevision: " + theme.get("revision") + "\nBuild stamp: " + theme.get("build_stamp"));
             }
         });
         titlePanel.add(about);
@@ -401,6 +401,10 @@ public class ShowCasePanel extends LayoutPanel {
         FlowPanel thirdRowPanel = new FlowPanel();
         thirdRow.setWidget(thirdRowPanel);
 
+        PPanel forthRow = new PPanel();
+        FlowPanel forthRowPanel = new FlowPanel();
+        forthRow.setWidget(forthRowPanel);
+
         final TagInput noListHasIndicator= new TagInput();
         noListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         noListHasIndicator.setWidth(400);
@@ -436,8 +440,16 @@ public class ShowCasePanel extends LayoutPanel {
         hasListNoButton.setDropDownList(createSimpleList(hasListNoButton));
         thirdRowPanel.add(hasListNoButton);
 
+        thirdRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         panel.add(thirdRow);
 
+        TagInput multiComboBox = new TagInput();
+        multiComboBox.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        multiComboBox.setMultiComboBox(true);
+        multiComboBox.setDropDownList(createSimpleList(multiComboBox));
+        forthRowPanel.add(multiComboBox);
+
+        panel.add(forthRow);
 
         return panel;
     }

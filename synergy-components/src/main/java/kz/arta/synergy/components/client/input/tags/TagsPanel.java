@@ -42,16 +42,27 @@ public class TagsPanel extends Composite{
      */
     private ArrayList<Tag> tags;
 
-    public TagsPanel(EventBus bus) {
-        this(bus, 0);
-    }
+    /**
+     * Скрывать ли теги в индикатор
+     */
+    boolean hasIndicator;
+
+    /**
+     * Сдвиг справа. Используется когда индикатора нет и теги сдвигаются влево.
+     */
+    private int rightOffset;
 
     public TagsPanel(EventBus bus, int maxWidth) {
+        this(bus, maxWidth, true);
+    }
+
+    public TagsPanel(EventBus bus, int maxWidth, boolean hasIndicator) {
         root = new FlowPanel();
         initWidget(root);
 
         this.bus = bus;
         this.maxWidth = maxWidth;
+        this.hasIndicator = hasIndicator;
 
         indicator = new TagIndicator(bus);
         tags = new ArrayList<Tag>();
@@ -60,6 +71,7 @@ public class TagsPanel extends Composite{
         style.setPosition(Style.Position.RELATIVE);
         style.setPaddingRight(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
         style.setDisplay(Style.Display.INLINE_BLOCK);
+        style.setWhiteSpace(Style.WhiteSpace.NOWRAP);
 
         TagAddEvent.register(bus, new TagAddEvent.Handler() {
             @Override
@@ -73,6 +85,7 @@ public class TagsPanel extends Composite{
             public void onTagRemove(TagRemoveEvent event) {
                 tags.remove(event.getTag());
                 root.remove(event.getTag());
+                event.getTag().getElement().getStyle().clearRight();
                 rebuild();
             }
         });
@@ -80,10 +93,28 @@ public class TagsPanel extends Composite{
 
     /**
      * Добавляет все теги в панель, если не влезают - убирает в индикатор количества тегов
+     * или сдвигает влево
      */
     private void rebuild() {
-        int i = 0;
+        if (!hasIndicator) {
+            root.clear();
+            for (Tag tag : tags) {
+                root.add(tag);
+            }
+            getElement().getStyle().clearWidth();
+            if (getOffsetWidth() > maxWidth) {
+                rightOffset = getOffsetWidth() - maxWidth - Constants.COMMON_INPUT_PADDING;
+                getElement().getStyle().setWidth(maxWidth, Style.Unit.PX);
+            } else {
+                rightOffset = 0;
+            }
+            for (Tag tag : tags) {
+                tag.getElement().getStyle().setRight(rightOffset, Style.Unit.PX);
+            }
+            return;
+        }
 
+        int i = 0;
         //пытаемся добавить теги начиная с тега на позиции i
         while (i <= tags.size()) {
             int totalWidth = 0;
@@ -95,11 +126,12 @@ public class TagsPanel extends Composite{
 
             for (int j = i; j < tags.size(); j++) {
                 totalWidth += tags.get(j).getOffsetWidth();
-                totalWidth += Constants.INTERVAL_BETWEEN_TAGS;
+                totalWidth += Constants.TAG_INTERVAL;
             }
 
-            if (i < tags.size()) {
-                totalWidth -= Constants.INTERVAL_BETWEEN_TAGS;
+            //убираем интервал между тегами, если отображен только индикатор
+            if (i < tags.size() || tags.size() == 1) {
+                totalWidth -= Constants.TAG_INTERVAL;
             }
 
             if (totalWidth <= maxWidth) {
@@ -108,6 +140,7 @@ public class TagsPanel extends Composite{
             i++;
         }
 
+        indicator.clear();
         root.clear();
         if (i > 0) {
             indicator.addAll(tags.subList(0, i));
@@ -137,5 +170,13 @@ public class TagsPanel extends Composite{
 
     public void setMaxWidth(int maxWidth) {
         this.maxWidth = maxWidth;
+    }
+
+    public boolean isHasIndicator() {
+        return hasIndicator;
+    }
+
+    public void setHasIndicator(boolean hasIndicator) {
+        this.hasIndicator = hasIndicator;
     }
 }

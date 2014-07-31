@@ -23,7 +23,6 @@ import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.HashMap;
 
-//todo current min width is 198 not 200
 /**
  * User: vsl
  * Date: 15.07.14

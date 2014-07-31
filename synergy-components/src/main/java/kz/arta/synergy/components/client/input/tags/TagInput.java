@@ -94,36 +94,83 @@ public class TagInput<V> extends Composite implements HasText,
     private HandlerRegistration buttonRegistration;
 
     /**
+     * Имеет ли поле кнопку
+     */
+    private boolean hasButton;
+
+    /**
      * Хэндлер для клика кнопки
      */
     private ClickHandler buttonClick;
 
     public TagInput() {
+        this(true, true);
+    }
+
+    /**
+     * @param hasIndicator имеет ли индикатор скрытых тегов
+     */
+    public TagInput(boolean hasIndicator) {
+        this(hasIndicator, true);
+    }
+
+    /**
+     * @param hasIndicator имеет ли индикатор скрытых тегов
+     * @param hasButton имеел ли кнопку
+     */
+    public TagInput(boolean hasIndicator, boolean hasButton) {
         root = new FlowPanel();
         initWidget(root);
 
         innerBus = new SimpleEventBus();
         tags = new ArrayList<Tag>();
 
+        this.hasButton = hasButton;
+
+        addStyleName(SynergyComponents.resources.cssComponents().mainText());
+        addStyleName(SynergyComponents.resources.cssComponents().tagInput());
+        getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+
         input = new InputWithEvents(innerBus);
         input.getElement().getStyle().setBorderWidth(0, Style.Unit.PX);
         root.add(input);
 
-        button = new ImageButton(ImageResources.IMPL.zoom());
-        button.getElement().getStyle().setMarginTop(-1, Style.Unit.PX);
-        button.getElement().getStyle().setMarginRight(-1, Style.Unit.PX);
+        if (hasButton) {
+            button = new ImageButton(ImageResources.IMPL.zoom());
+            button.getElement().getStyle().setMarginTop(-1, Style.Unit.PX);
+            button.getElement().getStyle().setMarginRight(-1, Style.Unit.PX);
 
-        addStyleName(SynergyComponents.resources.cssComponents().mainText());
-        addStyleName(SynergyComponents.resources.cssComponents().tagInput());
+            buttonClick = new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    if (dropDownList != null) {
+                        if (dropDownList.isShowing()) {
+                            dropDownList.hide();
+                        } else {
+                            dropDownList.show();
+                        }
+                    }
+                }
+            };
+            buttonRegistration = button.addClickHandler(buttonClick);
+            root.add(button);
+        }
 
-        getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        tagsPanel = new TagsPanel(innerBus, 0, true);
+        int tagsBottomOffset = Constants.TAG_HEIGHT;
+        tagsBottomOffset += ((double) Constants.BUTTON_HEIGHT - Constants.TAG_HEIGHT) / 2;
+        if (hasButton) {
+            //нижняя граница кнопки увеличивает высоту строки
+            tagsBottomOffset += Constants.BORDER_WIDTH;
+        }
+        tagsPanel.getElement().getStyle().setBottom(tagsBottomOffset, Style.Unit.PX);
+        tagsPanel.setHasIndicator(hasIndicator);
 
-        root.add(button);
-
-        tagsPanel = new TagsPanel(innerBus, 0);
-        tagsPanel.getElement().getStyle().setTop(-Constants.BUTTON_HEIGHT - 2 * Constants.BORDER_WIDTH, Style.Unit.PX);
-
-        setWidth(Constants.FIELD_WITH_BUTTON_MIN_WIDTH);
+        if (hasButton) {
+            setWidth(Constants.FIELD_WITH_BUTTON_MIN_WIDTH);
+        } else {
+            setWidth(Constants.TAG_INPUT_NO_BUTTON_MIN_WIDTH);
+        }
 
         root.add(tagsPanel);
 
@@ -150,25 +197,15 @@ public class TagInput<V> extends Composite implements HasText,
             }
         });
 
-        buttonClick = new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                if (dropDownList.isShowing()) {
-                    dropDownList.hide();
-                } else {
-                    dropDownList.show();
-                }
-            }
-        };
-        buttonRegistration = button.addClickHandler(buttonClick);
-
         TagAddEvent.register(innerBus, new TagAddEvent.Handler() {
             @Override
             public void onTagAdd(TagAddEvent event) {
                 new Timer() {
                     @Override
                     public void run() {
-                        setInputOffset(tagsPanel.getOffsetWidth());
+                        input.setText("");
+                        setInputOffset(Math.min(tagsPanel.getOffsetWidth(), getAvailableSpace()));
+                        input.setFocus(true);
                     }
                 }.schedule(20);
             }
@@ -220,8 +257,12 @@ public class TagInput<V> extends Composite implements HasText,
 
         if (dropDownList != null) {
             dropDownList.applyPrefix(input.getText());
-            if (!dropDownList.isShowing()) {
-                dropDownList.show();
+            if (input.getText().isEmpty()) {
+                dropDownList.hide();
+            } else {
+                if (!dropDownList.isShowing()) {
+                    dropDownList.show();
+                }
             }
         }
     }
@@ -230,7 +271,12 @@ public class TagInput<V> extends Composite implements HasText,
      * Ширина элемента без границ, кнопки и отступов.
      */
     private int getAvailableSpace() {
-        return offsetWidth - Constants.IMAGE_BUTTON_WIDTH - 3 * Constants.BORDER_WIDTH - Constants.COMMON_INPUT_PADDING;
+        int res = offsetWidth;
+        if (hasButton) {
+            res -= Constants.IMAGE_BUTTON_WIDTH + Constants.BORDER_WIDTH;
+        }
+        res -= 2 * Constants.BORDER_WIDTH + Constants.COMMON_INPUT_PADDING;
+        return res;
     }
 
     /**
@@ -263,8 +309,10 @@ public class TagInput<V> extends Composite implements HasText,
         width -= Constants.BORDER_WIDTH * 2;
         super.setWidth(width + "px");
 
-        //минус кнопка
-        width -= Constants.IMAGE_BUTTON_WIDTH + 1;
+        if (hasButton) {
+            //минус кнопка
+            width -= Constants.IMAGE_BUTTON_WIDTH + 1;
+        }
         //минус padding поля ввода
         width -= Constants.COMMON_INPUT_PADDING * 2;
 
@@ -298,7 +346,7 @@ public class TagInput<V> extends Composite implements HasText,
     public void setDropDownList(final DropDownList<V> dropDownList) {
         this.dropDownList = dropDownList;
         dropDownList.removeAutoHidePartner(this.getElement());
-        if (button != null) {
+        if (hasButton) {
             dropDownList.addAutoHidePartner(button.getElement());
         }
         dropDownList.addSelectionHandler(new SelectionEvent.Handler<DropDownList<V>.ListItem>() {
@@ -317,19 +365,9 @@ public class TagInput<V> extends Composite implements HasText,
                 }
             }
         });
-        if (isEnabled()) {
+        if (isEnabled() && hasButton && buttonRegistration == null) {
             buttonRegistration = button.addClickHandler(buttonClick);
         }
-        buttonRegistration = button.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                if (dropDownList.isShowing()) {
-                    dropDownList.hide();
-                } else {
-                    dropDownList.show();
-                }
-            }
-        });
     }
 
     @Override

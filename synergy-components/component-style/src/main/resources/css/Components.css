@@ -695,10 +695,10 @@
 .tagInput {
     border-radius: 4px;
     border: 1px buttonBorder solid;
-    line-heigth: 30px;
     height: 30px;
     vertical-align: top;
     overflow: hidden;
+    line-height: 0;
 }
 
 
@@ -717,14 +717,38 @@
 .tagInput .tag {
     margin-left: 2px;
 }
+
+@eval tagHeight kz.arta.synergy.components.style.client.Constants.tagHeight();
+@eval tagMaxWidth kz.arta.synergy.components.style.client.Constants.tagMaxWidth();
+
 .tag {
     display: inline-block;
+    position: relative;
     border-radius: 3px;
     background-color: tagBg;
     padding-left: 8px;
     padding-right: 8px;
-    height: 26px;
+    height: tagHeight;
     line-height: 26px;
+    max-width: tagMaxWidth;
+}
+
+.tag .gradient {
+    background: -moz-linear-gradient(left, tagBg_0 0%, tagBg 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,tagBg_0), color-stop(100%,tagBg));
+    background: -webkit-linear-gradient(left, tagBg_0 0%,tagBg 100%);
+    background: -o-linear-gradient(left, tagBg_0 0%,tagBg 100%);
+    background: -ms-linear-gradient(left, tagBg_0 0%,tagBg 100%);
+    background: linear-gradient(to right, tagBg_0 0%,tagBg 100%);
+}
+
+*[dir="rtl"] .tag .gradient{
+    background: -moz-linear-gradient(left, tagBg 0%, tagBg_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,tagBg), color-stop(100%,tagBg_0));
+    background: -webkit-linear-gradient(left, tagBg 0%,tagBg_0 100%);
+    background: -o-linear-gradient(left, tagBg 0%,tagBg_0 100%);
+    background: -ms-linear-gradient(left, tagBg 0%,tagBg_0 100%);
+    background: linear-gradient(to right, tagBg 0%,tagBg_0 100%);
 }
 
 .tag ::selection {
@@ -749,11 +773,9 @@
     border: 1px solid buttonBorder;
     display: inline-block;
     line-height: 2px;
-    padding: 6px;
 }
 .tagIndicator:after, .tagIndicator:before {
     bottom: 100%;
-    left: 17px;
     border: solid transparent;
     content: " ";
     height: 0;
@@ -777,6 +799,15 @@
     border-right-width: 6px;
     margin-left: -1px;
 }
+.tagIndicator.leftIndicator:before, .tagIndicator.leftIndicator:after {
+    left: 17px;
+}
+.tagIndicator.rightIndicator:before, .tagIndicator.rightIndicator:after {
+    right: 17px;
+}
+.tagIndicator.centerIndicator:before, .tagIndicator.centerIndicator:after {
+    left: 46%;
+}
 
 p {
     margin: 0px;
@@ -786,6 +817,7 @@ p {
     margin-bottom: 0px;
 }
 
+@eval tagInterval kz.arta.synergy.components.style.client.Constants.tagInterval();
 .tagIndicator p {
-    margin-bottom: 2px;
+    margin-bottom: tagInterval;
 }

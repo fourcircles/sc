@@ -11,6 +11,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
+import kz.arta.synergy.components.client.label.GradientLabel;
 import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.ArtaHasText;
@@ -38,7 +39,7 @@ public class Tag<V> extends Composite implements ArtaHasText {
     /**
      * Элемент для текста
      */
-    private Label label;
+    private GradientLabel label;
 
     /**
      * Значение для тега
@@ -65,8 +66,7 @@ public class Tag<V> extends Composite implements ArtaHasText {
         root = new FlowPanel();
         initWidget(root);
 
-        this.text = text;
-        label = new Label(text);
+        label = new GradientLabel();
         image = new Image(ImageResources.IMPL.tagClose());
         image.addClickHandler(new ClickHandler() {
             @Override
@@ -78,6 +78,7 @@ public class Tag<V> extends Composite implements ArtaHasText {
                 bus.fireEvent(new TagRemoveEvent(Tag.this));
             }
         });
+        setText(text);
         root.add(label);
         root.add(image);
         addStyleName(SynergyComponents.resources.cssComponents().tag());
@@ -106,7 +107,8 @@ public class Tag<V> extends Composite implements ArtaHasText {
      */
     @Override
     public int getOffsetWidth() {
-        return Utils.getTextWidth(this) + Constants.TAG_PADDING * 3 + image.getWidth();
+        return Math.min(Constants.TAG_MAX_WIDTH,
+                Utils.getTextWidth(this) + Constants.TAG_PADDING * 3 + image.getWidth());
     }
 
     @Override
@@ -118,6 +120,13 @@ public class Tag<V> extends Composite implements ArtaHasText {
     public void setText(String text) {
         this.text = text;
         label.setText(text);
+        int totalWidth = Utils.getTextWidth(this);
+        totalWidth += 3 * Constants.COMMON_INPUT_PADDING;
+        totalWidth += Constants.STD_ICON_WIDTH;
+
+        if (totalWidth > Constants.TAG_MAX_WIDTH) {
+            label.setWidth(Constants.TAG_MAX_WIDTH - 3 * Constants.COMMON_INPUT_PADDING - Constants.STD_ICON_WIDTH + "px");
+        }
     }
 
     public V getValue() {
@@ -142,5 +151,14 @@ public class Tag<V> extends Composite implements ArtaHasText {
 
     public void setBus(EventBus bus) {
         this.bus = bus;
+    }
+
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        getElement().getStyle().clearWidth();
+        if (getElement().getScrollWidth() > getElement().getClientWidth()) {
+            label.setWidth(label.getOffsetWidth() - (getElement().getScrollWidth() - getElement().getClientWidth()) + "px");
+        }
     }
 }

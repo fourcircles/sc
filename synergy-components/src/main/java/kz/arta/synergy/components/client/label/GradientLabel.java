@@ -17,8 +17,6 @@ import kz.arta.synergy.components.client.SynergyComponents;
  */
 public class GradientLabel extends Composite implements HasDirection {
 
-    //todo применять градиент к границе кнопки или текста
-    
     /**
      * Главная панель
      */
@@ -70,13 +68,6 @@ public class GradientLabel extends Composite implements HasDirection {
     protected void adjustGradient() {
         if (!textFits()) {
             panel.add(gradient);
-//            if (LocaleInfo.getCurrentLocale().isRTL()) {
-//                gradient.getElement().getStyle().setMarginRight(0, Style.Unit.PX);
-//                gradient.getElement().getStyle().setMarginLeft(-Constants.BUTTON_PADDING, Style.Unit.PX);
-//            } else {
-//                gradient.getElement().getStyle().setMarginRight(-Constants.BUTTON_PADDING, Style.Unit.PX);
-//                gradient.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
-//            }
             textLabel.getElement().getStyle().setOverflowX(Style.Overflow.VISIBLE);
         } else {
             textLabel.getElement().getStyle().setOverflowX(Style.Overflow.VISIBLE);

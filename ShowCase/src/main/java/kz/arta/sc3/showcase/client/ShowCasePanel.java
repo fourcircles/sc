@@ -1,5 +1,6 @@
 package kz.arta.sc3.showcase.client;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -21,6 +22,7 @@ import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
 import kz.arta.synergy.components.client.ComboBox;
+import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
@@ -32,6 +34,7 @@ import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaVerticalScrollPanel;
 import kz.arta.synergy.components.client.theme.Theme;
+import kz.arta.synergy.components.client.util.PPanel;
 
 import java.util.ArrayList;
 
@@ -316,9 +319,6 @@ public class ShowCasePanel extends LayoutPanel {
         TreeItem category2 = addCategory(SCMessages.i18n.tr("Диалог"));
         TreeItem category3 = addCategory(SCMessages.i18n.tr("Поля ввода"));
 
-        int cnt = 0;
-
-
         new ShowComponent(this, category1, SCMessages.i18n.tr("Простая кнопка"), SCMessages.i18n.tr("Простая кнопка"), getSimpleButtonPanel());
 
         new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопка с иконкой"), SCMessages.i18n.tr("Кнопка с иконкой"), getIconButtonPanel());
@@ -359,14 +359,85 @@ public class ShowCasePanel extends LayoutPanel {
         comboReadOnly.setWidth(250);
         comboBoxPanel.add(comboReadOnly);
 
-        cnt++;
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));
-        cnt++;
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог с кнопками"), SCMessages.i18n.tr("Диалог с кнопками"), setUpDialogs(true));
-        cnt++;
         new ShowComponent(this, category3, SCMessages.i18n.tr("Поле ввода текста"), SCMessages.i18n.tr("Поле ввода текста"), getTextInputs());
-        cnt++;
+        new ShowComponent(this, category3, SCMessages.i18n.tr("Поле с тегами"), SCMessages.i18n.tr("Поле с тегами"), getTagInputs());
         new ShowComponent(this, category3, SCMessages.i18n.tr("Комбобокс"), SCMessages.i18n.tr("Комбобокс"), comboBoxPanel);
+    }
+
+
+    private DropDownList createSimpleList(Widget parent) {
+        DropDownList<String> tagList = new DropDownList<String>(parent, null);
+        for (int i = 0; i < 5; i++) {
+            tagList.addItem("аа " + i, null);
+            tagList.addItem("пб" + i, null);
+            tagList.addItem("значение " + i + " будет скрыто", null);
+            tagList.addItem("значение " + i + " будет скрыто градиентом", null);
+        }
+
+        return tagList;
+    }
+    /**
+     * Поля с тегами
+     * @return панель с полями с тегами
+     */
+    private Widget getTagInputs() {
+
+        FlowPanel panel = new FlowPanel();
+        panel.getElement().getStyle().setLineHeight(1, Style.Unit.PX);
+
+        PPanel firstRow = new PPanel();
+        FlowPanel firstRowPanel = new FlowPanel();
+        firstRow.setWidget(firstRowPanel);
+
+        PPanel secondRow = new PPanel();
+        FlowPanel secondRowPanel = new FlowPanel();
+        secondRow.setWidget(secondRowPanel);
+
+        PPanel thirdRow = new PPanel();
+        FlowPanel thirdRowPanel = new FlowPanel();
+        thirdRow.setWidget(thirdRowPanel);
+
+        final TagInput noListHasIndicator= new TagInput();
+        noListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        noListHasIndicator.setWidth(400);
+        firstRowPanel.add(noListHasIndicator);
+
+        final TagInput hasListHasIndicator = new TagInput();
+        hasListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        hasListHasIndicator.setWidth(300);
+        hasListHasIndicator.setDropDownList(createSimpleList(hasListHasIndicator));
+        firstRowPanel.add(hasListHasIndicator);
+
+        firstRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        panel.add(firstRow);
+
+        TagInput noListNoIndicator = new TagInput(false);
+        noListNoIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        secondRowPanel.add(noListNoIndicator);
+
+        TagInput hasListNoIndicator = new TagInput(false);
+        hasListNoIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        hasListNoIndicator.setDropDownList(createSimpleList(hasListNoIndicator));
+        secondRowPanel.add(hasListNoIndicator);
+
+        secondRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        panel.add(secondRow);
+
+        TagInput noListNoButton = new TagInput(true, false);
+        noListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        thirdRowPanel.add(noListNoButton);
+
+        TagInput hasListNoButton = new TagInput(true, false);
+        hasListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        hasListNoButton.setDropDownList(createSimpleList(hasListNoButton));
+        thirdRowPanel.add(hasListNoButton);
+
+        panel.add(thirdRow);
+
+
+        return panel;
     }
 
     /**
@@ -416,26 +487,6 @@ public class ShowCasePanel extends LayoutPanel {
         numberInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         numberInput.setPlaceHolder(SCMessages.i18n.tr("Числовое поле ввода"));
         textAreaPanel.add(numberInput);
-
-        final TagInput tags = new TagInput();
-        tags.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        tags.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        textAreaPanel.add(tags);
-
-        final TagInput tagInputList = new TagInput();
-        tagInputList.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        tagInputList.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        tagInputList.setWidth(300);
-
-        DropDownList<String> tagList = new DropDownList<String>(tagInputList, null);
-        for (int i = 0; i < 5; i++) {
-            tagList.addItem("аа " + i, "value " + i);
-            tagList.addItem("аб" + i, "value " + i);
-            tagList.addItem("пб" + i, "value " + i);
-        }
-        tagInputList.setDropDownList(tagList);
-
-        textAreaPanel.add(tagInputList);
 
         final ArtaTextArea textArea = new ArtaTextArea();
         textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);

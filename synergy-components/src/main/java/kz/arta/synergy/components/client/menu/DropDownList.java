@@ -293,9 +293,11 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
 
         @Override
         protected void focusItem() {
-            clearOverStyles();
-            selectedIndex = items.indexOf(this);
-            super.focusItem();
+            if (!isSelected) {
+                clearOverStyles();
+                selectedIndex = items.indexOf(this);
+                super.focusItem();
+            }
         }
 
         @Override

@@ -5,7 +5,6 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
@@ -17,12 +16,14 @@ import kz.arta.synergy.components.client.input.events.TextChangedEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
 import kz.arta.synergy.components.client.menu.DropDownList;
-import kz.arta.synergy.components.client.menu.events.SelectionEvent;
+import kz.arta.synergy.components.client.menu.DropDownListMulti;
+import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * User: vsl
@@ -83,7 +84,7 @@ public class TagInput<V> extends Composite implements HasText,
     /**
      * Выпадающий список для поля
      */
-    private DropDownList<V> dropDownList;
+    private DropDownListMulti<V> dropDownList;
 
     private EventBus innerBus;
     private HandlerRegistration buttonRegistration;
@@ -104,6 +105,9 @@ public class TagInput<V> extends Composite implements HasText,
      * 2. После выбора значения из списка список не закрывается
      */
     private boolean isMultiComboBox;
+
+    private HashMap<Tag<V>, DropDownList<V>.Item> tagsToItems;
+    private HashMap<DropDownList<V>.Item, Tag<V>> itemsToTags;
 
     public TagInput() {
         this(true, true);
@@ -197,29 +201,40 @@ public class TagInput<V> extends Composite implements HasText,
             }
         });
 
-        TagAddEvent.register(innerBus, new TagAddEvent.Handler() {
-            @Override
-            public void onTagAdd(TagAddEvent event) {
-                new Timer() {
-                    @Override
-                    public void run() {
-                        input.setText("");
-                        setInputOffset(Math.min(tagsPanel.getOffsetWidth(), getAvailableSpace()));
-                        input.setFocus(true);
-                    }
-                }.schedule(20);
-            }
-        });
+        itemsToTags = new HashMap<DropDownList<V>.Item, Tag<V>>();
+        tagsToItems = new HashMap<Tag<V>, DropDownList<V>.Item>();
 
         TagRemoveEvent.register(innerBus, new TagRemoveEvent.Handler() {
             @Override
             public void onTagRemove(TagRemoveEvent event) {
-                new Timer() {
-                    @Override
-                    public void run() {
-                        setInputOffset(tagsPanel.getOffsetWidth());
-                    }
-                }.schedule(20);
+                DropDownListMulti<V>.Item item = (DropDownListMulti.Item) tagsToItems.get(event.getTag());
+                item.setSelected(false, false);
+
+                tagsToItems.remove(event.getTag());
+                itemsToTags.remove(item);
+            }
+        });
+
+        ListSelectionEvent.register(innerBus, new ListSelectionEvent.Handler<V>() {
+            @Override
+            public void onSelection(final ListSelectionEvent<V> selectionEvent) {
+                Tag<V> tag = new Tag<V>(selectionEvent.getItem().getText(), selectionEvent.getItem().getValue());
+                tag.setBus(innerBus);
+
+                tagsToItems.put(tag, selectionEvent.getItem());
+                itemsToTags.put(selectionEvent.getItem(), tag);
+
+                innerBus.fireEvent(new TagAddEvent(tag));
+
+                input.setText("");
+                setInputOffset(Math.min(tagsPanel.getOffsetWidth(), getAvailableSpace()));
+                input.setFocus(true);
+            }
+
+            @Override
+            public void onDeselection(ListSelectionEvent<V> event) {
+                innerBus.fireEvent(new TagRemoveEvent(itemsToTags.get(event.getItem())));
+                setInputOffset(tagsPanel.getOffsetWidth());
                 input.setFocus(true);
             }
         });
@@ -339,34 +354,19 @@ public class TagInput<V> extends Composite implements HasText,
         textChanged();
     }
 
-    public DropDownList<V> getDropDownList() {
+    public DropDownListMulti<V> getDropDownList() {
         return dropDownList;
     }
 
-    public void setDropDownList(final DropDownList<V> dropDownList) {
+    public void setDropDownList(final DropDownListMulti<V> dropDownList) {
         this.dropDownList = dropDownList;
         dropDownList.removeAutoHidePartner(this.getElement());
         if (hasButton) {
             dropDownList.addAutoHidePartner(button.getElement());
         }
-        dropDownList.addSelectionHandler(new SelectionEvent.Handler<DropDownList<V>.ListItem>() {
-            @Override
-            public void onSelection(SelectionEvent<DropDownList<V>.ListItem> event) {
-                final DropDownList<V>.ListItem item = event.getValue();
-                if (!item.isSelected()) {
-                    item.addStyleName(SynergyComponents.resources.cssComponents().selected());
+        dropDownList.setBus(innerBus);
+        dropDownList.setHideAfterSelect(!isMultiComboBox);
 
-                    Tag<V> tag = new Tag<V>(event.getValue().getText(), item.getValue());
-                    tag.setListItem(item);
-                    tag.setBus(innerBus);
-                    innerBus.fireEvent(new TagAddEvent(tag));
-
-                    if (!isMultiComboBox) {
-                        dropDownList.hide();
-                    }
-                }
-            }
-        });
         if (isEnabled() && hasButton && buttonRegistration == null) {
             buttonRegistration = button.addClickHandler(buttonClick);
         }
@@ -400,6 +400,9 @@ public class TagInput<V> extends Composite implements HasText,
             if (button != null) {
                 button.setIcon(ImageResources.IMPL.comboBoxDropDown());
             }
+        }
+        if (dropDownList != null) {
+            dropDownList.setHideAfterSelect(!isMultiComboBox);
         }
     }
 

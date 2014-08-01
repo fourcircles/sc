@@ -505,12 +505,12 @@
 /*}*/
 
 /*здесь не используется :hover из-за возможности выделения клавиатурой*/
-.contextMenuItem.over {
-    background-color: selectColor;
+.contextMenuItem.over, .contextMenuItem.over.selected {
+    background-color: #D5D8DA;
 }
 
 .contextMenuItem.selected {
-    background-color: tagBg;
+    background-color: selectColor;
 }
 
 .green .contextMenuItem.over{

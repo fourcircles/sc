@@ -6,7 +6,6 @@ import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Event;
 
-//todo in firefox backspace and arrows don't work
 /**
  * User: vsl
  * Date: 24.07.14
@@ -26,6 +25,9 @@ public class NumberInput extends TextInput {
             @Override
             public void onKeyPress(KeyPressEvent event) {
                 Character ch = event.getCharCode();
+                if (ch == 0) {
+                    return;
+                }
                 if (Character.isDigit(ch)) {
                     return;
                 }

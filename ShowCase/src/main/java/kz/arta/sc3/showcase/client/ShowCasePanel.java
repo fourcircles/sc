@@ -14,10 +14,7 @@ import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
@@ -31,12 +28,15 @@ import kz.arta.synergy.components.client.input.*;
 import kz.arta.synergy.components.client.input.tags.TagInput;
 import kz.arta.synergy.components.client.menu.ContextMenu;
 import kz.arta.synergy.components.client.menu.DropDownList;
+import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.client.util.PPanel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * User: vsl
@@ -369,17 +369,47 @@ public class ShowCasePanel extends LayoutPanel {
     }
 
 
-    private DropDownList createSimpleList(Widget parent) {
-        DropDownList<String> tagList = new DropDownList<String>(parent, null);
-        for (int i = 0; i < 5; i++) {
-            tagList.addItem("аа " + i, null);
-            tagList.addItem("пб" + i, null);
-            tagList.addItem("значение " + i + " будет скрыто", null);
-            tagList.addItem("значение " + i + " будет скрыто градиентом", null);
+    /**
+     * Смешивает массив
+     * @param array массив
+     */
+    private static void shuffle(Object[] array) {
+        for (int i = array.length; i > 1; i--) {
+            int randomPos = Random.nextInt(i);
+
+            Object tmp = array[i - 1];
+            array[i - 1] = array[randomPos];
+            array[randomPos] = tmp;
+        }
+    }
+
+    private static String[] join(String[] array1, String[] array2) {
+        String[] res = new String[array1.length * (array2.length + 1)];
+        int i = 0;
+        for (String left : array1) {
+            for (String right: array2) {
+                res[i++] = left + " " + right;
+            }
+            res[i++] = left;
+        }
+        return res;
+    }
+
+    private DropDownListMulti<String> createSimpleList(Widget parent) {
+        DropDownListMulti<String> tagList = new DropDownListMulti<String>(parent);
+
+        String[] firstNames = new String[]{"Bill", "Vasya", "Jane", "Steve"};
+        String[] lastNames = new String[]{"Gates", "Pupkin", "Jones", "Jobs"};
+        String[] names = join(firstNames, lastNames);
+        shuffle(names);
+
+        for (String name : names) {
+            tagList.addItem(name, null);
         }
 
         return tagList;
     }
+
     /**
      * Поля с тегами
      * @return панель с полями с тегами
@@ -410,7 +440,7 @@ public class ShowCasePanel extends LayoutPanel {
         noListHasIndicator.setWidth(400);
         firstRowPanel.add(noListHasIndicator);
 
-        final TagInput hasListHasIndicator = new TagInput();
+        final TagInput<String> hasListHasIndicator = new TagInput<String>();
         hasListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         hasListHasIndicator.setWidth(300);
         hasListHasIndicator.setDropDownList(createSimpleList(hasListHasIndicator));
@@ -423,7 +453,7 @@ public class ShowCasePanel extends LayoutPanel {
         noListNoIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         secondRowPanel.add(noListNoIndicator);
 
-        TagInput hasListNoIndicator = new TagInput(false);
+        TagInput<String> hasListNoIndicator = new TagInput<String>(false);
         hasListNoIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         hasListNoIndicator.setDropDownList(createSimpleList(hasListNoIndicator));
         secondRowPanel.add(hasListNoIndicator);
@@ -435,7 +465,7 @@ public class ShowCasePanel extends LayoutPanel {
         noListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         thirdRowPanel.add(noListNoButton);
 
-        TagInput hasListNoButton = new TagInput(true, false);
+        TagInput<String> hasListNoButton = new TagInput<String>(true, false);
         hasListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         hasListNoButton.setDropDownList(createSimpleList(hasListNoButton));
         thirdRowPanel.add(hasListNoButton);
@@ -443,7 +473,7 @@ public class ShowCasePanel extends LayoutPanel {
         thirdRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         panel.add(thirdRow);
 
-        TagInput multiComboBox = new TagInput();
+        TagInput<String> multiComboBox = new TagInput<String>();
         multiComboBox.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         multiComboBox.setMultiComboBox(true);
         multiComboBox.setDropDownList(createSimpleList(multiComboBox));

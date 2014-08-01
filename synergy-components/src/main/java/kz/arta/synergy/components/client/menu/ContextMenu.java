@@ -217,6 +217,14 @@ public class ContextMenu extends MenuBase {
             selectedIndex = items.indexOf(this);
             super.focusItem();
         }
+
+        @Override
+        protected void selectItem() {
+            hide();
+            if (command != null) {
+                command.execute();
+            }
+        }
     }
 
     public void setBus(EventBus bus) {

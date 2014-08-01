@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
+import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -39,7 +40,7 @@ public class TagsPanel extends Composite{
     /**
      * Список добавленых тегов
      */
-    private ArrayList<Tag> tags;
+    private ArrayList<Tag<?>> tags;
 
     /**
      * Скрывать ли теги в индикатор
@@ -55,7 +56,7 @@ public class TagsPanel extends Composite{
         this(bus, maxWidth, true);
     }
 
-    public TagsPanel(EventBus bus, int maxWidth, boolean hasIndicator) {
+    public TagsPanel(final EventBus bus, int maxWidth, boolean hasIndicator) {
         root = new FlowPanel();
         initWidget(root);
 
@@ -63,13 +64,32 @@ public class TagsPanel extends Composite{
         this.hasIndicator = hasIndicator;
 
         indicator = new TagIndicator(bus);
-        tags = new ArrayList<Tag>();
+        tags = new ArrayList<Tag<?>>();
 
         Style style = getElement().getStyle();
         style.setPosition(Style.Position.RELATIVE);
         style.setPaddingRight(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
         style.setDisplay(Style.Display.INLINE_BLOCK);
         style.setWhiteSpace(Style.WhiteSpace.NOWRAP);
+
+//        ListSelectionEvent.register(bus, new ListSelectionEvent.Handler() {
+//            @Override
+//            public void onSelection(ListSelectionEvent event) {
+//                if (event.getActionType() == ListSelectionEvent.ActionType.DESELECT) {
+//                    for (Tag<?> tag : tags) {
+//                        if (tag.getItem() == event.getItem()) {
+//                            removeTag(tag);
+//                        }
+//                    }
+//                } else {
+//                    Tag<?> tag = new Tag(event.getItem().getText(), event.getItem().getValue());
+//                    tag.setItem(event.getItem());
+//                    tag.setBus(bus);
+//                    add(tag);
+//                    bus.fireEvent(new TagAddEvent(tag));
+//                }
+//            }
+//        });
 
         TagAddEvent.register(bus, new TagAddEvent.Handler() {
             @Override
@@ -81,12 +101,23 @@ public class TagsPanel extends Composite{
         TagRemoveEvent.register(bus, new TagRemoveEvent.Handler() {
             @Override
             public void onTagRemove(TagRemoveEvent event) {
-                tags.remove(event.getTag());
-                root.remove(event.getTag());
-                event.getTag().getElement().getStyle().clearRight();
-                rebuild();
+                removeTag(event.getTag());
             }
         });
+    }
+
+    public boolean contains(Tag<?> tag) {
+        return tags.contains(tag);
+    }
+    /**
+     * Удаляет тег
+     * @param tag тег
+     */
+    private void removeTag(Tag<?> tag) {
+        tags.remove(tag);
+        root.remove(tag);
+        tag.getElement().getStyle().clearRight();
+        rebuild();
     }
 
     /**

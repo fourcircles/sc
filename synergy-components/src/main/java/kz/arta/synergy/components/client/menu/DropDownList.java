@@ -7,6 +7,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.events.HasSelectionEventHandlers;
+import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.menu.events.SelectionEvent;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.style.client.Constants;
@@ -20,13 +21,13 @@ import java.util.ArrayList;
  *
  * Выпадающий список
  */
-public class DropDownList<V> extends MenuBase implements HasSelectionEventHandlers<DropDownList<V>.ListItem>{
+public class DropDownList<V> extends MenuBase {
     private EventBus bus;
 
     /**
      * Список добавленных элементов меню
      */
-    private ArrayList<ListItem> items;
+    protected ArrayList<Item> items;
 
     /**
      * Панель с вертикальным скроллом
@@ -43,37 +44,28 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
      */
     private boolean leftRightEnabled;
 
-    public DropDownList(EventBus bus) {
+    public DropDownList(Widget relativeWidget) {
         super();
-
-        if (bus == null) {
-            bus = new SimpleEventBus();
-        }
-        this.bus = bus;
-
+        setRelativeWidget(relativeWidget);
         scroll = new ArtaScrollPanel(root);
         popup.setWidget(scroll);
         setRelativeWidget(relativeWidget);
         popup.getElement().getStyle().setProperty("maxHeight", Constants.listMaxHeight());
 
-        items = new ArrayList<ListItem>();
+        items = new ArrayList<Item>();
 
         popup.setStyleName(SynergyComponents.resources.cssComponents().contextMenu());
     }
 
     public DropDownList(Widget relativeWidget, EventBus bus) {
-        this(bus);
-        setRelativeWidget(relativeWidget);
-    }
-
-    public EventBus getBus() {
-        return bus;
+        this(relativeWidget);
+        this.bus = bus;
     }
 
     /**
      * Возвращает выбранный элемент
      */
-    public ListItem getSelectedItem() {
+    public Item getSelectedItem() {
         if (selectedIndex >=0 && selectedIndex < items.size()) {
             return items.get(selectedIndex);
         } else {
@@ -82,7 +74,7 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
     }
 
     @Override
-    ArrayList<ListItem> getItems() {
+    ArrayList<Item> getItems() {
         return items;
     }
 
@@ -97,8 +89,8 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
     /**
      * Создает элемент меню с текстом, добавляет его в список и возращает его.
      */
-    public ListItem addItem(String text, V value) {
-        ListItem item = new ListItem(bus);
+    public Item addItem(String text, V value) {
+        Item item = new Item();
         item.setText(text);
         item.setValue(value);
         items.add(item);
@@ -108,8 +100,8 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
         return item;
     }
 
-    public ListItem addItem(String text, ImageResource icon, V value) {
-        ListItem item = new ListItem(bus);
+    public Item addItem(String text, ImageResource icon, V value) {
+        Item item = new Item();
         item.setText(text);
         item.setValue(value);
         item.setIcon(icon);
@@ -175,11 +167,6 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
         }
     }
 
-    @Override
-    public void addSelectionHandler(SelectionEvent.Handler<ListItem> handler) {
-        SelectionEvent.register(bus, handler);
-    }
-
     /**
      * Показывает список под элементом указанным при создании
      */
@@ -198,7 +185,7 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
      */
     private void overItemKeyboard(int index) {
         if (index >= 0 && index < items.size()) {
-            ListItem item = items.get(index);
+            Item item = items.get(index);
             item.focusItem();
             scroll.ensureVisible(item);
         }
@@ -249,8 +236,8 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
         applyPrefix("");
     }
 
-    public ListItem getItemWidthText(String text) {
-        for (ListItem item : items) {
+    public Item getItemWidthText(String text) {
+        for (Item item : items) {
             if (item.getText().equals(text)) {
                 return item;
             }
@@ -261,16 +248,14 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
     /**
      * Элемент списка
      */
-    public class ListItem extends MenuItem implements HasSelectionEventHandlers<ListItem> {
+    public class Item extends MenuItem implements HasSelectionEventHandlers<Item> {
         /**
          * Значение элемента
          */
         private V value;
 
-        private boolean isSelected;
-
-        public ListItem(EventBus bus) {
-            this.bus = bus;
+        public Item() {
+            this.bus = DropDownList.this.bus;
         }
 
         public V getValue() {
@@ -281,15 +266,8 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
             this.value = value;
         }
 
-        public void setSelected(boolean isSelected) {
-            this.isSelected = isSelected;
-        }
-        public boolean isSelected() {
-            return isSelected;
-        }
-
         @Override
-        public void addSelectionHandler(SelectionEvent.Handler<ListItem> handler) {
+        public void addSelectionHandler(SelectionEvent.Handler<Item> handler) {
             if (bus != null) {
                 bus.addHandler(SelectionEvent.TYPE, handler);
             }
@@ -297,24 +275,19 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
 
         @Override
         protected void focusItem() {
-            if (!isSelected) {
-                clearOverStyles();
-                selectedIndex = items.indexOf(this);
-                super.focusItem();
-            }
+            clearOverStyles();
+            selectedIndex = items.indexOf(this);
+            super.focusItem();
         }
 
         @Override
         protected void selectItem() {
-            if (!isSelected) {
-                super.selectItem();
-                isSelected = true;
-            }
+            bus.fireEvent(new ListSelectionEvent<V>(this, ListSelectionEvent.ActionType.SELECT));
         }
 
         @Override
         public boolean shouldBeSkipped() {
-            return !hasPrefix(this) || isSelected();
+            return super.shouldBeSkipped() || !hasPrefix(this);
         }
     }
 
@@ -325,5 +298,16 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
     private int getHeight() {
         int cnt = root.getWidgetCount();
         return Math.min(cnt * 32 + Math.max((cnt - 1), 0) * 2, Constants.LIST_MAX_HEIGHT);
+    }
+
+    public EventBus getBus() {
+        return bus;
+    }
+
+    public void setBus(EventBus bus) {
+        this.bus = bus;
+        for (Item item : items) {
+            item.setBus(bus);
+        }
     }
 }

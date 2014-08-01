@@ -10,13 +10,14 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.menu.events.SelectionEvent;
 import kz.arta.synergy.components.client.util.Selection;
 
 /**
  * Пункт меню
  */
-public class MenuItem extends Composite {
+abstract public class MenuItem extends Composite {
     /**
      * Корневая панель
      */
@@ -111,9 +112,7 @@ public class MenuItem extends Composite {
     /**
      * Вызывается когда элемент был выбран
      */
-    protected void selectItem() {
-        bus.fireEvent(new SelectionEvent<MenuItem>(this));
-    }
+    abstract protected void selectItem();
 
     /**
      * Вызывается при выделении
@@ -143,5 +142,13 @@ public class MenuItem extends Composite {
      */
     protected String getMainStyle() {
         return SynergyComponents.resources.cssComponents().contextMenuItem();
+    }
+
+    public EventBus getBus() {
+        return bus;
+    }
+
+    public void setBus(EventBus bus) {
+        this.bus = bus;
     }
 }

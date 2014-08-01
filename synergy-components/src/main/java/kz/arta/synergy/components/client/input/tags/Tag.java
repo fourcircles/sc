@@ -1,11 +1,7 @@
 package kz.arta.synergy.components.client.input.tags;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.*;
@@ -13,6 +9,7 @@ import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
 import kz.arta.synergy.components.client.label.GradientLabel;
 import kz.arta.synergy.components.client.menu.DropDownList;
+import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.Utils;
@@ -25,7 +22,7 @@ import kz.arta.synergy.components.style.client.Constants;
  *
  * Тег для поля с тегами.
  */
-public class Tag<V> extends Composite implements ArtaHasText {
+public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.HasHandler {
     /**
      * Корневая панель
      */
@@ -51,11 +48,6 @@ public class Tag<V> extends Composite implements ArtaHasText {
      */
     private Image image;
 
-    /**
-     * Элемент списка которому соответствует этот тег
-     */
-    DropDownList.ListItem listItem;
-
     private EventBus bus;
 
     /**
@@ -71,10 +63,6 @@ public class Tag<V> extends Composite implements ArtaHasText {
         image.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (listItem != null) {
-                    listItem.removeStyleName(SynergyComponents.resources.cssComponents().selected());
-                    listItem.setSelected(false);
-                }
                 bus.fireEvent(new TagRemoveEvent(Tag.this));
             }
         });
@@ -137,14 +125,6 @@ public class Tag<V> extends Composite implements ArtaHasText {
         this.value = value;
     }
 
-    public void setListItem(DropDownList.ListItem item) {
-        listItem = item;
-    }
-
-    public DropDownList<?>.ListItem getListItem() {
-        return listItem;
-    }
-
     public EventBus getBus() {
         return bus;
     }
@@ -160,5 +140,10 @@ public class Tag<V> extends Composite implements ArtaHasText {
         if (getElement().getScrollWidth() > getElement().getClientWidth()) {
             label.setWidth(label.getOffsetWidth() - (getElement().getScrollWidth() - getElement().getClientWidth()) + "px");
         }
+    }
+
+    @Override
+    public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler handler) {
+        return bus.addHandlerToSource(TagRemoveEvent.TYPE, this, handler);
     }
 }

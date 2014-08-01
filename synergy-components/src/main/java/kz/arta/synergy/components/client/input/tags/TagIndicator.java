@@ -182,7 +182,7 @@ public class TagIndicator extends Composite implements ArtaHasText {
      * Добавляет все теги из списка
      * @param tags список тегов
      */
-    public void addAll(List<Tag> tags) {
+    public void addAll(List<Tag<?>> tags) {
         for (Tag tag : tags) {
             add(tag);
         }

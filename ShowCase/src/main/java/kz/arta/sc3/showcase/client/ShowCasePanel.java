@@ -1,6 +1,5 @@
 package kz.arta.sc3.showcase.client;
 
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -10,6 +9,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.HasDirection;
@@ -25,18 +25,17 @@ import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.*;
+import kz.arta.synergy.components.client.input.tags.ObjectChooser;
 import kz.arta.synergy.components.client.input.tags.TagInput;
 import kz.arta.synergy.components.client.menu.ContextMenu;
-import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.client.util.PPanel;
+import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * User: vsl
@@ -410,6 +409,15 @@ public class ShowCasePanel extends LayoutPanel {
         return tagList;
     }
 
+    private static InlineLabel createLabel(String text) {
+        InlineLabel label = new InlineLabel(SCMessages.i18n.tr(text));
+        label.setStyleName(SynergyComponents.resources.cssComponents().mainText());
+        label.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
+        label.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        label.setWidth("180px");
+        return label;
+    }
+
     /**
      * Поля с тегами
      * @return панель с полями с тегами
@@ -419,21 +427,30 @@ public class ShowCasePanel extends LayoutPanel {
         FlowPanel panel = new FlowPanel();
         panel.getElement().getStyle().setLineHeight(1, Style.Unit.PX);
 
-        PPanel firstRow = new PPanel();
+        PPanel firstRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
         FlowPanel firstRowPanel = new FlowPanel();
         firstRow.setWidget(firstRowPanel);
+        firstRowPanel.add(createLabel("Поля с индикаторами: "));
 
-        PPanel secondRow = new PPanel();
+        PPanel secondRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
         FlowPanel secondRowPanel = new FlowPanel();
         secondRow.setWidget(secondRowPanel);
+        secondRowPanel.add(createLabel("Поля без индикаторов: "));
 
-        PPanel thirdRow = new PPanel();
+        PPanel thirdRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
         FlowPanel thirdRowPanel = new FlowPanel();
         thirdRow.setWidget(thirdRowPanel);
+        thirdRowPanel.add(createLabel("Поля без кнопки: "));
 
-        PPanel forthRow = new PPanel();
+        PPanel forthRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
         FlowPanel forthRowPanel = new FlowPanel();
         forthRow.setWidget(forthRowPanel);
+        forthRowPanel.add(createLabel("Мультикомбобокс: "));
+
+        PPanel fifthRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
+        FlowPanel fifthRowPanel = new FlowPanel();
+        fifthRow.setWidget(fifthRowPanel);
+        fifthRowPanel.add(createLabel("Выбор объекта: "));
 
         final TagInput noListHasIndicator= new TagInput();
         noListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
@@ -477,9 +494,17 @@ public class ShowCasePanel extends LayoutPanel {
         multiComboBox.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         multiComboBox.setMultiComboBox(true);
         multiComboBox.setDropDownList(createSimpleList(multiComboBox));
+        multiComboBox.setWidth(300);
         forthRowPanel.add(multiComboBox);
 
         panel.add(forthRow);
+        forthRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
+        ObjectChooser chooser = new ObjectChooser(new SimpleEventBus());
+        chooser.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        fifthRowPanel.add(chooser);
+
+        panel.add(fifthRow);
 
         return panel;
     }

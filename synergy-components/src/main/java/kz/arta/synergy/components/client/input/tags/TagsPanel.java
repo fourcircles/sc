@@ -72,25 +72,6 @@ public class TagsPanel extends Composite{
         style.setDisplay(Style.Display.INLINE_BLOCK);
         style.setWhiteSpace(Style.WhiteSpace.NOWRAP);
 
-//        ListSelectionEvent.register(bus, new ListSelectionEvent.Handler() {
-//            @Override
-//            public void onSelection(ListSelectionEvent event) {
-//                if (event.getActionType() == ListSelectionEvent.ActionType.DESELECT) {
-//                    for (Tag<?> tag : tags) {
-//                        if (tag.getItem() == event.getItem()) {
-//                            removeTag(tag);
-//                        }
-//                    }
-//                } else {
-//                    Tag<?> tag = new Tag(event.getItem().getText(), event.getItem().getValue());
-//                    tag.setItem(event.getItem());
-//                    tag.setBus(bus);
-//                    add(tag);
-//                    bus.fireEvent(new TagAddEvent(tag));
-//                }
-//            }
-//        });
-
         TagAddEvent.register(bus, new TagAddEvent.Handler() {
             @Override
             public void onTagAdd(TagAddEvent event) {

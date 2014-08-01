@@ -101,10 +101,8 @@ abstract public class MenuItem extends Composite {
     public void setIcon(ImageResource icon) {
         if (icon == null) {
             iconImage.setResource(null);
-            iconImage.getElement().getStyle().setMarginRight(0, Style.Unit.PX);
         } else {
             iconImage.setResource(icon);
-            iconImage.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
         }
         this.icon = icon;
     }

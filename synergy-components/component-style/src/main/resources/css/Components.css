@@ -418,6 +418,10 @@
     margin-top: 8px;
     float: right;
     background-repeat: no-repeat;
+    margin-right: 10px;
+}
+.dialogTitleButton:last-child{
+    margin-right: 0px;
 }
 
 @eval dialogContentPadding kz.arta.synergy.components.style.client.Constants.dialogContentPadding();
@@ -491,6 +495,9 @@
     white-space: nowrap;
 
     margin-bottom: 2px;
+}
+.contextMenuItem img {
+    margin-right: 10px;
 }
 .contextMenuItem > * {
     vertical-align: middle;

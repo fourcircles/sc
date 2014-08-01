@@ -113,7 +113,6 @@ public class DialogSimple extends PopupPanel {
         panel = GWT.create(FlowPanel.class);
 
         closeButton = makeTitleButton(ImageResources.IMPL.dialogCloseButton(), ImageResources.IMPL.dialogCloseButtonOver());
-        closeButton.getElement().getStyle().setMarginRight(Constants.DIALOG_CLOSE_BUTTON_RIGHT_MARGIN, Style.Unit.PX);
         closeButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -137,7 +136,6 @@ public class DialogSimple extends PopupPanel {
         titlePanel.add(closeButton);
         titlePanel.add(collapseButton);
 
-        titleLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
         titlePanel.setWidth("100%");
 
         contentPanel = GWT.create(FlowPanel.class);

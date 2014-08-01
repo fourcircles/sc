@@ -64,6 +64,7 @@ public abstract class MenuBase {
     protected MenuBase() {
         root = new ArtaFlowPanel();
 
+
         popup = new PopupPanel(true) {
             @Override
             protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
@@ -264,6 +265,7 @@ public abstract class MenuBase {
         if (relativeWidget != null && relativeWidget.isAttached()) {
             beforeShow();
             popup.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - 8 + "px");
+            root.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - 8 + "px");
 
             popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
                 @Override

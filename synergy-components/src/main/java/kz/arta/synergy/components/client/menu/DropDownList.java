@@ -185,6 +185,10 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
      */
     public void show() {
         popup.setHeight(getHeight() + "px");
+
+        popup.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 8 + "px");
+        root.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 8 + "px");
+
         super.showUnderParent();
     }
 

@@ -81,11 +81,6 @@ public class TagInput<V> extends Composite implements HasText,
     private int tagsPanelOffset = 0;
 
     /**
-     * Попап для индикатора количества скрытых тэгов
-     */
-    private TagIndicator tagIndicator;
-
-    /**
      * Выпадающий список для поля
      */
     private DropDownList<V> dropDownList;
@@ -180,8 +175,6 @@ public class TagInput<V> extends Composite implements HasText,
         }
 
         root.add(tagsPanel);
-
-        tagIndicator = new TagIndicator(innerBus);
 
         TextChangedEvent.register(innerBus, new TextChangedEvent.Handler() {
             @Override

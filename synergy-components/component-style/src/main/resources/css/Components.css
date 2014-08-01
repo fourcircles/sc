@@ -488,12 +488,14 @@
     height: 32px;
     line-height: 32px;
     overflow: hidden;
+    white-space: nowrap;
 
     margin-bottom: 2px;
 }
 .contextMenuItem > * {
     vertical-align: middle;
 }
+
 .contextMenuItem:last-child {
     margin-bottom: 0px;
 }

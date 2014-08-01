@@ -17,10 +17,9 @@ import java.util.ArrayList;
  * Time: 12:16
  *
  * Панель для тегов
+ * Управляется через события {@link TagAddEvent}, {@link TagRemoveEvent}
  */
 public class TagsPanel extends Composite{
-    private EventBus bus;
-
     /**
      * Корневая панель
      */
@@ -60,7 +59,6 @@ public class TagsPanel extends Composite{
         root = new FlowPanel();
         initWidget(root);
 
-        this.bus = bus;
         this.maxWidth = maxWidth;
         this.hasIndicator = hasIndicator;
 
@@ -155,13 +153,9 @@ public class TagsPanel extends Composite{
         }
     }
 
-    public void add(Tag tag) {
+    private void add(Tag tag) {
         tags.add(tag);
         rebuild();
-    }
-
-    public void clear() {
-        root.clear();
     }
 
     public int getMaxWidth() {

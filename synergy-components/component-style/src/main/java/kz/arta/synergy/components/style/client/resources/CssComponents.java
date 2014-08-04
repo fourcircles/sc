@@ -10,16 +10,6 @@ import com.google.gwt.resources.client.CssResource;
 public interface CssComponents extends CssResource {
     String approveButton();
 
-    String approveButtonBG1();
-
-    String approveButtonBG2();
-
-    String approveButtonBG3();
-
-    String approveButtonBG4();
-
-    String approveButtonBG5();
-
     String artaText();
 
     String artaTextPanel();
@@ -27,8 +17,6 @@ public interface CssComponents extends CssResource {
     String bigText();
 
     String border1();
-
-    String buttonBG();
 
     String buttonBorder();
 
@@ -47,14 +35,6 @@ public interface CssComponents extends CssResource {
     String contextMenuItem();
 
     String declineButton();
-
-    String declineButtonBG1();
-
-    String declineButtonBG2();
-
-    String declineButtonBG3();
-
-    String declineButtonBG4();
 
     String dialog();
 
@@ -96,8 +76,6 @@ public interface CssComponents extends CssResource {
 
     String left();
 
-    String mainBg();
-
     String mainText();
 
     String mainTextBold();
@@ -129,8 +107,6 @@ public interface CssComponents extends CssResource {
     String textColor3();
 
     String vscroll();
-
-    String whiteBG();
 
     String tagInput();
 

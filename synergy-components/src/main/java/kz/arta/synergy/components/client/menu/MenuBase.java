@@ -14,6 +14,7 @@ import kz.arta.synergy.components.client.ArtaFlowPanel;
 
 import java.util.ArrayList;
 
+//todo исправить пустые иконки
 /**
  * User: vsl
  * Date: 28.07.14

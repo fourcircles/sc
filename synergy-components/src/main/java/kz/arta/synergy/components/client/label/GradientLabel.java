@@ -37,7 +37,6 @@ public class GradientLabel extends Composite implements HasDirection {
         initWidget(panel);
 
         panel.add(textLabel);
-        getElement().getStyle().setProperty("wordWrap", "break-word");
         getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
 

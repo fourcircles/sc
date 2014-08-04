@@ -21,6 +21,4 @@ public class ColorUtils {
     public static String toRgba(String hex, String alpha) {
         return "rgba(" + rgb(hex) + ", " + alpha + ")";
     }
-
-
 }

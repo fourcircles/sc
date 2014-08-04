@@ -79,6 +79,7 @@ abstract public class MenuItem extends Composite {
         label.getElement().getStyle().setProperty("wordBreak", "break-all");
 
         iconImage = GWT.create(Image.class);
+        setIcon(null);
         iconImage.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         root.add(iconImage);
 
@@ -100,9 +101,10 @@ abstract public class MenuItem extends Composite {
 
     public void setIcon(ImageResource icon) {
         if (icon == null) {
-            iconImage.setResource(null);
+            iconImage.getElement().getStyle().setDisplay(Style.Display.NONE);
         } else {
             iconImage.setResource(icon);
+            iconImage.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         }
         this.icon = icon;
     }

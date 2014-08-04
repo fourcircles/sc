@@ -1,10 +1,12 @@
 package kz.arta.synergy.components.client.menu;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -14,7 +16,6 @@ import kz.arta.synergy.components.client.ArtaFlowPanel;
 
 import java.util.ArrayList;
 
-//todo исправить пустые иконки
 /**
  * User: vsl
  * Date: 28.07.14
@@ -104,6 +105,13 @@ public abstract class MenuBase {
                 hide();
             }
         };
+
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            root.getElement().getStyle().setPosition(Style.Position.RELATIVE);
+            // не очень понятно, что там происходит,
+            // вроде как не происходит сдвига для стандартного скрываемого скролла
+            root.getElement().getStyle().setRight(-15, Style.Unit.PX);
+        }
     }
 
     /**

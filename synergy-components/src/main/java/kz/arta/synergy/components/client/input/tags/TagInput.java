@@ -25,6 +25,9 @@ import kz.arta.synergy.components.style.client.Constants;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+//todo исправить отступы и popup в rtl
+//todo полей "без индикатора" не надо
+
 /**
  * User: vsl
  * Date: 24.07.14

@@ -271,8 +271,13 @@ public class ShowCasePanel extends LayoutPanel {
     }
 
     private Panel setUpDialogs(boolean buttons) {
-        SimpleButton empty = setUpDialog(SCMessages.i18n.tr("Пустой"), new DialogSimple());
-        empty.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        FlowPanel panel = new FlowPanel();
+
+        if (!buttons) {
+            SimpleButton empty = setUpDialog(SCMessages.i18n.tr("Пустой"), new DialogSimple());
+            empty.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+            panel.add(empty);
+        }
         SimpleButton tiny = setUpDialog(116, 84, buttons, true, true);
         tiny.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         SimpleButton small = setUpDialog(300, 300, buttons, true, true);
@@ -281,8 +286,6 @@ public class ShowCasePanel extends LayoutPanel {
         middle.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         SimpleButton big = setUpDialog(800, 500, buttons, true, true);
         big.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        FlowPanel panel = new FlowPanel();
-        panel.add(empty);
         panel.add(tiny);
         panel.add(small);
         panel.add(middle);

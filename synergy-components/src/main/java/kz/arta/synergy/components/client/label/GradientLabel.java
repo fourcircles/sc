@@ -53,12 +53,13 @@ public class GradientLabel extends Composite implements HasDirection {
      * @return
      */
     protected boolean textFits() {
-        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
-        int oldHeight = textLabel.getOffsetHeight();
-        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NORMAL);
-        int newHeight = textLabel.getOffsetHeight();
-        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
-        return oldHeight == newHeight;
+        return getOffsetWidth() >= textLabel.getOffsetWidth();
+//        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
+//        int oldHeight = textLabel.getOffsetHeight();
+//        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NORMAL);
+//        int newHeight = textLabel.getOffsetHeight();
+//        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
+//        return oldHeight == newHeight;
     }
 
     /**
@@ -76,12 +77,13 @@ public class GradientLabel extends Composite implements HasDirection {
     @Override
     public void onLoad() {
         super.onLoad();
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-            @Override
-            public void execute() {
-                adjustGradient();
-            }
-        });
+        adjustGradient();
+//        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+//            @Override
+//            public void execute() {
+//                adjustGradient();
+//            }
+//        });
     }
 
     /**
@@ -106,6 +108,8 @@ public class GradientLabel extends Composite implements HasDirection {
         super.setWidth(width);
         adjustGradient();
     }
+
+
 
     @Override
     public void setDirection(Direction direction) {

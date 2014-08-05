@@ -39,7 +39,7 @@
 
 @eval mainBG kz.arta.synergy.components.style.client.Colors.mainBG().hex();
 @eval mainBG_0 kz.arta.synergy.components.style.client.Colors.mainBG().alpha0();
-@eval mainBG_0_ie kz.arta.synergy.components.style.client.Colors.buttonBG().alpha0IE();
+@eval mainBG_0_ie kz.arta.synergy.components.style.client.Colors.mainBG().alpha0IE();
 
 @def buttonPressed #d6d6d6;
 
@@ -135,7 +135,7 @@
     width: 20%;
     height: buttonHeight;
     float: right;
-    margin-top: gradientTopMargin;
+    bottom: buttonHeight;
     position: relative;
 }
 
@@ -298,14 +298,27 @@
 }
 
 .dialogTitle .gradient{
-    background: -moz-linear-gradient(left,  mainBG_0 0%, mainBG 50%, mainBG 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,mainBG_0), color-stop(50%,mainBG), color-stop(100%,mainBG)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(left,  mainBG_0 0%,mainBG 50%,mainBG 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(left,  mainBG_0 0%,mainBG 50%,mainBG 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(left,  mainBG_0 0%,mainBG 50%,mainBG 100%); /* IE10+ */
-    background: linear-gradient(to right,  mainBG_0 0%,mainBG 50%,mainBG 100%); /* W3C */
+    background: -moz-linear-gradient(left, mainBG_0 0%, mainBG 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,mainBG_0), color-stop(100%,mainBG));
+    background: -webkit-linear-gradient(left, mainBG_0 0%,mainBG 100%);
+    background: -o-linear-gradient(left, mainBG_0 0%,mainBG 100%);
+    background: -ms-linear-gradient(left, mainBG_0 0%,mainBG 100%);
+    background: linear-gradient(to right, mainBG_0 0%,mainBG 100%);
     filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")mainBG_0_ie literal("endColorstr=")mainBG literal(",GradientType=1 )");
+    
+    height: dialogTitleHeight;
+    bottom: dialogTitleHeight;
 }
+
+*[dir="rtl"] .dialogTitle .gradient{
+    background: -moz-linear-gradient(left, mainBG 0%, mainBG_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,mainBG), color-stop(100%,mainBG_0));
+    background: -webkit-linear-gradient(left, mainBG 0%,mainBG_0 100%);
+    background: -o-linear-gradient(left, mainBG 0%,mainBG_0 100%);
+    background: -ms-linear-gradient(left, mainBG 0%,mainBG_0 100%);
+    background: linear-gradient(to right, mainBG 0%,mainBG_0 100%);
+}
+
 
 .buttonSimple:hover {
     background-color: whiteBG;
@@ -419,10 +432,12 @@
     font-family: DroidSansBold;
     font-size:16px;
     margin-left: dialogTitleLeftMargin;
-    padding-right: dialogTitleLabelRightPadding;
+    margin-right: dialogTitleLabelRightPadding;
     vertical-align: middle;
     color: whiteBG;
     height: dialogTitleHeight;
+
+    vertical-align: top;
 
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -431,16 +446,19 @@
     -ms-user-select: none;
     user-select: none;
     cursor: default;
+
+    white-space: nowrap;
 }
 
 @eval dialogBorderWidth kz.arta.synergy.components.style.client.Constants.dialogBorderWidth();
 @eval dialogMinWidth kz.arta.synergy.components.style.client.Constants.dialogMinWidth();
 
 .dialog {
-    background: whiteBG;
+    box-sizing: border-box;
     min-width: dialogMinWidth;
     min-height: 84px;
 
+    background: whiteBG;
     border: dialogBorderWidth solid border1;
 }
 

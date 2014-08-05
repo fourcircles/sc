@@ -108,9 +108,10 @@ public abstract class MenuBase {
 
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             root.getElement().getStyle().setPosition(Style.Position.RELATIVE);
-            // не очень понятно, что там происходит,
             // вроде как не происходит сдвига для стандартного скрываемого скролла
-            root.getElement().getStyle().setRight(-15, Style.Unit.PX);
+            if (!Window.Navigator.getAppVersion().contains("MSIE 9")) {
+                root.getElement().getStyle().setRight(-15, Style.Unit.PX);
+            }
         }
     }
 

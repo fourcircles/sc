@@ -80,7 +80,6 @@ abstract public class MenuItem extends Composite {
 
         iconImage = GWT.create(Image.class);
         setIcon(null);
-        iconImage.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         root.add(iconImage);
 
         root.add(label);

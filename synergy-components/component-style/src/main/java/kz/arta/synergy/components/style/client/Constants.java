@@ -21,7 +21,7 @@ public class Constants {
     public static final int DIALOG_BORDER_WIDTH = 1;
     public static final double DIALOG_NAV_BUTTON_VMARGIN = (DIALOG_BUTTON_PANEL_HEIGHT - BUTTON_HEIGHT - BORDER_WIDTH * 2) / 2;
     public static final int DIALOG_CLOSE_BUTTON_SIZE = 16;
-    public static final int DIALOG_CLOSE_BUTTON_PADDING = 4;
+    public static final int DIALOG_CLOSE_BUTTON_PADDING = 2;
     public static final int DIALOG_CLOSE_BUTTON_RIGHT_MARGIN = 10;
     public static final int DIALOG_TITLE_LEFT_MARGIN = 12;
 
@@ -33,7 +33,7 @@ public class Constants {
     /**
      * расстояние между заголовком и кнопкой "свернуть"
      */
-    public static final int DIALOG_TITLE_LABEL_RIGHT_PADDING = 10;
+    public static final int DIALOG_TITLE_LABEL_RIGHT_PADDING = 8;
 
     public static final int SCROLL_BAR_WIDTH = 17;
 

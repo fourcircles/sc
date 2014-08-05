@@ -172,7 +172,7 @@ public class DialogSimple extends PopupPanel {
         textWidth -= Constants.DIALOG_CLOSE_BUTTON_RIGHT_MARGIN;
         textWidth -= Constants.DIALOG_TITLE_LEFT_MARGIN + Constants.DIALOG_TITLE_LABEL_RIGHT_PADDING;
 
-        if (Window.Navigator.getAppVersion().contains("MSIE 9")) {
+        if (Window.Navigator.getAppVersion().contains("MSIE") || Window.Navigator.getAppVersion().contains("Trident")) {
             textWidth -= 2;
         }
         titleLabel.setWidth(textWidth + "px");

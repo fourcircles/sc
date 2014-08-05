@@ -65,7 +65,6 @@ public class ObjectChooser extends Composite{
         });
 
         tagsPanel = new TagsPanel(bus, getAvailableWidth());
-        tagsPanel.getElement().getStyle().setMarginTop(((double)Constants.BUTTON_HEIGHT - Constants.TAG_HEIGHT) / 2, Style.Unit.PX);
 
         root.add(tagsPanel);
         root.add(button);

@@ -4,6 +4,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
@@ -21,6 +22,15 @@ import java.util.ArrayList;
  * Управляется через события {@link TagAddEvent}, {@link TagRemoveEvent}
  */
 public class TagsPanel extends Composite{
+
+    /**
+     * Панель которая содержит корневую панель и позволяет
+     * прятать сдвинутые теги.
+     * Это освобождает родительский элемент от необходимости задавать
+     * overflow: hidden.
+     */
+    private SimplePanel container;
+
     /**
      * Корневая панель
      */
@@ -57,8 +67,17 @@ public class TagsPanel extends Composite{
     }
 
     public TagsPanel(final EventBus bus, int maxWidth, boolean hasIndicator) {
+        container = new SimplePanel();
+        initWidget(container);
+
+        container.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
+        container.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
+        container.getElement().getStyle().setTop(0, Style.Unit.PX);
+        container.getElement().getStyle().setLeft(0, Style.Unit.PX);
+        container.setHeight("100%");
+
         root = new FlowPanel();
-        initWidget(root);
+        container.setWidget(root);
 
         this.maxWidth = maxWidth;
         this.hasIndicator = hasIndicator;
@@ -66,11 +85,12 @@ public class TagsPanel extends Composite{
         indicator = new TagIndicator(bus);
         tags = new ArrayList<Tag<?>>();
 
-        Style style = getElement().getStyle();
-        style.setPosition(Style.Position.RELATIVE);
-        style.setPaddingRight(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
-        style.setDisplay(Style.Display.INLINE_BLOCK);
-        style.setWhiteSpace(Style.WhiteSpace.NOWRAP);
+        Style rootStyle = root.getElement().getStyle();
+        rootStyle.setPosition(Style.Position.RELATIVE);
+        rootStyle.setTop(2, Style.Unit.PX);
+        rootStyle.setPaddingRight(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
+        rootStyle.setDisplay(Style.Display.INLINE_BLOCK);
+        rootStyle.setWhiteSpace(Style.WhiteSpace.NOWRAP);
 
         TagAddEvent.register(bus, new TagAddEvent.Handler() {
             @Override
@@ -163,6 +183,7 @@ public class TagsPanel extends Composite{
         for (int j = i; j < tags.size(); j++) {
             root.add(tags.get(j));
         }
+        container.setWidth(root.getOffsetWidth() + "px");
     }
 
     private void add(Tag tag) {
@@ -184,5 +205,22 @@ public class TagsPanel extends Composite{
 
     public void setHasIndicator(boolean hasIndicator) {
         this.hasIndicator = hasIndicator;
+    }
+
+    /**
+     * Сдвигает теги налево на заданную величину в пикселях
+     * @param rightOffset сдвиг в пикселях
+     */
+    public void setRightOffset(int rightOffset) {
+        root.getElement().getStyle().setRight(rightOffset, Style.Unit.PX);
+        container.setWidth(Math.max(0, root.getOffsetWidth() - rightOffset) + "px");
+    }
+
+    /**
+     * Убирает сдвиг если он был
+     */
+    public void clearRightOffset() {
+        root.getElement().getStyle().clearRight();
+        container.setWidth(root.getOffsetWidth() + "px");
     }
 }

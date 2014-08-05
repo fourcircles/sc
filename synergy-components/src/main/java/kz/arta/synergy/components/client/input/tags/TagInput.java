@@ -5,10 +5,8 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasEnabled;
-import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.input.InputWithEvents;
@@ -166,13 +164,6 @@ public class TagInput<V> extends Composite implements HasText,
         }
 
         tagsPanel = new TagsPanel(innerBus, 0, true);
-        int tagsBottomOffset = Constants.TAG_HEIGHT;
-        tagsBottomOffset += ((double) Constants.BUTTON_HEIGHT - Constants.TAG_HEIGHT) / 2;
-        if (hasButton) {
-            //нижняя граница кнопки увеличивает высоту строки
-            tagsBottomOffset += Constants.BORDER_WIDTH;
-        }
-        tagsPanel.getElement().getStyle().setBottom(tagsBottomOffset, Style.Unit.PX);
         tagsPanel.setHasIndicator(hasIndicator);
 
         if (hasButton) {
@@ -210,11 +201,22 @@ public class TagInput<V> extends Composite implements HasText,
         TagRemoveEvent.register(innerBus, new TagRemoveEvent.Handler() {
             @Override
             public void onTagRemove(TagRemoveEvent event) {
-                DropDownListMulti<V>.Item item = (DropDownListMulti.Item) tagsToItems.get(event.getTag());
-                item.setSelected(false, false);
+                if (dropDownList != null) {
+                    DropDownListMulti<V>.Item item = (DropDownListMulti.Item) tagsToItems.get(event.getTag());
+                    item.setSelected(false, false);
 
-                tagsToItems.remove(event.getTag());
-                itemsToTags.remove(item);
+                    tagsToItems.remove(event.getTag());
+                    itemsToTags.remove(item);
+                }
+
+                new Timer() {
+                    @Override
+                    public void run() {
+                        input.setText("");
+                        setInputOffset(Math.min(tagsPanel.getOffsetWidth(), getAvailableSpace()));
+                        input.setFocus(true);
+                    }
+                }.schedule(20);
             }
         });
 
@@ -265,11 +267,11 @@ public class TagInput<V> extends Composite implements HasText,
         if (textWidth >= inputWidth) {
             textWidth = Math.min(textWidth, getAvailableSpace() - 8);
             tagsPanelOffset = tagsPanelOffset - (textWidth - inputWidth);
-            tagsPanel.getElement().getStyle().setLeft(tagsPanelOffset, Style.Unit.PX);
+            tagsPanel.setRightOffset(-tagsPanelOffset);
             setInputOffset(inputOffset - (textWidth - inputWidth));
         } else if (textWidth <= 40) {
             tagsPanelOffset = 0;
-            tagsPanel.getElement().getStyle().setLeft(2, Style.Unit.PX);
+            tagsPanel.clearRightOffset();
             setInputOffset(tagsPanel.getOffsetWidth());
         }
 

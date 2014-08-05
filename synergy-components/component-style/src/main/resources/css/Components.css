@@ -655,6 +655,9 @@
     border-color: border1;
     color: textColor2;
 }
+.commonInput:-ms-clear, .artaTextPanel:-ms-clear {
+    display:none;
+}
 
 .commonInput.invalid, .artaText.invalid, .artaTextPanel.invalid {
     border-color: declineButtonBG1;
@@ -778,11 +781,12 @@
 }
 
 .tagInput {
+    position:relative;
     border-radius: 4px;
     border: 1px buttonBorder solid;
     height: 30px;
     vertical-align: top;
-    overflow: hidden;
+    overflow : visible;
     line-height: 0;
 }
 
@@ -816,6 +820,7 @@
     height: tagHeight;
     line-height: 26px;
     max-width: tagMaxWidth;
+    vertical-align: top;
 }
 
 .tag .gradient {

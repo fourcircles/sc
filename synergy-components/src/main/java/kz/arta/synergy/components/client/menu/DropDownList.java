@@ -1,9 +1,12 @@
 package kz.arta.synergy.components.client.menu;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.events.HasSelectionEventHandlers;
@@ -55,6 +58,15 @@ public class DropDownList<V> extends MenuBase {
         items = new ArrayList<Item>();
 
         popup.setStyleName(SynergyComponents.resources.cssComponents().contextMenu());
+
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            root.getElement().getStyle().setPosition(Style.Position.RELATIVE);
+            // вроде как не происходит сдвига для стандартного скрываемого скролла
+            if (!Window.Navigator.getAppVersion().contains("MSIE") &&
+                    !Window.Navigator.getAppVersion().contains("Trident")) {
+                root.getElement().getStyle().setRight(-15, Style.Unit.PX);
+            }
+        }
     }
 
     public DropDownList(Widget relativeWidget, EventBus bus) {

@@ -28,19 +28,18 @@ import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
 import kz.arta.synergy.components.client.input.NumberInput;
 import kz.arta.synergy.components.client.input.TextInput;
-import kz.arta.synergy.components.client.input.date.ArtaDatePicker;
-import kz.arta.synergy.components.client.input.date.DateInput;
-import kz.arta.synergy.components.client.input.date.DateTimeInput;
-import kz.arta.synergy.components.client.input.date.TimeInput;
+import kz.arta.synergy.components.client.input.*;
+import kz.arta.synergy.components.client.input.tags.ObjectChooser;
 import kz.arta.synergy.components.client.input.tags.TagInput;
 import kz.arta.synergy.components.client.menu.ContextMenu;
-import kz.arta.synergy.components.client.menu.DropDownList;
+import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.theme.Theme;
+import kz.arta.synergy.components.client.util.PPanel;
+import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * User: vsl
@@ -99,7 +98,7 @@ public class ShowCasePanel extends LayoutPanel {
             @Override
             public void onClick(ClickEvent event) {
                 Window.alert("About: \nSynergy components ShowCase\n\nVersion: " + theme.get("version") +
-                        "\nRevision: " + theme.get("revision") +"\nBuild stamp: " + theme.get("build_stamp"));
+                        "\nRevision: " + theme.get("revision") + "\nBuild stamp: " + theme.get("build_stamp"));
             }
         });
         titlePanel.add(about);
@@ -276,8 +275,13 @@ public class ShowCasePanel extends LayoutPanel {
     }
 
     private Panel setUpDialogs(boolean buttons) {
-        SimpleButton empty = setUpDialog(SCMessages.i18n.tr("Пустой"), new DialogSimple());
-        empty.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        FlowPanel panel = new FlowPanel();
+
+        if (!buttons) {
+            SimpleButton empty = setUpDialog(SCMessages.i18n.tr("Пустой"), new DialogSimple());
+            empty.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+            panel.add(empty);
+        }
         SimpleButton tiny = setUpDialog(116, 84, buttons, true, true);
         tiny.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         SimpleButton small = setUpDialog(300, 300, buttons, true, true);
@@ -286,8 +290,6 @@ public class ShowCasePanel extends LayoutPanel {
         middle.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         SimpleButton big = setUpDialog(800, 500, buttons, true, true);
         big.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        FlowPanel panel = new FlowPanel();
-        panel.add(empty);
         panel.add(tiny);
         panel.add(small);
         panel.add(middle);
@@ -324,9 +326,6 @@ public class ShowCasePanel extends LayoutPanel {
         TreeItem category1 = addCategory(SCMessages.i18n.tr("Кнопки"));
         TreeItem category2 = addCategory(SCMessages.i18n.tr("Диалог"));
         TreeItem category3 = addCategory(SCMessages.i18n.tr("Поля ввода"));
-
-        int cnt = 0;
-
 
         new ShowComponent(this, category1, SCMessages.i18n.tr("Простая кнопка"), SCMessages.i18n.tr("Простая кнопка"), getSimpleButtonPanel());
 
@@ -368,16 +367,11 @@ public class ShowCasePanel extends LayoutPanel {
         comboReadOnly.setWidth(250);
         comboBoxPanel.add(comboReadOnly);
 
-        cnt++;
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));
-        cnt++;
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог с кнопками"), SCMessages.i18n.tr("Диалог с кнопками"), setUpDialogs(true));
-        cnt++;
         new ShowComponent(this, category3, SCMessages.i18n.tr("Поле ввода текста"), SCMessages.i18n.tr("Поле ввода текста"), getTextInputs());
-        cnt++;
+        new ShowComponent(this, category3, SCMessages.i18n.tr("Поле с тегами"), SCMessages.i18n.tr("Поле с тегами"), getTagInputs());
         new ShowComponent(this, category3, SCMessages.i18n.tr("Комбобокс"), SCMessages.i18n.tr("Комбобокс"), comboBoxPanel);
-
-        cnt++;
         new ShowComponent(this, category3, SCMessages.i18n.tr("Дата/время"), SCMessages.i18n.tr("Дата/время"), getDateInputs());
     }
 
@@ -413,6 +407,130 @@ public class ShowCasePanel extends LayoutPanel {
 
         return panel;
     }
+    /**
+     * Смешивает массив
+     * @param array массив
+     */
+    private static void shuffle(Object[] array) {
+        for (int i = array.length; i > 1; i--) {
+            int randomPos = Random.nextInt(i);
+
+            Object tmp = array[i - 1];
+            array[i - 1] = array[randomPos];
+            array[randomPos] = tmp;
+        }
+    }
+
+    private static String[] join(String[] array1, String[] array2) {
+        String[] res = new String[array1.length * (array2.length + 1)];
+        int i = 0;
+        for (String left : array1) {
+            for (String right: array2) {
+                res[i++] = left + " " + right;
+            }
+            res[i++] = left;
+        }
+        return res;
+    }
+
+    private DropDownListMulti<String> createSimpleList(Widget parent) {
+        DropDownListMulti<String> tagList = new DropDownListMulti<String>(parent);
+
+        String[] firstNames = new String[]{"Bill", "Vasya", "Jane", "Steve"};
+        String[] lastNames = new String[]{"Gates", "Pupkin", "Jones", "Jobs"};
+        String[] names = join(firstNames, lastNames);
+        shuffle(names);
+
+        for (String name : names) {
+            tagList.addItem(name, null);
+        }
+
+        return tagList;
+    }
+
+    private static InlineLabel createLabel(String text) {
+        InlineLabel label = new InlineLabel(SCMessages.i18n.tr(text));
+        label.setStyleName(SynergyComponents.resources.cssComponents().mainText());
+        label.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
+        label.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        label.setWidth("180px");
+        return label;
+    }
+
+    /**
+     * Поля с тегами
+     * @return панель с полями с тегами
+     */
+    private Widget getTagInputs() {
+
+        FlowPanel panel = new FlowPanel();
+        panel.getElement().getStyle().setLineHeight(1, Style.Unit.PX);
+
+        PPanel firstRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
+        FlowPanel firstRowPanel = new FlowPanel();
+        firstRow.setWidget(firstRowPanel);
+        firstRowPanel.add(createLabel("Поля с индикаторами: "));
+
+        PPanel thirdRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
+        FlowPanel thirdRowPanel = new FlowPanel();
+        thirdRow.setWidget(thirdRowPanel);
+        thirdRowPanel.add(createLabel("Поля без кнопки: "));
+
+        PPanel forthRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
+        FlowPanel forthRowPanel = new FlowPanel();
+        forthRow.setWidget(forthRowPanel);
+        forthRowPanel.add(createLabel("Мультикомбобокс: "));
+
+        PPanel fifthRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
+        FlowPanel fifthRowPanel = new FlowPanel();
+        fifthRow.setWidget(fifthRowPanel);
+        fifthRowPanel.add(createLabel("Выбор объекта: "));
+
+        final TagInput noListHasIndicator= new TagInput();
+        noListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        noListHasIndicator.setWidth(250);
+        firstRowPanel.add(noListHasIndicator);
+
+        final TagInput<String> hasListHasIndicator = new TagInput<String>();
+        hasListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        hasListHasIndicator.setWidth(300);
+        hasListHasIndicator.setDropDownList(createSimpleList(hasListHasIndicator));
+        firstRowPanel.add(hasListHasIndicator);
+
+        firstRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        panel.add(firstRow);
+
+        TagInput noListNoButton = new TagInput(true, false);
+        noListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        thirdRowPanel.add(noListNoButton);
+
+        TagInput<String> hasListNoButton = new TagInput<String>(true, false);
+        hasListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        hasListNoButton.setDropDownList(createSimpleList(hasListNoButton));
+        thirdRowPanel.add(hasListNoButton);
+
+        thirdRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        panel.add(thirdRow);
+
+        TagInput<String> multiComboBox = new TagInput<String>();
+        multiComboBox.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        multiComboBox.setMultiComboBox(true);
+        multiComboBox.setDropDownList(createSimpleList(multiComboBox));
+        multiComboBox.setWidth(300);
+        forthRowPanel.add(multiComboBox);
+
+        panel.add(forthRow);
+        forthRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
+        ObjectChooser chooser = new ObjectChooser(new SimpleEventBus());
+        chooser.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        fifthRowPanel.add(chooser);
+
+        panel.add(fifthRow);
+
+        return panel;
+    }
+
     /**
      * Текстовые поля
      * @return панель с текстовыми полями

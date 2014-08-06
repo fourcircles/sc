@@ -1,0 +1,23 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:buttons='urn:import:kz.arta.synergy.components.client.button'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <ui:style>
+        .button {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+    </ui:style>
+    <g:FlowPanel>
+        <g:FlowPanel>
+            <buttons:SimpleButton text="Размер 116x84" ui:field="button116_84" addStyleNames="{style.button}"/>
+            <buttons:SimpleButton text="Размер 300x300" ui:field="button300_300" addStyleNames="{style.button}"/>
+            <buttons:SimpleButton text="Размер 400x400" ui:field="button400_400" addStyleNames="{style.button}"/>
+            <buttons:SimpleButton text="Размер 800x500" ui:field="button800_500" addStyleNames="{style.button}"/>
+            <g:HTML><p/></g:HTML>
+            <buttons:SimpleButton text="Размер 400x400" ui:field="buttonNoLeft" addStyleNames="{style.button}"/>
+            <buttons:SimpleButton text="Размер 400x400" ui:field="buttonNoRight" addStyleNames="{style.button}"/>
+            <buttons:SimpleButton text="Размер 400x400" ui:field="buttonOnlyMiddle" addStyleNames="{style.button}"/>
+
+        </g:FlowPanel>
+    </g:FlowPanel>
+</ui:UiBinder>

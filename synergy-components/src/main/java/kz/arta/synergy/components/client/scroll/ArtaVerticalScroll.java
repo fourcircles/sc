@@ -23,7 +23,7 @@ import kz.arta.synergy.components.style.client.resources.ComponentResources;
  * Time: 17:11
  * Вертикальный скролл
  */
-class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
+public class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
     interface VerticalScrollBinder extends UiBinder<ArtaFlowPanel, ArtaVerticalScroll> {}
     private static VerticalScrollBinder binder = GWT.create(VerticalScrollBinder.class);
 

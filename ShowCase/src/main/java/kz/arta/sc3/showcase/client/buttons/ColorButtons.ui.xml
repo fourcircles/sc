@@ -1,0 +1,21 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:arta='urn:import:kz.arta.synergy.components.client.button'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <ui:style>
+        .button {
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+    </ui:style>
+    <g:FlowPanel>
+        <arta:SimpleButton text="Создать" type="APPROVE" addStyleNames="{style.button}"/>
+        <arta:SimpleButton text="Удалить" type="DECLINE" addStyleNames="{style.button}"/>
+        <arta:SimpleButton text="Кнопка с длинным текстом" type="DECLINE" addStyleNames="{style.button}"/>
+        <arta:SimpleButton text="Кнопка с длинным текстом" width="140px" type="DECLINE" addStyleNames="{style.button}"/>
+        <arta:SimpleButton text="Кнопка с длинным текстом" width="140px" type="APPROVE" addStyleNames="{style.button}"/>
+        <arta:SimpleButton text="Создать" type="APPROVE" enabled="false" addStyleNames="{style.button}"/>
+        <arta:SimpleButton text="Удалить" type="DECLINE" enabled="false" addStyleNames="{style.button}"/>
+        <arta:ContextMenuButton text="Кнопка с меню" type="APPROVE" addStyleNames="{style.button}"/>
+
+    </g:FlowPanel>
+</ui:UiBinder>

@@ -1,12 +1,16 @@
 package kz.arta.synergy.components.client.menu;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 
@@ -62,6 +66,7 @@ public abstract class MenuBase {
     protected MenuBase() {
         root = new ArtaFlowPanel();
 
+
         popup = new PopupPanel(true) {
             @Override
             protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
@@ -100,6 +105,7 @@ public abstract class MenuBase {
                 hide();
             }
         };
+
     }
 
     /**
@@ -233,6 +239,14 @@ public abstract class MenuBase {
         }
     }
 
+    public void addAutoHidePartner(Element e) {
+        popup.addAutoHidePartner(e);
+    }
+
+    public void removeAutoHidePartner(Element e) {
+        popup.removeAutoHidePartner(e);
+    }
+
     public Widget getRelativeWidget() {
         return relativeWidget;
     }
@@ -254,12 +268,13 @@ public abstract class MenuBase {
         if (relativeWidget != null && relativeWidget.isAttached()) {
             beforeShow();
             popup.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - 8 + "px");
+            root.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - 8 + "px");
 
             popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
                 @Override
                 public void setPosition(int offsetWidth, int offsetHeight) {
                     int x = relativeWidget.getAbsoluteLeft() + 4;
-                    int y = relativeWidget.getAbsoluteTop() + relativeWidget.getOffsetHeight();
+                    int y = relativeWidget.getAbsoluteTop() + relativeWidget.getOffsetHeight() + 1;
                     popup.setPopupPosition(x, y);
                 }
             });

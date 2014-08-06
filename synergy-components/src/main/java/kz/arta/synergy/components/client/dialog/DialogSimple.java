@@ -5,6 +5,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -14,7 +15,6 @@ import kz.arta.synergy.components.client.label.GradientLabel;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.style.client.Constants;
 
-//todo градиент заголовка в 116x84 без кнопок
 /**
  * User: vsl
  * Date: 27.06.14
@@ -112,7 +112,6 @@ public class DialogSimple extends PopupPanel {
         panel = GWT.create(FlowPanel.class);
 
         closeButton = makeTitleButton(ImageResources.IMPL.dialogCloseButton(), ImageResources.IMPL.dialogCloseButtonOver());
-        closeButton.getElement().getStyle().setMarginRight(Constants.DIALOG_CLOSE_BUTTON_RIGHT_MARGIN, Style.Unit.PX);
         closeButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -136,7 +135,6 @@ public class DialogSimple extends PopupPanel {
         titlePanel.add(closeButton);
         titlePanel.add(collapseButton);
 
-        titleLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
         titlePanel.setWidth("100%");
 
         contentPanel = GWT.create(FlowPanel.class);
@@ -165,23 +163,19 @@ public class DialogSimple extends PopupPanel {
         setContent(content);
     }
 
-    @Override
-    protected void onLoad() {
-        super.onLoad();
-        adjustTitleLabelWidth();
-    }
-
     /**
      * Считается ширина для текста заголовка.
      */
     void adjustTitleLabelWidth() {
-        titleLabel.setWidth((getWidth() -
-                (Constants.DIALOG_CLOSE_BUTTON_SIZE + Constants.DIALOG_CLOSE_BUTTON_PADDING) * 2 -
-                Constants.DIALOG_CLOSE_BUTTON_RIGHT_MARGIN) -
-                Constants.DIALOG_TITLE_LEFT_MARGIN -
-                Constants.DIALOG_TITLE_LABEL_RIGHT_PADDING -
-                Constants.DIALOG_CONTENT_PADDING * 2
-                + "px");
+        int textWidth = getWidth();
+        textWidth -= 2 * (Constants.DIALOG_CLOSE_BUTTON_SIZE + Constants.DIALOG_CLOSE_BUTTON_PADDING * 2);
+        textWidth -= Constants.DIALOG_CLOSE_BUTTON_RIGHT_MARGIN;
+        textWidth -= Constants.DIALOG_TITLE_LEFT_MARGIN + Constants.DIALOG_TITLE_LABEL_RIGHT_PADDING;
+
+        if (Window.Navigator.getAppVersion().contains("MSIE") || Window.Navigator.getAppVersion().contains("Trident")) {
+            textWidth -= 2;
+        }
+        titleLabel.setWidth(textWidth + "px");
     }
 
     /**
@@ -248,7 +242,7 @@ public class DialogSimple extends PopupPanel {
     }
 
     public int getWidth() {
-        return Math.max(getOffsetWidth(), Constants.DIALOG_MIN_WIDTH);
+        return Math.max(getOffsetWidth() - Constants.BORDER_WIDTH * 2, Constants.DIALOG_MIN_WIDTH);
     }
 
     public String getText() {

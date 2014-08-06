@@ -17,13 +17,14 @@ import com.google.gwt.user.client.ui.HasText;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.menu.DropDownList;
+import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.menu.events.SelectionEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.HashMap;
 
-//todo current min width is 198 not 200
+//todo скроллить и выделять на выбранное значение при повторном открытии
 /**
  * User: vsl
  * Date: 15.07.14
@@ -77,12 +78,12 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
     KeyUpHandler textUpKey;
     HandlerRegistration textUpKeyRegistration;
 
-    private HashMap<DropDownList.ListItem, V> values;
+    private HashMap<DropDownList.Item, V> values;
 
 
     public ComboBox() {
         panel = new FlowPanel();
-        values = new HashMap<DropDownList.ListItem, V>();
+        values = new HashMap<DropDownList.Item, V>();
 
         initWidget(panel);
 
@@ -90,14 +91,15 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
 
         EventBus bus = new SimpleEventBus();
         list = new DropDownList(this, bus);
-        bus.addHandler(SelectionEvent.TYPE, new SelectionEvent.Handler<DropDownList<V>.ListItem>() {
+        list.setRelativeWidget(this);
+
+        ListSelectionEvent.register(bus, new ListSelectionEvent.Handler<Object>() {
             @Override
-            public void onSelection(SelectionEvent<DropDownList<V>.ListItem> event) {
-                showItem(event.getValue());
+            public void onSelection(ListSelectionEvent<Object> event) {
+                showItem(event.getItem());
                 list.hide();
             }
         });
-        list.setRelativeWidget(this);
 
         textLabel = new TextInput();
 
@@ -201,7 +203,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * Показать элемент списка в комбобоксе
      * @param item элемент списка
      */
-    private void showItem(DropDownList.ListItem item) {
+    private void showItem(DropDownList.Item item) {
         textLabel.setText(item.getText());
         ValueChangeEvent.fire(this, values.get(item));
     }
@@ -211,7 +213,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @param text текст элемента
      */
     public void addItem(String text, V value) {
-        DropDownList.ListItem item = list.addItem(text, null);
+        DropDownList.Item item = list.addItem(text, null);
         values.put(item, value);
     }
 
@@ -221,7 +223,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @param iconResource иконка элемента в списке
      */
     public void addItem(String text, ImageResource iconResource, V value) {
-        DropDownList.ListItem item = list.addItem(text, iconResource, null);
+        DropDownList.Item item = list.addItem(text, iconResource, null);
         values.put(item, value);
     }
 
@@ -230,7 +232,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @return выбранное значение
      */
     public V getSelectedValue() {
-        DropDownList.ListItem item = list.getSelectedItem();
+        DropDownList.Item item = list.getSelectedItem();
         if (item != null) {
             return values.get(list.getSelectedItem());
         } else {

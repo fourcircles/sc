@@ -1,7 +1,6 @@
 package kz.arta.synergy.components.client.input.tags.events;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.*;
 import kz.arta.synergy.components.client.input.tags.Tag;
 
 /**
@@ -11,14 +10,14 @@ import kz.arta.synergy.components.client.input.tags.Tag;
  *
  * Событие для добавления тега
  */
-public class TagAddEvent extends GwtEvent<TagAddEvent.TagAddEventHandler> {
-    public static Type<TagAddEventHandler> TYPE = new Type<TagAddEventHandler>();
+public class TagAddEvent extends GwtEvent<TagAddEvent.Handler> {
+    public static Type<Handler> TYPE = new Type<Handler>();
 
-    public Type<TagAddEventHandler> getAssociatedType() {
+    public Type<Handler> getAssociatedType() {
         return TYPE;
     }
 
-    protected void dispatch(TagAddEventHandler handler) {
+    protected void dispatch(Handler handler) {
         handler.onTagAdd(this);
     }
 
@@ -32,7 +31,15 @@ public class TagAddEvent extends GwtEvent<TagAddEvent.TagAddEventHandler> {
         return tag;
     }
 
-    public static interface TagAddEventHandler extends EventHandler {
+    public static interface Handler extends EventHandler {
         void onTagAdd(TagAddEvent event);
+    }
+
+    public static interface HasHandler extends HasHandlers {
+            public HandlerRegistration addTagAddHandler(Handler handler);
+    }
+
+    public static HandlerRegistration register(EventBus bus, Handler handler) {
+        return bus.addHandler(TYPE, handler);
     }
 }

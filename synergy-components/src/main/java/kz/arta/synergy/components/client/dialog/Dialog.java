@@ -122,7 +122,7 @@ public class Dialog extends DialogSimple {
             if (freeSpace < MIN_INNER_MARGIN) {
                 setWidth(getOffsetWidth() - Constants.DIALOG_BORDER_WIDTH * 2 +
                         (MIN_INNER_MARGIN - freeSpace) * 2 + "px");
-                leftMargin = rightMargin = MIN_INNER_MARGIN;
+                leftMargin = rightMargin = MIN_INNER_MARGIN - 1;
             } else {
                 leftMargin = rightMargin = freeSpace;
             }

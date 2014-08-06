@@ -9,8 +9,6 @@ public interface CssComponentsDark extends CssComponents {
 
     String border1();
 
-    String buttonBG();
-
     String buttonBorder();
 
     String textColor1();
@@ -18,6 +16,4 @@ public interface CssComponentsDark extends CssComponents {
     String textColor2();
 
     String textColor3();
-
-    String whiteBG();
 }

@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.button;
 
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.HasText;
 import kz.arta.synergy.components.client.SynergyComponents;
 
 /**
@@ -9,13 +10,18 @@ import kz.arta.synergy.components.client.SynergyComponents;
  * Time: 11:11
  * Кнопка простая
  */
-public class SimpleButton extends ButtonBase {
+public class SimpleButton extends ButtonBase implements HasText {
     protected Type type;
     protected BorderType borderType;
 
     protected SimpleButton() {
         super();
         init();
+    }
+
+    public SimpleButton(String text, ImageResource iconResource, boolean enabled) {
+        super(text, iconResource);
+        setEnabled(enabled);
     }
 
     /**
@@ -72,21 +78,10 @@ public class SimpleButton extends ButtonBase {
     }
 
     protected void init() {
-        if (type == null) {
-            type = Type.REGULAR;
-        }
+        setType(type);
+
         if (borderType == null) {
             borderType = BorderType.ALL;
-        }
-        switch (type) {
-            case APPROVE:
-                regularButton();
-                break;
-            case DECLINE:
-                declineButton();
-                break;
-            default:
-                approveButton();
         }
         switch (borderType) {
             case EDGE:
@@ -103,16 +98,44 @@ public class SimpleButton extends ButtonBase {
         }
     }
 
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        if (type == null) {
+            type = Type.REGULAR;
+        }
+
+        this.type = type;
+        switch (type) {
+            case APPROVE:
+                approveButton();
+                break;
+            case DECLINE:
+                declineButton();
+                break;
+            default:
+                regularButton();
+        }
+    }
+
     protected void approveButton() {
-        setStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
+        removeStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
+        removeStyleName(SynergyComponents.resources.cssComponents().declineButton());
+        addStyleName(SynergyComponents.resources.cssComponents().approveButton());
     }
 
     protected void declineButton() {
-        setStyleName(SynergyComponents.resources.cssComponents().declineButton());
+        removeStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
+        removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
+        addStyleName(SynergyComponents.resources.cssComponents().declineButton());
     }
 
     protected void regularButton() {
-        setStyleName(SynergyComponents.resources.cssComponents().approveButton());
+        removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
+        removeStyleName(SynergyComponents.resources.cssComponents().declineButton());
+        addStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
     }
 
     /**

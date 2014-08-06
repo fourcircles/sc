@@ -1,7 +1,6 @@
 package kz.arta.synergy.components.client.input.tags.events;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.*;
 import kz.arta.synergy.components.client.input.tags.Tag;
 
 /**
@@ -34,5 +33,13 @@ public class TagRemoveEvent extends GwtEvent<TagRemoveEvent.Handler> {
 
     public static interface Handler extends EventHandler {
         void onTagRemove(TagRemoveEvent event);
+    }
+
+    public static interface HasHandler extends HasHandlers {
+        public HandlerRegistration addTagRemoveHandler(Handler handler);
+    }
+
+    public static HandlerRegistration register(EventBus bus, Handler handler) {
+        return bus.addHandler(TYPE, handler);
     }
 }

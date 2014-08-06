@@ -2,26 +2,29 @@ package kz.arta.synergy.components.client.input.tags;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
+import kz.arta.synergy.components.client.input.InputWithEvents;
 import kz.arta.synergy.components.client.input.TextInput;
-import kz.arta.synergy.components.client.input.tags.events.*;
+import kz.arta.synergy.components.client.input.events.TextChangedEvent;
+import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
+import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
 import kz.arta.synergy.components.client.menu.DropDownList;
-import kz.arta.synergy.components.client.menu.events.SelectionEvent;
+import kz.arta.synergy.components.client.menu.DropDownListMulti;
+import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * User: vsl
@@ -30,17 +33,22 @@ import java.util.ArrayList;
  *
  * Поле с тегами
  */
-public class TagInput extends Composite implements HasText,
-        HasTagAddEventHandler, HasTagRemoveEventHandler {
+public class TagInput<V> extends Composite implements HasText,
+        TagAddEvent.HasHandler, TagRemoveEvent.HasHandler, HasEnabled {
     /**
      * Корневая панель
      */
     private FlowPanel root;
 
     /**
+     * Контейнер для поля ввода. Нужен для сохранения отступов в IE9
+     */
+    private SimplePanel inputBox;
+
+    /**
      * Элемент для ввода текста
      */
-    private TextInput input;
+    private InputWithEvents input;
 
     /**
      * Кнопка поля
@@ -48,19 +56,9 @@ public class TagInput extends Composite implements HasText,
     private ImageButton button;
 
     /**
-     * Индикатор количества скрытых тегов
-     */
-    private Label indicator;
-
-    /**
-     * Количество скрытых тегов
-     */
-    private int hiddenTagsCount;
-
-    /**
      * Панель для отображения тегов, которые не скрыты в индикаторе
      */
-    private FlowPanel tagsPanel;
+    private TagsPanel tagsPanel;
 
     /**
      * Список всех добавленных тегов
@@ -90,59 +88,103 @@ public class TagInput extends Composite implements HasText,
     private int tagsPanelOffset = 0;
 
     /**
-     * Попап для индикатора количества скрытых тэгов
-     */
-    private TagIndicator tagIndicator;
-
-    /**
      * Выпадающий список для поля
      */
-    private DropDownList<String> dropDownList;
+    private DropDownListMulti<V> dropDownList;
 
-    private EventBus bus;
+    private EventBus innerBus;
+    private HandlerRegistration buttonRegistration;
+
+    /**
+     * Имеет ли поле кнопку
+     */
+    private boolean hasButton;
+
+    /**
+     * Хэндлер для клика кнопки
+     */
+    private ClickHandler buttonClick;
+
+    /**
+     * Мультикомбобокс отличается от поля с тегами у которого есть список и кнопка двумя вещами
+     * 1. Картинкой кнопки
+     * 2. После выбора значения из списка список не закрывается
+     */
+    private boolean isMultiComboBox;
+
+    private HashMap<Tag<V>, DropDownList<V>.Item> tagsToItems;
+    private HashMap<DropDownList<V>.Item, Tag<V>> itemsToTags;
 
     public TagInput() {
+        this(true, true);
+    }
+
+    /**
+     * @param hasIndicator имеет ли индикатор скрытых тегов
+     */
+    public TagInput(boolean hasIndicator) {
+        this(hasIndicator, true);
+    }
+
+    /**
+     * @param hasIndicator имеет ли индикатор скрытых тегов
+     * @param hasButton имеел ли кнопку
+     */
+    public TagInput(boolean hasIndicator, boolean hasButton) {
         root = new FlowPanel();
         initWidget(root);
 
-        bus = new SimpleEventBus();
+        innerBus = new SimpleEventBus();
         tags = new ArrayList<Tag>();
 
-        input = new TextInput();
-        input.getElement().getStyle().setBorderWidth(0, Style.Unit.PX);
-        root.add(input);
-
-        button = new ImageButton(ImageResources.IMPL.zoom());
-        button.getElement().getStyle().setMarginTop(-1, Style.Unit.PX);
-        button.getElement().getStyle().setMarginRight(-1, Style.Unit.PX);
+        this.hasButton = hasButton;
 
         addStyleName(SynergyComponents.resources.cssComponents().mainText());
         addStyleName(SynergyComponents.resources.cssComponents().tagInput());
-
         getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
-        setWidth(Constants.FIELD_WITH_BUTTON_MIN_WIDTH);
+        input = new InputWithEvents(innerBus);
 
-        root.add(button);
+        inputBox = new SimplePanel(input);
+        inputBox.getElement().getStyle().setPaddingLeft(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
+        inputBox.getElement().getStyle().setPaddingRight(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
 
-        tagsPanel = new FlowPanel();
-        tagsPanel.getElement().getStyle().setPosition(Style.Position.RELATIVE);
-        tagsPanel.getElement().getStyle().setTop(-32, Style.Unit.PX);
-        tagsPanel.getElement().getStyle().setPaddingRight(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
-        tagsPanel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        root.add(inputBox);
+
+        if (hasButton) {
+            button = new ImageButton(ImageResources.IMPL.zoom());
+
+            buttonClick = new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    if (dropDownList != null) {
+                        if (dropDownList.isShowing()) {
+                            dropDownList.hide();
+                        } else {
+                            dropDownList.show();
+                        }
+                    }
+                }
+            };
+            buttonRegistration = button.addClickHandler(buttonClick);
+            root.add(button);
+        }
+
+        tagsPanel = new TagsPanel(innerBus, 0, true);
+        tagsPanel.setHasIndicator(hasIndicator);
+
+        if (hasButton) {
+            setWidth(Constants.FIELD_WITH_BUTTON_MIN_WIDTH);
+        } else {
+            setWidth(Constants.TAG_INPUT_NO_BUTTON_MIN_WIDTH);
+        }
+
         root.add(tagsPanel);
 
-        tagIndicator = new TagIndicator();
-
-        input.addKeyPressHandler(new KeyPressHandler() {
+        TextChangedEvent.register(innerBus, new TextChangedEvent.Handler() {
             @Override
-            public void onKeyPress(KeyPressEvent event) {
-                new Timer() {
-                    @Override
-                    public void run() {
-                        textChanged();
-                    }
-                }.schedule(20);
+            public void onTextChanged(TextChangedEvent event) {
+                textChanged();
             }
         });
         input.addKeyUpHandler(new KeyUpHandler() {
@@ -150,23 +192,7 @@ public class TagInput extends Composite implements HasText,
             public void onKeyUp(KeyUpEvent event) {
                 switch (event.getNativeKeyCode()) {
                     case KeyCodes.KEY_ENTER:
-                        if (dropDownList == null) {
-                            String inputText = input.getText();
-                            if (!input.getText().isEmpty()) {
-                                input.setText("");
-                                addTag(inputText);
-                                textChanged();
-                            }
-                        }
-                        break;
-                    case KeyCodes.KEY_BACKSPACE:
-                    case KeyCodes.KEY_DELETE:
-                    case KeyCodes.KEY_SPACE:
-                        textChanged();
-                        break;
-                    case KeyCodes.KEY_ESCAPE:
-                        input.setText("");
-                        textChanged();
+                        keyEnter();
                         break;
                     case KeyCodes.KEY_DOWN:
                         if (dropDownList != null && !dropDownList.isShowing()) {
@@ -176,16 +202,78 @@ public class TagInput extends Composite implements HasText,
             }
         });
 
-        bus.addHandler(TagRemoveEvent.TYPE, new TagRemoveEvent.Handler() {
+        itemsToTags = new HashMap<DropDownList<V>.Item, Tag<V>>();
+        tagsToItems = new HashMap<Tag<V>, DropDownList<V>.Item>();
+
+        TagRemoveEvent.register(innerBus, new TagRemoveEvent.Handler() {
             @Override
             public void onTagRemove(TagRemoveEvent event) {
-                removeTag(event.getTag());
-                if (event.getTag().listItem != null) {
-                    event.getTag().listItem.removeStyleName(SynergyComponents.resources.cssComponents().selected());
-                    event.getTag().listItem.setSelected(false);
+                if (dropDownList != null) {
+                    DropDownListMulti<V>.Item item = (DropDownListMulti.Item) tagsToItems.get(event.getTag());
+                    item.setSelected(false, false);
+
+                    tagsToItems.remove(event.getTag());
+                    itemsToTags.remove(item);
                 }
+
+                new Timer() {
+                    @Override
+                    public void run() {
+                        input.setText("");
+                        setInputOffset(Math.min(tagsPanel.getOffsetWidth(), getAvailableSpace()));
+                        input.setFocus(true);
+                    }
+                }.schedule(20);
             }
         });
+
+        ListSelectionEvent.register(innerBus, new ListSelectionEvent.Handler<V>() {
+            @Override
+            public void onSelection(final ListSelectionEvent<V> selectionEvent) {
+                Tag<V> tag = new Tag<V>(selectionEvent.getItem().getText(), selectionEvent.getItem().getValue());
+                tag.setBus(innerBus);
+
+                tagsToItems.put(tag, selectionEvent.getItem());
+                itemsToTags.put(selectionEvent.getItem(), tag);
+
+                innerBus.fireEvent(new TagAddEvent(tag));
+
+                input.setText("");
+                setInputOffset(Math.min(tagsPanel.getOffsetWidth(), getAvailableSpace()));
+                input.setFocus(true);
+            }
+
+            @Override
+            public void onDeselection(ListSelectionEvent<V> event) {
+                innerBus.fireEvent(new TagRemoveEvent(itemsToTags.get(event.getItem())));
+                setInputOffset(tagsPanel.getOffsetWidth());
+                input.setFocus(true);
+            }
+        });
+    }
+
+    /**
+     * Действия при нажатии клавиши "Enter".
+     * Если у поля нет списка, то это приводит к добавлению тега.
+     */
+    private void keyEnter() {
+        if (dropDownList == null && !input.getText().isEmpty()) {
+            Tag tag = new Tag(input.getText());
+            tag.setBus(innerBus);
+            innerBus.fireEvent(new TagAddEvent(tag));
+            input.setText("");
+            setInputOffset(tagsPanel.getOffsetWidth());
+
+            if (Window.Navigator.getAppVersion().contains("MSIE")) {
+                new Timer() {
+                    @Override
+                    public void run() {
+                        setInputOffset(tagsPanel.getOffsetWidth());
+                        input.setFocus(true);
+                    }
+                }.schedule(50);
+            }
+        }
     }
 
     /**
@@ -194,44 +282,60 @@ public class TagInput extends Composite implements HasText,
      */
     private void textChanged() {
         int textWidth = Utils.getTextWidth(input);
-        if (textWidth >= inputWidth) {
-            tagsPanelOffset = tagsPanelOffset - (textWidth - inputWidth);
-            tagsPanel.getElement().getStyle().setLeft(tagsPanelOffset, Style.Unit.PX);
-            setInputOffset(inputOffset - (textWidth - inputWidth));
+
+        int startTextWidth = getAvailableSpace() - tagsPanel.getTagsWidth();
+        if (textWidth > startTextWidth) {
+            textWidth = Math.min(textWidth, getAvailableSpace() - 8);
+            tagsPanelOffset = textWidth - startTextWidth;
+            tagsPanel.setOffset(tagsPanelOffset);
         } else {
             tagsPanelOffset = 0;
-            tagsPanel.getElement().getStyle().setLeft(2, Style.Unit.PX);
-            setInputOffset(tagsPanel.getOffsetWidth());
+            tagsPanel.clearOffset();
         }
+        setInputOffset(tagsPanel.getOffsetWidth());
+//        if (textWidth > inputWidth || (textWidth < inputWidth && tagsPanelOffset > 0)) {
+//            textWidth = Math.min(textWidth, getAvailableSpace() - 8);
+//            textWidth = Math.max(textWidth, 40);
+//            setInputOffset(getAvailableSpace() - textWidth);
+//            if (tagsPanel.getOffsetWidth() > inputOffset) {
+//                tagsPanelOffset = tagsPanel.getOffsetWidth()  - inputOffset;
+//                tagsPanel.setOffset(tagsPanelOffset);
+//            }
+//        }
 
+//        if (textWidth >= inputWidth) {
+//            textWidth = Math.min(textWidth, getAvailableSpace() - 8);
+//            tagsPanelOffset = tagsPanelOffset - (textWidth - inputWidth);
+//            tagsPanel.setOffset(-tagsPanelOffset);
+//            setInputOffset(inputOffset - (textWidth - inputWidth));
+//        } else if (textWidth <= 40) {
+//            tagsPanelOffset = 0;
+//            tagsPanel.clearOffset();
+//            setInputOffset(tagsPanel.getOffsetWidth());
+//        }
+//
         if (dropDownList != null) {
             dropDownList.applyPrefix(input.getText());
-            if (!dropDownList.isShowing()) {
-                dropDownList.show();
+            if (input.getText().isEmpty()) {
+                dropDownList.hide();
+            } else {
+                if (!dropDownList.isShowing()) {
+                    dropDownList.show();
+                }
             }
         }
-    }
-
-    /**
-     * Удаляет тег
-     */
-    private void removeTag(Tag tag) {
-        tags.remove(tag);
-        tagsPanel.remove(tag);
-        if (dropDownList != null) {
-            DropDownList<?>.ListItem item = dropDownList.getItemWidthText(tag.getText());
-            if (item != null) {
-                item.getElement().getStyle().setBackgroundColor("");
-            }
-        }
-        placeTags();
     }
 
     /**
      * Ширина элемента без границ, кнопки и отступов.
      */
     private int getAvailableSpace() {
-        return offsetWidth - Constants.IMAGE_BUTTON_WIDTH - 3 * Constants.BORDER_WIDTH - Constants.COMMON_INPUT_PADDING;
+        int res = offsetWidth;
+        if (hasButton) {
+            res -= Constants.IMAGE_BUTTON_WIDTH + Constants.BORDER_WIDTH;
+        }
+        res -= 2 * Constants.BORDER_WIDTH + Constants.COMMON_INPUT_PADDING;
+        return res;
     }
 
     /**
@@ -241,104 +345,16 @@ public class TagInput extends Composite implements HasText,
      */
     private void setInputOffset(int offset) {
         inputOffset = offset;
-        input.getElement().getStyle().setPaddingLeft(inputOffset, Style.Unit.PX);
-        inputWidth = getAvailableSpace() - offset;
-        input.setWidth(inputWidth + "px");
-    }
-
-    /**
-     * Размещает теги в панели тегов, помещая скрытые теги в индикатор.
-     * Обычно вызывается при изменении добавлении или удалении тегов.
-     */
-    private void placeTags() {
-        if (tags.isEmpty()) {
-            setInputOffset(Constants.COMMON_INPUT_PADDING);
-            return;
-        }
-        int availableSpace = getAvailableSpace() - 40;
-        //интервал между самым правым тегом и началом ввода текста
-        availableSpace -= Constants.COMMON_INPUT_PADDING;
-        int i = tags.size() - 1;
-        while (i >= 0 && availableSpace >= 0) {
-            availableSpace -= tags.get(i).getOffsetWidth() + Constants.INTERVAL_BETWEEN_TAGS;
-            i--;
-        }
-        if (availableSpace < 0) {
-            //места не хватает, создаем индикатор количества
-            placeTags(i + 1, availableSpace + tags.get(i + 1).getOffsetWidth());
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            inputBox.getElement().getStyle().setPaddingRight(inputOffset, Style.Unit.PX);
+//            input.getElement().getStyle().setPaddingRight(inputOffset, Style.Unit.PX);
         } else {
-            tagsPanel.clear();
-            for (int tagNum = 0; tagNum < tags.size(); tagNum++) {
-                tags.get(tagNum).getElement().getStyle().setMarginLeft(2, Style.Unit.PX);
-                tagsPanel.add(tags.get(tagNum));
-            }
-            tagIndicator.hide();
+            inputBox.getElement().getStyle().setPaddingLeft(inputOffset, Style.Unit.PX);
+//            input.getElement().getStyle().setPaddingLeft(inputOffset, Style.Unit.PX);
         }
-
-        setInputOffset(tagsPanel.getOffsetWidth());
+        inputWidth = getAvailableSpace() - offset;
+        inputBox.setWidth(inputWidth + "px");
     }
-
-    /**
-     * Разместить первые {@code tagsCount} тегов в индикаторе количества тегов,
-     * остальные - в поле.
-     * @param tagsCount количество тегов в индикаторе
-     */
-    private void placeTags(int tagsCount, int indicatorWidth) {
-        if (indicator == null) {
-            indicator = new Label();
-            indicator.addStyleName(SynergyComponents.resources.cssComponents().tag());
-            indicator.getElement().getStyle().setCursor(Style.Cursor.POINTER);
-            indicator.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    showIndicatorPopup();
-                }
-            });
-        }
-        indicator.setText(tagsCount + 1 + "+");
-        hiddenTagsCount = tagsCount + 1;
-
-        tagsPanel.clear();
-        tagsPanel.add(indicator);
-
-        if (indicator.getOffsetWidth() > indicatorWidth) {
-            indicator.setText(tagsCount + 2 + "+");
-            hiddenTagsCount = tagsCount + 2;
-            tagsCount++;
-        }
-        for (int i = tagsCount + 1; i < tags.size(); i++) {
-            tags.get(i).getElement().getStyle().setMarginLeft(2, Style.Unit.PX);
-            tagsPanel.add(tags.get(i));
-        }
-    }
-
-    /**
-     * Создает тег с указанным текстом и добаляет его.
-     * @param text текст тега
-     * @return созданный тег
-     */
-    private Tag addTag(String text) {
-        Tag tag = new Tag(text);
-        tag.setBus(bus);
-
-        tags.add(tag);
-        tagsPanel.add(tag);
-        placeTags();
-
-        bus.fireEvent(new TagAddEvent(tag));
-        return tag;
-    }
-
-    /**
-     * Учитывать порядок пока не обязательно, добавление тегов только в конец списка.
-     */
-    public void showIndicatorPopup() {
-        for (int i = 0; i < hiddenTagsCount; i++) {
-            tagIndicator.addTag(tags.get(i));
-        }
-        tagIndicator.showRelativeTo(this);
-    }
-
     /**
      * Возвращает тег находящийся на указанной позиции.
      * @param i позиция
@@ -358,15 +374,18 @@ public class TagInput extends Composite implements HasText,
         width -= Constants.BORDER_WIDTH * 2;
         super.setWidth(width + "px");
 
-        //минус кнопка
-        width -= Constants.IMAGE_BUTTON_WIDTH + 1;
+        if (hasButton) {
+            //минус кнопка
+            width -= Constants.IMAGE_BUTTON_WIDTH + 1;
+        }
         //минус padding поля ввода
         width -= Constants.COMMON_INPUT_PADDING * 2;
 
         inputWidth = width;
-        input.setWidth(width + "px");
+        inputBox.setWidth(width + "px");
         setInputOffset(Constants.COMMON_INPUT_PADDING);
-        placeTags();
+
+        tagsPanel.setMaxWidth(getAvailableSpace() - 26);
     }
 
     @Override
@@ -385,42 +404,60 @@ public class TagInput extends Composite implements HasText,
         textChanged();
     }
 
-    public DropDownList<String> getDropDownList() {
+    public DropDownListMulti<V> getDropDownList() {
         return dropDownList;
     }
 
-    public void setDropDownList(final DropDownList<String> dropDownList) {
+    public void setDropDownList(final DropDownListMulti<V> dropDownList) {
         this.dropDownList = dropDownList;
-        dropDownList.addSelectionHandler(new SelectionEvent.Handler<DropDownList<String>.ListItem>() {
-            @Override
-            public void onSelection(SelectionEvent<DropDownList<String>.ListItem> event) {
-                final DropDownList<?>.ListItem item = event.getValue();
-                if (!item.isSelected()) {
-                    item.addStyleName(SynergyComponents.resources.cssComponents().selected());
+        dropDownList.removeAutoHidePartner(this.getElement());
+        if (hasButton) {
+            dropDownList.addAutoHidePartner(button.getElement());
+        }
+        dropDownList.setBus(innerBus);
+        dropDownList.setHideAfterSelect(!isMultiComboBox);
 
-                    Tag tag = addTag(event.getValue().getText());
-                    tag.setListItem(item);
-
-                    input.setText("");
-                    textChanged();
-                    dropDownList.hide();
-                }
-            }
-        });
-        button.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                if (dropDownList.isShowing()) {
-                    dropDownList.hide();
-                } else {
-                    dropDownList.show();
-                }
-            }
-        });
+        if (isEnabled() && hasButton && buttonRegistration == null) {
+            buttonRegistration = button.addClickHandler(buttonClick);
+        }
     }
 
     @Override
-    public HandlerRegistration addTagAddHandler(TagAddEvent.TagAddEventHandler handler) {
+    public boolean isEnabled() {
+        return input.isEnabled();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        if (!enabled && buttonRegistration != null) {
+            buttonRegistration.removeHandler();
+        } else if (dropDownList != null && !isEnabled()) {
+            buttonRegistration = button.addClickHandler(buttonClick);
+        }
+
+        root.addStyleName(SynergyComponents.resources.cssComponents().disabled());
+        input.setEnabled(enabled);
+        button.setEnabled(enabled);
+    }
+
+    public boolean isMultiComboBox() {
+        return isMultiComboBox;
+    }
+
+    public void setMultiComboBox(boolean isMultiComboBox) {
+        this.isMultiComboBox = isMultiComboBox;
+        if (isMultiComboBox) {
+            if (button != null) {
+                button.setIcon(ImageResources.IMPL.comboBoxDropDown());
+            }
+        }
+        if (dropDownList != null) {
+            dropDownList.setHideAfterSelect(!isMultiComboBox);
+        }
+    }
+
+    @Override
+    public HandlerRegistration addTagAddHandler(TagAddEvent.Handler handler) {
         return addHandler(handler, TagAddEvent.TYPE);
     }
 

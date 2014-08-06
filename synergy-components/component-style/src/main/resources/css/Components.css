@@ -22,46 +22,67 @@
     font-weight: normal;
     font-style: normal;
 }
-/**/
 @def calendarDays #9b9b9b;
 @def calendarOver #e5e5e5;
 @def black #000000;
-@def whiteBG #ffffff;
-@eval whiteBG_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#ffffff","0");
+
+@eval whiteBG kz.arta.synergy.components.style.client.Colors.whiteBG().hex();
+@eval whiteBG_0 kz.arta.synergy.components.style.client.Colors.whiteBG().alpha0();
+@eval whiteBG_0_ie kz.arta.synergy.components.style.client.Colors.whiteBG().alpha0IE();
+
 @def buttonBorder #e2e2e2;
-@def buttonBG #ebebeb;
-@eval buttonBG_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#ebebeb","0");
+
+@eval buttonBG kz.arta.synergy.components.style.client.Colors.buttonBG().hex();
+@eval buttonBG_0 kz.arta.synergy.components.style.client.Colors.buttonBG().alpha0();
+@eval buttonBG_0_ie kz.arta.synergy.components.style.client.Colors.buttonBG().alpha0IE();
+
 @def textColor1 #757575;
 @def textColor2 #606060;
 @def textColor3 #404040;
 @def border1 #afafaf;
-@def mainBg #373d49;
-@eval mainBg_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#373d49","0");
+
+@eval mainBG kz.arta.synergy.components.style.client.Colors.mainBG().hex();
+@eval mainBG_0 kz.arta.synergy.components.style.client.Colors.mainBG().alpha0();
+@eval mainBG_0_ie kz.arta.synergy.components.style.client.Colors.mainBG().alpha0IE();
+
 @def buttonPressed #d6d6d6;
 
 @def approveButtonBG1 #93c5ae;
-@def approveButtonBG2 #55cc95;
-@eval approveButtonBG2_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#55cc95","0");
-@def approveButtonBG3 #49b785;
-@eval approveButtonBG3_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#49b785","0");
-@def approveButtonBG4 #28a66d;
-@eval approveButtonBG4_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#28a66d","0");
+
+@eval approveButtonBG2 kz.arta.synergy.components.style.client.Colors.approveButtonBG2().hex();
+@eval approveButtonBG2_0 kz.arta.synergy.components.style.client.Colors.approveButtonBG2().alpha0();
+@eval approveButtonBG2_0_ie kz.arta.synergy.components.style.client.Colors.approveButtonBG2().alpha0IE();
+
+@eval approveButtonBG3 kz.arta.synergy.components.style.client.Colors.approveButtonBG3().hex();
+@eval approveButtonBG3_0 kz.arta.synergy.components.style.client.Colors.approveButtonBG3().alpha0();
+@eval approveButtonBG3_0_ie kz.arta.synergy.components.style.client.Colors.approveButtonBG3().alpha0IE();
+
+@eval approveButtonBG4 kz.arta.synergy.components.style.client.Colors.approveButtonBG4().hex();
+@eval approveButtonBG4_0 kz.arta.synergy.components.style.client.Colors.approveButtonBG4().alpha0();
+@eval approveButtonBG4_0_ie kz.arta.synergy.components.style.client.Colors.approveButtonBG4().alpha0IE();
 @def approveButtonBG5 #239260;
 
 @def declineButtonBG1 #ecacad;
-@def declineButtonBG2 #f47172;
-@eval declineButtonBG2_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#f47172","0");
-@def declineButtonBG3 #df6c6d;
-@eval declineButtonBG3_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#df6c6d","0");
-@def declineButtonBG4 #b05253;
-@eval declineButtonBG4_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#b05253","0");
+
+@eval declineButtonBG2 kz.arta.synergy.components.style.client.Colors.declineButtonBG2().hex();
+@eval declineButtonBG2_0 kz.arta.synergy.components.style.client.Colors.declineButtonBG2().alpha0();
+@eval declineButtonBG2_0_ie kz.arta.synergy.components.style.client.Colors.declineButtonBG2().alpha0IE();
+
+@eval declineButtonBG3 kz.arta.synergy.components.style.client.Colors.declineButtonBG3().hex();
+@eval declineButtonBG3_0 kz.arta.synergy.components.style.client.Colors.declineButtonBG3().alpha0();
+@eval declineButtonBG3_0_ie kz.arta.synergy.components.style.client.Colors.declineButtonBG3().alpha0IE();
+
+@eval declineButtonBG4 kz.arta.synergy.components.style.client.Colors.declineButtonBG4().hex();
+@eval declineButtonBG4_0 kz.arta.synergy.components.style.client.Colors.declineButtonBG4().alpha0();
+@eval declineButtonBG4_0_ie kz.arta.synergy.components.style.client.Colors.declineButtonBG4().alpha0IE();
 
 @def stackPanelText2 #808080;
 @def selectColor #deefff;
 @def tabBg2 #f9f9f9;
 
-@def tagBg #f2efd0;
-@eval tagBg_0 kz.arta.synergy.components.style.client.ColorUtils.toRgba("#f2efd0","0");
+@eval tagBG kz.arta.synergy.components.style.client.Colors.tagBG().hex();
+@eval tagBG_0 kz.arta.synergy.components.style.client.Colors.tagBG().alpha0();
+@eval tagBG_0_ie kz.arta.synergy.components.style.client.Colors.tagBG().alpha0IE();
 
 /* переписывает direction даже если не подгружается standard_rtl.css */
 *[dir="rtl"] {
@@ -118,7 +139,7 @@
     width: 20%;
     height: buttonHeight;
     float: right;
-    margin-top: gradientTopMargin;
+    bottom: buttonHeight;
     position: relative;
 }
 
@@ -129,6 +150,8 @@
     background: -o-linear-gradient(left, whiteBG_0 0%,whiteBG 100%);
     background: -ms-linear-gradient(left, whiteBG_0 0%,whiteBG 100%);
     background: linear-gradient(to right, whiteBG_0 0%,whiteBG 100%);
+
+    filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")whiteBG_0_ie literal("endColorstr=")whiteBG literal(",GradientType=1 )");
 }
 
 *[dir="rtl"] .buttonSimple .gradient {
@@ -147,6 +170,8 @@
     background: -o-linear-gradient(left, buttonBG_0 0%,buttonBG 100%);
     background: -ms-linear-gradient(left, buttonBG_0 0%,buttonBG 100%);
     background: linear-gradient(to right, buttonBG_0 0%,buttonBG 100%);
+
+    filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")buttonBG_0_ie literal("endColorstr=")buttonBG literal(",GradientType=1 )");
 }
 
 *[dir="rtl"] .pressed.buttonSimple .gradient{
@@ -156,6 +181,8 @@
     background: -o-linear-gradient(left, buttonBG 0%,buttonBG_0 100%);
     background: -ms-linear-gradient(left, buttonBG 0%,buttonBG_0 100%);
     background: linear-gradient(to right, buttonBG 0%,buttonBG_0 100%);
+
+    filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")buttonBG literal("endColorstr=")buttonBG_0_ie literal(",GradientType=1 )");
 }
 
 .approveButton .gradient{
@@ -165,6 +192,7 @@
     background: -o-linear-gradient(left, approveButtonBG3_0 0%,approveButtonBG3 100%);
     background: -ms-linear-gradient(left, approveButtonBG3_0 0%,approveButtonBG3 100%);
     background: linear-gradient(to right, approveButtonBG3_0 0%,approveButtonBG3 100%);
+    filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")approveButtonBG3_0_ie literal("endColorstr=")approveButtonBG3 literal(",GradientType=1 )");
 }
 
 *[dir="rtl"] .approveButton .gradient{
@@ -183,6 +211,7 @@
     background: -o-linear-gradient(left, approveButtonBG2_0 0%,approveButtonBG2 100%);
     background: -ms-linear-gradient(left, approveButtonBG2_0 0%,approveButtonBG2 100%);
     background: linear-gradient(to right, approveButtonBG2_0 0%,approveButtonBG2 100%);
+    filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")approveButtonBG2_0_ie literal("endColorstr=")approveButtonBG2 literal(",GradientType=1 )");
 }
 
 *[dir="rtl"] .approveButton:hover .gradient{
@@ -202,6 +231,7 @@
     background: -o-linear-gradient(left, approveButtonBG4_0 0%,approveButtonBG4 100%);
     background: -ms-linear-gradient(left, approveButtonBG4_0 0%,approveButtonBG4 100%);
     background: linear-gradient(to right, approveButtonBG4_0 0%,approveButtonBG4 100%);
+    filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")approveButtonBG4_0_ie literal("endColorstr=")approveButtonBG4 literal(",GradientType=1 )");
 }
 
 *[dir="rtl"] .approveButton.pressed .gradient{
@@ -221,6 +251,7 @@
     background: -o-linear-gradient(left, declineButtonBG3_0 0%,declineButtonBG3 100%);
     background: -ms-linear-gradient(left, declineButtonBG3_0 0%,declineButtonBG3 100%);
     background: linear-gradient(to right, declineButtonBG3_0 0%,declineButtonBG3 100%);
+    filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")declineButtonBG3_0_ie literal("endColorstr=")declineButtonBG3 literal(",GradientType=1 )");
 }
 
 *[dir="rtl"] .declineButton .gradient{
@@ -239,6 +270,7 @@
     background: -o-linear-gradient(left, declineButtonBG2_0 0%,declineButtonBG2 100%);
     background: -ms-linear-gradient(left, declineButtonBG2_0 0%,declineButtonBG2 100%);
     background: linear-gradient(to right, declineButtonBG2_0 0%,declineButtonBG2 100%);
+    filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")declineButtonBG2_0_ie literal("endColorstr=")declineButtonBG2 literal(",GradientType=1 )");
 }
 
 *[dir="rtl"] .declineButton:hover .gradient{
@@ -257,6 +289,7 @@
     background: -o-linear-gradient(left, declineButtonBG4_0 0%,declineButtonBG4 100%);
     background: -ms-linear-gradient(left, declineButtonBG4_0 0%,declineButtonBG4 100%);
     background: linear-gradient(to right, declineButtonBG4_0 0%,declineButtonBG4 100%);
+    filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")declineButtonBG4_0_ie literal("endColorstr=")declineButtonBG4 literal(",GradientType=1 )");
 }
 
 *[dir="rtl"] .declineButton.pressed .gradient{
@@ -269,13 +302,27 @@
 }
 
 .dialogTitle .gradient{
-    background: -moz-linear-gradient(left,  mainBg_0 0%, mainBg 50%, mainBg 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,mainBg_0), color-stop(50%,mainBg), color-stop(100%,mainBg)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(left,  mainBg_0 0%,mainBg 50%,mainBg 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(left,  mainBg_0 0%,mainBg 50%,mainBg 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(left,  mainBg_0 0%,mainBg 50%,mainBg 100%); /* IE10+ */
-    background: linear-gradient(to right,  mainBg_0 0%,mainBg 50%,mainBg 100%); /* W3C */
+    background: -moz-linear-gradient(left, mainBG_0 0%, mainBG 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,mainBG_0), color-stop(100%,mainBG));
+    background: -webkit-linear-gradient(left, mainBG_0 0%,mainBG 100%);
+    background: -o-linear-gradient(left, mainBG_0 0%,mainBG 100%);
+    background: -ms-linear-gradient(left, mainBG_0 0%,mainBG 100%);
+    background: linear-gradient(to right, mainBG_0 0%,mainBG 100%);
+    filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")mainBG_0_ie literal("endColorstr=")mainBG literal(",GradientType=1 )");
+    
+    height: dialogTitleHeight;
+    bottom: dialogTitleHeight;
 }
+
+*[dir="rtl"] .dialogTitle .gradient{
+    background: -moz-linear-gradient(left, mainBG 0%, mainBG_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,mainBG), color-stop(100%,mainBG_0));
+    background: -webkit-linear-gradient(left, mainBG 0%,mainBG_0 100%);
+    background: -o-linear-gradient(left, mainBG 0%,mainBG_0 100%);
+    background: -ms-linear-gradient(left, mainBG 0%,mainBG_0 100%);
+    background: linear-gradient(to right, mainBG 0%,mainBG_0 100%);
+}
+
 
 .buttonSimple:hover {
     background-color: whiteBG;
@@ -377,7 +424,7 @@
 @eval dialogTitleHeight kz.arta.synergy.components.style.client.Constants.dialogTitleHeight();
 
 .dialogTitle {
-    background: mainBg;
+    background: mainBG;
     height: dialogTitleHeight;
     line-height: dialogTitleHeight;
 }
@@ -389,10 +436,12 @@
     font-family: DroidSansBold;
     font-size:16px;
     margin-left: dialogTitleLeftMargin;
-    padding-right: dialogTitleLabelRightPadding;
+    margin-right: dialogTitleLabelRightPadding;
     vertical-align: middle;
     color: whiteBG;
     height: dialogTitleHeight;
+
+    vertical-align: top;
 
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -401,16 +450,19 @@
     -ms-user-select: none;
     user-select: none;
     cursor: default;
+
+    white-space: nowrap;
 }
 
 @eval dialogBorderWidth kz.arta.synergy.components.style.client.Constants.dialogBorderWidth();
 @eval dialogMinWidth kz.arta.synergy.components.style.client.Constants.dialogMinWidth();
 
 .dialog {
-    background: whiteBG;
+    box-sizing: border-box;
     min-width: dialogMinWidth;
     min-height: 84px;
 
+    background: whiteBG;
     border: dialogBorderWidth solid border1;
 }
 
@@ -421,6 +473,10 @@
     margin-top: 8px;
     float: right;
     background-repeat: no-repeat;
+    margin-right: 10px;
+}
+.dialogTitleButton:last-child{
+    margin-right: 0px;
 }
 
 @eval dialogContentPadding kz.arta.synergy.components.style.client.Constants.dialogContentPadding();
@@ -491,14 +547,28 @@
     height: 32px;
     line-height: 32px;
     overflow: hidden;
+    white-space: nowrap;
+
+    margin-bottom: 2px;
+}
+.contextMenuItem img {
+    margin-right: 10px;
 }
 .contextMenuItem > * {
     vertical-align: middle;
 }
 
+.contextMenuItem:last-child {
+    margin-bottom: 0px;
+}
+/* у элементов меню начиная со второго есть отступ вверху*/
+/*.contextMenuItem + .contextMenuItem {*/
+    /*margin-top: 2px;*/
+/*}*/
+
 /*здесь не используется :hover из-за возможности выделения клавиатурой*/
-.contextMenuItem.over {
-    background-color: selectColor;
+.contextMenuItem.over, .contextMenuItem.over.selected {
+    background-color: #D5D8DA;
 }
 
 .contextMenuItem.selected {
@@ -521,7 +591,6 @@
     vertical-align: middle;
     margin-right: 0px;
     z-index: 10000;
-    padding: 1px 0px 0px;
 }
 
 .contextMenu.green {
@@ -589,6 +658,9 @@
 .commonInput:focus, .artaText:focus, .artaTextPanel.focus {
     border-color: border1;
     color: textColor2;
+}
+.commonInput:\-ms\-clear, .artaTextPanel:-ms-clear {
+    display:none;
 }
 
 .commonInput.invalid, .artaText.invalid, .artaTextPanel.invalid {
@@ -739,28 +811,72 @@
 }
 
 .tagInput {
+    position:relative;
     border-radius: 4px;
     border: 1px buttonBorder solid;
-    line-heigth: 30px;
     height: 30px;
     vertical-align: top;
-    overflow: hidden;
+    overflow : visible;
+    line-height: 0;
+}
+
+.tagInput .commonInput{
+    border-width: 0px;
+    padding: 0 0 0 1px;
+    width: 100%;
 }
 
 .tagInput .buttonSimple {
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
+    position: absolute;
+    top: -1px;
+    right: -1px;
 }
 
-.tag {
+.tagInput .buttonSimple.disabled,
+.tagInput.disabled,
+.tagInput .buttonSimple.disabled img {
+    background-color: buttonBG;
+}
+
+.tagInput .tag {
     margin-left: 2px;
+}
+
+@eval tagHeight kz.arta.synergy.components.style.client.Constants.tagHeight();
+@eval tagMaxWidth kz.arta.synergy.components.style.client.Constants.tagMaxWidth();
+
+.tag {
     display: inline-block;
+    position: relative;
     border-radius: 3px;
-    background-color: tagBg;
+    background-color: tagBG;
     padding-left: 8px;
     padding-right: 8px;
-    height: 26px;
+    height: tagHeight;
     line-height: 26px;
+    max-width: tagMaxWidth;
+    vertical-align: top;
+}
+
+.tag .gradient {
+    background: -moz-linear-gradient(left, tagBG_0 0%, tagBG 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,tagBG_0), color-stop(100%,tagBG));
+    background: -webkit-linear-gradient(left, tagBG_0 0%,tagBG 100%);
+    background: -o-linear-gradient(left, tagBG_0 0%,tagBG 100%);
+    background: -ms-linear-gradient(left, tagBG_0 0%,tagBG 100%);
+    background: linear-gradient(to right, tagBG_0 0%,tagBG 100%);
+    filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")tagBG_0_ie literal("endColorstr=")tagBG literal(",GradientType=1 )");
+}
+
+*[dir="rtl"] .tag .gradient{
+    background: -moz-linear-gradient(left, tagBG 0%, tagBG_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,tagBG), color-stop(100%,tagBG_0));
+    background: -webkit-linear-gradient(left, tagBG 0%,tagBG_0 100%);
+    background: -o-linear-gradient(left, tagBG 0%,tagBG_0 100%);
+    background: -ms-linear-gradient(left, tagBG 0%,tagBG_0 100%);
+    background: linear-gradient(to right, tagBG 0%,tagBG_0 100%);
 }
 
 .tag ::selection {
@@ -785,11 +901,9 @@
     border: 1px solid buttonBorder;
     display: inline-block;
     line-height: 2px;
-    padding: 6px;
 }
 .tagIndicator:after, .tagIndicator:before {
     bottom: 100%;
-    left: 17px;
     border: solid transparent;
     content: " ";
     height: 0;
@@ -813,14 +927,29 @@
     border-right-width: 6px;
     margin-left: -1px;
 }
+.tagIndicator.leftIndicator:before, .tagIndicator.leftIndicator:after {
+    left: 17px;
+}
+.tagIndicator.rightIndicator:before, .tagIndicator.rightIndicator:after {
+    right: 17px;
+}
+.tagIndicator.centerIndicator:before, .tagIndicator.centerIndicator:after {
+    left: 46%;
+}
 
 p {
     margin: 0px;
 }
 
-.tagIndicator > p {
-    margin-bottom: 2px;
+.tagIndicator p:last-child {
+    margin-bottom: 0px;
 }
+
+@eval tagInterval kz.arta.synergy.components.style.client.Constants.tagInterval();
+.tagIndicator p {
+    margin-bottom: tagInterval;
+}
+
 
 .datePicker {
     width: 295px;

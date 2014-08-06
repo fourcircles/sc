@@ -21,11 +21,12 @@ public class Constants {
     public static final int DIALOG_BORDER_WIDTH = 1;
     public static final double DIALOG_NAV_BUTTON_VMARGIN = (DIALOG_BUTTON_PANEL_HEIGHT - BUTTON_HEIGHT - BORDER_WIDTH * 2) / 2;
     public static final int DIALOG_CLOSE_BUTTON_SIZE = 16;
-    public static final int DIALOG_CLOSE_BUTTON_PADDING = 4;
+    public static final int DIALOG_CLOSE_BUTTON_PADDING = 2;
     public static final int DIALOG_CLOSE_BUTTON_RIGHT_MARGIN = 10;
     public static final int DIALOG_TITLE_LEFT_MARGIN = 12;
 
     public static final int IMAGE_BUTTON_WIDTH = 30;
+    public static final int STD_ICON_WIDTH = 16;
 
     public static final int COMMON_INPUT_PADDING = 8;
 
@@ -55,8 +56,12 @@ public class Constants {
      * Максимальная ширина тэга
      */
     public static final int TAG_INPUT_MAX_TAG_WIDTH = 100;
-    public static final int INTERVAL_BETWEEN_TAGS = 2;
+    public static final int TAG_INTERVAL = 2;
+    public static final int HINTERVAL_BETWEEN_TAGS = 1;
     public static final int TAG_PADDING = 8;
+    public static final int TAG_HEIGHT = 26;
+    public static final int TAG_MAX_WIDTH = 100;
+    public static final int TAG_INPUT_NO_BUTTON_MIN_WIDTH = 104;
 
 
     public static String borderWidth() {
@@ -137,6 +142,16 @@ public class Constants {
         return LIST_MAX_HEIGHT + "px";
     }
 
+    public static String tagHeight() {
+        return TAG_HEIGHT + "px";
+    }
+    public static String tagMaxWidth() {
+        return TAG_MAX_WIDTH + "px";
+    }
+    public static String tagInterval() {
+        return TAG_INTERVAL + "px";
+    }
+
     public static String dateInputWidth() {
         return DATE_INPUT_WIDTH + "px";
     }
@@ -144,5 +159,4 @@ public class Constants {
     public static String yearListWidth() {
         return YEAR_LIST_WIDTH + "px";
     }
-
 }

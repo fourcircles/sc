@@ -17,8 +17,6 @@ import kz.arta.synergy.components.client.SynergyComponents;
  */
 public class GradientLabel extends Composite implements HasDirection {
 
-    //todo применять градиент к границе кнопки или текста
-    
     /**
      * Главная панель
      */
@@ -39,7 +37,6 @@ public class GradientLabel extends Composite implements HasDirection {
         initWidget(panel);
 
         panel.add(textLabel);
-        getElement().getStyle().setProperty("wordWrap", "break-word");
         getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
 
@@ -56,12 +53,13 @@ public class GradientLabel extends Composite implements HasDirection {
      * @return
      */
     protected boolean textFits() {
-        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
-        int oldHeight = textLabel.getOffsetHeight();
-        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NORMAL);
-        int newHeight = textLabel.getOffsetHeight();
-        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
-        return oldHeight == newHeight;
+        return getOffsetWidth() >= textLabel.getOffsetWidth();
+//        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
+//        int oldHeight = textLabel.getOffsetHeight();
+//        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NORMAL);
+//        int newHeight = textLabel.getOffsetHeight();
+//        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
+//        return oldHeight == newHeight;
     }
 
     /**
@@ -70,13 +68,6 @@ public class GradientLabel extends Composite implements HasDirection {
     protected void adjustGradient() {
         if (!textFits()) {
             panel.add(gradient);
-//            if (LocaleInfo.getCurrentLocale().isRTL()) {
-//                gradient.getElement().getStyle().setMarginRight(0, Style.Unit.PX);
-//                gradient.getElement().getStyle().setMarginLeft(-Constants.BUTTON_PADDING, Style.Unit.PX);
-//            } else {
-//                gradient.getElement().getStyle().setMarginRight(-Constants.BUTTON_PADDING, Style.Unit.PX);
-//                gradient.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
-//            }
             textLabel.getElement().getStyle().setOverflowX(Style.Overflow.VISIBLE);
         } else {
             textLabel.getElement().getStyle().setOverflowX(Style.Overflow.VISIBLE);
@@ -86,12 +77,13 @@ public class GradientLabel extends Composite implements HasDirection {
     @Override
     public void onLoad() {
         super.onLoad();
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-            @Override
-            public void execute() {
-                adjustGradient();
-            }
-        });
+        adjustGradient();
+//        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+//            @Override
+//            public void execute() {
+//                adjustGradient();
+//            }
+//        });
     }
 
     /**
@@ -116,6 +108,8 @@ public class GradientLabel extends Composite implements HasDirection {
         super.setWidth(width);
         adjustGradient();
     }
+
+
 
     @Override
     public void setDirection(Direction direction) {

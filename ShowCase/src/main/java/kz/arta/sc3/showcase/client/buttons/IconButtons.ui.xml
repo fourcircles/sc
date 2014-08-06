@@ -1,0 +1,22 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:arta='urn:import:kz.arta.synergy.components.client.button'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <ui:with type="kz.arta.synergy.components.client.resources.ImageResources" field="images"/>
+    <ui:style>
+        .button {
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+    </ui:style>
+    <g:FlowPanel>
+        <arta:SimpleButton text="Кнопка с иконкой" icon="{images.zoom}" addStyleNames="{style.button}"/>
+        <arta:SimpleButton text="Кнопка с длинным текстом" icon="{images.zoom}" addStyleNames="{style.button}"/>
+        <arta:SimpleButton text="Кнопка с длинным текстом" icon="{images.zoom}" width="140px" iconPosition="RIGHT" addStyleNames="{style.button}"/>
+        <arta:SimpleButton text="Кнопка неактивная" icon="{images.zoom}" enabled="false" addStyleNames="{style.button}"/>
+        <arta:ImageButton icon="{images.zoom}" addStyleNames="{style.button}"/>
+        <arta:ImageButton icon="{images.zoom}" enabled="false" addStyleNames="{style.button}"/>
+        <arta:ContextMenuButton text="Кнопка с меню" width="140px" addStyleNames="{style.button}" ui:field="contextButton1"/>
+        <arta:ContextMenuButton text="Кнопка с меню" icon="{images.zoom}" iconPosition="RIGHT" width="140px" addStyleNames="{style.button}" ui:field="contextButton2"/>
+        <arta:ContextMenuButton text="Кнопка с меню" icon="{images.zoom}" iconPosition="RIGHT" width="400px" addStyleNames="{style.button}" ui:field="contextButton3"/>
+    </g:FlowPanel>
+</ui:UiBinder>

@@ -30,9 +30,11 @@ public interface ImageResources extends ClientBundle {
     ImageResource dialogCollapseButtonOver();
 
     @Source("images/buttons/navigation_right.png")
+    @ImageResource.ImageOptions(flipRtl = true)
     ImageResource navigationRight();
 
     @Source("images/buttons/navigation_left.png")
+    @ImageResource.ImageOptions(flipRtl = true)
     ImageResource navigationLeft();
 
     @Source("images/buttons/white_button_dropdown_icon.png")
@@ -76,4 +78,7 @@ public interface ImageResources extends ClientBundle {
 
     @Source("images/tag_close.png")
     ImageResource tagClose();
+
+    @Source("images/buttons/calendar_icon.png")
+    ImageResource calendarIcon();
 }

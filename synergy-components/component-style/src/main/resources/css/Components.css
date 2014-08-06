@@ -22,6 +22,10 @@
     font-weight: normal;
     font-style: normal;
 }
+@def calendarDays #9b9b9b;
+@def calendarOver #e5e5e5;
+@def black #000000;
+
 @eval whiteBG kz.arta.synergy.components.style.client.Colors.whiteBG().hex();
 @eval whiteBG_0 kz.arta.synergy.components.style.client.Colors.whiteBG().alpha0();
 @eval whiteBG_0_ie kz.arta.synergy.components.style.client.Colors.whiteBG().alpha0IE();
@@ -674,7 +678,8 @@
 
 
 @eval comboMinWidth kz.arta.synergy.components.style.client.Constants.comboMinWidth();
-.comboBox {
+@eval dateInputWidth kz.arta.synergy.components.style.client.Constants.dateInputWidth();
+.comboBox, .dateInput {
     min-width: comboMinWidth;
     text-align: left;
     height: 30px;
@@ -685,7 +690,32 @@
     display:inline-block;
 }
 
-.comboBox .buttonSimple {
+.dateInput {
+    min-width: 0;
+    vertical-align: top;
+}
+
+.dateInput.invalid {
+    border: solid borderWidth declineButtonBG1;
+}
+
+.dateInput.invalid .buttonSimple{
+    border-top-color: declineButtonBG1;
+    border-bottom-color: declineButtonBG1;
+    border-right-color: declineButtonBG1;
+}
+
+.dateInput.focus {
+    border: solid borderWidth border1;
+}
+
+.dateInput.focus .buttonSimple{
+    border-top-color: border1;
+    border-bottom-color: border1;
+    border-right-color: border1;
+}
+
+.comboBox .buttonSimple, .dateInput .buttonSimple{
     margin-top: -1px;
     margin-right: -1px;
 
@@ -697,7 +727,7 @@
     display: inline-block;
 }
 
-.comboBox .buttonSimple:hover {
+.comboBox .buttonSimple:hover, .dateInput .buttonSimple:hover{
     border-color: border1;
 
 }
@@ -707,24 +737,24 @@
     background-color: buttonPressed;
 }
 
-.comboBox .buttonSimple:active {
+.comboBox .buttonSimple:active, .dateInput .buttonSimple:active{
     border-color: border1;
     background-color: buttonPressed;
 }
 
-.comboBox .commonInput {
+.comboBox .commonInput, .dateInput .commonInput{
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
     border: 0px;
     margin: 0px;
 }
 
-.comboBox.disabled  .commonInput{
+.comboBox.disabled .commonInput, .dateInput.disabled .commonInput{
     background-color: buttonBG;
     color: border1;
 }
 
-.comboBox.disabled .buttonSimple {
+.comboBox.disabled .buttonSimple, .dateInput.disabled .buttonSimple{
     border-color: buttonPressed;
     background-color: buttonBG;
 }
@@ -922,4 +952,104 @@ p {
 @eval tagInterval kz.arta.synergy.components.style.client.Constants.tagInterval();
 .tagIndicator p {
     margin-bottom: tagInterval;
+}
+
+
+.datePicker {
+    width: 295px;
+    display: inline-block;
+    padding-left: 17px;
+    padding-right: 17px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-color: buttonBorder;
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
+}
+
+.datePickerTop, .datePickerBottom, .datePickerCalendar {
+    display: block;
+}
+
+.datePickerTop {
+    line-height: 16px;
+}
+
+.datePickerTop span {
+    color: textColor2;
+}
+
+.dayWeekPanel {
+    padding-top: 26px;
+    padding-bottom: 12px;
+    line-height: 17px;
+}
+
+.dayWeekPanel span {
+    display: inline-block;
+    padding-right: 21px;
+    color: declineButtonBG4;
+    width: 16px;
+}
+
+.dayWeekPanel span:last-child {
+    padding-right: 0;
+}
+
+.daysPanel {
+    line-height: 14px;
+}
+
+.daysPanel span {
+    display: inline-block;
+    padding-right: 10.5px;
+    padding-left: 10.5px;
+    padding-bottom: 6px;
+    padding-top: 6px;
+    width: 16px;
+}
+
+.daysPanel span:last-child {
+    margin-right: 0;
+}
+
+.daysPanel:last-child {
+    padding-bottom: 20px;
+}
+
+.month, .thisMonth, .outMonth {
+    cursor: pointer;
+}
+
+.month {
+    color: calendarDays;
+}
+
+.thisMonth {
+    color: black;
+}
+
+.outMonth {
+    color: buttonPressed;
+}
+
+.month.over,  .thisMonth.over, .outMonth.over{
+    background-color: calendarOver;
+}
+
+.month.pressed,  .thisMonth.pressed, .outMonth.pressed {
+    background-color: selectColor;
+}
+
+.calendarPopup {
+    padding: 0;
+    border-width: 0;
+    z-index: 10000;
+    background-color: whiteBG;
+}
+
+.dateTimeInput {
+    display: inline-block;
+    vertical-align: top;
 }

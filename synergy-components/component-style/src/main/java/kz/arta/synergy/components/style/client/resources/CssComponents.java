@@ -26,6 +26,8 @@ public interface CssComponents extends CssResource {
 
     String buttonText();
 
+    String calendarPopup();
+
     String comboBox();
 
     String commonInput();
@@ -33,6 +35,22 @@ public interface CssComponents extends CssResource {
     String contextMenu();
 
     String contextMenuItem();
+
+    String dateInput();
+
+    String datePicker();
+
+    String datePickerBottom();
+
+    String datePickerCalendar();
+
+    String datePickerTop();
+
+    String dateTimeInput();
+
+    String dayWeekPanel();
+
+    String daysPanel();
 
     String declineButton();
 
@@ -82,6 +100,10 @@ public interface CssComponents extends CssResource {
 
     String menuSeparator();
 
+    String month();
+
+    String outMonth();
+
     String over();
 
     String placeHolder();
@@ -105,6 +127,8 @@ public interface CssComponents extends CssResource {
     String textColor2();
 
     String textColor3();
+
+    String thisMonth();
 
     String vscroll();
 

@@ -244,7 +244,7 @@ public class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
 
         contentHeight = height;
         this.height = scrollPanel.getOffsetHeight();
-        if (scrollPanel.getOffsetWidth() < scrollPanel.getWidget().getOffsetWidth() + 2) {
+        if (scrollPanel.getOffsetWidth() < scrollPanel.getWidget().getOffsetWidth()) {
             this.height -= Constants.SCROLL_BAR_HEIGHT;
             height += Constants.SCROLL_BAR_HEIGHT;
         }

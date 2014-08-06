@@ -12,7 +12,6 @@ import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.input.InputWithEvents;
-import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.input.events.TextChangedEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;

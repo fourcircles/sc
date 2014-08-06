@@ -33,7 +33,7 @@ public class Constants {
     /**
      * расстояние между заголовком и кнопкой "свернуть"
      */
-    public static final int DIALOG_TITLE_LABEL_RIGHT_PADDING = 8;
+    public static final int DIALOG_TITLE_LABEL_RIGHT_PADDING = 10;
 
     public static final int SCROLL_BAR_WIDTH = 17;
 
@@ -41,6 +41,10 @@ public class Constants {
 
     public static final int COMBO_LIST_DEFAULT_HEIGHT = 200;
     public static final int FIELD_WITH_BUTTON_MIN_WIDTH = 200;
+
+    public static final int DATE_INPUT_WIDTH = 57;
+
+    public static final int YEAR_LIST_WIDTH = 116;
 
     public static final int LIST_MAX_HEIGHT = 200;
 
@@ -147,4 +151,13 @@ public class Constants {
     public static String tagInterval() {
         return TAG_INTERVAL + "px";
     }
+
+    public static String dateInputWidth() {
+        return DATE_INPUT_WIDTH + "px";
+    }
+
+    public static String yearListWidth() {
+        return YEAR_LIST_WIDTH + "px";
+    }
+
 }

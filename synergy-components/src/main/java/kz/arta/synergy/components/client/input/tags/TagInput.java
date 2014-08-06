@@ -19,6 +19,8 @@ import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
 import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
+import kz.arta.synergy.components.client.menu.filters.ListFilter;
+import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
@@ -91,6 +93,8 @@ public class TagInput<V> extends Composite implements HasText,
      * Выпадающий список для поля
      */
     private DropDownListMulti<V> dropDownList;
+
+    private ListTextFilter filter = ListTextFilter.createPrefixFilter();
 
     private EventBus innerBus;
     private HandlerRegistration buttonRegistration;
@@ -293,29 +297,9 @@ public class TagInput<V> extends Composite implements HasText,
             tagsPanel.clearOffset();
         }
         setInputOffset(tagsPanel.getOffsetWidth());
-//        if (textWidth > inputWidth || (textWidth < inputWidth && tagsPanelOffset > 0)) {
-//            textWidth = Math.min(textWidth, getAvailableSpace() - 8);
-//            textWidth = Math.max(textWidth, 40);
-//            setInputOffset(getAvailableSpace() - textWidth);
-//            if (tagsPanel.getOffsetWidth() > inputOffset) {
-//                tagsPanelOffset = tagsPanel.getOffsetWidth()  - inputOffset;
-//                tagsPanel.setOffset(tagsPanelOffset);
-//            }
-//        }
+        filter.setText(input.getText());
 
-//        if (textWidth >= inputWidth) {
-//            textWidth = Math.min(textWidth, getAvailableSpace() - 8);
-//            tagsPanelOffset = tagsPanelOffset - (textWidth - inputWidth);
-//            tagsPanel.setOffset(-tagsPanelOffset);
-//            setInputOffset(inputOffset - (textWidth - inputWidth));
-//        } else if (textWidth <= 40) {
-//            tagsPanelOffset = 0;
-//            tagsPanel.clearOffset();
-//            setInputOffset(tagsPanel.getOffsetWidth());
-//        }
-//
         if (dropDownList != null) {
-            dropDownList.applyPrefix(input.getText());
             if (input.getText().isEmpty()) {
                 dropDownList.hide();
             } else {
@@ -410,6 +394,8 @@ public class TagInput<V> extends Composite implements HasText,
 
     public void setDropDownList(final DropDownListMulti<V> dropDownList) {
         this.dropDownList = dropDownList;
+        dropDownList.setFilter(filter);
+
         dropDownList.removeAutoHidePartner(this.getElement());
         if (hasButton) {
             dropDownList.addAutoHidePartner(button.getElement());
@@ -464,5 +450,23 @@ public class TagInput<V> extends Composite implements HasText,
     @Override
     public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler handler) {
         return addHandler(handler, TagRemoveEvent.TYPE);
+    }
+
+    /**
+     * Задает тип фильтра.
+     * Пока есть только два фильтра, поэтому выбор регулируется boolean переменной,
+     * в будущем возможно сделать enum.
+     * @param filterType true - префиксный фильтр, false - фильтр на содержание
+     */
+    public void setFilterType(boolean filterType) {
+        if (filterType) {
+            filter = ListTextFilter.createPrefixFilter();
+        } else {
+            filter = ListTextFilter.createContainsFilter();
+        }
+        if (dropDownList != null) {
+            dropDownList.setFilter(filter);
+        }
+        filter.setText(input.getText());
     }
 }

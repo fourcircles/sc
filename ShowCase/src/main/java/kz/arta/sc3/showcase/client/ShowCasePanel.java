@@ -397,6 +397,14 @@ public class ShowCasePanel extends LayoutPanel {
         panel.add(datePanel);
         datePanel.getElement().getStyle().setPadding(5, Style.Unit.PX);
 
+        FlowPanel datePanel1 = new FlowPanel();
+        DateInput dateInput1 = new DateInput();
+        dateInput1.setDate(new Date());
+        datePanel1.add(dateInput1);
+        dateInput1.setEnabled(false);
+        panel.add(datePanel1);
+        datePanel1.getElement().getStyle().setPadding(5, Style.Unit.PX);
+
         FlowPanel dateTimePanel= new FlowPanel();
         dateTimePanel.add(new DateTimeInput());
         panel.add(dateTimePanel);

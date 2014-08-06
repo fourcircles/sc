@@ -5,6 +5,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasEnabled;
 import kz.arta.synergy.components.client.SynergyComponents;
 
 import java.util.Date;
@@ -15,7 +16,7 @@ import java.util.Date;
  * Time: 10:28
  * Компонент ввода даты и времени
  */
-public class DateTimeInput extends Composite {
+public class DateTimeInput extends Composite implements HasEnabled {
 
     private FlowPanel panel;
 
@@ -28,6 +29,11 @@ public class DateTimeInput extends Composite {
      * Компонент ввода даты
      */
     DateInput dateInput;
+
+    /**
+     * Активно ли поле
+     */
+    private boolean enabled = true;
 
     private boolean allowEmpty = true;
 
@@ -73,5 +79,17 @@ public class DateTimeInput extends Composite {
         dateInput.setDate(date);
         timeInput.setHours(date.getHours());
         timeInput.setMinutes(date.getMinutes());
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        dateInput.setEnabled(enabled);
+        timeInput.setEnabled(enabled);
     }
 }

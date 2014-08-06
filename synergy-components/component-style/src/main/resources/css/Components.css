@@ -655,7 +655,7 @@
     border-color: border1;
     color: textColor2;
 }
-.commonInput:-ms-clear, .artaTextPanel:-ms-clear {
+.commonInput:\-ms\-clear, .artaTextPanel:-ms-clear {
     display:none;
 }
 
@@ -790,11 +790,18 @@
     line-height: 0;
 }
 
-
+.tagInput .commonInput{
+    border-width: 0px;
+    padding: 0 0 0 1px;
+    width: 100%;
+}
 
 .tagInput .buttonSimple {
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
+    position: absolute;
+    top: -1px;
+    right: -1px;
 }
 
 .tagInput .buttonSimple.disabled,

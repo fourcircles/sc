@@ -2,6 +2,7 @@ package kz.arta.synergy.components.client.input.tags;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -73,7 +74,13 @@ public class TagsPanel extends Composite{
         container.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
         container.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
         container.getElement().getStyle().setTop(0, Style.Unit.PX);
-        container.getElement().getStyle().setLeft(0, Style.Unit.PX);
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            container.getElement().getStyle().setRight(0, Style.Unit.PX);
+            container.getElement().getStyle().setPaddingLeft(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
+        } else {
+            container.getElement().getStyle().setLeft(0, Style.Unit.PX);
+            container.getElement().getStyle().setPaddingRight(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
+        }
         container.setHeight("100%");
 
         root = new FlowPanel();
@@ -88,7 +95,7 @@ public class TagsPanel extends Composite{
         Style rootStyle = root.getElement().getStyle();
         rootStyle.setPosition(Style.Position.RELATIVE);
         rootStyle.setTop(2, Style.Unit.PX);
-        rootStyle.setPaddingRight(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
+
         rootStyle.setDisplay(Style.Display.INLINE_BLOCK);
         rootStyle.setWhiteSpace(Style.WhiteSpace.NOWRAP);
 
@@ -145,13 +152,14 @@ public class TagsPanel extends Composite{
         }
 
         int i = 0;
-        //пытаемся добавить теги начиная с тега на позиции i
+        //теги [i..i-1] скрываем в индикатор, остальные пытаемся разместить
         while (i <= tags.size()) {
-            int totalWidth = 0;
+            //правый отступ панели тегов
+            int totalWidth = Constants.COMMON_INPUT_PADDING;
 
             if (i > 0) {
                 indicator.setText(i + "+");
-                totalWidth += Utils.getTextWidth(indicator) + Constants.TAG_PADDING * 2;
+                totalWidth += Utils.getTextWidth(indicator) + Constants.TAG_PADDING * 2 + Constants.TAG_INTERVAL;
             }
 
             for (int j = i; j < tags.size(); j++) {
@@ -159,10 +167,7 @@ public class TagsPanel extends Composite{
                 totalWidth += Constants.TAG_INTERVAL;
             }
 
-            //убираем интервал между тегами, если отображен только индикатор
-            if (i < tags.size() || tags.size() == 1) {
-                totalWidth -= Constants.TAG_INTERVAL;
-            }
+            totalWidth += Constants.COMMON_INPUT_PADDING;
 
             if (totalWidth <= maxWidth) {
                 break;
@@ -208,19 +213,33 @@ public class TagsPanel extends Composite{
     }
 
     /**
-     * Сдвигает теги налево на заданную величину в пикселях
-     * @param rightOffset сдвиг в пикселях
+     * Сдвигает теги налево на заданную величину в пикселях. Направление сдвига зависит от локали.
+     * @param offset сдвиг в пикселях
      */
-    public void setRightOffset(int rightOffset) {
-        root.getElement().getStyle().setRight(rightOffset, Style.Unit.PX);
-        container.setWidth(Math.max(0, root.getOffsetWidth() - rightOffset) + "px");
+    public void setOffset(int offset) {
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            root.getElement().getStyle().setLeft(offset, Style.Unit.PX);
+        } else {
+            root.getElement().getStyle().setRight(offset, Style.Unit.PX);
+        }
+        container.setWidth(Math.max(0, root.getOffsetWidth() - offset) + "px");
     }
 
     /**
      * Убирает сдвиг если он был
      */
-    public void clearRightOffset() {
+    public void clearOffset() {
         root.getElement().getStyle().clearRight();
+        root.getElement().getStyle().clearLeft();
+
         container.setWidth(root.getOffsetWidth() + "px");
+    }
+
+    /**
+     * Возвращает всех тегов и индикатора
+     * @return ширина
+     */
+    public int getTagsWidth() {
+        return root.getOffsetWidth() + Constants.COMMON_INPUT_PADDING;
     }
 }

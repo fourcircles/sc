@@ -435,11 +435,6 @@ public class ShowCasePanel extends LayoutPanel {
         firstRow.setWidget(firstRowPanel);
         firstRowPanel.add(createLabel("Поля с индикаторами: "));
 
-        PPanel secondRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
-        FlowPanel secondRowPanel = new FlowPanel();
-        secondRow.setWidget(secondRowPanel);
-        secondRowPanel.add(createLabel("Поля без индикаторов: "));
-
         PPanel thirdRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
         FlowPanel thirdRowPanel = new FlowPanel();
         thirdRow.setWidget(thirdRowPanel);
@@ -457,7 +452,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         final TagInput noListHasIndicator= new TagInput();
         noListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        noListHasIndicator.setWidth(400);
+        noListHasIndicator.setWidth(250);
         firstRowPanel.add(noListHasIndicator);
 
         final TagInput<String> hasListHasIndicator = new TagInput<String>();
@@ -468,18 +463,6 @@ public class ShowCasePanel extends LayoutPanel {
 
         firstRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         panel.add(firstRow);
-
-        TagInput noListNoIndicator = new TagInput(false);
-        noListNoIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        secondRowPanel.add(noListNoIndicator);
-
-        TagInput<String> hasListNoIndicator = new TagInput<String>(false);
-        hasListNoIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        hasListNoIndicator.setDropDownList(createSimpleList(hasListNoIndicator));
-        secondRowPanel.add(hasListNoIndicator);
-
-        secondRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        panel.add(secondRow);
 
         TagInput noListNoButton = new TagInput(true, false);
         noListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);

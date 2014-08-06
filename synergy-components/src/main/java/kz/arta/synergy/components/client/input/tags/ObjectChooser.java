@@ -52,8 +52,6 @@ public class ObjectChooser extends Composite{
         super.setWidth(offsetWidth - 2 * Constants.BORDER_WIDTH + "px");
 
         button = new ImageButton(ImageResources.IMPL.zoom());
-        button.getElement().getStyle().setMarginTop(-1, Style.Unit.PX);
-        button.getElement().getStyle().setMarginRight(-1, Style.Unit.PX);
         button.getElement().getStyle().setFloat(Style.Float.RIGHT);
         button.addClickHandler(new ClickHandler() {
             @Override

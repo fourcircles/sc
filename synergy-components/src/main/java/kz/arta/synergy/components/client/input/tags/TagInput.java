@@ -5,11 +5,14 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.input.InputWithEvents;
+import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.input.events.TextChangedEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
@@ -22,9 +25,6 @@ import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-//todo исправить отступы и popup в rtl
-//todo полей "без индикатора" не надо
 
 /**
  * User: vsl
@@ -39,6 +39,11 @@ public class TagInput<V> extends Composite implements HasText,
      * Корневая панель
      */
     private FlowPanel root;
+
+    /**
+     * Контейнер для поля ввода. Нужен для сохранения отступов в IE9
+     */
+    private SimplePanel inputBox;
 
     /**
      * Элемент для ввода текста
@@ -139,13 +144,15 @@ public class TagInput<V> extends Composite implements HasText,
         getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
         input = new InputWithEvents(innerBus);
-        input.getElement().getStyle().setBorderWidth(0, Style.Unit.PX);
-        root.add(input);
+
+        inputBox = new SimplePanel(input);
+        inputBox.getElement().getStyle().setPaddingLeft(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
+        inputBox.getElement().getStyle().setPaddingRight(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
+
+        root.add(inputBox);
 
         if (hasButton) {
             button = new ImageButton(ImageResources.IMPL.zoom());
-            button.getElement().getStyle().setMarginTop(-1, Style.Unit.PX);
-            button.getElement().getStyle().setMarginRight(-1, Style.Unit.PX);
 
             buttonClick = new ClickHandler() {
                 @Override
@@ -255,6 +262,17 @@ public class TagInput<V> extends Composite implements HasText,
             tag.setBus(innerBus);
             innerBus.fireEvent(new TagAddEvent(tag));
             input.setText("");
+            setInputOffset(tagsPanel.getOffsetWidth());
+
+            if (Window.Navigator.getAppVersion().contains("MSIE")) {
+                new Timer() {
+                    @Override
+                    public void run() {
+                        setInputOffset(tagsPanel.getOffsetWidth());
+                        input.setFocus(true);
+                    }
+                }.schedule(50);
+            }
         }
     }
 
@@ -264,17 +282,38 @@ public class TagInput<V> extends Composite implements HasText,
      */
     private void textChanged() {
         int textWidth = Utils.getTextWidth(input);
-        if (textWidth >= inputWidth) {
-            textWidth = Math.min(textWidth, getAvailableSpace() - 8);
-            tagsPanelOffset = tagsPanelOffset - (textWidth - inputWidth);
-            tagsPanel.setRightOffset(-tagsPanelOffset);
-            setInputOffset(inputOffset - (textWidth - inputWidth));
-        } else if (textWidth <= 40) {
-            tagsPanelOffset = 0;
-            tagsPanel.clearRightOffset();
-            setInputOffset(tagsPanel.getOffsetWidth());
-        }
 
+        int startTextWidth = getAvailableSpace() - tagsPanel.getTagsWidth();
+        if (textWidth > startTextWidth) {
+            textWidth = Math.min(textWidth, getAvailableSpace() - 8);
+            tagsPanelOffset = textWidth - startTextWidth;
+            tagsPanel.setOffset(tagsPanelOffset);
+        } else {
+            tagsPanelOffset = 0;
+            tagsPanel.clearOffset();
+        }
+        setInputOffset(tagsPanel.getOffsetWidth());
+//        if (textWidth > inputWidth || (textWidth < inputWidth && tagsPanelOffset > 0)) {
+//            textWidth = Math.min(textWidth, getAvailableSpace() - 8);
+//            textWidth = Math.max(textWidth, 40);
+//            setInputOffset(getAvailableSpace() - textWidth);
+//            if (tagsPanel.getOffsetWidth() > inputOffset) {
+//                tagsPanelOffset = tagsPanel.getOffsetWidth()  - inputOffset;
+//                tagsPanel.setOffset(tagsPanelOffset);
+//            }
+//        }
+
+//        if (textWidth >= inputWidth) {
+//            textWidth = Math.min(textWidth, getAvailableSpace() - 8);
+//            tagsPanelOffset = tagsPanelOffset - (textWidth - inputWidth);
+//            tagsPanel.setOffset(-tagsPanelOffset);
+//            setInputOffset(inputOffset - (textWidth - inputWidth));
+//        } else if (textWidth <= 40) {
+//            tagsPanelOffset = 0;
+//            tagsPanel.clearOffset();
+//            setInputOffset(tagsPanel.getOffsetWidth());
+//        }
+//
         if (dropDownList != null) {
             dropDownList.applyPrefix(input.getText());
             if (input.getText().isEmpty()) {
@@ -306,9 +345,15 @@ public class TagInput<V> extends Composite implements HasText,
      */
     private void setInputOffset(int offset) {
         inputOffset = offset;
-        input.getElement().getStyle().setPaddingLeft(inputOffset, Style.Unit.PX);
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            inputBox.getElement().getStyle().setPaddingRight(inputOffset, Style.Unit.PX);
+//            input.getElement().getStyle().setPaddingRight(inputOffset, Style.Unit.PX);
+        } else {
+            inputBox.getElement().getStyle().setPaddingLeft(inputOffset, Style.Unit.PX);
+//            input.getElement().getStyle().setPaddingLeft(inputOffset, Style.Unit.PX);
+        }
         inputWidth = getAvailableSpace() - offset;
-        input.setWidth(inputWidth + "px");
+        inputBox.setWidth(inputWidth + "px");
     }
     /**
      * Возвращает тег находящийся на указанной позиции.
@@ -337,10 +382,10 @@ public class TagInput<V> extends Composite implements HasText,
         width -= Constants.COMMON_INPUT_PADDING * 2;
 
         inputWidth = width;
-        input.setWidth(width + "px");
+        inputBox.setWidth(width + "px");
         setInputOffset(Constants.COMMON_INPUT_PADDING);
 
-        tagsPanel.setMaxWidth(getAvailableSpace() - 40);
+        tagsPanel.setMaxWidth(getAvailableSpace() - 26);
     }
 
     @Override

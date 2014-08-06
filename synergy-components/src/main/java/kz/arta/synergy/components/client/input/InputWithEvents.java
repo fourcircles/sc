@@ -26,6 +26,7 @@ public class InputWithEvents extends TextInput {
     private String oldText = "";
 
     public InputWithEvents(final EventBus bus) {
+        super(true);
         this.bus = bus;
 
         addKeyUpHandler(new KeyUpHandler() {

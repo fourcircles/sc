@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
+//todo выравнивание в rtl
 /**
  * User: vsl
  * Date: 25.07.14

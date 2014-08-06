@@ -659,8 +659,12 @@
     border-color: border1;
     color: textColor2;
 }
-.commonInput:\-ms\-clear, .artaTextPanel:-ms-clear {
-    display:none;
+
+/*убираем крестик удаления в поле ввода, который отображают ie10-11*/
+*::-ms-clear {
+    display: none;
+    width: 0;
+    height: 0;
 }
 
 .commonInput.invalid, .artaText.invalid, .artaTextPanel.invalid {

@@ -501,13 +501,17 @@ public class ShowCasePanel extends LayoutPanel {
 
         final TagInput noListHasIndicator= new TagInput();
         noListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        noListHasIndicator.setWidth(250);
+        noListHasIndicator.setWidth(350);
         firstRowPanel.add(noListHasIndicator);
 
         final TagInput<String> hasListHasIndicator = new TagInput<String>();
         hasListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         hasListHasIndicator.setWidth(300);
         hasListHasIndicator.setDropDownList(createSimpleList(hasListHasIndicator));
+
+        hasListHasIndicator.setTitle(SCMessages.i18n.tr("Фильтрация списка по вхождению текста"));
+        hasListHasIndicator.setFilterType(false);
+
         firstRowPanel.add(hasListHasIndicator);
 
         firstRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
@@ -520,6 +524,7 @@ public class ShowCasePanel extends LayoutPanel {
         TagInput<String> hasListNoButton = new TagInput<String>(true, false);
         hasListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         hasListNoButton.setDropDownList(createSimpleList(hasListNoButton));
+        hasListNoButton.setTitle(SCMessages.i18n.tr("Префиксный выбор из списка"));
         thirdRowPanel.add(hasListNoButton);
 
         thirdRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);

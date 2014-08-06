@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.menu;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.resources.client.ImageResource;
@@ -253,6 +254,24 @@ public class DropDownList<V> extends MenuBase implements HasSelectionEventHandle
         }
         return null;
     }
+
+    public void setWidth(String width) {
+        popup.setWidth(width);
+    }
+
+    /**
+     * Показывать ли верхнюю границу
+     * @param setBorder  true/false
+     */
+    public void setBorderTop(boolean setBorder) {
+        if (setBorder) {
+            popup.getElement().getStyle().setProperty("borderTop", "");
+            popup.getElement().getStyle().setPadding(0, Style.Unit.PX);
+        } else {
+            popup.getElement().getStyle().setProperty("borderTop", "0px");
+        }
+    }
+
 
     /**
      * Элемент списка

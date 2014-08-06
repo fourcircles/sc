@@ -41,6 +41,10 @@ public class Constants {
     public static final int COMBO_LIST_DEFAULT_HEIGHT = 200;
     public static final int FIELD_WITH_BUTTON_MIN_WIDTH = 200;
 
+    public static final int DATE_INPUT_WIDTH = 57;
+
+    public static final int YEAR_LIST_WIDTH = 116;
+
     public static final int LIST_MAX_HEIGHT = 200;
 
     /**
@@ -132,4 +136,13 @@ public class Constants {
     public static String listMaxHeight() {
         return LIST_MAX_HEIGHT + "px";
     }
+
+    public static String dateInputWidth() {
+        return DATE_INPUT_WIDTH + "px";
+    }
+
+    public static String yearListWidth() {
+        return YEAR_LIST_WIDTH + "px";
+    }
+
 }

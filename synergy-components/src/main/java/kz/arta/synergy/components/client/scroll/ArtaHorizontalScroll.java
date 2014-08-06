@@ -22,6 +22,7 @@ import kz.arta.synergy.components.style.client.resources.ComponentResources;
  * User: user
  * Date: 29.07.14
  * Time: 12:23
+ * Горизонтальный скролл-бар
  */
 public class ArtaHorizontalScroll extends Composite implements HorizontalScrollbar {
 
@@ -41,13 +42,13 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
     ArtaFlowPanel panel;
 
     /**
-     * Кнопка вверх
+     * Кнопка влева
      */
     @UiField
     Image left;
 
     /**
-     * Кнопка вниз
+     * Кнопка вправо
      */
     @UiField Image right;
 

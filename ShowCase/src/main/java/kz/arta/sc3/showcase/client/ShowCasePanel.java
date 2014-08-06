@@ -25,7 +25,13 @@ import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
-import kz.arta.synergy.components.client.input.*;
+import kz.arta.synergy.components.client.input.ArtaTextArea;
+import kz.arta.synergy.components.client.input.NumberInput;
+import kz.arta.synergy.components.client.input.TextInput;
+import kz.arta.synergy.components.client.input.date.ArtaDatePicker;
+import kz.arta.synergy.components.client.input.date.DateInput;
+import kz.arta.synergy.components.client.input.date.DateTimeInput;
+import kz.arta.synergy.components.client.input.date.TimeInput;
 import kz.arta.synergy.components.client.input.tags.TagInput;
 import kz.arta.synergy.components.client.menu.ContextMenu;
 import kz.arta.synergy.components.client.menu.DropDownList;
@@ -34,6 +40,7 @@ import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.theme.Theme;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * User: vsl
@@ -369,8 +376,43 @@ public class ShowCasePanel extends LayoutPanel {
         new ShowComponent(this, category3, SCMessages.i18n.tr("Поле ввода текста"), SCMessages.i18n.tr("Поле ввода текста"), getTextInputs());
         cnt++;
         new ShowComponent(this, category3, SCMessages.i18n.tr("Комбобокс"), SCMessages.i18n.tr("Комбобокс"), comboBoxPanel);
+
+        cnt++;
+        new ShowComponent(this, category3, SCMessages.i18n.tr("Дата/время"), SCMessages.i18n.tr("Дата/время"), getDateInputs());
     }
 
+    /**
+     * Панель с компонентами дата/время
+     * @return
+     */
+    private Widget getDateInputs() {
+        FlowPanel panel = new FlowPanel();
+
+        FlowPanel timePanel = new FlowPanel();
+        TimeInput timeInput = new TimeInput();
+        timePanel.add(timeInput);
+        panel.add(timePanel);
+        timePanel.getElement().getStyle().setPadding(5, Style.Unit.PX);
+
+        FlowPanel datePanel = new FlowPanel();
+        DateInput dateInput = new DateInput();
+        dateInput.setDate(new Date());
+        datePanel.add(dateInput);
+        panel.add(datePanel);
+        datePanel.getElement().getStyle().setPadding(5, Style.Unit.PX);
+
+        FlowPanel dateTimePanel= new FlowPanel();
+        dateTimePanel.add(new DateTimeInput());
+        panel.add(dateTimePanel);
+        dateTimePanel.getElement().getStyle().setPadding(5, Style.Unit.PX);
+
+        FlowPanel datePickerPanel = new FlowPanel();
+        datePickerPanel.add(new ArtaDatePicker());
+        panel.add(datePickerPanel);
+        datePickerPanel.getElement().getStyle().setPadding(5, Style.Unit.PX);
+
+        return panel;
+    }
     /**
      * Текстовые поля
      * @return панель с текстовыми полями

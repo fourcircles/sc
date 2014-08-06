@@ -9,26 +9,27 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
 import kz.arta.synergy.components.client.ComboBox;
+import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
-import kz.arta.synergy.components.client.input.NumberInput;
 import kz.arta.synergy.components.client.input.TextInput;
-import kz.arta.synergy.components.client.input.*;
+import kz.arta.synergy.components.client.input.date.ArtaDatePicker;
+import kz.arta.synergy.components.client.input.date.DateInput;
+import kz.arta.synergy.components.client.input.date.DateTimeInput;
+import kz.arta.synergy.components.client.input.date.TimeInput;
 import kz.arta.synergy.components.client.input.tags.ObjectChooser;
 import kz.arta.synergy.components.client.input.tags.TagInput;
 import kz.arta.synergy.components.client.menu.ContextMenu;
@@ -40,6 +41,7 @@ import kz.arta.synergy.components.client.util.PPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * User: vsl
@@ -573,32 +575,7 @@ public class ShowCasePanel extends LayoutPanel {
         Panel textAreaPanel = new FlowPanel();
         textAreaPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
 
-        final NumberInput numberInput = new NumberInput();
-        numberInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        numberInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        numberInput.setPlaceHolder(SCMessages.i18n.tr("Числовое поле ввода"));
-        textAreaPanel.add(numberInput);
 
-        final TagInput tags = new TagInput();
-        tags.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        tags.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        tags.setWidth(300);
-        textAreaPanel.add(tags);
-
-        final TagInput tagInputList = new TagInput();
-        tagInputList.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        tagInputList.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        tagInputList.setWidth(300);
-
-        DropDownList<String> tagList = new DropDownList<String>(tagInputList, null);
-        for (int i = 0; i < 5; i++) {
-            tagList.addItem("аа " + i, "value " + i);
-            tagList.addItem("аб" + i, "value " + i);
-            tagList.addItem("пб" + i, "value " + i);
-        }
-        tagInputList.setDropDownList(tagList);
-
-        textAreaPanel.add(tagInputList);
 
         final ArtaTextArea textArea = new ArtaTextArea();
         textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);

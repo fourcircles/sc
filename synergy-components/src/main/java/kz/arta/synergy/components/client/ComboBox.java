@@ -18,7 +18,6 @@ import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
-import kz.arta.synergy.components.client.menu.events.SelectionEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.style.client.Constants;
 

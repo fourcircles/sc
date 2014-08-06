@@ -2,7 +2,6 @@ package kz.arta.synergy.components.client.menu;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
@@ -13,6 +12,7 @@ import kz.arta.synergy.components.client.menu.events.HasSelectionEventHandlers;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.menu.events.SelectionEvent;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
@@ -63,7 +63,8 @@ public class DropDownList<V> extends MenuBase {
             root.getElement().getStyle().setPosition(Style.Position.RELATIVE);
             // вроде как не происходит сдвига для стандартного скрываемого скролла
             if (!Window.Navigator.getAppVersion().contains("MSIE") &&
-                    !Window.Navigator.getAppVersion().contains("Trident")) {
+                    !Window.Navigator.getAppVersion().contains("Trident") &&
+                    !Navigator.isFirefox) {
                 root.getElement().getStyle().setRight(-15, Style.Unit.PX);
             }
         }
@@ -187,6 +188,7 @@ public class DropDownList<V> extends MenuBase {
 
         popup.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 8 + "px");
         root.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 8 + "px");
+
 
         super.showUnderParent();
     }
@@ -325,7 +327,7 @@ public class DropDownList<V> extends MenuBase {
      * Определяет высоту из количества добавленых элементов
      * @return высота
      */
-    private int getHeight() {
+    protected int getHeight() {
         int cnt = root.getWidgetCount();
         return Math.min(cnt * 32 + Math.max((cnt - 1), 0) * 2, Constants.LIST_MAX_HEIGHT);
     }

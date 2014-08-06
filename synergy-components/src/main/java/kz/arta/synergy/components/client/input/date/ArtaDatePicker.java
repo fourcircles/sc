@@ -10,8 +10,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.client.menu.DropDownList;
-import kz.arta.synergy.components.client.menu.events.SelectionEvent;
 import kz.arta.synergy.components.client.util.DateUtil;
 
 import java.util.Date;
@@ -62,25 +60,8 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
         panel = GWT.create(FlowPanel.class);
         initWidget(panel);
 
-        monthSelector = new MonthSelector();
+        monthSelector = new MonthSelector(this);
         panel.add(monthSelector);
-        monthSelector.monthList.addSelectionHandler(new SelectionEvent.Handler<DropDownList<java.lang.Integer>.ListItem>() {
-            @Override
-            public void onSelection(SelectionEvent<DropDownList<Integer>.ListItem> event) {
-                Date month = new Date(currentDate.getTime());
-                month.setMonth(event.getValue().getValue());
-                setCurrentDate(month, false);
-            }
-        });
-
-        monthSelector.yearsList.addSelectionHandler(new SelectionEvent.Handler<DropDownList<java.lang.Integer>.ListItem>() {
-            @Override
-            public void onSelection(SelectionEvent<DropDownList<Integer>.ListItem> event) {
-                Date year = new Date(currentDate.getTime());
-                year.setYear(event.getValue().getValue() - 1900);
-                setCurrentDate(year, false);
-            }
-        });
 
         monthSelector.topBack.addClickHandler(new ClickHandler() {
             @Override

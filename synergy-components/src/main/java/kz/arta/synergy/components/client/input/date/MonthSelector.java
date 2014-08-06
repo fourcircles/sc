@@ -12,11 +12,13 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.client.menu.DropDownList;
-import kz.arta.synergy.components.client.menu.events.SelectionEvent;
+import kz.arta.synergy.components.client.menu.FixedWidthList;
+import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.DateUtil;
 import kz.arta.synergy.components.style.client.Constants;
+
+import java.util.Date;
 
 /**
  * User: user
@@ -51,14 +53,17 @@ public class MonthSelector extends Composite {
     /**
      * Список годов
      */
-    DropDownList<Integer> yearsList;
+    FixedWidthList<Integer> yearsList;
 
     /**
      * Список месяцев  (0 - январь .. 11 - декабрь)
      */
-    DropDownList<Integer> monthList;
+    FixedWidthList<Integer> monthList;
 
-    public MonthSelector() {
+    ArtaDatePicker picker;
+
+    public MonthSelector(ArtaDatePicker datePicker) {
+        picker = datePicker;
         init();
     }
 
@@ -83,13 +88,16 @@ public class MonthSelector extends Composite {
             monthLabel.getElement().getStyle().setPaddingRight(5, Style.Unit.PX);
         }
         EventBus monthBus = new SimpleEventBus();
-        monthList = new DropDownList<Integer>(monthLabel, monthBus);
+        monthList = new FixedWidthList<Integer>(monthLabel, monthBus);
         monthList.setWidth(Constants.yearListWidth());
         monthList.setBorderTop(true);
-        monthBus.addHandler(SelectionEvent.TYPE, new SelectionEvent.Handler<DropDownList<Integer>.ListItem>() {
+        ListSelectionEvent.register(monthBus, new ListSelectionEvent.Handler<Integer>() {
             @Override
-            public void onSelection(SelectionEvent<DropDownList<Integer>.ListItem> event) {
-                monthLabel.setText(event.getValue().getText());
+            public void onSelection(ListSelectionEvent<Integer> event) {
+                Date month = new Date(picker.currentDate.getTime());
+                month.setMonth(event.getItem().getValue());
+                picker.setCurrentDate(month, false);
+                monthLabel.setText(DateUtil.getMonth(event.getItem().getValue()));
                 monthList.hide();
             }
         });
@@ -112,22 +120,25 @@ public class MonthSelector extends Composite {
         });
 
         /*инициализируем надпись года*/
-        yearLabel.setText((DateUtil.currentDate.getYear() + 1900) + "");
+        yearLabel.setText((DateUtil.currentDate.getYear() + DateUtil.YEAR_OFFSET) + "");
         yearLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
         yearLabel.getElement().getStyle().setCursor(Style.Cursor.POINTER);
         EventBus bus = new SimpleEventBus();
-        yearsList = new DropDownList<Integer>(yearLabel, bus);
+        yearsList = new FixedWidthList<Integer>(yearLabel, bus);
         yearsList.setWidth(Constants.yearListWidth());
         yearsList.setBorderTop(true);
-        bus.addHandler(SelectionEvent.TYPE, new SelectionEvent.Handler<DropDownList<Integer>.ListItem>() {
+        ListSelectionEvent.register(bus, new ListSelectionEvent.Handler<Integer>() {
             @Override
-            public void onSelection(SelectionEvent<DropDownList<Integer>.ListItem> event) {
-                yearLabel.setText(event.getValue().getText());
+            public void onSelection(ListSelectionEvent<Integer> event) {
+                yearLabel.setText(event.getItem().getValue() + "");
                 yearsList.hide();
+                Date year = new Date(picker.currentDate.getTime());
+                year.setYear(event.getItem().getValue() - DateUtil.YEAR_OFFSET);
+                picker.setCurrentDate(year, false);
             }
         });
         for (int i = DateUtil.currentDate.getYear() - 90; i < DateUtil.currentDate.getYear() + 10; i++) {
-            yearsList.addItem((i + 1900) + "", (i + 1900));
+            yearsList.addItem((i + DateUtil.YEAR_OFFSET) + "", (i + DateUtil.YEAR_OFFSET));
         }
 
         yearLabel.addClickHandler(new ClickHandler() {

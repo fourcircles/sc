@@ -159,4 +159,5 @@ public class Constants {
     public static String yearListWidth() {
         return YEAR_LIST_WIDTH + "px";
     }
+
 }

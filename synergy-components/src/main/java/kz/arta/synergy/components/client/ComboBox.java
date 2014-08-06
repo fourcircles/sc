@@ -18,6 +18,8 @@ import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
+import kz.arta.synergy.components.client.menu.events.SelectionEvent;
+import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -79,6 +81,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
 
     private HashMap<DropDownList.Item, V> values;
 
+    private ListTextFilter filter = ListTextFilter.createPrefixFilter();
 
     public ComboBox() {
         panel = new FlowPanel();
@@ -91,6 +94,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         EventBus bus = new SimpleEventBus();
         list = new DropDownList(this, bus);
         list.setRelativeWidget(this);
+        list.setFilter(filter);
 
         ListSelectionEvent.register(bus, new ListSelectionEvent.Handler<Object>() {
             @Override
@@ -116,7 +120,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                     if (list.isShowing()) {
                         list.hide();
                     } else {
-                        list.removePrefix();
+                        filter.setText("");
                         list.show();
                     }
                 }
@@ -187,12 +191,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * изменения контента выпадающего списка
      */
     private void changeList() {
-        String prefix = textLabel.getText();
-        if (prefix.isEmpty()) {
-            list.removePrefix();
-        } else {
-            list.applyPrefix(prefix);
-        }
+        filter.setText(textLabel.getText());
         if (!list.isShowing()) {
             list.show();
         }

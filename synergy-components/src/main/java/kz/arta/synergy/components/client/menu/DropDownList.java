@@ -2,15 +2,18 @@ package kz.arta.synergy.components.client.menu;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.menu.events.FilterUpdateEvent;
 import kz.arta.synergy.components.client.menu.events.HasSelectionEventHandlers;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.menu.events.SelectionEvent;
+import kz.arta.synergy.components.client.menu.filters.ListFilter;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
@@ -38,9 +41,10 @@ public class DropDownList<V> extends MenuBase {
     private ArtaScrollPanel scroll;
 
     /**
-     * Текущий префикс примененный к списку
+     * Фильтр примененный к списку
      */
-    private String prefix = "";
+    private ListFilter filter;
+    private HandlerRegistration filterRegistration;
 
     /**
      * Отключены ли кнопки "влево" "вправо"
@@ -189,7 +193,6 @@ public class DropDownList<V> extends MenuBase {
         popup.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 8 + "px");
         root.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 8 + "px");
 
-
         super.showUnderParent();
     }
 
@@ -206,48 +209,46 @@ public class DropDownList<V> extends MenuBase {
     }
 
     /**
-     * Определяет начинается ли текст элемента меню с префикса этого списка.
-     * @param item элемент меню
-     * @return true - начинается, false - нет
+     * Задать фильтр для списка
+     * @param filter фильтр
      */
-    private boolean hasPrefix(MenuItem item) {
-        if (prefix == null || prefix.isEmpty()) {
-            return true;
+    public void setFilter(ListFilter filter) {
+        this.filter = filter;
+        if (filterRegistration != null) {
+            filterRegistration.removeHandler();
         }
-        String str = item.getText();
-        if (str == null || prefix.length() > str.length()) {
-            return false;
-        }
-        int len = prefix.length();
-        str = str.toLowerCase();
-        prefix = prefix.toLowerCase();
-
-        return str.substring(0, len).equals(prefix);
+        filterRegistration = filter.addFilterUpdateHandler(new FilterUpdateEvent.Handler() {
+            @Override
+            public void onFilterUpdate(FilterUpdateEvent event) {
+                applyFilter();
+            }
+        });
+        applyFilter();
     }
 
     /**
-     * Применяет префикс к списку, показывая только элементы, текст которых начинается с
-     * этого префикса
-     * @param prefix префикс
+     * Применяет заданный фильтр
      */
-    public void applyPrefix(String prefix) {
+    private void applyFilter() {
         root.clear();
-        this.prefix = prefix;
-        int cnt = 0;
-        for (MenuItem item: items) {
-            if (hasPrefix(item)) {
+        for (Item item: items) {
+            if (filter == null || filter.include(item)) {
                 root.add(item.asWidget());
-                cnt++;
             }
         }
         popup.setHeight(getHeight() + "px");
     }
 
     /**
-     * Убирает примененный префикс, отображаются все элементы.
+     * Удалить текущий фильтр
      */
-    public void removePrefix() {
-        applyPrefix("");
+    public void clearFilter() {
+        if (filterRegistration != null) {
+            filterRegistration.removeHandler();
+            filterRegistration = null;
+        }
+        this.filter = null;
+        applyFilter();
     }
 
     public Item getItemWidthText(String text) {
@@ -319,7 +320,7 @@ public class DropDownList<V> extends MenuBase {
 
         @Override
         public boolean shouldBeSkipped() {
-            return super.shouldBeSkipped() || !hasPrefix(this);
+            return super.shouldBeSkipped() || (filter != null && !filter.include(this));
         }
     }
 

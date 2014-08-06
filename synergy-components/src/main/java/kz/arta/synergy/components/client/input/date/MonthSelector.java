@@ -113,7 +113,6 @@ public class MonthSelector extends Composite {
                 if (monthList.isShowing()) {
                     monthList.hide();
                 } else {
-                    monthList.removePrefix();
                     monthList.show();
                 }
             }
@@ -149,7 +148,6 @@ public class MonthSelector extends Composite {
                 if (yearsList.isShowing()) {
                     yearsList.hide();
                 } else {
-                    yearsList.removePrefix();
                     yearsList.show();
                 }
             }

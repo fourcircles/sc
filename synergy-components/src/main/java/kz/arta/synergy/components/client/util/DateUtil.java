@@ -1,9 +1,9 @@
 package kz.arta.synergy.components.client.util;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.LocaleInfo;
 import kz.arta.synergy.components.client.resources.Messages;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -35,10 +35,22 @@ public class DateUtil {
             Messages.i18n.tr("Сб"),
             Messages.i18n.tr("Вс")};
 
+    /*Делаем первый символ заглавным*/
+    static {
+        for (int i = 0; i < months.length; i++) {
+            months[i] = Character.toUpperCase(months[i].charAt(0)) + months[i].substring(1);
+        }
+    }
+
     /**
      * Формат даты для отображения
      */
-    public static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("dd.MM.yy");
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yy");
+
+    /**
+     * Формат даты получения недели в году
+     */
+    public static final SimpleDateFormat WEEK_FORMAT = new SimpleDateFormat("ww");
 
     /**
      * Валидация даты
@@ -107,5 +119,48 @@ public class DateUtil {
         return 30;
     }
 
+    /**
+     * Возвращает понедельник
+     * @param date
+     * @return
+     */
+    public static Date getWeekFirstDay(Date date){
+        //День недели переданной даты
+        int weekDayNumber = date.getDay();
+        int dayNumber = date.getDate();
+        if (weekDayNumber == 0){
+            weekDayNumber = 7;
+        }
+        while (weekDayNumber != 1){
+            dayNumber--;
+            weekDayNumber --;
+        }
+        Date result = new Date(date.getTime());
+        result.setDate(result.getDate() - (result.getDate() - dayNumber));
+        return result;
+    }
+
+    /**
+     * Получаем номер недели в году
+     * @param date  дата
+     * @return номер недели
+     */
+    public static int getDateWeek(Date date) {
+        Date thisThursday = new Date(date.getYear(), date.getMonth(), date.getDate() - weekday(date) + 4);
+        Date firstThursdayOfYear = new Date(thisThursday.getYear(), 0, 1);
+        while (weekday(firstThursdayOfYear) != 4) {
+            firstThursdayOfYear.setDate(firstThursdayOfYear.getDate() + 1);
+        }
+        Date firstMondayOfYear = new Date(firstThursdayOfYear.getYear(), 0, firstThursdayOfYear.getDate() - 3);
+        return (int) ((thisThursday.getTime() - firstMondayOfYear.getTime()) / 1000 / 60 / 60 / 24 / 7 + 1);
+    }
+
+    public static Integer weekday(Date date) {
+        int weekday = date.getDay();
+        if (weekday == 0) {
+            weekday = 7;
+        }
+        return weekday;
+    }
 
 }

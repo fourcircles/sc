@@ -407,7 +407,18 @@ public class ShowCasePanel extends LayoutPanel {
         panel.add(datePickerPanel);
         datePickerPanel.getElement().getStyle().setPadding(5, Style.Unit.PX);
 
-        return panel;
+        FlowPanel datePickerPanel1 = new FlowPanel();
+        datePickerPanel1.add(new ArtaDatePicker(ArtaDatePicker.CalendarMode.WEEK));
+        panel.add(datePickerPanel1);
+        datePickerPanel1.getElement().getStyle().setPadding(5, Style.Unit.PX);
+
+        FlowPanel datePickerPanel2 = new FlowPanel();
+        datePickerPanel2.add(new ArtaDatePicker(ArtaDatePicker.CalendarMode.MONTH));
+        panel.add(datePickerPanel2);
+        datePickerPanel2.getElement().getStyle().setPadding(5, Style.Unit.PX);
+
+        ArtaScrollPanel scrollPanel = new ArtaScrollPanel(panel);
+        return scrollPanel;
     }
     /**
      * Смешивает массив

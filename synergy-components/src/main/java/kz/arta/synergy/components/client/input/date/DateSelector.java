@@ -5,6 +5,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
@@ -17,6 +18,7 @@ import kz.arta.synergy.components.client.util.MouseStyle;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * User: user
@@ -26,23 +28,6 @@ import java.util.Date;
  */
 public class DateSelector extends Composite {
 
-    /**
-     * Формат отображения календаря
-     */
-    public enum CalendarMode {
-        /**
-         * Режим отображения - день
-         */
-        DAY,
-        /**
-         * Режим отображения - неделя
-         */
-        WEEK,
-        /**
-         * Режим отображения - месяц
-         */
-        MONTH
-    }
 
     FlowPanel panel;
 
@@ -59,11 +44,13 @@ public class DateSelector extends Composite {
     /**
      * Список дней
      */
-    ArrayList<DayLabel> dayLabels = new ArrayList<DayLabel>();
+    HashMap<String, DayLabel> dayLabels = new HashMap<String, DayLabel> ();
 
     ArtaDatePicker datePicker;
 
     Date today = new Date();
+
+    private DateTimeFormat format = DateTimeFormat.getFormat("dd.MM.yyyy");
 
     public DateSelector(ArtaDatePicker datePicker) {
         this.datePicker = datePicker;
@@ -123,7 +110,9 @@ public class DateSelector extends Composite {
                 for (int j = weekDay - 1; j > 0; j--) {
                     Date beforeMonthDay = new Date(firstDate.getTime());
                     CalendarUtil.addDaysToDate(beforeMonthDay, -j);
-                    week.add(new DayLabel(beforeMonthDay));
+                    DayLabel daylabel = new DayLabel(beforeMonthDay);
+                    week.add(daylabel);
+                    dayLabels.put(format.format(beforeMonthDay), daylabel);
                 }
             }
 
@@ -131,14 +120,16 @@ public class DateSelector extends Composite {
             CalendarUtil.addDaysToDate(date, i);
             DayLabel label = new DayLabel(date);
             week.add(label);
-            dayLabels.add(label);
+            dayLabels.put(format.format(date), label);
 
             /*дни последующего месяца на последней неделе*/
             if (i == daysCount - 1) {
                 for (int j = 1; j <= 7 - weekDay; j++) {
                     Date afterMonthDay = new Date(date.getTime());
                     CalendarUtil.addDaysToDate(afterMonthDay, j);
-                    week.add(new DayLabel(afterMonthDay));
+                    DayLabel daylabel = new DayLabel(afterMonthDay);
+                    week.add(daylabel);
+                    dayLabels.put(format.format(afterMonthDay), daylabel);
                 }
             }
 
@@ -173,12 +164,12 @@ public class DateSelector extends Composite {
         } else {
             datePicker.currentDate = date;
         }
-        datePicker.monthSelector.yearLabel.setText((datePicker.currentDate.getYear() + 1900) + "");
+        datePicker.monthSelector.yearLabel.setText((datePicker.currentDate.getYear() + DateUtil.YEAR_OFFSET) + "");
         datePicker.monthSelector.monthLabel.setText(DateUtil.getMonth(datePicker.currentDate.getMonth()));
         if (selectDay) {
             ValueChangeEvent.fire(datePicker, date);
             datePicker.selectedDate = datePicker.currentDate;
-            dayLabels.get(date.getDate() - 1).setSelected();
+            dayLabels.get(format.format(date)).setSelected();
         }
     }
 
@@ -186,7 +177,8 @@ public class DateSelector extends Composite {
     /**
      * Последняя выбранная дата
      */
-    private DayLabel lastSelected;
+    //todo хранить выделенные значения
+    private ArrayList<DayLabel> lastSelected = new ArrayList<DayLabel>();
 
     /**
      * Ячейка дня
@@ -223,9 +215,21 @@ public class DateSelector extends Composite {
             } else {
                 setStyleName(SynergyComponents.resources.cssComponents().outMonth());
             }
-            /*почеркиваем сегодняшнюю дату*/
+            /*подчеркиваем сегодняшнюю дату*/
             if (CalendarUtil.isSameDate(date, today)) {
                 getElement().getStyle().setTextDecoration(Style.TextDecoration.UNDERLINE);
+            }
+            switch (datePicker.calendarMode) {
+                case MONTH:
+                    if (today.getYear() == date.getYear() && today.getMonth() == date.getMonth()) {
+                        setStyleName(SynergyComponents.resources.cssComponents().thisMonth());
+                    }
+                    break;
+                case WEEK:
+                    if (today.getYear() == date.getYear() && DateUtil.getDateWeek(today) == DateUtil.getDateWeek(date)) {
+                        setStyleName(SynergyComponents.resources.cssComponents().thisMonth());
+                    }
+                    break;
             }
         }
 
@@ -233,13 +237,52 @@ public class DateSelector extends Composite {
          * Выделяем эту ячейку
          */
         public void setSelected() {
-            if (lastSelected != null) {
-                MouseStyle.removeAll(lastSelected);
-                lastSelected.selected = false;
+            if (!lastSelected.isEmpty()) {
+                for (DayLabel label: lastSelected) {
+                    MouseStyle.removeAll(label);
+                    label.selected = false;
+                }
+                lastSelected.clear();
             }
-            lastSelected = this;
-            selected = true;
-            MouseStyle.setPressed(this);
+            Date firstDate = new Date(date.getTime());
+            switch (datePicker.calendarMode) {
+                case DAY:
+                    lastSelected.add(this);
+                    selected = true;
+                    MouseStyle.setPressed(this);
+                    break;
+                case WEEK:
+                    firstDate = DateUtil.getWeekFirstDay(date);
+                    for (int i = 0; i < 7; i++) {
+                        if (i != 0) {
+                            firstDate.setDate(firstDate.getDate() + 1);
+                        }
+                        DayLabel label = dayLabels.get(format.format(firstDate));
+                        lastSelected.add(label);
+                        label.selected = true;
+                        MouseStyle.setPressed(label);
+                    }
+                    break;
+                case MONTH:
+                    CalendarUtil.setToFirstDayOfMonth(firstDate);
+                    for (int i = 0; i < DateUtil.getMonthDaysCount(firstDate.getMonth() + 1, firstDate.getYear()); i++) {
+                        if (i != 0) {
+                            firstDate.setDate(firstDate.getDate() + 1);
+                        }
+                        DayLabel label = dayLabels.get(format.format(firstDate));
+                        lastSelected.add(label);
+                        label.selected = true;
+                        MouseStyle.setPressed(label);
+                    }
+                    break;
+            }
+//            if (lastSelected != null) {
+//                MouseStyle.removeAll(lastSelected);
+//                lastSelected.selected = false;
+//            }
+//            lastSelected = this;
+//            selected = true;
+//            MouseStyle.setPressed(this);
         }
 
         public void onBrowserEvent(Event event) {

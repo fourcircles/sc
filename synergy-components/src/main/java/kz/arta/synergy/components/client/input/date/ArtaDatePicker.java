@@ -23,6 +23,29 @@ import java.util.Date;
 public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<Date> {
 
     /**
+     * Формат отображения календаря
+     */
+    public enum CalendarMode {
+        /**
+         * Режим отображения - день
+         */
+        DAY,
+        /**
+         * Режим отображения - неделя
+         */
+        WEEK,
+        /**
+         * Режим отображения - месяц
+         */
+        MONTH
+    }
+
+    /**
+     * Режим отображения, по умолчанию - день
+     */
+    CalendarMode calendarMode = CalendarMode.DAY;
+
+    /**
      * Дата текущего отображаемого месяца
      */
     Date currentDate = new Date();
@@ -52,8 +75,20 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
      */
     DateSelector calendarPanel;
 
+    /**
+     * Создает календарь с режимом отображения по умолчанию
+     */
     public ArtaDatePicker() {
          init();
+    }
+
+    /**
+     * Создает календарь с заданным режимом отображения
+     * @param mode  режим отображения
+     */
+    public ArtaDatePicker(CalendarMode mode) {
+        calendarMode = mode;
+        init();
     }
 
     private void init() {

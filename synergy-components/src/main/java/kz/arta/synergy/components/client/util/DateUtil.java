@@ -1,9 +1,9 @@
 package kz.arta.synergy.components.client.util;
 
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.i18n.shared.DateTimeFormat;
 import kz.arta.synergy.components.client.resources.Messages;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -45,12 +45,7 @@ public class DateUtil {
     /**
      * Формат даты для отображения
      */
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yy");
-
-    /**
-     * Формат даты получения недели в году
-     */
-    public static final SimpleDateFormat WEEK_FORMAT = new SimpleDateFormat("ww");
+    public static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("dd.MM.yy");
 
     /**
      * Валидация даты

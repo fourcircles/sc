@@ -276,13 +276,6 @@ public class DateSelector extends Composite {
                     }
                     break;
             }
-//            if (lastSelected != null) {
-//                MouseStyle.removeAll(lastSelected);
-//                lastSelected.selected = false;
-//            }
-//            lastSelected = this;
-//            selected = true;
-//            MouseStyle.setPressed(this);
         }
 
         public void onBrowserEvent(Event event) {

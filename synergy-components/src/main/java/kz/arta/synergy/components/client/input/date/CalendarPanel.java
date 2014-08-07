@@ -48,7 +48,7 @@ public class CalendarPanel extends Composite {
 
     ArtaDatePicker datePicker;
 
-    Date today = new Date();
+    Date today = DateUtil.currentDate;
 
     private DateTimeFormat format = DateTimeFormat.getFormat("dd.MM.yyyy");
 
@@ -62,7 +62,7 @@ public class CalendarPanel extends Composite {
         dayNamePanel = GWT.create(FlowPanel.class);
         initWidget(panel);
         for (int i = 0; i < 7; i++) {
-            dayNamePanel.add(new InlineLabel(DateUtil.getWeekDay(i)));
+            dayNamePanel.add(new InlineLabel(DateUtil.getWeekDay(DateUtil.days.get(i))));
         }
         panel.add(dayNamePanel);
         initMonthDays();
@@ -81,15 +81,14 @@ public class CalendarPanel extends Composite {
         }
         weekPanels.clear();
         dayLabels.clear();
+
         /*Первый день в месяце*/
         Date firstDate = new Date(datePicker.currentDate.getTime());
         CalendarUtil.setToFirstDayOfMonth(firstDate);
         int weekDay = firstDate.getDay();
-        int daysCount = DateUtil.getMonthDaysCount(firstDate.getMonth() + 1, firstDate.getYear());
+        int realWeekDay = DateUtil.weekDayNum.get(weekDay);
 
-        if (weekDay == 0){
-            weekDay = 7;
-        }
+        int daysCount = DateUtil.getMonthDaysCount(firstDate.getMonth() + 1, firstDate.getYear());
 
         boolean newRow = true;
         FlowPanel week = null;
@@ -103,7 +102,7 @@ public class CalendarPanel extends Composite {
 
             /*дни предыдущего месяца на первой неделе*/
             if (i == 0) {
-                for (int j = weekDay - 1; j > 0; j--) {
+                for (int j = realWeekDay; j > 0; j--) {
                     Date beforeMonthDay = new Date(firstDate.getTime());
                     CalendarUtil.addDaysToDate(beforeMonthDay, -j);
                     DayLabel daylabel = new DayLabel(beforeMonthDay);
@@ -120,7 +119,7 @@ public class CalendarPanel extends Composite {
 
             /*дни последующего месяца на последней неделе*/
             if (i == daysCount - 1) {
-                for (int j = 1; j <= 7 - weekDay; j++) {
+                for (int j = 1; j <= 6 - realWeekDay; j++) {
                     Date afterMonthDay = new Date(date.getTime());
                     CalendarUtil.addDaysToDate(afterMonthDay, j);
                     DayLabel daylabel = new DayLabel(afterMonthDay);
@@ -129,9 +128,9 @@ public class CalendarPanel extends Composite {
                 }
             }
 
-            weekDay ++;
-            if (weekDay == 8){
-                weekDay = 1;
+            realWeekDay ++;
+            if (realWeekDay == 7){
+                realWeekDay = 0;
                 newRow = true;
             }
             week.setStyleName(SynergyComponents.resources.cssComponents().daysPanel());
@@ -225,7 +224,7 @@ public class CalendarPanel extends Composite {
                     }
                     break;
                 case WEEK:
-                    if (today.getYear() == date.getYear() && DateUtil.getDateWeek(today) == DateUtil.getDateWeek(date)) {
+                    if (CalendarUtil.isSameDate(DateUtil.getWeekFirstDay(date), DateUtil.getWeekFirstDay(today))) {
                         setStyleName(SynergyComponents.resources.cssComponents().thisMonth());
                     }
                     break;

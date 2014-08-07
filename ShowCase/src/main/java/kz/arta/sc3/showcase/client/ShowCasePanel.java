@@ -16,6 +16,7 @@ import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.datepicker.client.DatePicker;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
 import kz.arta.synergy.components.client.ComboBox;
@@ -407,6 +408,11 @@ public class ShowCasePanel extends LayoutPanel {
         datePickerPanel2.add(new ArtaDatePicker(ArtaDatePicker.CalendarMode.MONTH));
         panel.add(datePickerPanel2);
         datePickerPanel2.getElement().getStyle().setPadding(5, Style.Unit.PX);
+
+        FlowPanel dateTest = new FlowPanel();
+        dateTest.add(new DatePicker());
+        panel.add(dateTest);
+        dateTest.getElement().getStyle().setPadding(5, Style.Unit.PX);
 
         return new ArtaScrollPanel(panel);
     }

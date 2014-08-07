@@ -14,8 +14,14 @@ import java.util.Date;
  */
 public class DateUtil {
 
+    /**
+     * Смещение года в Date
+     */
     public static final int YEAR_OFFSET = 1900;
 
+    /**
+     * Текущая дата //todo в будущем  брать дату сервера
+     */
     public static Date currentDate = new Date();
 
     /**
@@ -70,7 +76,7 @@ public class DateUtil {
     }
 
     /**
-     *
+     * Парсим дату в формате "dd.MM.yyyy"
      */
     public static Date parseDate(String dateString) {
         try {
@@ -81,12 +87,17 @@ public class DateUtil {
     }
 
     /**
-     *
+     * Название месяца по номеру (0 - январь ... 11 - декабрь)
      */
     public static String getMonth(int month) {
         return months[month];
     }
 
+    /**
+     * Название короткое дня недели
+     * @param day день недели (0 - ПН ... 6 - ВС)
+     * @return название дня недели
+     */
     public static String getWeekDay(int day) {
         return weekDays[day];
     }
@@ -116,8 +127,8 @@ public class DateUtil {
 
     /**
      * Возвращает понедельник
-     * @param date
-     * @return
+     * @param date  дата
+     * @return  дату понедельника
      */
     public static Date getWeekFirstDay(Date date){
         //День недели переданной даты
@@ -141,6 +152,7 @@ public class DateUtil {
      * @return номер недели
      */
     public static int getDateWeek(Date date) {
+        /*алгоритм взят из интернета*/
         Date thisThursday = new Date(date.getYear(), date.getMonth(), date.getDate() - weekday(date) + 4);
         Date firstThursdayOfYear = new Date(thisThursday.getYear(), 0, 1);
         while (weekday(firstThursdayOfYear) != 4) {
@@ -150,6 +162,11 @@ public class DateUtil {
         return (int) ((thisThursday.getTime() - firstMondayOfYear.getTime()) / 1000 / 60 / 60 / 24 / 7 + 1);
     }
 
+    /**
+     * Получаем день недели (1 - понедельник ... 7 - воскресенье)
+     * @param date  дата
+     * @return  день недели
+     */
     public static Integer weekday(Date date) {
         int weekday = date.getDay();
         if (weekday == 0) {

@@ -26,7 +26,7 @@ import java.util.HashMap;
  * Time: 17:26
  * Отображение дней месяца в календаре
  */
-public class DateSelector extends Composite {
+public class CalendarPanel extends Composite {
 
 
     FlowPanel panel;
@@ -52,7 +52,7 @@ public class DateSelector extends Composite {
 
     private DateTimeFormat format = DateTimeFormat.getFormat("dd.MM.yyyy");
 
-    public DateSelector(ArtaDatePicker datePicker) {
+    public CalendarPanel(ArtaDatePicker datePicker) {
         this.datePicker = datePicker;
         init();
     }
@@ -66,10 +66,6 @@ public class DateSelector extends Composite {
         }
         panel.add(dayNamePanel);
         initMonthDays();
-
-//        /*Сразу выбираем сегодняшнюю дату*/
-//        datePicker.selectedDate = datePicker.currentDate;
-//        dayLabels.get(datePicker.selectedDate .getDate() - 1).setSelected();
 
         dayNamePanel.setStyleName(SynergyComponents.resources.cssComponents().dayWeekPanel());
         dayNamePanel.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
@@ -175,10 +171,9 @@ public class DateSelector extends Composite {
 
 
     /**
-     * Последняя выбранная дата
+     * Выбранные даты
      */
-    //todo хранить выделенные значения
-    private ArrayList<DayLabel> lastSelected = new ArrayList<DayLabel>();
+    private ArrayList<String> lastSelected = new ArrayList<String>();
 
     /**
      * Ячейка дня
@@ -207,6 +202,10 @@ public class DateSelector extends Composite {
             setStyle();
             sinkEvents(Event.MOUSEEVENTS);
             sinkEvents(Event.ONCLICK);
+            if (lastSelected.contains(format.format(date))) {
+                selected = true;
+                MouseStyle.setPressed(this);
+            }
         }
 
         private void setStyle() {
@@ -234,20 +233,23 @@ public class DateSelector extends Composite {
         }
 
         /**
-         * Выделяем эту ячейку
+         * Выбираем эту ячейку
          */
         public void setSelected() {
             if (!lastSelected.isEmpty()) {
-                for (DayLabel label: lastSelected) {
-                    MouseStyle.removeAll(label);
-                    label.selected = false;
+                for (String label: lastSelected) {
+                    DayLabel temp = dayLabels.get(label);
+                    if (temp != null) {
+                        MouseStyle.removeAll(temp);
+                        temp.selected = false;
+                    }
                 }
                 lastSelected.clear();
             }
             Date firstDate = new Date(date.getTime());
             switch (datePicker.calendarMode) {
                 case DAY:
-                    lastSelected.add(this);
+                    lastSelected.add(format.format(date));
                     selected = true;
                     MouseStyle.setPressed(this);
                     break;
@@ -258,7 +260,7 @@ public class DateSelector extends Composite {
                             firstDate.setDate(firstDate.getDate() + 1);
                         }
                         DayLabel label = dayLabels.get(format.format(firstDate));
-                        lastSelected.add(label);
+                        lastSelected.add(format.format(firstDate));
                         label.selected = true;
                         MouseStyle.setPressed(label);
                     }
@@ -270,7 +272,7 @@ public class DateSelector extends Composite {
                             firstDate.setDate(firstDate.getDate() + 1);
                         }
                         DayLabel label = dayLabels.get(format.format(firstDate));
-                        lastSelected.add(label);
+                        lastSelected.add(format.format(firstDate));
                         label.selected = true;
                         MouseStyle.setPressed(label);
                     }

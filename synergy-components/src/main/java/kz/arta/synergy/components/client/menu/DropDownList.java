@@ -194,6 +194,9 @@ public class DropDownList<V> extends MenuBase {
         root.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 8 + "px");
 
         super.showUnderParent();
+        if (selectedIndex != -1) {
+            scroll.ensureVisible(getSelectedItem());
+        }
     }
 
     /**
@@ -307,7 +310,7 @@ public class DropDownList<V> extends MenuBase {
         }
 
         @Override
-        protected void focusItem() {
+        public void focusItem() {
             clearOverStyles();
             selectedIndex = items.indexOf(this);
             super.focusItem();
@@ -342,5 +345,9 @@ public class DropDownList<V> extends MenuBase {
         for (Item item : items) {
             item.setBus(bus);
         }
+    }
+
+    public void ensureVisible(Item item) {
+        scroll.ensureVisible(item);
     }
 }

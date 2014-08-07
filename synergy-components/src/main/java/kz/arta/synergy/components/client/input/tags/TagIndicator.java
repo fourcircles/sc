@@ -4,12 +4,14 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.util.ArtaHasText;
+import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.client.util.PPanel;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
@@ -18,7 +20,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-//todo выравнивание в rtl
 /**
  * User: vsl
  * Date: 25.07.14
@@ -91,6 +92,7 @@ public class TagIndicator extends Composite implements ArtaHasText {
         ArtaScrollPanel vScroll = new ArtaScrollPanel(popupRootPanel);
 
         popupPanel.setWidget(vScroll);
+        vScroll.removeHorizontalScrollbar();
 
         popupPanel.setStyleName(SynergyComponents.resources.cssComponents().tagIndicator());
 
@@ -107,6 +109,11 @@ public class TagIndicator extends Composite implements ArtaHasText {
                 }
             }
         });
+
+        if (Navigator.isChrome && LocaleInfo.getCurrentLocale().isRTL()) {
+            popupRootPanel.getElement().getStyle().setLeft(15, Style.Unit.PX);
+            popupRootPanel.getElement().getStyle().setPosition(Style.Position.RELATIVE);
+        }
     }
 
     /**
@@ -154,8 +161,11 @@ public class TagIndicator extends Composite implements ArtaHasText {
             popupPanel.removeStyleName(SynergyComponents.resources.cssComponents().leftIndicator());
             popupPanel.removeStyleName(SynergyComponents.resources.cssComponents().rightIndicator());
             popupPanel.addStyleName(SynergyComponents.resources.cssComponents().centerIndicator());
-            popupPanel.setPopupPosition((int) (popupPanel.getAbsoluteLeft() + (double) labelWidth / 2 - (double) width / 2),
-                    popupPanel.getAbsoluteTop() - 7);
+            double offset = ((double) labelWidth - width) / 2;
+            if (LocaleInfo.getCurrentLocale().isRTL()) {
+                offset = -offset;
+            }
+            popupPanel.setPopupPosition((int) (popupPanel.getAbsoluteLeft() + offset), popupPanel.getAbsoluteTop() - 7);
         }
     }
 

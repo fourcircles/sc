@@ -18,7 +18,6 @@ import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
-import kz.arta.synergy.components.client.menu.events.SelectionEvent;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.style.client.Constants;
@@ -81,7 +80,12 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
 
     private HashMap<DropDownList.Item, V> values;
 
+    /**
+     * Фильтр для списка
+     */
     private ListTextFilter filter = ListTextFilter.createPrefixFilter();
+
+    private DropDownList.Item selectedItem;
 
     public ComboBox() {
         panel = new FlowPanel();
@@ -122,6 +126,10 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                     } else {
                         filter.setText("");
                         list.show();
+                        if (selectedItem != null) {
+                            selectedItem.focusItem();
+                            list.ensureVisible(selectedItem);
+                        }
                     }
                 }
             }
@@ -202,6 +210,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @param item элемент списка
      */
     private void showItem(DropDownList.Item item) {
+        selectedItem = item;
         textLabel.setText(item.getText());
         ValueChangeEvent.fire(this, values.get(item));
     }

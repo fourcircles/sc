@@ -856,12 +856,12 @@
     position: relative;
     border-radius: 3px;
     background-color: tagBG;
-    padding-left: 8px;
-    padding-right: 8px;
+    padding: 0 8px;
     height: tagHeight;
     line-height: 26px;
     max-width: tagMaxWidth;
     vertical-align: top;
+    white-space: nowrap;
 }
 
 .tag .gradient {

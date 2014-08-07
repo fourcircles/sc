@@ -1,7 +1,6 @@
 package kz.arta.synergy.components.client.label;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.user.client.ui.Composite;
@@ -54,12 +53,6 @@ public class GradientLabel extends Composite implements HasDirection {
      */
     protected boolean textFits() {
         return getOffsetWidth() >= textLabel.getOffsetWidth();
-//        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
-//        int oldHeight = textLabel.getOffsetHeight();
-//        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NORMAL);
-//        int newHeight = textLabel.getOffsetHeight();
-//        textLabel.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
-//        return oldHeight == newHeight;
     }
 
     /**
@@ -78,12 +71,6 @@ public class GradientLabel extends Composite implements HasDirection {
     public void onLoad() {
         super.onLoad();
         adjustGradient();
-//        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-//            @Override
-//            public void execute() {
-//                adjustGradient();
-//            }
-//        });
     }
 
     /**
@@ -119,5 +106,12 @@ public class GradientLabel extends Composite implements HasDirection {
     @Override
     public Direction getDirection() {
         return null;
+    }
+
+    @Override
+    public void setHeight(String height) {
+        textLabel.setHeight(height);
+        gradient.setHeight(height);
+        super.setHeight(height);
     }
 }

@@ -59,6 +59,7 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
         initWidget(root);
 
         label = new GradientLabel();
+        label.setHeight(Constants.TAG_HEIGHT + "px");
         image = new Image(ImageResources.IMPL.tagClose());
         image.addClickHandler(new ClickHandler() {
             @Override
@@ -146,4 +147,6 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
     public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler handler) {
         return bus.addHandlerToSource(TagRemoveEvent.TYPE, this, handler);
     }
+
+
 }

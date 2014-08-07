@@ -71,7 +71,7 @@ public abstract class MenuBase {
             }
             @Override
             public void hide(boolean auto) {
-                clearOverStyles();
+//                clearOverStyles();
                 if (resizeRegistration != null) {
                     resizeRegistration.removeHandler();
                     resizeRegistration = null;
@@ -255,7 +255,7 @@ public abstract class MenuBase {
         if (resizeRegistration == null) {
             resizeRegistration = Window.addResizeHandler(resizeHandler);
         }
-        selectedIndex = -1;
+//        selectedIndex = -1;
     }
 
     /**

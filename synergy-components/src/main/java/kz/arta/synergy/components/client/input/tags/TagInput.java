@@ -7,7 +7,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
@@ -18,7 +17,6 @@ import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
 import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
-import kz.arta.synergy.components.client.menu.filters.ListFilter;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.Utils;
@@ -77,18 +75,6 @@ public class TagInput<V> extends Composite implements HasText,
     private int offsetWidth;
 
     /**
-     * Сдвиг поля ввода от левого края.
-     * Изменяется при добавлении тега и вводе длинного текста.
-     */
-    private int inputOffset;
-
-    /**
-     * Сдвиг панели тегов от левого края поля.
-     * Может быть отрицательным при наборе длинного текста в поле ввода.
-     */
-    private int tagsPanelOffset = 0;
-
-    /**
      * Выпадающий список для поля
      */
     private DropDownListMulti<V> dropDownList;
@@ -119,21 +105,13 @@ public class TagInput<V> extends Composite implements HasText,
     private HashMap<DropDownList<V>.Item, Tag<V>> itemsToTags;
 
     public TagInput() {
-        this(true, true);
+        this(true);
     }
 
     /**
-     * @param hasIndicator имеет ли индикатор скрытых тегов
+     * @param hasButton имеет ли кнопку
      */
-    public TagInput(boolean hasIndicator) {
-        this(hasIndicator, true);
-    }
-
-    /**
-     * @param hasIndicator имеет ли индикатор скрытых тегов
-     * @param hasButton имеел ли кнопку
-     */
-    public TagInput(boolean hasIndicator, boolean hasButton) {
+    public TagInput(boolean hasButton) {
         root = new FlowPanel();
         initWidget(root);
 
@@ -173,8 +151,7 @@ public class TagInput<V> extends Composite implements HasText,
             root.add(button);
         }
 
-        tagsPanel = new TagsPanel(innerBus, 0, true);
-        tagsPanel.setHasIndicator(hasIndicator);
+        tagsPanel = new TagsPanel(innerBus, 0);
 
         if (hasButton) {
             setWidth(Constants.FIELD_WITH_BUTTON_MIN_WIDTH);
@@ -212,7 +189,12 @@ public class TagInput<V> extends Composite implements HasText,
             @Override
             public void onTagRemove(TagRemoveEvent event) {
                 if (dropDownList != null) {
+
+                    //innerBus не публикуется, внутри класса к нему подключается только мульти-список
+                    //поэтому cast легален
+                    @SuppressWarnings("unchecked")
                     DropDownListMulti<V>.Item item = (DropDownListMulti.Item) tagsToItems.get(event.getTag());
+
                     item.setSelected(false, false);
 
                     tagsToItems.remove(event.getTag());
@@ -266,16 +248,6 @@ public class TagInput<V> extends Composite implements HasText,
             innerBus.fireEvent(new TagAddEvent(tag));
             input.setText("");
             setInputOffset(tagsPanel.getOffsetWidth());
-
-            if (Window.Navigator.getAppVersion().contains("MSIE")) {
-                new Timer() {
-                    @Override
-                    public void run() {
-                        setInputOffset(tagsPanel.getOffsetWidth());
-                        input.setFocus(true);
-                    }
-                }.schedule(50);
-            }
         }
     }
 
@@ -286,13 +258,15 @@ public class TagInput<V> extends Composite implements HasText,
     private void textChanged() {
         int textWidth = Utils.getTextWidth(input);
 
+        //ширина поля ввода текста
         int startTextWidth = getAvailableSpace() - tagsPanel.getTagsWidth();
+
         if (textWidth > startTextWidth) {
+            //ограничено сверху шириной поля с тегами
             textWidth = Math.min(textWidth, getAvailableSpace() - 8);
-            tagsPanelOffset = textWidth - startTextWidth;
-            tagsPanel.setOffset(tagsPanelOffset);
+
+            tagsPanel.setOffset(textWidth - startTextWidth);
         } else {
-            tagsPanelOffset = 0;
             tagsPanel.clearOffset();
         }
         setInputOffset(tagsPanel.getOffsetWidth());
@@ -327,13 +301,10 @@ public class TagInput<V> extends Composite implements HasText,
      * @param offset расстояние от левой границы поля
      */
     private void setInputOffset(int offset) {
-        inputOffset = offset;
         if (LocaleInfo.getCurrentLocale().isRTL()) {
-            inputBox.getElement().getStyle().setPaddingRight(inputOffset, Style.Unit.PX);
-//            input.getElement().getStyle().setPaddingRight(inputOffset, Style.Unit.PX);
+            inputBox.getElement().getStyle().setPaddingRight(offset, Style.Unit.PX);
         } else {
-            inputBox.getElement().getStyle().setPaddingLeft(inputOffset, Style.Unit.PX);
-//            input.getElement().getStyle().setPaddingLeft(inputOffset, Style.Unit.PX);
+            inputBox.getElement().getStyle().setPaddingLeft(offset, Style.Unit.PX);
         }
         inputWidth = getAvailableSpace() - offset;
         inputBox.setWidth(inputWidth + "px");

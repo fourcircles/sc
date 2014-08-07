@@ -4,6 +4,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -21,15 +22,6 @@ import kz.arta.synergy.components.style.client.Constants;
  * Компонент выбора объекта
  */
 public class ObjectChooser extends Composite{
-    /**
-     * Корневая панель
-     */
-    private FlowPanel root;
-
-    /**
-     * Кнопка
-     */
-    private ImageButton button;
 
     /**
      * Панель с тегами
@@ -42,7 +34,8 @@ public class ObjectChooser extends Composite{
     private int offsetWidth;
 
     public ObjectChooser(final EventBus bus) {
-        root = new FlowPanel();
+        //корневая панель
+        FlowPanel root = new FlowPanel();
         initWidget(root);
 
         addStyleName(SynergyComponents.resources.cssComponents().mainText());
@@ -52,7 +45,8 @@ public class ObjectChooser extends Composite{
         offsetWidth = Constants.FIELD_WITH_BUTTON_MIN_WIDTH;
         super.setWidth(offsetWidth - 2 * Constants.BORDER_WIDTH + "px");
 
-        button = new ImageButton(ImageResources.IMPL.zoom());
+        //кнопка
+        ImageButton button = new ImageButton(ImageResources.IMPL.zoom());
         button.getElement().getStyle().setFloat(Style.Float.RIGHT);
         button.addClickHandler(new ClickHandler() {
             @Override
@@ -87,6 +81,7 @@ public class ObjectChooser extends Composite{
      */
     public void setWidth(int width) {
         offsetWidth = width;
+        super.setWidth(width + "px");
         tagsPanel.setMaxWidth(getAvailableWidth());
     }
 

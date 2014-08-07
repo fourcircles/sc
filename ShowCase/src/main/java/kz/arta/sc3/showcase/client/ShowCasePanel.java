@@ -54,7 +54,6 @@ public class ShowCasePanel extends LayoutPanel {
     private final static int SPACING = 1;
 
     private Theme currentTheme;
-    private ComboBox<Theme> themesCombo;
 
     Tree tree;
 
@@ -107,8 +106,7 @@ public class ShowCasePanel extends LayoutPanel {
         about.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
 
-
-        themesCombo = new ComboBox<Theme>();
+        ComboBox<Theme> themesCombo = new ComboBox<Theme>();
         for (Theme th : Theme.values()) {
             themesCombo.addItem(th.name(), th);
         }
@@ -217,20 +215,6 @@ public class ShowCasePanel extends LayoutPanel {
         return item;
     }
 
-    void addLeaf(TreeItem category, TreeItem displayItem, Widget contentWidget) {
-        displayItem.setUserObject(contentWidget);
-        category.addItem(displayItem);
-    }
-
-    public void addLeaf(TreeItem where, Widget displayWidget, Widget contentWidget) {
-        TreeItem treeItem = new TreeItem(displayWidget);
-        addLeaf(where, treeItem, contentWidget);
-    }
-
-    public void addLeaf(TreeItem where, String displayText, Widget contentWidget) {
-        addLeaf(where, new TreeItem(new Label(displayText)), contentWidget);
-    }
-
     private SimpleButton setUpDialog(String title, final DialogSimple dialog) {
         dialog.setText(title);
         SimpleButton button = new SimpleButton(title);
@@ -298,11 +282,11 @@ public class ShowCasePanel extends LayoutPanel {
         panel.add(big);
         panel.add(new HTML("<p/>"));
         if (buttons) {
-            SimpleButton noLeft = setUpDialog(400, 400, buttons, false, true);
+            SimpleButton noLeft = setUpDialog(400, 400, true, false, true);
             noLeft.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-            SimpleButton noRight = setUpDialog(400, 400, buttons, true, false);
+            SimpleButton noRight = setUpDialog(400, 400, true, true, false);
             noRight.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-            SimpleButton onlySave = setUpDialog(400, 400, buttons, false, false);
+            SimpleButton onlySave = setUpDialog(400, 400, true, false, false);
             onlySave.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
             panel.add(noLeft);
@@ -339,10 +323,10 @@ public class ShowCasePanel extends LayoutPanel {
 
         FlowPanel comboBoxPanel = new FlowPanel();
 
-        ComboBox combo1 = new ComboBox();
-        combo1.addItem(SCMessages.i18n.tr("Приблизить"), ImageResources.IMPL.zoom());
-        combo1.addItem(SCMessages.i18n.tr("Налево"), ImageResources.IMPL.navigationLeft());
-        combo1.addItem(SCMessages.i18n.tr("Направо"), ImageResources.IMPL.navigationRight());
+        ComboBox<String> combo1 = new ComboBox<String>();
+        combo1.addItem(SCMessages.i18n.tr("Приблизить"), ImageResources.IMPL.zoom(), null);
+        combo1.addItem(SCMessages.i18n.tr("Налево"), ImageResources.IMPL.navigationLeft(), null);
+        combo1.addItem(SCMessages.i18n.tr("Направо"), ImageResources.IMPL.navigationRight(), null);
         combo1.addItem(SCMessages.i18n.tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"), null);
         for (int i = 1; i < 30; i++) {
             combo1.addItem(SCMessages.i18n.tr("Пункт меню ") + i, null);
@@ -356,10 +340,10 @@ public class ShowCasePanel extends LayoutPanel {
         comboDisabled.setEnabled(false);
         comboBoxPanel.add(comboDisabled);
 
-        ComboBox comboReadOnly = new ComboBox();
-        comboReadOnly.addItem(SCMessages.i18n.tr("Приблизить"), ImageResources.IMPL.zoom());
-        comboReadOnly.addItem(SCMessages.i18n.tr("Налево"), ImageResources.IMPL.navigationLeft());
-        comboReadOnly.addItem(SCMessages.i18n.tr("Направо"), ImageResources.IMPL.navigationRight());
+        ComboBox<String> comboReadOnly = new ComboBox<String>();
+        comboReadOnly.addItem(SCMessages.i18n.tr("Приблизить"), ImageResources.IMPL.zoom(), null);
+        comboReadOnly.addItem(SCMessages.i18n.tr("Налево"), ImageResources.IMPL.navigationLeft(), null);
+        comboReadOnly.addItem(SCMessages.i18n.tr("Направо"), ImageResources.IMPL.navigationRight(), null);
         comboReadOnly.addItem(SCMessages.i18n.tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"), null);
         for (int i = 1; i < 30; i++) {
             comboReadOnly.addItem(SCMessages.i18n.tr("Пункт меню ") + i, null);
@@ -379,7 +363,6 @@ public class ShowCasePanel extends LayoutPanel {
 
     /**
      * Панель с компонентами дата/время
-     * @return
      */
     private Widget getDateInputs() {
         FlowPanel panel = new FlowPanel();
@@ -425,8 +408,7 @@ public class ShowCasePanel extends LayoutPanel {
         panel.add(datePickerPanel2);
         datePickerPanel2.getElement().getStyle().setPadding(5, Style.Unit.PX);
 
-        ArtaScrollPanel scrollPanel = new ArtaScrollPanel(panel);
-        return scrollPanel;
+        return new ArtaScrollPanel(panel);
     }
     /**
      * Смешивает массив
@@ -525,11 +507,11 @@ public class ShowCasePanel extends LayoutPanel {
         firstRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         panel.add(firstRow);
 
-        TagInput noListNoButton = new TagInput(true, false);
+        TagInput noListNoButton = new TagInput(false);
         noListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         thirdRowPanel.add(noListNoButton);
 
-        TagInput<String> hasListNoButton = new TagInput<String>(true, false);
+        TagInput<String> hasListNoButton = new TagInput<String>(false);
         hasListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         hasListNoButton.setDropDownList(createSimpleList(hasListNoButton));
         hasListNoButton.setTitle(SCMessages.i18n.tr("Префиксный выбор из списка"));
@@ -669,7 +651,6 @@ public class ShowCasePanel extends LayoutPanel {
 
     /**
      * Простые кнопки
-     * @return
      */
     private Widget getSimpleButtonPanel() {
         final ContextMenu menu = createSimpleMenu();
@@ -728,7 +709,6 @@ public class ShowCasePanel extends LayoutPanel {
 
     /**
      * Кнопки с иконками
-     * @return
      */
     private Widget getIconButtonPanel() {
         FlowPanel iconButtonPanel = new FlowPanel();
@@ -797,7 +777,6 @@ public class ShowCasePanel extends LayoutPanel {
 
     /**
      * Цветные кнопки
-     * @return
      */
     private Widget getColorButtonPanel() {
         FlowPanel colorButtonPanel = new FlowPanel();
@@ -864,7 +843,6 @@ public class ShowCasePanel extends LayoutPanel {
 
     /**
      * Групповые кнопки
-     * @return
      */
     private Widget getGroupButton() {
         FlowPanel panel = new FlowPanel();

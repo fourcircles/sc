@@ -7,6 +7,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.PopupPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
@@ -24,7 +25,7 @@ import java.util.Date;
  * Time: 9:12
  * Компонент ввода даты
  */
-public class DateInput extends Composite {
+public class DateInput extends Composite implements HasEnabled {
 
     /**
      * Основная панель
@@ -35,6 +36,11 @@ public class DateInput extends Composite {
      * Введенная дата
      */
     private Date date;
+
+    /**
+     * Активно ли поле
+     */
+    private boolean enabled = true;
 
     /**
      * Компонент для ввода даты
@@ -62,7 +68,7 @@ public class DateInput extends Composite {
     private ArtaDatePicker datePicker;
 
     /**
-     * Попап панель календаря
+     * Popup панель календаря
      */
     private PopupPanel calendarPopup = new PopupPanel(true);
 
@@ -189,7 +195,23 @@ public class DateInput extends Composite {
     }
 
     private void setText(Date date) {
-        textInput.setText(DateUtil.DATE_FORMAT.format(this.date));
+        textInput.setText(DateUtil.DATE_FORMAT.format(date));
     }
 
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        textInput.setEnabled(enabled);
+        calendarButton.setEnabled(enabled);
+        if (!enabled) {
+            addStyleName(SynergyComponents.resources.cssComponents().disabled());
+        } else {
+            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+        }
+    }
 }

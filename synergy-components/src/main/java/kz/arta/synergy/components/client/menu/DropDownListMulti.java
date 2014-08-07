@@ -38,18 +38,17 @@ public class DropDownListMulti<V> extends DropDownList<V>{
         /**
          * Для выделения/снятия выделения.
          * Используется, например, при закрытии тега.
-         * @param selected
          */
         public void setSelected(boolean selected, boolean fireEvents) {
             if (selected) {
                 addStyleName(SynergyComponents.resources.cssComponents().selected());
                 if (fireEvents) {
-                    bus.fireEvent(new ListSelectionEvent(this, ListSelectionEvent.ActionType.SELECT));
+                    bus.fireEvent(new ListSelectionEvent<V>(this, ListSelectionEvent.ActionType.SELECT));
                 }
             } else {
                 removeStyleName(SynergyComponents.resources.cssComponents().selected());
                 if (fireEvents) {
-                    bus.fireEvent(new ListSelectionEvent(this, ListSelectionEvent.ActionType.DESELECT));
+                    bus.fireEvent(new ListSelectionEvent<V>(this, ListSelectionEvent.ActionType.DESELECT));
                 }
             }
             this.isSelected = selected;

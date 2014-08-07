@@ -32,25 +32,16 @@ import java.util.HashMap;
  * Комбо-бокс
  */
 public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandlers, HasValueChangeHandlers<V>, HasText{
-    /**
-     * Основная панель
-     */
-    private FlowPanel panel;
 
     /**
      * Выпадающий список
      */
-    private DropDownList list;
+    private DropDownList<V> list;
 
     /**
      * Текст
      */
     private TextInput textLabel;
-
-    /**
-     * Кнопка раскрытия списка
-     */
-    private ImageButton dropDownButton;
 
     /**
      * Отключен или включен комбобокс
@@ -85,10 +76,10 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      */
     private ListTextFilter filter = ListTextFilter.createPrefixFilter();
 
-    private DropDownList.Item selectedItem;
+    private DropDownList<V>.Item selectedItem;
 
     public ComboBox() {
-        panel = new FlowPanel();
+        FlowPanel panel = new FlowPanel();
         values = new HashMap<DropDownList.Item, V>();
 
         initWidget(panel);
@@ -96,13 +87,13 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         isEnabled = true;
 
         EventBus bus = new SimpleEventBus();
-        list = new DropDownList(this, bus);
+        list = new DropDownList<V>(this, bus);
         list.setRelativeWidget(this);
         list.setFilter(filter);
 
-        ListSelectionEvent.register(bus, new ListSelectionEvent.Handler<Object>() {
+        ListSelectionEvent.register(bus, new ListSelectionEvent.Handler<V>() {
             @Override
-            public void onSelection(ListSelectionEvent<Object> event) {
+            public void onSelection(ListSelectionEvent<V> event) {
                 showItem(event.getItem());
                 list.hide();
             }
@@ -112,7 +103,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
 
         textLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
-        dropDownButton = new ImageButton(ImageResources.IMPL.comboBoxDropDown());
+        ImageButton dropDownButton = new ImageButton(ImageResources.IMPL.comboBoxDropDown());
         dropDownButton.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
         textLabelClick = new ClickHandler() {
@@ -209,7 +200,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * Показать элемент списка в комбобоксе
      * @param item элемент списка
      */
-    private void showItem(DropDownList.Item item) {
+    private void showItem(DropDownList<V>.Item item) {
         selectedItem = item;
         textLabel.setText(item.getText());
         ValueChangeEvent.fire(this, values.get(item));

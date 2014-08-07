@@ -20,7 +20,7 @@ public class ListSelectionEvent<V> extends GwtEvent<ListSelectionEvent.Handler<V
         return (Type) TYPE;
     }
 
-    protected void dispatch(Handler handler) {
+    protected void dispatch(Handler<V> handler) {
         if (actionType == ActionType.SELECT) {
             handler.onSelection(this);
         } else {
@@ -30,17 +30,17 @@ public class ListSelectionEvent<V> extends GwtEvent<ListSelectionEvent.Handler<V
 
     public static abstract class Handler<T> implements EventHandler {
         public abstract void onSelection(ListSelectionEvent<T> event);
-        public void onDeselection(ListSelectionEvent<T> event) {};
+        public void onDeselection(ListSelectionEvent<T> event) {}
     }
 
     public enum ActionType {
-        SELECT, DESELECT;
+        SELECT, DESELECT
     }
 
     private DropDownList<V>.Item item;
     private ActionType actionType;
 
-    public ListSelectionEvent(DropDownList.Item item, ActionType type) {
+    public ListSelectionEvent(DropDownList<V>.Item item, ActionType type) {
         this.item = item;
         this.actionType = type;
     }

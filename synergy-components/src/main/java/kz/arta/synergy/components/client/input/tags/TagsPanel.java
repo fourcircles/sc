@@ -53,21 +53,7 @@ public class TagsPanel extends Composite{
      */
     private ArrayList<Tag<?>> tags;
 
-    /**
-     * Скрывать ли теги в индикатор
-     */
-    boolean hasIndicator;
-
-    /**
-     * Сдвиг справа. Используется когда индикатора нет и теги сдвигаются влево.
-     */
-    private int rightOffset;
-
-    public TagsPanel(EventBus bus, int maxWidth) {
-        this(bus, maxWidth, true);
-    }
-
-    public TagsPanel(final EventBus bus, int maxWidth, boolean hasIndicator) {
+    public TagsPanel(final EventBus bus, int maxWidth) {
         container = new SimplePanel();
         initWidget(container);
 
@@ -87,7 +73,6 @@ public class TagsPanel extends Composite{
         container.setWidget(root);
 
         this.maxWidth = maxWidth;
-        this.hasIndicator = hasIndicator;
 
         indicator = new TagIndicator(bus);
         tags = new ArrayList<Tag<?>>();
@@ -117,6 +102,7 @@ public class TagsPanel extends Composite{
     public boolean contains(Tag<?> tag) {
         return tags.contains(tag);
     }
+
     /**
      * Удаляет тег
      * @param tag тег
@@ -124,7 +110,6 @@ public class TagsPanel extends Composite{
     private void removeTag(Tag<?> tag) {
         tags.remove(tag);
         root.remove(tag);
-        tag.getElement().getStyle().clearRight();
         rebuild();
     }
 
@@ -133,24 +118,6 @@ public class TagsPanel extends Composite{
      * или сдвигает влево
      */
     private void rebuild() {
-        if (!hasIndicator) {
-            root.clear();
-            for (Tag tag : tags) {
-                root.add(tag);
-            }
-            getElement().getStyle().clearWidth();
-            if (getOffsetWidth() > maxWidth) {
-                rightOffset = getOffsetWidth() - maxWidth - Constants.COMMON_INPUT_PADDING;
-                getElement().getStyle().setWidth(maxWidth, Style.Unit.PX);
-            } else {
-                rightOffset = 0;
-            }
-            for (Tag tag : tags) {
-                tag.getElement().getStyle().setRight(rightOffset, Style.Unit.PX);
-            }
-            return;
-        }
-
         int i = 0;
         //теги [i..i-1] скрываем в индикатор, остальные пытаемся разместить
         while (i <= tags.size()) {
@@ -202,14 +169,6 @@ public class TagsPanel extends Composite{
 
     public void setMaxWidth(int maxWidth) {
         this.maxWidth = maxWidth;
-    }
-
-    public boolean isHasIndicator() {
-        return hasIndicator;
-    }
-
-    public void setHasIndicator(boolean hasIndicator) {
-        this.hasIndicator = hasIndicator;
     }
 
     /**

@@ -24,7 +24,6 @@ import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.HashMap;
 
-//todo скроллить и выделять на выбранное значение при повторном открытии
 /**
  * User: vsl
  * Date: 15.07.14

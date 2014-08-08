@@ -26,6 +26,7 @@ import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
+import kz.arta.synergy.components.client.input.SearchResultInput;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.input.date.ArtaDatePicker;
 import kz.arta.synergy.components.client.input.date.DateInput;
@@ -34,6 +35,7 @@ import kz.arta.synergy.components.client.input.date.TimeInput;
 import kz.arta.synergy.components.client.input.tags.ObjectChooser;
 import kz.arta.synergy.components.client.input.tags.TagInput;
 import kz.arta.synergy.components.client.menu.ContextMenu;
+import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
@@ -501,19 +503,34 @@ public class ShowCasePanel extends LayoutPanel {
         return res;
     }
 
-    private DropDownListMulti<String> createSimpleList(Widget parent) {
-        DropDownListMulti<String> tagList = new DropDownListMulti<String>(parent);
-
+    private String[] createShuffledNames() {
         String[] firstNames = new String[]{"Bill", "Vasya", "Jane", "Steve"};
         String[] lastNames = new String[]{"Gates", "Pupkin", "Jones", "Jobs"};
         String[] names = join(firstNames, lastNames);
         shuffle(names);
+        return names;
+    }
 
-        for (String name : names) {
-            tagList.addItem(name, null);
+    private DropDownList<String> createList() {
+        DropDownList<String> list = new DropDownList<String>();
+        String[] names = createShuffledNames();
+
+        for (String name : createShuffledNames()) {
+            list.addItem(name, null);
         }
 
-        return tagList;
+        return list;
+    }
+
+    private DropDownListMulti<String> createMultiList(Widget parent) {
+        DropDownListMulti<String> multiList = new DropDownListMulti<String>(parent);
+
+        String[] names = createShuffledNames();
+        for (String name : names) {
+            multiList.addItem(name, null);
+        }
+
+        return multiList;
     }
 
     private static InlineLabel createLabel(String text) {
@@ -566,7 +583,7 @@ public class ShowCasePanel extends LayoutPanel {
         final TagInput<String> hasListHasIndicator = new TagInput<String>();
         hasListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         hasListHasIndicator.setWidth(300);
-        hasListHasIndicator.setDropDownList(createSimpleList(hasListHasIndicator));
+        hasListHasIndicator.setDropDownList(createMultiList(hasListHasIndicator));
 
         hasListHasIndicator.setTitle(SCMessages.i18n.tr("Фильтрация списка по вхождению текста"));
         hasListHasIndicator.setFilterType(false);
@@ -582,7 +599,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         TagInput<String> hasListNoButton = new TagInput<String>(false);
         hasListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        hasListNoButton.setDropDownList(createSimpleList(hasListNoButton));
+        hasListNoButton.setDropDownList(createMultiList(hasListNoButton));
         hasListNoButton.setTitle(SCMessages.i18n.tr("Префиксный выбор из списка"));
         thirdRowPanel.add(hasListNoButton);
 
@@ -592,7 +609,7 @@ public class ShowCasePanel extends LayoutPanel {
         TagInput<String> multiComboBox = new TagInput<String>();
         multiComboBox.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         multiComboBox.setMultiComboBox(true);
-        multiComboBox.setDropDownList(createSimpleList(multiComboBox));
+        multiComboBox.setDropDownList(createMultiList(multiComboBox));
         multiComboBox.setWidth(300);
         forthRowPanel.add(multiComboBox);
 
@@ -647,10 +664,41 @@ public class ShowCasePanel extends LayoutPanel {
         smallWidthInput.setPlaceHolder(SCMessages.i18n.tr("Маленькое поле ввода"));
         smallWidthInput.setWidth("100px");
 
+        Panel searchResultPanel = new FlowPanel();
+        searchResultPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+        searchResultPanel.setHeight("32px");
+        searchResultPanel.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
+        SearchResultInput<String> searchEnabledWithButton = new SearchResultInput<String>(true);
+        searchEnabledWithButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        DropDownList<String> list = createList();
+        for (DropDownList.Item item : list.getItems()) {
+            item.setIcon(ImageResources.IMPL.magzhan());
+        }
+        searchEnabledWithButton.setList(list);
+        searchResultPanel.add(searchEnabledWithButton);
+
+        SearchResultInput<String> searchDisabledWithButton = new SearchResultInput<String>(true);
+        searchDisabledWithButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        DropDownList<String> list2 = createList();
+        for (DropDownList.Item item : list2.getItems()) {
+            item.setIcon(ImageResources.IMPL.magzhan());
+        }
+        searchDisabledWithButton.setList(list2);
+        searchDisabledWithButton.setEnabled(false);
+        searchResultPanel.add(searchDisabledWithButton);
+
+        SearchResultInput<String> searchNoButton = new SearchResultInput<String>(false);
+        searchNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        DropDownList<String> list3 = createList();
+        searchNoButton.setList(list3);
+        searchResultPanel.add(searchNoButton);
+
+        panel.add(searchResultPanel);
+
+
         Panel textAreaPanel = new FlowPanel();
         textAreaPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
-
-
 
         final ArtaTextArea textArea = new ArtaTextArea();
         textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
@@ -707,7 +755,6 @@ public class ShowCasePanel extends LayoutPanel {
         button.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         buttonPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
         panel.add(buttonPanel);
-
 
         ArtaScrollPanel scroll = new ArtaScrollPanel();
         scroll.setWidget(panel);

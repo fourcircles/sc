@@ -1053,3 +1053,41 @@ p {
     display: inline-block;
     vertical-align: top;
 }
+
+.searchResult {
+    position:relative;
+    border-radius: 4px;
+    border: 1px buttonBorder solid;
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.searchResult .buttonSimple {
+    border-width: 0px;
+    vertical-align: top;
+    cursor: pointer;
+}
+.searchResult.disabled .buttonSimple {
+    cursor: default;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.searchResult.disabled,
+.searchResult.disabled *,
+.searchResult.disabled img,
+.searchResult.disabled *.disabled{
+    background-color: buttonBG;
+}
+
+.searchResult .buttonSimple.pressed {
+    background-color: whiteBG;
+}
+
+.searchResult .commonInput {
+    border: none;
+    padding: 0px;
+    width: 100%;
+}

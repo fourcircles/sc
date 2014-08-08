@@ -17,6 +17,9 @@ public interface ImageResources extends ClientBundle {
     @Source("images/buttons/zoom-original.16.png")
     ImageResource zoom();
 
+    @Source("images/buttons/zoom-original.16_transparent.png")
+    ImageResource zoom_transparent();
+
     @Source("images/dialog/d_close.png")
     ImageResource dialogCloseButton();
 
@@ -81,4 +84,7 @@ public interface ImageResources extends ClientBundle {
 
     @Source("images/buttons/calendar_icon.png")
     ImageResource calendarIcon();
+
+    @Source("images/magzhan.png")
+    ImageResource magzhan();
 }

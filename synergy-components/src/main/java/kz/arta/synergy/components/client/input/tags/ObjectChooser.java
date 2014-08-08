@@ -13,7 +13,6 @@ import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.style.client.Constants;
 
-//todo при удалении тегов странности
 /**
  * User: vsl
  * Date: 31.07.14

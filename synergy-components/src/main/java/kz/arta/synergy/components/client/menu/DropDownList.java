@@ -19,6 +19,7 @@ import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: vsl
@@ -52,11 +53,14 @@ public class DropDownList<V> extends MenuBase {
     private boolean leftRightEnabled;
 
     public DropDownList(Widget relativeWidget) {
-        super();
+        this();
         setRelativeWidget(relativeWidget);
+    }
+
+    public DropDownList() {
+        super();
         scroll = new ArtaScrollPanel(root);
         popup.setWidget(scroll);
-        setRelativeWidget(relativeWidget);
         popup.getElement().getStyle().setProperty("maxHeight", Constants.listMaxHeight());
 
         items = new ArrayList<Item>();
@@ -90,8 +94,7 @@ public class DropDownList<V> extends MenuBase {
         }
     }
 
-    @Override
-    ArrayList<Item> getItems() {
+    public ArrayList<Item> getItems() {
         return items;
     }
 
@@ -101,6 +104,11 @@ public class DropDownList<V> extends MenuBase {
     public void clear() {
         items.clear();
         super.clearItems();
+    }
+
+    public void clearSelection() {
+        clearOverStyles();
+        selectedIndex = -1;
     }
 
     /**
@@ -291,6 +299,7 @@ public class DropDownList<V> extends MenuBase {
         private V value;
 
         public Item() {
+            super();
             this.bus = DropDownList.this.bus;
         }
 
@@ -303,10 +312,11 @@ public class DropDownList<V> extends MenuBase {
         }
 
         @Override
-        public void addSelectionHandler(SelectionEvent.Handler<Item> handler) {
+        public HandlerRegistration addSelectionHandler(SelectionEvent.Handler<Item> handler) {
             if (bus != null) {
-                bus.addHandler(SelectionEvent.TYPE, handler);
+                return bus.addHandler(SelectionEvent.TYPE, handler);
             }
+            return null;
         }
 
         @Override
@@ -340,6 +350,9 @@ public class DropDownList<V> extends MenuBase {
         return bus;
     }
 
+    /**
+     * Задать EventBus на который будут публиковаться события выбора
+     */
     public void setBus(EventBus bus) {
         this.bus = bus;
         for (Item item : items) {

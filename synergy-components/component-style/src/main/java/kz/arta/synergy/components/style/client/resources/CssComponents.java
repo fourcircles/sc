@@ -143,4 +143,6 @@ public interface CssComponents extends CssResource {
     String leftIndicator();
     String rightIndicator();
     String centerIndicator();
+
+    String searchResult();
 }

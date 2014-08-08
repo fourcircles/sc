@@ -73,6 +73,11 @@ public class DateInput extends Composite implements HasEnabled {
     private PopupPanel calendarPopup = new PopupPanel(true);
 
     /**
+     * Можно ли оставлять поле ввода пустым
+     */
+    private boolean allowEmpty = false;
+
+    /**
      * Конструктор по умолчанию
      */
     public DateInput() {
@@ -83,6 +88,7 @@ public class DateInput extends Composite implements HasEnabled {
      * @param allowEmpty    можно ли оставлять поле ввода пустым
      */
     public DateInput(boolean allowEmpty) {
+        this.allowEmpty = allowEmpty;
         textInput = new TextInput();
         textInput.setAllowEmpty(allowEmpty);
         init();
@@ -194,6 +200,10 @@ public class DateInput extends Composite implements HasEnabled {
         checkInput();
     }
 
+    /**
+     * Записываем дату в textInput
+     * @param date  дата
+     */
     private void setText(Date date) {
         textInput.setText(DateUtil.DATE_FORMAT.format(date));
     }
@@ -213,5 +223,13 @@ public class DateInput extends Composite implements HasEnabled {
         } else {
             removeStyleName(SynergyComponents.resources.cssComponents().disabled());
         }
+    }
+
+    public boolean isAllowEmpty() {
+        return allowEmpty;
+    }
+
+    public void setAllowEmpty(boolean allowEmpty) {
+        this.allowEmpty = allowEmpty;
     }
 }

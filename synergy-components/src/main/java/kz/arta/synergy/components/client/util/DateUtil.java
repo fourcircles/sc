@@ -2,9 +2,13 @@ package kz.arta.synergy.components.client.util;
 
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.i18n.shared.DateTimeFormat;
+import com.google.gwt.user.datepicker.client.CalendarModel;
+import com.google.gwt.user.datepicker.client.CalendarUtil;
 import kz.arta.synergy.components.client.resources.Messages;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * User: user
@@ -14,8 +18,14 @@ import java.util.Date;
  */
 public class DateUtil {
 
+    /**
+     * Смещение года в Date
+     */
     public static final int YEAR_OFFSET = 1900;
 
+    /**
+     * Текущая дата //todo в будущем  брать дату сервера
+     */
     public static Date currentDate = new Date();
 
     /**
@@ -27,13 +37,27 @@ public class DateUtil {
      * Список дней недели
      */
     public static String[] weekDays = new String[]{
+            Messages.i18n.tr("Вс"),
             Messages.i18n.tr("Пн"),
             Messages.i18n.tr("Вт"),
             Messages.i18n.tr("Ср"),
             Messages.i18n.tr("Чт"),
             Messages.i18n.tr("Пт"),
-            Messages.i18n.tr("Сб"),
-            Messages.i18n.tr("Вс")};
+            Messages.i18n.tr("Сб")
+            };
+
+    /**
+     * Соответствие порядка дней недели
+     * Ключ - день недели
+     * Значение - отображаемый день недели в календаре
+     * Например, в арабской локали суббота - первый день недели => Ключ 6 - Значение 0
+     */
+    public static HashMap<Integer, Integer> weekDayNum = new HashMap<Integer, Integer>();
+
+    /**
+     * Номера дней в неделе в порядке, зависимом от локали
+     */
+    public static ArrayList<Integer> days = new ArrayList<Integer>();
 
     /*Делаем первый символ заглавным*/
     static {
@@ -70,7 +94,7 @@ public class DateUtil {
     }
 
     /**
-     *
+     * Парсим дату в формате "dd.MM.yyyy"
      */
     public static Date parseDate(String dateString) {
         try {
@@ -81,12 +105,17 @@ public class DateUtil {
     }
 
     /**
-     *
+     * Название месяца по номеру (0 - январь ... 11 - декабрь)
      */
     public static String getMonth(int month) {
         return months[month];
     }
 
+    /**
+     * Название короткое дня недели
+     * @param day день недели (0 - ВС ... 6 - ПН)
+     * @return название дня недели
+     */
     public static String getWeekDay(int day) {
         return weekDays[day];
     }
@@ -115,18 +144,15 @@ public class DateUtil {
     }
 
     /**
-     * Возвращает понедельник
-     * @param date
-     * @return
+     * Возвращает дату первого дня недели (локалезависимо)
+     * @param date  дата
+     * @return  дату первого дня недели
      */
     public static Date getWeekFirstDay(Date date){
         //День недели переданной даты
-        int weekDayNumber = date.getDay();
+        int weekDayNumber = weekDayNum.get(date.getDay());
         int dayNumber = date.getDate();
-        if (weekDayNumber == 0){
-            weekDayNumber = 7;
-        }
-        while (weekDayNumber != 1){
+        while (weekDayNumber != 0){
             dayNumber--;
             weekDayNumber --;
         }
@@ -141,6 +167,7 @@ public class DateUtil {
      * @return номер недели
      */
     public static int getDateWeek(Date date) {
+        /*алгоритм взят из интернета*/
         Date thisThursday = new Date(date.getYear(), date.getMonth(), date.getDate() - weekday(date) + 4);
         Date firstThursdayOfYear = new Date(thisThursday.getYear(), 0, 1);
         while (weekday(firstThursdayOfYear) != 4) {
@@ -150,6 +177,11 @@ public class DateUtil {
         return (int) ((thisThursday.getTime() - firstMondayOfYear.getTime()) / 1000 / 60 / 60 / 24 / 7 + 1);
     }
 
+    /**
+     * Получаем день недели (1 - понедельник ... 7 - воскресенье)
+     * @param date  дата
+     * @return  день недели
+     */
     public static Integer weekday(Date date) {
         int weekday = date.getDay();
         if (weekday == 0) {

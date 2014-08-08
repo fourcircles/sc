@@ -73,7 +73,7 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
     /**
      * Панель с календарем
      */
-    DateSelector calendarPanel;
+    CalendarPanel calendarPanel;
 
     /**
      * Создает календарь с режимом отображения по умолчанию
@@ -116,7 +116,7 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
             }
         });
 
-        calendarPanel = new DateSelector(this);
+        calendarPanel = new CalendarPanel(this);
         panel.add(calendarPanel);
 
 

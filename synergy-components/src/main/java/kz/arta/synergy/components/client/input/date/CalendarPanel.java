@@ -153,6 +153,9 @@ public class CalendarPanel extends Composite {
      * @param selectDay  выбирать ли текущую дату
      */
     public void setCurrentDate(Date date, boolean selectDay) {
+        if (date == null) {
+            return;
+        }
         if (datePicker.currentDate.getMonth() != date.getMonth() || datePicker.currentDate.getYear() != date.getYear()) {
             datePicker.currentDate = date;
             initMonthDays();
@@ -168,6 +171,14 @@ public class CalendarPanel extends Composite {
         }
     }
 
+    /**
+     * Перерисовать дни месяца
+     */
+    public void reDrawDays() {
+        for (DayLabel label: dayLabels.values()) {
+            label.setStyle();
+        }
+    }
 
     /**
      * Выбранные даты
@@ -201,10 +212,6 @@ public class CalendarPanel extends Composite {
             setStyle();
             sinkEvents(Event.MOUSEEVENTS);
             sinkEvents(Event.ONCLICK);
-            if (lastSelected.contains(format.format(date))) {
-                selected = true;
-                MouseStyle.setPressed(this);
-            }
         }
 
         private void setStyle() {
@@ -228,6 +235,10 @@ public class CalendarPanel extends Composite {
                         setStyleName(SynergyComponents.resources.cssComponents().thisMonth());
                     }
                     break;
+            }
+            if (lastSelected.contains(format.format(date))) {
+                selected = true;
+                MouseStyle.setPressed(this);
             }
         }
 

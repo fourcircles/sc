@@ -132,7 +132,15 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
             @Override
             public void onClick(ClickEvent event) {
                 Date month = new Date(currentDate.getTime());
-                month.setDate(currentDate.getDate() - 1);
+                switch (calendarMode) {
+                    case WEEK:
+                        month.setDate(currentDate.getDate() - 7);
+                        break;
+                    case MONTH:
+                        month.setMonth(currentDate.getMonth() - 1);
+                    default:
+                        month.setDate(currentDate.getDate() - 1);
+                }
                 setCurrentDate(month, true);
             }
         });
@@ -140,7 +148,15 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
             @Override
             public void onClick(ClickEvent event) {
                 Date month = new Date(currentDate.getTime());
-                month.setDate(currentDate.getDate() + 1);
+                switch (calendarMode) {
+                    case WEEK:
+                        month.setDate(currentDate.getDate() + 7);
+                        break;
+                    case MONTH:
+                        month.setMonth(currentDate.getMonth() + 1);
+                    default:
+                        month.setDate(currentDate.getDate() + 1);
+                }
                 setCurrentDate(month, true);
             }
         });
@@ -165,6 +181,15 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Date> handler) {
         return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    public CalendarMode getCalendarMode() {
+        return calendarMode;
+    }
+
+    public void setCalendarMode(CalendarMode calendarMode) {
+        this.calendarMode = calendarMode;
+        calendarPanel.reDrawDays();
     }
 
 }

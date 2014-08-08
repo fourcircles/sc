@@ -2,8 +2,6 @@ package kz.arta.synergy.components.client.input.date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -58,12 +56,7 @@ public class TodaySelector extends Composite {
         todayLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
         todayLabel.getElement().getStyle().setCursor(Style.Cursor.POINTER);
         todayLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
-        todayLabel.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
 
-            }
-        });
 
         panel.add(todayLabel);
 

@@ -44,6 +44,8 @@ public class Constants {
 
     public static final int DATE_INPUT_WIDTH = 57;
 
+    public static final int WEEK_INPUT_WIDTH = 85;
+
     public static final int YEAR_LIST_WIDTH = 116;
 
     public static final int LIST_MAX_HEIGHT = 200;
@@ -158,6 +160,10 @@ public class Constants {
 
     public static String yearListWidth() {
         return YEAR_LIST_WIDTH + "px";
+    }
+
+    public static String weekInputWidth() {
+        return WEEK_INPUT_WIDTH + "px";
     }
 
 }

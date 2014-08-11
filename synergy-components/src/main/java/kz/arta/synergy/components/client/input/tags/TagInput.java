@@ -161,12 +161,15 @@ public class TagInput<V> extends Composite implements HasText,
 
         root.add(tagsPanel);
 
+        //Изменение текста в поле
         TextChangedEvent.register(innerBus, new TextChangedEvent.Handler() {
             @Override
             public void onTextChanged(TextChangedEvent event) {
                 textChanged();
             }
         });
+
+        //Кнопки "вниз" и "enter"
         input.addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
@@ -185,6 +188,7 @@ public class TagInput<V> extends Composite implements HasText,
         itemsToTags = new HashMap<DropDownList<V>.Item, Tag<V>>();
         tagsToItems = new HashMap<Tag<V>, DropDownList<V>.Item>();
 
+        //Удаление тега
         TagRemoveEvent.register(innerBus, new TagRemoveEvent.Handler() {
             @Override
             public void onTagRemove(TagRemoveEvent event) {
@@ -212,6 +216,7 @@ public class TagInput<V> extends Composite implements HasText,
             }
         });
 
+        //Выбор элемента в списке
         ListSelectionEvent.register(innerBus, new ListSelectionEvent.Handler<V>() {
             @Override
             public void onSelection(final ListSelectionEvent<V> selectionEvent) {

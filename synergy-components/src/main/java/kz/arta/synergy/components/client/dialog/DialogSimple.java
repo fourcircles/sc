@@ -129,7 +129,7 @@ public class DialogSimple extends PopupPanel {
 
         titlePanel = GWT.create(FlowPanel.class);
         titleLabel = GWT.create(GradientLabel.class);
-        titleLabel.setWidth("10px");
+        titleLabel.setWidth(10);
 
         titlePanel.add(titleLabel);
         titlePanel.add(closeButton);
@@ -175,7 +175,7 @@ public class DialogSimple extends PopupPanel {
         if (Window.Navigator.getAppVersion().contains("MSIE") || Window.Navigator.getAppVersion().contains("Trident")) {
             textWidth -= 2;
         }
-        titleLabel.setWidth(textWidth + "px");
+        titleLabel.setWidth(textWidth);
     }
 
     /**

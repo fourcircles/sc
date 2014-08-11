@@ -25,7 +25,7 @@ public abstract class MenuBase {
     /**
      * Индекс выбранного элемента, если -1 -- не выбран.
      */
-    protected int selectedIndex;
+    protected int selectedIndex = -1;
 
     /**
      * Попап в котором находится основная панель

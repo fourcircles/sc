@@ -27,6 +27,8 @@ import java.util.List;
  * Time: 13:27
  *
  * Выпадающий список
+ *
+ * Сравнение значений элементов производится используя
  */
 public class DropDownList<V> extends MenuBase {
     private EventBus bus;
@@ -57,6 +59,9 @@ public class DropDownList<V> extends MenuBase {
         setRelativeWidget(relativeWidget);
     }
 
+    /**
+     * При использовании этого конструктора необходимо присвоить relativeWidget после создания
+     */
     public DropDownList() {
         super();
         scroll = new ArtaScrollPanel(root);
@@ -91,6 +96,27 @@ public class DropDownList<V> extends MenuBase {
             return items.get(selectedIndex);
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Выбрать элемент с заданным значением
+     * @param value значение
+     * @param fireEvents создавать ли события о выборе элемента
+     */
+    public void selectValue(V value, boolean fireEvents) {
+        int index = -1;
+        for (int i = 0; i < items.size(); i++) {
+            //иногда идея может сообщать об ошибке, но это работает
+            if (items.get(i).getValue().equals(value)) {
+                index = i;
+            }
+        }
+        if (index != -1) {
+            selectedIndex = index;
+            if (fireEvents) {
+                bus.fireEvent(new ListSelectionEvent<V>(items.get(selectedIndex)));
+            }
         }
     }
 
@@ -130,6 +156,7 @@ public class DropDownList<V> extends MenuBase {
         item.setText(text);
         item.setValue(value);
         item.setIcon(icon);
+        items.add(item);
 
         addItem(item);
 

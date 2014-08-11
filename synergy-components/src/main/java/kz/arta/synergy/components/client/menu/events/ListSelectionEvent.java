@@ -10,6 +10,8 @@ import kz.arta.synergy.components.client.menu.DropDownList;
  * User: vsl
  * Date: 01.08.14
  * Time: 11:24
+ *
+ * Событие выбора элемента списка
  */
 public class ListSelectionEvent<V> extends GwtEvent<ListSelectionEvent.Handler<V>> {
     public static Type<Handler<?>> TYPE = new Type<Handler<?>>();
@@ -33,16 +35,30 @@ public class ListSelectionEvent<V> extends GwtEvent<ListSelectionEvent.Handler<V
         public void onDeselection(ListSelectionEvent<T> event) {}
     }
 
+    /**
+     * Выбор или снятие выбора для списков предусматривающих выбор нескольких элементов
+     */
     public enum ActionType {
         SELECT, DESELECT
     }
 
+    /**
+     * Элемент списка
+     */
     private DropDownList<V>.Item item;
+
+    /**
+     * Тип действия
+     */
     private ActionType actionType;
 
     public ListSelectionEvent(DropDownList<V>.Item item, ActionType type) {
         this.item = item;
         this.actionType = type;
+    }
+
+    public ListSelectionEvent(DropDownList<V>.Item item) {
+        this(item, ActionType.SELECT);
     }
 
     public DropDownList<V>.Item getItem() {

@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.input.tags;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -8,8 +9,6 @@ import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
 import kz.arta.synergy.components.client.label.GradientLabel;
-import kz.arta.synergy.components.client.menu.DropDownList;
-import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.Utils;
@@ -58,8 +57,10 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
         root = new FlowPanel();
         initWidget(root);
 
-        label = new GradientLabel();
+        label = new GradientLabel(getFontStyle());
         label.setHeight(Constants.TAG_HEIGHT + "px");
+        label.getElement().getStyle().setTextAlign(Style.TextAlign.CENTER);
+
         image = new Image(ImageResources.IMPL.tagClose());
         image.addClickHandler(new ClickHandler() {
             @Override
@@ -114,7 +115,7 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
         totalWidth += Constants.STD_ICON_WIDTH;
 
         if (totalWidth > Constants.TAG_MAX_WIDTH) {
-            label.setWidth(Constants.TAG_MAX_WIDTH - 3 * Constants.COMMON_INPUT_PADDING - Constants.STD_ICON_WIDTH + "px");
+            label.setWidth(Constants.TAG_MAX_WIDTH - 3 * Constants.COMMON_INPUT_PADDING - Constants.STD_ICON_WIDTH);
         }
     }
 
@@ -138,8 +139,8 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
     protected void onLoad() {
         super.onLoad();
         getElement().getStyle().clearWidth();
-        if (getElement().getScrollWidth() > getElement().getClientWidth()) {
-            label.setWidth(label.getOffsetWidth() - (getElement().getScrollWidth() - getElement().getClientWidth()) + "px");
+            if (getElement().getScrollWidth() > getElement().getClientWidth()) {
+            label.setWidth(label.getOffsetWidth() - (getElement().getScrollWidth() - getElement().getClientWidth()));
         }
     }
 

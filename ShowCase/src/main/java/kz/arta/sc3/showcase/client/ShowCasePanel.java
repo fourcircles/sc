@@ -39,6 +39,7 @@ import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+//import kz.arta.synergy.components.client.tabs.Tabs;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.client.util.PPanel;
 import kz.arta.synergy.components.style.client.Constants;
@@ -119,7 +120,7 @@ public class ShowCasePanel extends LayoutPanel {
                 setTheme(event.getValue());
             }
         });
-        themesCombo.setText(currentTheme.name());
+        themesCombo.selectValue(currentTheme, false);
         titlePanel.add(themesCombo);
 
         final ComboBox<String> localesCombo = new ComboBox<String>();
@@ -139,7 +140,7 @@ public class ShowCasePanel extends LayoutPanel {
         if (chosenLocale == null) {
             chosenLocale = LocaleInfo.getCurrentLocale().getLocaleName();
         }
-        localesCombo.setText(chosenLocale);
+        localesCombo.selectValue(chosenLocale, false);
         localesCombo.getElement().getStyle().setMarginRight(20, Style.Unit.PX);
         titlePanel.add(localesCombo);
         if (LocaleInfo.getCurrentLocale().isRTL()) {
@@ -454,7 +455,6 @@ public class ShowCasePanel extends LayoutPanel {
 
     private DropDownList<String> createList() {
         DropDownList<String> list = new DropDownList<String>();
-        String[] names = createShuffledNames();
 
         for (String name : createShuffledNames()) {
             list.addItem(name, null);
@@ -757,6 +757,14 @@ public class ShowCasePanel extends LayoutPanel {
         simpleButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton4);
         simpleButton4.setContextMenu(menuForSimple);
+
+//        Tabs tabs = new Tabs();
+//        simpleButtonPanel.add(tabs);
+//        tabs.addTab("first tab");
+//        tabs.addTab("second tab");
+//        tabs.addTab("third tab");
+//        tabs.addTab("very very very very very long tab");
+
         return simpleButtonPanel;
     }
 

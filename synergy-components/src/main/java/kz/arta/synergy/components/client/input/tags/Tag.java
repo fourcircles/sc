@@ -98,7 +98,7 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
     @Override
     public int getOffsetWidth() {
         return Math.min(Constants.TAG_MAX_WIDTH,
-                Utils.getTextWidth(this) + Constants.TAG_PADDING * 3 + image.getWidth());
+                Utils.getTextWidth(this) + Constants.TAG_PADDING * 3 + 16);
     }
 
     @Override

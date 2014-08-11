@@ -76,6 +76,9 @@ public class TimeInput extends MaskTextInput {
 
     public boolean checkInput() {
         boolean valid = super.checkInput();
+        if (valid && allowEmpty && "__ : __".equals(getText().trim())) {
+            return true;
+        }
         if (!valid) {
             return false;
         }

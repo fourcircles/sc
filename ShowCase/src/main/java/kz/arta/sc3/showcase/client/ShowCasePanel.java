@@ -371,31 +371,90 @@ public class ShowCasePanel extends LayoutPanel {
     private Widget getDateInputs() {
         FlowPanel panel = new FlowPanel();
 
-        FlowPanel timePanel = new FlowPanel();
+        int width = 300;
+
+        PPanel firstRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
+        FlowPanel firstRowPanel = new FlowPanel();
+        firstRow.setWidget(firstRowPanel);
+        firstRowPanel.add(createLabel(SCMessages.i18n.tr("Поле время: "), width));
+        TimeInput timeInputNotAllowEmpty = new TimeInput();
+        timeInputNotAllowEmpty.setTitle(SCMessages.i18n.tr("Обязательное поле ввода"));
+        firstRowPanel.add(timeInputNotAllowEmpty);
+        TimeInput timeInputAllowEmpty = new TimeInput(true);
+        timeInputAllowEmpty.setTitle(SCMessages.i18n.tr("Необязательное поле ввода"));
+        firstRowPanel.add(timeInputAllowEmpty);
         TimeInput timeInput = new TimeInput();
-        timePanel.add(timeInput);
-        panel.add(timePanel);
-        timePanel.getElement().getStyle().setPadding(5, Style.Unit.PX);
+        timeInput.setTitle(SCMessages.i18n.tr("Неактивное поле ввода"));
+        timeInput.setEnabled(false);
+        firstRowPanel.add(timeInput);
+        panel.add(firstRow);
+        firstRow.getElement().getStyle().setPadding(5, Style.Unit.PX);
+        for (int i = 1; i < firstRowPanel.getWidgetCount(); i++) {
+            firstRowPanel.getWidget(i).getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        }
 
-        FlowPanel datePanel = new FlowPanel();
-        DateInput dateInput = new DateInput();
-        dateInput.setDate(new Date());
-        datePanel.add(dateInput);
-        panel.add(datePanel);
-        datePanel.getElement().getStyle().setPadding(5, Style.Unit.PX);
+        PPanel secondRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
+        FlowPanel secondRowPanel = new FlowPanel();
+        secondRow.setWidget(secondRowPanel);
+        secondRowPanel.add(createLabel(SCMessages.i18n.tr("Поле дата - режим выбора день: "), width));
+        DateInput dateInput= new DateInput();
+        dateInput.setTitle(SCMessages.i18n.tr("Обязательное поле ввода"));
+        secondRowPanel.add(dateInput);
+        DateInput dateInput1 = new DateInput(true);
+        dateInput1.setTitle(SCMessages.i18n.tr("Необязательное поле ввода"));
+        secondRowPanel.add(dateInput1);
 
-        FlowPanel datePanel1 = new FlowPanel();
-        DateInput dateInput1 = new DateInput();
-        dateInput1.setDate(new Date());
-        datePanel1.add(dateInput1);
-        dateInput1.setEnabled(false);
-        panel.add(datePanel1);
-        datePanel1.getElement().getStyle().setPadding(5, Style.Unit.PX);
+        DateInput dateInput2 = new DateInput();
+        dateInput2.setTitle(SCMessages.i18n.tr("Неактивное поле ввода"));
+        dateInput2.setEnabled(false);
+        secondRowPanel.add(dateInput2);
+        panel.add(secondRow);
+        secondRow.getElement().getStyle().setPadding(5, Style.Unit.PX);
+        for (int i = 1; i < secondRowPanel.getWidgetCount(); i++) {
+            secondRowPanel.getWidget(i).getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        }
 
-        FlowPanel dateTimePanel= new FlowPanel();
-        dateTimePanel.add(new DateTimeInput());
-        panel.add(dateTimePanel);
-        dateTimePanel.getElement().getStyle().setPadding(5, Style.Unit.PX);
+        PPanel thirdRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
+        FlowPanel thirdRowPanel = new FlowPanel();
+        thirdRow.setWidget(thirdRowPanel);
+        thirdRowPanel.add(createLabel(SCMessages.i18n.tr("Поле дата - режим выбора неделя и месяц: "), width));
+        DateInput dateInputWeek = new DateInput(ArtaDatePicker.CalendarMode.WEEK);
+        dateInputWeek.setTitle(SCMessages.i18n.tr("Неделя"));
+        thirdRowPanel.add(dateInputWeek);
+        DateInput dateInputMonth = new DateInput(ArtaDatePicker.CalendarMode.MONTH);
+        dateInputMonth.setTitle(SCMessages.i18n.tr("Месяц"));
+        thirdRowPanel.add(dateInputMonth);
+        DateInput dateInputMonthDisabled = new DateInput(ArtaDatePicker.CalendarMode.MONTH);
+        dateInputMonthDisabled.setEnabled(false);
+        dateInputMonthDisabled.setTitle(SCMessages.i18n.tr("Неактивное поле ввода"));
+        thirdRowPanel.add(dateInputMonthDisabled);
+        panel.add(thirdRow);
+        thirdRow.getElement().getStyle().setPadding(5, Style.Unit.PX);
+        for (int i = 1; i < thirdRowPanel.getWidgetCount(); i++) {
+            thirdRowPanel.getWidget(i).getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        }
+
+        PPanel fourthRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
+        FlowPanel fourthRowPanel = new FlowPanel();
+        fourthRow.setWidget(fourthRowPanel);
+        fourthRowPanel.add(createLabel(SCMessages.i18n.tr("Поле ввода даты/времени: "), width));
+        DateTimeInput dateTimeInput = new DateTimeInput();
+        dateTimeInput.setTitle(SCMessages.i18n.tr("Обязательное поле ввода"));
+        fourthRowPanel.add(dateTimeInput);
+
+        DateTimeInput dateTimeInput1 = new DateTimeInput(true);
+        dateTimeInput1.setTitle(SCMessages.i18n.tr("Необязательное поле ввода"));
+        fourthRowPanel.add(dateTimeInput1);
+
+        DateTimeInput dateTimeInput2 = new DateTimeInput(true);
+        dateTimeInput2.setTitle(SCMessages.i18n.tr("Неактивное поле ввода"));
+        dateTimeInput2.setEnabled(false);
+        fourthRowPanel.add(dateTimeInput2);
+        panel.add(fourthRow);
+        fourthRow.getElement().getStyle().setPadding(5, Style.Unit.PX);
+        for (int i = 1; i < fourthRowPanel.getWidgetCount(); i++) {
+            fourthRowPanel.getWidget(i).getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        }
 
         FlowPanel datePickerPanel = new FlowPanel();
         datePickerPanel.add(new ArtaDatePicker());
@@ -475,11 +534,15 @@ public class ShowCasePanel extends LayoutPanel {
     }
 
     private static InlineLabel createLabel(String text) {
+        return createLabel(text, 180);
+    }
+
+    private static InlineLabel createLabel(String text, int width) {
         InlineLabel label = new InlineLabel(SCMessages.i18n.tr(text));
         label.setStyleName(SynergyComponents.resources.cssComponents().mainText());
         label.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
         label.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
-        label.setWidth("180px");
+        label.setWidth(width + "px");
         return label;
     }
 

@@ -72,6 +72,11 @@ public class DateUtil {
     public static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("dd.MM.yy");
 
     /**
+     * Формат даты дд.мм
+     */
+    public static final DateTimeFormat DAY_MONTH_FORMAT = DateTimeFormat.getFormat("dd.MM");
+
+    /**
      * Валидация даты
      * @param dateString  строка с датой
      * @return  true/false
@@ -160,6 +165,49 @@ public class DateUtil {
         result.setDate(result.getDate() - (result.getDate() - dayNumber));
         return result;
     }
+
+    /**
+     * Возвращает дату последнего дня недели (локалезависимо)
+     * @param date  дата
+     * @return  дату последнего дня недели
+     */
+    public static Date getWeekLastDay(Date date){
+        //День недели переданной даты
+        int weekDayNumber = weekDayNum.get(date.getDay());
+
+        int dayNumber = date.getDate();
+        while (weekDayNumber != 6){
+            dayNumber++;
+            weekDayNumber ++;
+        }
+        Date result = new Date(date.getTime());
+        result.setDate(result.getDate() - (result.getDate() - dayNumber));
+        return result;
+    }
+
+    /**
+     * Возвращает начальную и конечную даты недели в формате дд.мм - дд.мм
+     * @param date  дата
+     * @return строку в формате дд.мм - дд.мм
+     */
+    public static String getWeekDate(Date date) {
+        return DateUtil.DAY_MONTH_FORMAT.format(DateUtil.getWeekFirstDay(date)) + " - " + DateUtil.DAY_MONTH_FORMAT.format(DateUtil.getWeekLastDay(date));
+    }
+
+    /**
+     * Возвращает начальную и конечную даты недели в формате дд.мм - дд.мм
+     * @param date  дата
+     * @return строку в формате дд.мм - дд.мм
+     */
+    public static String getMonthDate(Date date) {
+        CalendarUtil.setToFirstDayOfMonth(date);
+        String first = DateUtil.DAY_MONTH_FORMAT.format(date);
+        date.setDate(getMonthDaysCount(date.getMonth() + 1, date.getYear()));
+        String last = DateUtil.DAY_MONTH_FORMAT.format(date);
+        return first + " - " + last;
+    }
+
+
 
     /**
      * Получаем номер недели в году

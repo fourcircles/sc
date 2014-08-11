@@ -43,6 +43,11 @@ public class DateInput extends Composite implements HasEnabled {
     private boolean enabled = true;
 
     /**
+     * Режим отображения календаря
+     */
+    private ArtaDatePicker.CalendarMode calendarMode = ArtaDatePicker.CalendarMode.DAY;
+
+    /**
      * Компонент для ввода даты
      */
     private TextInput textInput;
@@ -89,8 +94,26 @@ public class DateInput extends Composite implements HasEnabled {
      */
     public DateInput(boolean allowEmpty) {
         this.allowEmpty = allowEmpty;
-        textInput = new TextInput();
-        textInput.setAllowEmpty(allowEmpty);
+        init();
+    }
+
+    /**
+     *
+     * @param calendarMode режим отображения календаря
+     */
+    public DateInput(ArtaDatePicker.CalendarMode calendarMode) {
+        this.calendarMode = calendarMode;
+        init();
+    }
+
+    /**
+     *
+     * @param allowEmpty можно ли оставлять поле ввода пустым
+     * @param calendarMode режим отображения календаря
+     */
+    public DateInput(boolean allowEmpty, ArtaDatePicker.CalendarMode calendarMode) {
+        this.allowEmpty = allowEmpty;
+        this.calendarMode = calendarMode;
         init();
     }
 
@@ -98,6 +121,15 @@ public class DateInput extends Composite implements HasEnabled {
         panel = new FlowPanel();
         initWidget(panel);
 
+        textInput = new TextInput();
+        if (calendarMode != ArtaDatePicker.CalendarMode.DAY) {
+            textInput.setReadOnly(true);
+            textInput.setWidth(Constants.weekInputWidth());
+        } else {
+            textInput.setMaxLength(8);
+            textInput.setWidth(Constants.dateInputWidth());
+        }
+        textInput.setAllowEmpty(allowEmpty);
         textInput.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
         calendarButton = new ImageButton(ImageResources.IMPL.calendarIcon());
@@ -106,7 +138,8 @@ public class DateInput extends Composite implements HasEnabled {
         panel.add(textInput);
         panel.add(calendarButton);
 
-        datePicker = new ArtaDatePicker();
+        datePicker = new ArtaDatePicker(calendarMode);
+        //todo подумать datePicker.setCurrentDate()
         datePicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
             public void onValueChange(ValueChangeEvent<Date> event) {
@@ -144,8 +177,7 @@ public class DateInput extends Composite implements HasEnabled {
 
         setStyleName(SynergyComponents.resources.cssComponents().dateInput());
         addStyleName(SynergyComponents.resources.cssComponents().mainText());
-        textInput.setWidth(Constants.dateInputWidth());
-        textInput.setMaxLength(8);
+
         textInput.addKeyDownHandler(dateCheckHandler);
         textInput.addKeyUpHandler(dateCheckHandler);
         textInput.addKeyPressHandler(dateCheckHandler);
@@ -170,13 +202,21 @@ public class DateInput extends Composite implements HasEnabled {
      * @return  true/false
      */
     public boolean checkInput() {
-        boolean correct = DateUtil.isDateValid(textInput.getText().trim()) && textInput.checkInput();
+        boolean correct = true;
+        if (textInput.getText().trim().isEmpty() && allowEmpty) {
+            return true;
+        }
+        if (calendarMode == ArtaDatePicker.CalendarMode.DAY) {
+            correct = DateUtil.isDateValid(textInput.getText().trim()) && textInput.checkInput();
+        }
         if (correct) {
             removeStyleName(SynergyComponents.resources.cssComponents().invalid());
             if (focused) {
                 addStyleName(SynergyComponents.resources.cssComponents().focus());
             }
-            date = DateUtil.parseDate(textInput.getText().trim());
+            if (calendarMode == ArtaDatePicker.CalendarMode.DAY) {
+                date = DateUtil.parseDate(textInput.getText().trim());
+            }
             datePicker.setCurrentDate(date);
         } else {
             addStyleName(SynergyComponents.resources.cssComponents().invalid());
@@ -205,7 +245,17 @@ public class DateInput extends Composite implements HasEnabled {
      * @param date  дата
      */
     private void setText(Date date) {
-        textInput.setText(DateUtil.DATE_FORMAT.format(date));
+        switch (calendarMode) {
+            case WEEK:
+                textInput.setText(DateUtil.getWeekDate(date));
+                break;
+            case MONTH:
+                textInput.setText(DateUtil.getMonthDate(date));
+                break;
+            default:
+                textInput.setText(DateUtil.DATE_FORMAT.format(date));
+                break;
+        }
     }
 
     @Override

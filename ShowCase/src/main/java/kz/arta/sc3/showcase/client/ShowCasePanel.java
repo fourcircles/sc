@@ -47,6 +47,7 @@ import kz.arta.synergy.components.style.client.Constants;
 import java.util.ArrayList;
 import java.util.Date;
 
+//todo реализовать отложенную загрузку
 /**
  * User: vsl
  * Date: 23.06.14

@@ -203,6 +203,7 @@ public class TagInput<V> extends Composite implements HasText,
 
                     tagsToItems.remove(event.getTag());
                     itemsToTags.remove(item);
+                    dropDownList.clearSelection();
                 }
 
                 new Timer() {
@@ -231,6 +232,7 @@ public class TagInput<V> extends Composite implements HasText,
                 input.setText("");
                 setInputOffset(Math.min(tagsPanel.getOffsetWidth(), getAvailableSpace()));
                 input.setFocus(true);
+                dropDownList.clearSelection();
             }
 
             @Override

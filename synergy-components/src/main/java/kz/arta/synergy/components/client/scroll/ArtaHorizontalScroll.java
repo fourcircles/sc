@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Image;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
 
@@ -42,7 +43,7 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
     ArtaFlowPanel panel;
 
     /**
-     * Кнопка влева
+     * Кнопка влево
      */
     @UiField
     Image left;
@@ -188,7 +189,8 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
             }
             int barLeft = event.getClientX() - dragStartX;
             int marginLeft = barLeft - dragAreaStart;
-            scrollPanel.setHorizontalScrollPosition((int) getScrollPosition(marginLeft + (LocaleInfo.getCurrentLocale().isRTL() ? barWidth : 0)));
+            int pos = (int) getScrollPosition(marginLeft + (LocaleInfo.getCurrentLocale().isRTL() ? barWidth : 0));
+            scrollPanel.setHorizontalScrollPosition(checkPosIE11(pos));
         }
     }
 
@@ -208,9 +210,10 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
      * Смещение видимой части на один шаг вправо
      */
     private void scrollRight() {
-        int pos = scrollPanel.getHorizontalScrollPosition()   ;
+        int pos = checkPosIE11(scrollPanel.getHorizontalScrollPosition());
         pos += SCROLL_STEP * width;
         pos = Math.min(pos, getMaximumHorizontalScrollPosition());
+        pos = checkPosIE11(pos);
         scrollPanel.setHorizontalScrollPosition(pos);
     }
 
@@ -218,10 +221,23 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
      * Смещение видимой части на один шаг влево
      */
     private void scrollLeft() {
-        int pos = scrollPanel.getHorizontalScrollPosition();
+        int pos = checkPosIE11(scrollPanel.getHorizontalScrollPosition());
         pos -= SCROLL_STEP * width;
         pos = Math.max(pos, getMinimumHorizontalScrollPosition());
+        pos = checkPosIE11(pos);
         scrollPanel.setHorizontalScrollPosition(pos);
+    }
+
+    /**
+     * Приходится делать эту проверку из-за неверного расчета позиций скролла ie11
+     * @param pos   позиция скролла
+     * @return  скорректированная позиция скролла
+     */
+    private int checkPosIE11(int pos) {
+        if (Navigator.isIE11 && LocaleInfo.getCurrentLocale().isRTL()) {
+            pos = -pos;
+        }
+        return pos;
     }
 
     /**
@@ -288,6 +304,7 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
 
     @Override
     public void setHorizontalScrollPosition(int position) {
+        position = checkPosIE11(position);
         double barPosition = getBarPosition(position);
         bar.getElement().getStyle().setMarginLeft(barPosition, Style.Unit.PX);
         bar.getElement().getStyle().setMarginRight(freeTrackSpace - barPosition, Style.Unit.PX);

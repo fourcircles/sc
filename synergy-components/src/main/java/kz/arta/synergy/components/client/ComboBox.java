@@ -97,6 +97,16 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
 
         textLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
+        //при blur поля ввода - возвращаем выбранное значение
+        textLabel.addBlurHandler(new BlurHandler() {
+            @Override
+            public void onBlur(BlurEvent event) {
+                if (selectedItem != null) {
+                    textLabel.setText(selectedItem.getText());
+                }
+            }
+        });
+
         ImageButton dropDownButton = new ImageButton(ImageResources.IMPL.comboBoxDropDown());
         dropDownButton.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
@@ -110,11 +120,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                         list.hide();
                     } else {
                         filter.setText("");
-                        list.show();
-                        if (selectedItem != null) {
-                            selectedItem.focusItem();
-                            list.ensureVisible(selectedItem);
-                        }
+                        list.show(selectedItem);
                     }
                 }
             }
@@ -141,7 +147,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                     new Timer() {
                         @Override
                         public void run() {
-                            changeList();
+                            changeText();
                         }
                     }.schedule(20);
                 }
@@ -155,12 +161,11 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                     case KeyCodes.KEY_BACKSPACE:
                     case KeyCodes.KEY_DELETE:
                     case KeyCodes.KEY_SPACE:
-                        changeList();
+                        changeText();
                         break;
                     case KeyCodes.KEY_DOWN:
                         if (!list.isShowing()) {
-                            list.show();
-                            list.selectFirst();
+                            list.show(selectedItem);
                         }
                         break;
                 }
@@ -183,10 +188,10 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * Метод вызывается при изменении текста комбобокса и выполняет действия для
      * изменения контента выпадающего списка
      */
-    private void changeList() {
+    private void changeText() {
         filter.setText(textLabel.getText());
         if (!list.isShowing()) {
-            list.show();
+            list.show(selectedItem);
         }
     }
 
@@ -311,7 +316,6 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                 if (textUpKeyRegistration != null) {
                     textUpKeyRegistration.removeHandler();
                 }
-
             } else {
                 textPressKeyRegistration = textLabel.addKeyPressHandler(textPressKey);
                 textUpKeyRegistration = textLabel.addKeyUpHandler(textUpKey);

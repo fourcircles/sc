@@ -19,7 +19,6 @@ import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * User: vsl
@@ -53,6 +52,11 @@ public class DropDownList<V> extends MenuBase {
      * Отключены ли кнопки "влево" "вправо"
      */
     private boolean leftRightEnabled;
+
+    /**
+     * Элемент который представляет уже выбранный элемент
+     */
+    private Item selectedItem;
 
     public DropDownList(Widget relativeWidget) {
         this();
@@ -92,8 +96,8 @@ public class DropDownList<V> extends MenuBase {
      * Возвращает выбранный элемент
      */
     public Item getSelectedItem() {
-        if (selectedIndex >=0 && selectedIndex < items.size()) {
-            return items.get(selectedIndex);
+        if (focusedIndex >=0 && focusedIndex < items.size()) {
+            return items.get(focusedIndex);
         } else {
             return null;
         }
@@ -108,14 +112,15 @@ public class DropDownList<V> extends MenuBase {
         int index = -1;
         for (int i = 0; i < items.size(); i++) {
             //иногда идея может сообщать об ошибке, но это работает
+            //noinspection NonJREEmulationClassesInClientCode
             if (items.get(i).getValue().equals(value)) {
                 index = i;
             }
         }
         if (index != -1) {
-            selectedIndex = index;
+            focusedIndex = index;
             if (fireEvents) {
-                bus.fireEvent(new ListSelectionEvent<V>(items.get(selectedIndex)));
+                bus.fireEvent(new ListSelectionEvent<V>(items.get(focusedIndex)));
             }
         }
     }
@@ -130,11 +135,6 @@ public class DropDownList<V> extends MenuBase {
     public void clear() {
         items.clear();
         super.clearItems();
-    }
-
-    public void clearSelection() {
-        clearOverStyles();
-        selectedIndex = -1;
     }
 
     /**
@@ -214,23 +214,54 @@ public class DropDownList<V> extends MenuBase {
     @Override
     protected void keyEnter(Event.NativePreviewEvent event) {
         event.cancel();
-        if (selectedIndex >= 0 && selectedIndex < items.size()) {
-            items.get(selectedIndex).selectItem();
+        if (focusedIndex >= 0 && focusedIndex < items.size()) {
+            items.get(focusedIndex).selectItem();
         }
     }
+
 
     /**
      * Показывает список под элементом указанным при создании
      */
     public void show() {
+        noFocused();
+        if (selectedItem != null) {
+            selectedItem.removeStyleName(SynergyComponents.resources.cssComponents().selected());
+        }
+
         popup.setHeight(getHeight() + "px");
 
         popup.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 8 + "px");
         root.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 8 + "px");
 
         super.showUnderParent();
-        if (selectedIndex != -1) {
+        if (focusedIndex != -1) {
             scroll.ensureVisible(getSelectedItem());
+        }
+    }
+
+    /**
+     * Показывает список выделяет элемент на указанной позиции как уже выбранный
+     * @param selectedIndex позиция уже выбранного элемента
+     */
+    public void show(int selectedIndex) {
+        Item selectedItem = items.get(selectedIndex);
+        show(selectedItem);
+    }
+
+    /**
+     * Тоже самое, что и show(int)
+     * @param item уже выбранный элемент
+     */
+    public void show(Item item) {
+        show();
+        if (item != null && items.contains(item) && filter.include(item)) {
+            selectedItem = item;
+            item.addStyleName(SynergyComponents.resources.cssComponents().selected());
+            scroll.ensureVisible(item);
+
+            //навигация клавиатурой при уже выбранном значении начинается с него
+            focusedIndex = items.indexOf(item);
         }
     }
 
@@ -348,8 +379,8 @@ public class DropDownList<V> extends MenuBase {
 
         @Override
         public void focusItem() {
-            clearOverStyles();
-            selectedIndex = items.indexOf(this);
+            noFocused();
+            focusedIndex = items.indexOf(this);
             super.focusItem();
         }
 

@@ -2,8 +2,10 @@ package kz.arta.synergy.components.client.input.date;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -25,7 +27,7 @@ import java.util.Date;
  * Time: 9:12
  * Компонент ввода даты
  */
-public class DateInput extends Composite implements HasEnabled {
+public class DateInput extends Composite implements HasEnabled, HasValueChangeHandlers<Date> {
 
     /**
      * Основная панель
@@ -139,12 +141,11 @@ public class DateInput extends Composite implements HasEnabled {
         panel.add(calendarButton);
 
         datePicker = new ArtaDatePicker(calendarMode);
-        //todo подумать datePicker.setCurrentDate()
+
         datePicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
             public void onValueChange(ValueChangeEvent<Date> event) {
-                date = event.getValue();
-                setText(event.getValue());
+                setDate(event.getValue());
                 calendarPopup.hide();
             }
         });
@@ -217,7 +218,7 @@ public class DateInput extends Composite implements HasEnabled {
             if (calendarMode == ArtaDatePicker.CalendarMode.DAY) {
                 date = DateUtil.parseDate(textInput.getText().trim());
             }
-            datePicker.setCurrentDate(date);
+            datePicker.setCurrentDateWithoutFireChange(date);
         } else {
             addStyleName(SynergyComponents.resources.cssComponents().invalid());
             removeStyleName(SynergyComponents.resources.cssComponents().focus());
@@ -233,11 +234,11 @@ public class DateInput extends Composite implements HasEnabled {
      * Устанавливает дату в поле ввода и в DatePicker
      * @param date дата
      */
-    //todo подумать datePicker.setCurrentDate()
     public void setDate(Date date) {
         this.date = date;
         setText(date);
-        checkInput();
+        datePicker.setCurrentDateWithoutFireChange(date);
+        ValueChangeEvent.fire(this, this.date);
     }
 
     /**
@@ -281,5 +282,15 @@ public class DateInput extends Composite implements HasEnabled {
 
     public void setAllowEmpty(boolean allowEmpty) {
         this.allowEmpty = allowEmpty;
+    }
+
+    /**
+     * Добавляем хэндлер изменения даты
+     * @param handler
+     * @return
+     */
+    @Override
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Date> handler) {
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 }

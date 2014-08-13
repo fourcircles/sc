@@ -52,7 +52,7 @@ public class CalendarPanel extends Composite {
 
     private DateTimeFormat format = DateTimeFormat.getFormat("dd.MM.yyyy");
 
-    public CalendarPanel(ArtaDatePicker datePicker) {
+    protected CalendarPanel(ArtaDatePicker datePicker) {
         this.datePicker = datePicker;
         init();
     }
@@ -144,15 +144,16 @@ public class CalendarPanel extends Composite {
      * @param date  дата
      */
     public void setCurrentDate(Date date) {
-        setCurrentDate(date, true);
+        setCurrentDate(date, true, true);
     }
 
     /**
      * устанавливаем текущую дату
      * @param date  дата
      * @param selectDay  выбирать ли текущую дату
+     * @param fireChange вызывать ли событие изменения
      */
-    public void setCurrentDate(Date date, boolean selectDay) {
+    public void setCurrentDate(Date date, boolean selectDay, boolean fireChange) {
         if (date == null) {
             return;
         }
@@ -165,7 +166,9 @@ public class CalendarPanel extends Composite {
         datePicker.monthSelector.yearLabel.setText((datePicker.currentDate.getYear() + DateUtil.YEAR_OFFSET) + "");
         datePicker.monthSelector.monthLabel.setText(DateUtil.getMonth(datePicker.currentDate.getMonth()));
         if (selectDay) {
-            ValueChangeEvent.fire(datePicker, date);
+            if (fireChange) {
+                ValueChangeEvent.fire(datePicker, date);
+            }
             datePicker.selectedDate = datePicker.currentDate;
             dayLabels.get(format.format(date)).setSelected();
         }

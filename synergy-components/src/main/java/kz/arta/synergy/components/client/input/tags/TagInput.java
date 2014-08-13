@@ -161,12 +161,15 @@ public class TagInput<V> extends Composite implements HasText,
 
         root.add(tagsPanel);
 
+        //Изменение текста в поле
         TextChangedEvent.register(innerBus, new TextChangedEvent.Handler() {
             @Override
             public void onTextChanged(TextChangedEvent event) {
                 textChanged();
             }
         });
+
+        //Кнопки "вниз" и "enter"
         input.addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
@@ -185,6 +188,7 @@ public class TagInput<V> extends Composite implements HasText,
         itemsToTags = new HashMap<DropDownList<V>.Item, Tag<V>>();
         tagsToItems = new HashMap<Tag<V>, DropDownList<V>.Item>();
 
+        //Удаление тега
         TagRemoveEvent.register(innerBus, new TagRemoveEvent.Handler() {
             @Override
             public void onTagRemove(TagRemoveEvent event) {
@@ -199,6 +203,7 @@ public class TagInput<V> extends Composite implements HasText,
 
                     tagsToItems.remove(event.getTag());
                     itemsToTags.remove(item);
+                    dropDownList.noFocused();
                 }
 
                 new Timer() {
@@ -212,6 +217,7 @@ public class TagInput<V> extends Composite implements HasText,
             }
         });
 
+        //Выбор элемента в списке
         ListSelectionEvent.register(innerBus, new ListSelectionEvent.Handler<V>() {
             @Override
             public void onSelection(final ListSelectionEvent<V> selectionEvent) {
@@ -226,6 +232,7 @@ public class TagInput<V> extends Composite implements HasText,
                 input.setText("");
                 setInputOffset(Math.min(tagsPanel.getOffsetWidth(), getAvailableSpace()));
                 input.setFocus(true);
+                dropDownList.noFocused();
             }
 
             @Override
@@ -273,13 +280,7 @@ public class TagInput<V> extends Composite implements HasText,
         filter.setText(input.getText());
 
         if (dropDownList != null) {
-            if (input.getText().isEmpty()) {
-                dropDownList.hide();
-            } else {
-                if (!dropDownList.isShowing()) {
-                    dropDownList.show();
-                }
-            }
+            dropDownList.show();
         }
     }
 

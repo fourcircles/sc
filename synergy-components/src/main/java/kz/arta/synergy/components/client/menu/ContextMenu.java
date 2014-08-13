@@ -183,8 +183,8 @@ public class ContextMenu extends MenuBase {
     @Override
     protected void keyEnter(Event.NativePreviewEvent event) {
         event.cancel();
-        if (selectedIndex != -1) {
-            items.get(selectedIndex).selectItem();
+        if (focusedIndex != -1) {
+            items.get(focusedIndex).selectItem();
         }
     }
 
@@ -213,8 +213,8 @@ public class ContextMenu extends MenuBase {
 
         @Override
         protected void focusItem() {
-            clearOverStyles();
-            selectedIndex = items.indexOf(this);
+            noFocused();
+            focusedIndex = items.indexOf(this);
             super.focusItem();
         }
 

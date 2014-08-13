@@ -60,8 +60,14 @@ public class InputWithEvents extends TextInput {
 
     @Override
     public void setText(String text) {
+        setText(text, true);
+    }
+
+    public void setText(String text, boolean fireEvents) {
         super.setText(text);
-        textMaybeChanged(getText());
+        if (fireEvents) {
+            textMaybeChanged(getText());
+        }
     }
 
     public EventBus getBus() {

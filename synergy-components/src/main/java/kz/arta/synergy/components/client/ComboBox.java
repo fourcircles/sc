@@ -22,8 +22,6 @@ import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.style.client.Constants;
 
-import java.util.HashMap;
-
 /**
  * User: vsl
  * Date: 15.07.14
@@ -68,8 +66,6 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
     KeyUpHandler textUpKey;
     HandlerRegistration textUpKeyRegistration;
 
-    private HashMap<DropDownList.Item, V> values;
-
     /**
      * Фильтр для списка
      */
@@ -79,7 +75,6 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
 
     public ComboBox() {
         FlowPanel panel = new FlowPanel();
-        values = new HashMap<DropDownList.Item, V>();
 
         initWidget(panel);
 
@@ -93,7 +88,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         ListSelectionEvent.register(bus, new ListSelectionEvent.Handler<V>() {
             @Override
             public void onSelection(ListSelectionEvent<V> event) {
-                showItem(event.getItem());
+                selectItem(event.getItem());
                 list.hide();
             }
         });
@@ -101,6 +96,16 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         textLabel = new TextInput();
 
         textLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+
+        //при blur поля ввода - возвращаем выбранное значение
+        textLabel.addBlurHandler(new BlurHandler() {
+            @Override
+            public void onBlur(BlurEvent event) {
+                if (selectedItem != null) {
+                    textLabel.setText(selectedItem.getText());
+                }
+            }
+        });
 
         ImageButton dropDownButton = new ImageButton(ImageResources.IMPL.comboBoxDropDown());
         dropDownButton.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
@@ -115,11 +120,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                         list.hide();
                     } else {
                         filter.setText("");
-                        list.show();
-                        if (selectedItem != null) {
-                            selectedItem.focusItem();
-                            list.ensureVisible(selectedItem);
-                        }
+                        list.show(selectedItem);
                     }
                 }
             }
@@ -146,7 +147,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                     new Timer() {
                         @Override
                         public void run() {
-                            changeList();
+                            changeText();
                         }
                     }.schedule(20);
                 }
@@ -160,12 +161,11 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                     case KeyCodes.KEY_BACKSPACE:
                     case KeyCodes.KEY_DELETE:
                     case KeyCodes.KEY_SPACE:
-                        changeList();
+                        changeText();
                         break;
                     case KeyCodes.KEY_DOWN:
                         if (!list.isShowing()) {
-                            list.show();
-                            list.selectFirst();
+                            list.show(selectedItem);
                         }
                         break;
                 }
@@ -188,21 +188,42 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * Метод вызывается при изменении текста комбобокса и выполняет действия для
      * изменения контента выпадающего списка
      */
-    private void changeList() {
+    private void changeText() {
         filter.setText(textLabel.getText());
         if (!list.isShowing()) {
-            list.show();
+            list.show(selectedItem);
         }
     }
 
     /**
-     * Показать элемент списка в комбобоксе
+     * Выбирает элемент списка
      * @param item элемент списка
      */
-    private void showItem(DropDownList<V>.Item item) {
+    private void selectItem(DropDownList<V>.Item item) {
+        selectItem(item, true);
+    }
+
+    /**
+     * Выбирает элемент списка
+     * @param item элемент списка
+     * @param fireEvents создавать ли события о выборе элемента
+     */
+    private void selectItem(DropDownList<V>.Item item, boolean fireEvents) {
         selectedItem = item;
         textLabel.setText(item.getText());
-        ValueChangeEvent.fire(this, values.get(item));
+        if (fireEvents) {
+            ValueChangeEvent.fire(this, item.getValue());
+        }
+    }
+
+    /**
+     * Выбирает элемент с заданным значением
+     * @param value значение
+     * @param fireEvents создавать ли события о выборе элемента
+     */
+    public void selectValue(V value, boolean fireEvents) {
+        list.selectValue(value, false);
+        selectItem(list.getSelectedItem(), fireEvents);
     }
 
     /**
@@ -210,8 +231,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @param text текст элемента
      */
     public void addItem(String text, V value) {
-        DropDownList.Item item = list.addItem(text, null);
-        values.put(item, value);
+        list.addItem(text, value);
     }
 
     /**
@@ -220,8 +240,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @param iconResource иконка элемента в списке
      */
     public void addItem(String text, ImageResource iconResource, V value) {
-        DropDownList.Item item = list.addItem(text, iconResource, null);
-        values.put(item, value);
+        list.addItem(text, iconResource, value);
     }
 
     /**
@@ -229,20 +248,26 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @return выбранное значение
      */
     public V getSelectedValue() {
-        DropDownList.Item item = list.getSelectedItem();
+        DropDownList<V>.Item item = list.getSelectedItem();
         if (item != null) {
-            return values.get(list.getSelectedItem());
+            return item.getValue();
         } else {
             return null;
         }
     }
 
     /**
-     * Возвращает текст выбранного пункта меню
+     * Возвращает текст выбранного пункта меню,
+     * если ничего не выбрано - возвращает пустой текст.
      * @return выбранный текст
      */
     public String getSelectedText() {
-        return list.getSelectedItem().getText();
+        DropDownList<V>.Item item = list.getSelectedItem();
+        if (item != null) {
+            return item.getText();
+        } else {
+            return "";
+        }
     }
 
     @Override
@@ -291,7 +316,6 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                 if (textUpKeyRegistration != null) {
                     textUpKeyRegistration.removeHandler();
                 }
-
             } else {
                 textPressKeyRegistration = textLabel.addKeyPressHandler(textPressKey);
                 textUpKeyRegistration = textLabel.addKeyUpHandler(textUpKey);

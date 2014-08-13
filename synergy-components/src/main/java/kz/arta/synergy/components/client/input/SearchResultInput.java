@@ -30,9 +30,10 @@ import kz.arta.synergy.components.style.client.Constants;
  *
  * Поле с результатами поиска
  */
-public class SearchResultInput<V> extends Composite implements HasSelectionEventHandlers<V>{
-    private EventBus innerBus;
+public class SearchResultInput<V> extends Composite implements HasSelectionEventHandlers<V>, HasClickHandlers{
+    private final String placeholderText = Messages.i18n.tr("Поиск");
 
+    private EventBus innerBus;
     /**
      * Кнопка
      */
@@ -57,6 +58,11 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
      * Фильтр для списка
      */
     private ListTextFilter filter = ListTextFilter.createPrefixFilter();
+
+    /**
+     * Выбранный элемент списка
+     */
+    private DropDownList<V>.Item selectedItem;
 
     public SearchResultInput() {
         this(true);
@@ -89,21 +95,6 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
 
         if (hasButton) {
             button = new ImageButton(ImageResources.IMPL.zoom_transparent());
-
-            //Клик кнопки
-            button.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    if (list != null) {
-                        list.clearSelection();
-                        if (list.isShowing()) {
-                            list.hide();
-                        } else {
-                            list.show();
-                        }
-                    }
-                }
-            });
             root.add(button);
         }
 
@@ -112,6 +103,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
             @Override
             public void onSelection(final ListSelectionEvent<V> event) {
                 input.setFocus(true);
+                selectedItem = event.getItem();
                 if (Window.Navigator.getAppVersion().contains("MSIE 9")) {
                     new Timer() {
                         @Override
@@ -133,21 +125,43 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
             public void onTextChanged(TextChangedEvent event) {
                 filter.setText(event.getNewText());
                 if (!list.isShowing()) {
-                    list.show();
+                    list.show(selectedItem);
                 }
             }
         });
 
-        input.setPlaceHolder(Messages.i18n.tr("Поиск"));
+        input.addStyleName(SynergyComponents.resources.cssComponents().placeHolder());
+        input.setText(Messages.i18n.tr("Поиск"), false);
 
         input.addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
                 if (event.getNativeKeyCode() == KeyCodes.KEY_DOWN && !list.isShowing()) {
-                    list.clearSelection();
                     filter.setText(input.getText());
-                    list.show();
+                    list.show(selectedItem);
                 }
+            }
+        });
+
+        input.addBlurHandler(new BlurHandler() {
+            @Override
+            public void onBlur(BlurEvent event) {
+                if (selectedItem != null) {
+                    input.setText(selectedItem.getText(), false);
+                } else {
+                    input.setText(placeholderText, false);
+                    input.addStyleName(SynergyComponents.resources.cssComponents().placeHolder());
+                }
+            }
+        });
+
+        input.addFocusHandler(new FocusHandler() {
+            @Override
+            public void onFocus(FocusEvent event) {
+                if (selectedItem == null) {
+                    input.setText("");
+                }
+                input.removeStyleName(SynergyComponents.resources.cssComponents().placeHolder());
             }
         });
 
@@ -205,5 +219,10 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
     @Override
     public HandlerRegistration addSelectionHandler(SelectionEvent.Handler<V> handler) {
         return innerBus.addHandlerToSource(SelectionEvent.TYPE, this, handler);
+    }
+
+    @Override
+    public HandlerRegistration addClickHandler(ClickHandler handler) {
+        return button.addClickHandler(handler);
     }
 }

@@ -25,7 +25,7 @@ public abstract class MenuBase {
     /**
      * Индекс выбранного элемента, если -1 -- не выбран.
      */
-    protected int selectedIndex;
+    protected int focusedIndex = -1;
 
     /**
      * Попап в котором находится основная панель
@@ -71,7 +71,7 @@ public abstract class MenuBase {
             }
             @Override
             public void hide(boolean auto) {
-//                clearOverStyles();
+//                noFocused();
                 if (resizeRegistration != null) {
                     resizeRegistration.removeHandler();
                     resizeRegistration = null;
@@ -92,8 +92,8 @@ public abstract class MenuBase {
             @Override
             public void onMouseOut(MouseOutEvent event) {
                 mouseOver = false;
-                clearOverStyles();
-                selectedIndex = -1;
+                noFocused();
+                focusedIndex = -1;
             }
         });
         resizeHandler = new ResizeHandler() {
@@ -116,10 +116,11 @@ public abstract class MenuBase {
     /**
      * Удаляет класс over у всех элементов списка.
      */
-    protected void clearOverStyles() {
+    public void noFocused() {
         for (MenuItem item : getItems()) {
             item.blurItem();
         }
+        focusedIndex = -1;
     }
 
     /**
@@ -136,7 +137,7 @@ public abstract class MenuBase {
      * @return индекс следующего элемента, -1 если таких элементов нет.
      */
     protected int getNext() {
-        return getNext(selectedIndex);
+        return getNext(focusedIndex);
     }
 
     private int getNext(int start) {
@@ -166,7 +167,7 @@ public abstract class MenuBase {
      * @return индекс элемента до выбранного, -1 если таких элементов нет
      */
     protected int getPrevious() {
-        return getPrevious(selectedIndex);
+        return getPrevious(focusedIndex);
     }
 
     private int getPrevious(int start) {
@@ -219,6 +220,11 @@ public abstract class MenuBase {
         }
     }
 
+    public void selectNext() {
+        focusedIndex = getNext();
+        getItems().get(focusedIndex).focusItem();
+    }
+
     /**
      * Устанавливает виджет относительно которого список будет отображаться
      * @param widget родительский виджет
@@ -255,7 +261,7 @@ public abstract class MenuBase {
         if (resizeRegistration == null) {
             resizeRegistration = Window.addResizeHandler(resizeHandler);
         }
-//        selectedIndex = -1;
+//        focusedIndex = -1;
     }
 
     /**
@@ -310,30 +316,28 @@ public abstract class MenuBase {
     protected void onPreview(Event.NativePreviewEvent event) {
         Event nativeEvent = Event.as(event.getNativeEvent());
 
-        switch (nativeEvent.getTypeInt()) {
-            case Event.ONMOUSEWHEEL:
-                if (!mouseOver) {
-                    popup.hide();
-                }
-                break;
-            case Event.ONKEYDOWN:
-                switch (nativeEvent.getKeyCode()) {
-                    case KeyCodes.KEY_DOWN:
-                        keyDown(event);
-                        break;
-                    case KeyCodes.KEY_UP:
-                        keyUp(event);
-                        break;
-                    case KeyCodes.KEY_LEFT:
-                        keyLeft(event);
-                        break;
-                    case KeyCodes.KEY_RIGHT:
-                        keyRight(event);
-                        break;
-                    case KeyCodes.KEY_ENTER:
-                        keyEnter(event);
-                        break;
-                }
+        if (nativeEvent.getTypeInt() == Event.ONMOUSEWHEEL) {
+            if (!mouseOver) {
+                popup.hide();
+            }
+        } else if (nativeEvent.getTypeInt() == Event.ONKEYDOWN) {
+            switch (nativeEvent.getKeyCode()) {
+                case KeyCodes.KEY_DOWN:
+                    keyDown(event);
+                    break;
+                case KeyCodes.KEY_UP:
+                    keyUp(event);
+                    break;
+                case KeyCodes.KEY_LEFT:
+                    keyLeft(event);
+                    break;
+                case KeyCodes.KEY_RIGHT:
+                    keyRight(event);
+                    break;
+                case KeyCodes.KEY_ENTER:
+                    keyEnter(event);
+                    break;
+            }
         }
     }
 

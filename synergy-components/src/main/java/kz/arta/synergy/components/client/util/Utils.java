@@ -21,11 +21,13 @@ public class Utils {
     public static int getTextWidth(String text, String style) {
         if (sizeLabel == null) {
             sizeLabel = new Label();
+            sizeLabel.getElement().setId("ruler");
             Style labelStyle = sizeLabel.getElement().getStyle();
             labelStyle.setVisibility(Style.Visibility.HIDDEN);
             labelStyle.setPosition(Style.Position.FIXED);
             labelStyle.setTop(0, Style.Unit.PX);
             labelStyle.setLeft(0, Style.Unit.PX);
+            labelStyle.setWhiteSpace(Style.WhiteSpace.NOWRAP);
 
             labelStyle.setPadding(0, Style.Unit.PX);
             labelStyle.setBorderWidth(0, Style.Unit.PX);

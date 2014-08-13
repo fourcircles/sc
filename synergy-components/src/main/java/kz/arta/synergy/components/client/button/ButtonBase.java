@@ -19,6 +19,8 @@ import kz.arta.synergy.components.client.util.MouseStyle;
 import kz.arta.synergy.components.client.util.Selection;
 import kz.arta.synergy.components.style.client.Constants;
 
+//todo исправить прыгающие кнопки
+
 /**
  * User: user
  * Date: 23.06.14
@@ -204,7 +206,8 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         if (textLabel == null) {
             needRebuild = true;
             textLabel = GWT.create(GradientLabel.class);
-            textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
+
+            textLabel.setFontStyle(SynergyComponents.resources.cssComponents().mainTextBold());
             textLabel.addStyleName(SynergyComponents.resources.cssComponents().buttonText());
 
 //            textLabel.getElement().getStyle().setMarginRight(Constants.BUTTON_PADDING, Style.Unit.PX);
@@ -318,7 +321,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         if (textLabel != null) {
             int width = getTextLabelWidth();
             if (width < textLabel.getOffsetWidth() && width > 0) {
-                textLabel.setWidth(width + "px");
+                textLabel.setWidth(width);
             }
         }
     }

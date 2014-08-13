@@ -7,14 +7,25 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.util.ArtaHasText;
+import kz.arta.synergy.components.client.util.Utils;
 
+//todo подумать надо переносом цвета градиента из css сюда
 /**
  * User: vsl
  * Date: 02.07.14
  * Time: 18:02
  * Label с градиентом
+ *
+ * При инициализации необходимо указать стиль текста для оценки ширины.
+ * Высота зависит от родителя (100%).
+ *
+ * Ширина задается методом setWidth(int). Если ширину не задавать, то виджет
+ * растянется до ширины текста.
+ *
+ * Можно задавать ширину как до отображения, так и после.
  */
-public class GradientLabel extends Composite implements HasDirection {
+public class GradientLabel extends Composite implements HasDirection, ArtaHasText {
 
     /**
      * Главная панель
@@ -31,45 +42,65 @@ public class GradientLabel extends Composite implements HasDirection {
      */
     private InlineLabel textLabel = GWT.create(InlineLabel.class);
 
-    public GradientLabel() {
+    /**
+     * Стиль текста
+     */
+    private String textStyle;
+
+    /**
+     * Заданная ширина
+     */
+    private int width;
+
+    /**
+     * Задана ли ширина.
+     */
+    private boolean widthSet;
+
+    public GradientLabel(String textStyle) {
+        this();
+        this.textStyle = textStyle;
+        addStyleName(textStyle);
+    }
+
+    /**
+     * Этот конструктор нужен только для тестирования
+     */
+    protected GradientLabel() {
         panel = new FlowPanel();
         initWidget(panel);
 
+        getElement().getStyle().setProperty("boxSizing", "border-box");
+
         panel.add(textLabel);
+        textLabel.getElement().getStyle().setOverflowX(Style.Overflow.VISIBLE);
+        textLabel.setStyleName("");
+
         getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
+        getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
 
         gradient.setStyleName(SynergyComponents.resources.cssComponents().gradient());
     }
 
-    public GradientLabel(String text) {
-        this();
-        textLabel.setText(text);
-    }
-
     /**
-     * Определяент влезает ли текст элемент.
-     * @return
-     */
-    protected boolean textFits() {
-        return getOffsetWidth() >= textLabel.getOffsetWidth();
-    }
-
-    /**
-     * Добавляет градиент, если текст слишком длинный для текущей ширины элемента.
+     * Добавляет градиент, если текст слишком длинный для заданной ширины элемента.
+     * Метод вызывается при изменении текста, стиля текста, ширины виджета и при присоединении к DOM.
      */
     protected void adjustGradient() {
-        if (!textFits()) {
-            panel.add(gradient);
-            textLabel.getElement().getStyle().setOverflowX(Style.Overflow.VISIBLE);
-        } else {
-            textLabel.getElement().getStyle().setOverflowX(Style.Overflow.VISIBLE);
+        if (isAttached() && widthSet && Utils.getTextWidth(this) > width) {
+            if (Utils.getTextWidth(this) > width) {
+                panel.add(gradient);
+            }
         }
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
+        if (widthSet) {
+            setWidth(width);
+        }
         adjustGradient();
     }
 
@@ -87,13 +118,30 @@ public class GradientLabel extends Composite implements HasDirection {
     }
 
     /**
-     * Изменяет ширину, в случае надобности добавляется градиент.
-     * @param width
+     * Задает ширину включая все кроме margins.
+     * @param width ширина
+     */
+    public void setWidth(int width) {
+        widthSet = true;
+        this.width = width;
+        if (isAttached()) {
+            super.setWidth(width + "px");
+        }
+        adjustGradient();
+    }
+
+    /**
+     * Снимает заданную ширину, виджет растягивается на длину текста.
+     */
+    public void clearWidth() {
+        widthSet = false;
+    }
+    /**
+     * Ширину задавать надо в пикселях
      */
     @Override
     public void setWidth(String width) {
-        super.setWidth(width);
-        adjustGradient();
+        throw new UnsupportedOperationException("ширина текста с градиентом задается используя целое значение в пикселях");
     }
 
 
@@ -113,5 +161,23 @@ public class GradientLabel extends Composite implements HasDirection {
         textLabel.setHeight(height);
         gradient.setHeight(height);
         super.setHeight(height);
+    }
+
+    @Override
+    public String getFontStyle() {
+        return textStyle;
+    }
+
+    /**
+     * Задает новый стиль текста.
+     * При этом возможно увеличение ширины текста, поэтому возможно добавление градиента.
+     * @param textStyle новый стиль текста
+     */
+    public void setFontStyle(String textStyle) {
+        if (this.textStyle != null) {
+            textLabel.removeStyleName(textStyle);
+        }
+        textLabel.addStyleName(textStyle);
+        adjustGradient();
     }
 }

@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class FixedWidthList<V> extends DropDownList<V> {
 
     public FixedWidthList(Widget relativeWidget) {
-        super(relativeWidget);
+        super(relativeWidget, null);
     }
 
     public FixedWidthList(Widget relativeWidget, EventBus bus) {

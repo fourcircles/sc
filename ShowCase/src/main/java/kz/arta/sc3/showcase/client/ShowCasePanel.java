@@ -39,13 +39,11 @@ import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
-//import kz.arta.synergy.components.client.tabs.Tabs;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.client.util.PPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 //todo реализовать отложенную загрузку
 /**
@@ -304,6 +302,40 @@ public class ShowCasePanel extends LayoutPanel {
         return panel;
     }
 
+    private void fillCombobox(ComboBox<String> combobox) {
+        combobox.addItem(SCMessages.i18n.tr("Приблизить"), ImageResources.IMPL.zoom(), SCMessages.i18n.tr("Приблизить"));
+        combobox.addItem(SCMessages.i18n.tr("Налево"), ImageResources.IMPL.navigationLeft(), SCMessages.i18n.tr("Налево"));
+        combobox.addItem(SCMessages.i18n.tr("Направо"), ImageResources.IMPL.navigationRight(), SCMessages.i18n.tr("Направо"));
+        combobox.addItem(SCMessages.i18n.tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"),
+                SCMessages.i18n.tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"));
+        for (int i = 1; i < 30; i++) {
+            combobox.addItem(SCMessages.i18n.tr("Пункт меню ") + i, SCMessages.i18n.tr("Пункт меню ") + i);
+        }
+    }
+    public Widget getComboboxPanel() {
+        FlowPanel comboBoxPanel = new FlowPanel();
+
+        ComboBox<String> combo1 = new ComboBox<String>();
+        fillCombobox(combo1);
+        combo1.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
+        combo1.setReadOnly(false);
+        comboBoxPanel.add(combo1);
+
+        ComboBox comboDisabled = new ComboBox();
+        comboDisabled.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
+        comboDisabled.setEnabled(false);
+        comboBoxPanel.add(comboDisabled);
+
+        ComboBox<String> comboReadOnly = new ComboBox<String>();
+        fillCombobox(comboReadOnly);
+        comboReadOnly.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
+        comboReadOnly.setReadOnly(true);
+        comboReadOnly.setWidth(250);
+        comboBoxPanel.add(comboReadOnly);
+
+        return comboBoxPanel;
+    }
+
     private static class FlowPanel_ extends FlowPanel {
         public FlowPanel_() {
             super();
@@ -326,43 +358,11 @@ public class ShowCasePanel extends LayoutPanel {
 
         new ShowComponent(this, category1, SCMessages.i18n.tr("Групповые кнопки"), SCMessages.i18n.tr("Групповые кнопки"), getGroupButton());
 
-        FlowPanel comboBoxPanel = new FlowPanel();
-
-        ComboBox<String> combo1 = new ComboBox<String>();
-        combo1.addItem(SCMessages.i18n.tr("Приблизить"), ImageResources.IMPL.zoom(), null);
-        combo1.addItem(SCMessages.i18n.tr("Налево"), ImageResources.IMPL.navigationLeft(), null);
-        combo1.addItem(SCMessages.i18n.tr("Направо"), ImageResources.IMPL.navigationRight(), null);
-        combo1.addItem(SCMessages.i18n.tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"), null);
-        for (int i = 1; i < 30; i++) {
-            combo1.addItem(SCMessages.i18n.tr("Пункт меню ") + i, null);
-        }
-        combo1.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
-        combo1.setReadOnly(false);
-        comboBoxPanel.add(combo1);
-
-        ComboBox comboDisabled = new ComboBox();
-        comboDisabled.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
-        comboDisabled.setEnabled(false);
-        comboBoxPanel.add(comboDisabled);
-
-        ComboBox<String> comboReadOnly = new ComboBox<String>();
-        comboReadOnly.addItem(SCMessages.i18n.tr("Приблизить"), ImageResources.IMPL.zoom(), null);
-        comboReadOnly.addItem(SCMessages.i18n.tr("Налево"), ImageResources.IMPL.navigationLeft(), null);
-        comboReadOnly.addItem(SCMessages.i18n.tr("Направо"), ImageResources.IMPL.navigationRight(), null);
-        comboReadOnly.addItem(SCMessages.i18n.tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"), null);
-        for (int i = 1; i < 30; i++) {
-            comboReadOnly.addItem(SCMessages.i18n.tr("Пункт меню ") + i, null);
-        }
-        comboReadOnly.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
-        comboReadOnly.setReadOnly(true);
-        comboReadOnly.setWidth(250);
-        comboBoxPanel.add(comboReadOnly);
-
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));
         new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог с кнопками"), SCMessages.i18n.tr("Диалог с кнопками"), setUpDialogs(true));
         new ShowComponent(this, category3, SCMessages.i18n.tr("Поле ввода текста"), SCMessages.i18n.tr("Поле ввода текста"), getTextInputs());
         new ShowComponent(this, category3, SCMessages.i18n.tr("Поле с тегами"), SCMessages.i18n.tr("Поле с тегами"), getTagInputs());
-        new ShowComponent(this, category3, SCMessages.i18n.tr("Комбобокс"), SCMessages.i18n.tr("Комбобокс"), comboBoxPanel);
+        new ShowComponent(this, category3, SCMessages.i18n.tr("Комбобокс"), SCMessages.i18n.tr("Комбобокс"), getComboboxPanel());
         new ShowComponent(this, category3, SCMessages.i18n.tr("Дата/время"), SCMessages.i18n.tr("Дата/время"), getDateInputs());
     }
 
@@ -513,22 +513,22 @@ public class ShowCasePanel extends LayoutPanel {
         return names;
     }
 
-    private DropDownList<String> createList() {
-        DropDownList<String> list = new DropDownList<String>();
+    private DropDownList<String> createList(Widget relativeWidget) {
+        DropDownList<String> list = new DropDownList<String>(relativeWidget, new SimpleEventBus());
 
         for (String name : createShuffledNames()) {
-            list.addItem(name, null);
+            list.addItem(name, name);
         }
 
         return list;
     }
 
     private DropDownListMulti<String> createMultiList(Widget parent) {
-        DropDownListMulti<String> multiList = new DropDownListMulti<String>(parent);
+        DropDownListMulti<String> multiList = new DropDownListMulti<String>(parent, new SimpleEventBus());
 
         String[] names = createShuffledNames();
         for (String name : names) {
-            multiList.addItem(name, null);
+            multiList.addItem(name, name);
         }
 
         return multiList;
@@ -672,7 +672,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         SearchResultInput<String> searchEnabledWithButton = new SearchResultInput<String>(true);
         searchEnabledWithButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        DropDownList<String> list = createList();
+        DropDownList<String> list = createList(searchEnabledWithButton);
         for (DropDownList.Item item : list.getItems()) {
             item.setIcon(ImageResources.IMPL.magzhan());
         }
@@ -681,7 +681,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         SearchResultInput<String> searchDisabledWithButton = new SearchResultInput<String>(true);
         searchDisabledWithButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        DropDownList<String> list2 = createList();
+        DropDownList<String> list2 = createList(searchDisabledWithButton);
         for (DropDownList.Item item : list2.getItems()) {
             item.setIcon(ImageResources.IMPL.magzhan());
         }
@@ -691,7 +691,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         SearchResultInput<String> searchNoButton = new SearchResultInput<String>(false);
         searchNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        DropDownList<String> list3 = createList();
+        DropDownList<String> list3 = createList(searchNoButton);
         searchNoButton.setList(list3);
         searchResultPanel.add(searchNoButton);
 

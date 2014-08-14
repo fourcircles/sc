@@ -10,9 +10,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.events.FilterUpdateEvent;
-import kz.arta.synergy.components.client.menu.events.HasSelectionEventHandlers;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
-import kz.arta.synergy.components.client.menu.events.SelectionEvent;
 import kz.arta.synergy.components.client.menu.filters.ListFilter;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.util.Navigator;
@@ -25,12 +23,17 @@ import java.util.ArrayList;
  * Date: 28.07.14
  * Time: 13:27
  *
- * Выпадающий список
+ * Выпадающий список.
+ * Когда показывать и скрывать список решает пользователь.
  *
- * Сравнение значений элементов производится используя
+ * При открытом списке нажатия клавиш навигации перехватываются.
+ *
+ * При попытке добавления значения, которое уже присутствует в списке
+ * уже существующий элемент списка с данным значением будет заменен на новый.
+ * Таким образом гарантируется, что в списке нет элементов с одинаковыми значениями.
  */
 public class DropDownList<V> extends MenuBase {
-    private EventBus bus;
+    protected EventBus bus;
 
     /**
      * Список добавленных элементов меню
@@ -49,7 +52,7 @@ public class DropDownList<V> extends MenuBase {
     private HandlerRegistration filterRegistration;
 
     /**
-     * Отключены ли кнопки "влево" "вправо"
+     * Отключены ли кнопки "влево" "вправо".
      */
     private boolean leftRightEnabled;
 
@@ -58,15 +61,10 @@ public class DropDownList<V> extends MenuBase {
      */
     private Item selectedItem;
 
-    public DropDownList(Widget relativeWidget) {
-        this();
-        setRelativeWidget(relativeWidget);
-    }
-
     /**
      * При использовании этого конструктора необходимо присвоить relativeWidget после создания
      */
-    public DropDownList() {
+    protected DropDownList() {
         super();
         scroll = new ArtaScrollPanel(root);
         popup.setWidget(scroll);
@@ -88,15 +86,16 @@ public class DropDownList<V> extends MenuBase {
     }
 
     public DropDownList(Widget relativeWidget, EventBus bus) {
-        this(relativeWidget);
+        this();
         this.bus = bus;
+        setRelativeWidget(relativeWidget);
     }
 
     /**
      * Возвращает выбранный элемент
      */
-    public Item getSelectedItem() {
-        if (focusedIndex >=0 && focusedIndex < items.size()) {
+    public Item getFocusedItem() {
+        if (focusedIndex != -1) {
             return items.get(focusedIndex);
         } else {
             return null;
@@ -104,43 +103,125 @@ public class DropDownList<V> extends MenuBase {
     }
 
     /**
-     * Выбрать элемент с заданным значением
+     * Сфокусировать элемент с заданным значением
      * @param value значение
-     * @param fireEvents создавать ли события о выборе элемента
      */
-    public void selectValue(V value, boolean fireEvents) {
-        int index = -1;
-        for (int i = 0; i < items.size(); i++) {
-            //иногда идея может сообщать об ошибке, но это работает
-            //noinspection NonJREEmulationClassesInClientCode
-            if (items.get(i).getValue().equals(value)) {
-                index = i;
-            }
-        }
-        if (index != -1) {
-            focusedIndex = index;
-            if (fireEvents) {
-                bus.fireEvent(new ListSelectionEvent<V>(items.get(focusedIndex)));
-            }
+    public void focusValue(V value) {
+        if (contains(value)) {
+            Item item = get(value);
+            focusedIndex = items.indexOf(item);
+            item.focus();
         }
     }
 
+    /**
+     * Выделяет элемент с заданным значением
+     * @param value значение
+     */
+    public void selectValue(V value) {
+        if (contains(value)) {
+            get(value).select();
+        }
+    }
+
+    /**
+     * Выделяет элемент с заданным значением как уже выбранный
+     * @param value значение
+     */
+    public void setSelectedValue(V value) {
+        if (contains(value)) {
+            if (getSelectedItem() != null) {
+                getSelectedItem().removeStyleName(SynergyComponents.resources.cssComponents().selected());
+            }
+            selectedItem = get(value);
+            selectedItem.addStyleName(SynergyComponents.resources.cssComponents().selected());
+        }
+    }
+
+    /**
+     * Возвращает элемент списка выделенный как уже выбранный
+     * @return элемент списка
+     */
+    public Item getSelectedItem() {
+        return selectedItem;
+    }
+
+    /**
+     * Возвращает список добавленных элементов
+     * @return список
+     */
     public ArrayList<Item> getItems() {
         return items;
     }
 
+    public Item get(int index) {
+        if (index >= 0 && index < items.size()) {
+            return items.get(index);
+        }
+        return null;
+    }
+
     /**
-     * Удаляет все элементы
+     * Возвращает элемент с заданным значением
+     * @param value значение
+     * @return элемент
      */
-    public void clear() {
-        items.clear();
-        super.clearItems();
+    public Item get(V value) {
+        for (Item item : items) {
+            //noinspection NonJREEmulationClassesInClientCode
+            if ((item.getValue() == null && value == null) || item.getValue().equals(value)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Удаляет элемент из списка с заданным значением
+     * @param value значение
+     */
+    public void remove(V value) {
+        for (Item item : items) {
+            //noinspection NonJREEmulationClassesInClientCode
+            if ((item.getValue() == null && value == null) || item.getValue().equals(value)) {
+                items.remove(item);
+                root.remove(item);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Удаляет элемент на заданной позиции
+     * @param index позиция
+     */
+    public void remove(int index) {
+        root.remove(items.get(index));
+        items.remove(index);
+    }
+
+    public boolean contains(V value) {
+        for (Item item : items) {
+            //noinspection NonJREEmulationClassesInClientCode
+            if ((item.getValue() == null && value == null) || item.getValue().equals(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean contains(Item item) {
+        return items.contains(item);
     }
 
     /**
      * Создает элемент меню с текстом, добавляет его в список и возращает его.
      */
     public Item addItem(String text, V value) {
+        if (contains(value)) {
+            remove(value);
+        }
+
         Item item = new Item();
         item.setText(text);
         item.setValue(value);
@@ -152,6 +233,10 @@ public class DropDownList<V> extends MenuBase {
     }
 
     public Item addItem(String text, ImageResource icon, V value) {
+        if (contains(value)) {
+            remove(value);
+        }
+
         Item item = new Item();
         item.setText(text);
         item.setValue(value);
@@ -164,12 +249,39 @@ public class DropDownList<V> extends MenuBase {
     }
 
     /**
-     * Клавиша "вниз"
+     * В выпадающем списке только один элемент может быть сфокусирован.
+     * @param index позиция
+     */
+    @Override
+    protected void focus(int index) {
+        noFocused();
+        super.focus(index);
+    }
+
+    /**
+     * Фокусирует элемент на позиции и
+     * @param index позиция
+     * @param scroll скроллить ли к элементу
+     */
+    private void focus(int index, boolean scroll) {
+        focus(index);
+        if (scroll) {
+            ensureVisible(items.get(index));
+        }
+    }
+
+
+    public void setLeftRightKeysEnabled(boolean enabled) {
+        leftRightEnabled = enabled;
+    }
+
+    /**
+     * Клавиша "вниз". При предпросмотре события оно отменяется.
      */
     @Override
     protected void keyDown(Event.NativePreviewEvent event) {
         event.cancel();
-        overItemKeyboard(getNext());
+        focus(getNext(), true);
     }
 
     /**
@@ -178,13 +290,8 @@ public class DropDownList<V> extends MenuBase {
     @Override
     protected void keyUp(Event.NativePreviewEvent event) {
         event.cancel();
-        overItemKeyboard(getPrevious());
+        focus(getPrevious(), true);
     }
-
-    public void setLeftRightKeysEnabled(boolean enabled) {
-        leftRightEnabled = enabled;
-    }
-
 
     /**
      * Клавиша "влево"
@@ -193,7 +300,7 @@ public class DropDownList<V> extends MenuBase {
     protected void keyLeft(Event.NativePreviewEvent event) {
         if (leftRightEnabled) {
             event.cancel();
-            overItemKeyboard(getFirst());
+            focus(getFirst(), true);
         }
     }
 
@@ -204,7 +311,7 @@ public class DropDownList<V> extends MenuBase {
     protected void keyRight(Event.NativePreviewEvent event) {
         if (leftRightEnabled) {
             event.cancel();
-            overItemKeyboard(getLast());
+            focus(getLast(), true);
         }
     }
 
@@ -214,8 +321,8 @@ public class DropDownList<V> extends MenuBase {
     @Override
     protected void keyEnter(Event.NativePreviewEvent event) {
         event.cancel();
-        if (focusedIndex >= 0 && focusedIndex < items.size()) {
-            items.get(focusedIndex).selectItem();
+        if (focusedIndex != -1) {
+            getFocusedItem().select();
         }
     }
 
@@ -231,17 +338,17 @@ public class DropDownList<V> extends MenuBase {
 
         popup.setHeight(getHeight() + "px");
 
-        popup.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 8 + "px");
-        root.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - 8 + "px");
+        popup.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2 + "px");
+        root.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2 + "px");
 
         super.showUnderParent();
         if (focusedIndex != -1) {
-            scroll.ensureVisible(getSelectedItem());
+            scroll.ensureVisible(getFocusedItem());
         }
     }
 
     /**
-     * Показывает список выделяет элемент на указанной позиции как уже выбранный
+     * Показывает список, выделяет элемент на указанной позиции как уже выбранный
      * @param selectedIndex позиция уже выбранного элемента
      */
     public void show(int selectedIndex) {
@@ -262,18 +369,6 @@ public class DropDownList<V> extends MenuBase {
 
             //навигация клавиатурой при уже выбранном значении начинается с него
             focusedIndex = items.indexOf(item);
-        }
-    }
-
-    /**
-     * Выделяет элемент на указанной позиции. Вызывается при навигации клавишами.
-     * @param index позиция
-     */
-    private void overItemKeyboard(int index) {
-        if (index >= 0 && index < items.size()) {
-            Item item = items.get(index);
-            item.focusItem();
-            scroll.ensureVisible(item);
         }
     }
 
@@ -320,15 +415,6 @@ public class DropDownList<V> extends MenuBase {
         applyFilter();
     }
 
-    public Item getItemWidthText(String text) {
-        for (Item item : items) {
-            if (item.getText().equals(text)) {
-                return item;
-            }
-        }
-        return null;
-    }
-
     public void setWidth(String width) {
         popup.setWidth(width);
     }
@@ -350,16 +436,11 @@ public class DropDownList<V> extends MenuBase {
     /**
      * Элемент списка
      */
-    public class Item extends MenuItem implements HasSelectionEventHandlers<Item> {
+    public class Item extends MenuItem {
         /**
          * Значение элемента
          */
         private V value;
-
-        public Item() {
-            super();
-            this.bus = DropDownList.this.bus;
-        }
 
         public V getValue() {
             return value;
@@ -370,23 +451,17 @@ public class DropDownList<V> extends MenuBase {
         }
 
         @Override
-        public HandlerRegistration addSelectionHandler(SelectionEvent.Handler<Item> handler) {
-            if (bus != null) {
-                return bus.addHandler(SelectionEvent.TYPE, handler);
-            }
-            return null;
-        }
-
-        @Override
-        public void focusItem() {
+        public void focus() {
             noFocused();
             focusedIndex = items.indexOf(this);
-            super.focusItem();
+            super.focus();
         }
 
         @Override
-        protected void selectItem() {
-            bus.fireEvent(new ListSelectionEvent<V>(this, ListSelectionEvent.ActionType.SELECT));
+        protected void select() {
+            if (bus != null) {
+                bus.fireEventFromSource(new ListSelectionEvent<V>(this), DropDownList.this);
+            }
         }
 
         @Override
@@ -409,13 +484,10 @@ public class DropDownList<V> extends MenuBase {
     }
 
     /**
-     * Задать EventBus на который будут публиковаться события выбора
+     * Задает EventBus на который будут публиковаться события выбора
      */
     public void setBus(EventBus bus) {
         this.bus = bus;
-        for (Item item : items) {
-            item.setBus(bus);
-        }
     }
 
     public void ensureVisible(Item item) {

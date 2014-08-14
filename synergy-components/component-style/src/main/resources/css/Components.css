@@ -92,12 +92,14 @@
 @eval buttonHeight kz.arta.synergy.components.style.client.Constants.buttonHeight();
 @eval buttonMinWidth kz.arta.synergy.components.style.client.Constants.buttonMinWidth();
 @eval borderWidth kz.arta.synergy.components.style.client.Constants.borderWidth();
+@eval borderRadius kz.arta.synergy.components.style.client.Constants.borderRadius();
+
 .buttonSimple, .approveButton, .declineButton, .dropDownButton {
     height: buttonHeight;
     line-height: buttonHeight;
     min-width: buttonMinWidth;
     border: borderWidth solid;
-    border-radius: 4px;
+    border-radius: borderRadius;
     overflow: hidden;
     cursor: default;
     text-align: center;
@@ -111,12 +113,12 @@
 }
 
 .buttonSimple.left, .approveButton.left, .declineButton.left {
-    border-radius: 4px 0 0 4px;
+    border-radius: borderRadius 0 0 borderRadius;
 }
 
 
 .buttonSimple.right, .approveButton.right, .declineButton.right {
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 borderRadius borderRadius 0;
 }
 
 .buttonSimple {
@@ -616,7 +618,7 @@
     border-color: buttonBorder;
     border-width: borderWidth;
     border-style: solid;
-    border-radius: 4px;
+    border-radius: borderRadius;
     background-color: whiteBG;
     color: textColor2;
     padding: commonInputPadding;
@@ -638,7 +640,7 @@
     border-color: buttonBorder;
     border-width: 1px;
     border-style: solid;
-    border-radius: 4px;
+    border-radius: borderRadius;
     background-color: whiteBG;
     display: inline-block;
     vertical-align: top;
@@ -685,7 +687,7 @@
     height: 30px;
     line-height: 30px;
     border: solid borderWidth buttonPressed;
-    border-radius: 4px;
+    border-radius: borderRadius;
 
     display:inline-block;
 }
@@ -816,7 +818,7 @@
 
 .tagInput {
     position:relative;
-    border-radius: 4px;
+    border-radius: borderRadius;
     border: 1px buttonBorder solid;
     height: 30px;
     vertical-align: top;
@@ -1056,7 +1058,7 @@ p {
 
 .searchResult {
     position:relative;
-    border-radius: 4px;
+    border-radius: borderRadius;
     border: 1px buttonBorder solid;
     overflow: hidden;
     display: inline-block;

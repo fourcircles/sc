@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.menu;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -15,15 +16,15 @@ import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 public class DropDownListMulti<V> extends DropDownList<V>{
     private boolean hideAfterSelect = false;
 
-    public DropDownListMulti(Widget relativeWidget) {
-        super(relativeWidget);
+    public DropDownListMulti(Widget relativeWidget, EventBus bus) {
+        super(relativeWidget, bus);
     }
 
     public class Item extends DropDownList<V>.Item {
         private boolean isSelected = false;
 
         @Override
-        protected void selectItem() {
+        protected void select() {
             setSelected(!isSelected, true);
 
             if (hideAfterSelect) {

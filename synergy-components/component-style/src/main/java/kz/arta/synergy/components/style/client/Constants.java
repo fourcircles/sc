@@ -7,6 +7,7 @@ package kz.arta.synergy.components.style.client;
  */
 public class Constants {
     public static final int BORDER_WIDTH = 1;
+    public static final int BORDER_RADIUS = 4;
 
     public static final int BUTTON_HEIGHT = 30;
     public static final int BUTTON_MIN_WIDTH = 30;
@@ -68,6 +69,9 @@ public class Constants {
 
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
+    }
+    public static String borderRadius() {
+        return BORDER_RADIUS + "px";
     }
 
     public static String buttonHeight() {

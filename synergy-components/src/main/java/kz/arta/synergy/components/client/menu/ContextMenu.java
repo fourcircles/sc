@@ -75,7 +75,7 @@ public class ContextMenu extends MenuBase {
      * @param command комманда, которую надо выполнить
      */
     public ContextMenuItem addItem(String text, Command command) {
-        ContextMenuItem item = new ContextMenuItem(bus);
+        ContextMenuItem item = new ContextMenuItem();
         item.setText(text);
         item.setCommand(command);
         items.add(item);
@@ -94,7 +94,7 @@ public class ContextMenu extends MenuBase {
      * Добавляет разделитель
      */
     public void addSeparator() {
-        ContextMenuItem item = new ContextMenuItem(bus) {
+        ContextMenuItem item = new ContextMenuItem() {
             @Override
             public boolean shouldBeSkipped() {
                 return true;
@@ -143,7 +143,7 @@ public class ContextMenu extends MenuBase {
         event.cancel();
         int index = getNext();
         if (index != -1) {
-            items.get(index).focusItem();
+            items.get(index).focus();
         }
     }
 
@@ -155,7 +155,7 @@ public class ContextMenu extends MenuBase {
         event.cancel();
         int index = getPrevious();
         if (index != -1) {
-            items.get(index).focusItem();
+            items.get(index).focus();
         }
     }
 
@@ -164,7 +164,7 @@ public class ContextMenu extends MenuBase {
         event.cancel();
         int index = getFirst();
         if (index != -1) {
-            items.get(index).focusItem();
+            items.get(index).focus();
         }
     }
 
@@ -173,7 +173,7 @@ public class ContextMenu extends MenuBase {
         event.cancel();
         int index = getLast();
         if (index != -1) {
-            items.get(index).focusItem();
+            items.get(index).focus();
         }
     }
 
@@ -184,7 +184,7 @@ public class ContextMenu extends MenuBase {
     protected void keyEnter(Event.NativePreviewEvent event) {
         event.cancel();
         if (focusedIndex != -1) {
-            items.get(focusedIndex).selectItem();
+            items.get(focusedIndex).select();
         }
     }
 
@@ -198,11 +198,6 @@ public class ContextMenu extends MenuBase {
          */
         private Command command;
 
-        public ContextMenuItem(EventBus bus) {
-            super();
-            this.bus = bus;
-        }
-
         public void setCommand(Command command) {
             this.command = command;
         }
@@ -212,14 +207,14 @@ public class ContextMenu extends MenuBase {
         }
 
         @Override
-        protected void focusItem() {
+        protected void focus() {
             noFocused();
             focusedIndex = items.indexOf(this);
-            super.focusItem();
+            super.focus();
         }
 
         @Override
-        protected void selectItem() {
+        protected void select() {
             hide();
             if (command != null) {
                 command.execute();
@@ -229,9 +224,6 @@ public class ContextMenu extends MenuBase {
 
     public void setBus(EventBus bus) {
         this.bus = bus;
-        for (ContextMenuItem item : items) {
-            item.bus = bus;
-        }
         SelectionEvent.register(bus, selectionHandler);
     }
 

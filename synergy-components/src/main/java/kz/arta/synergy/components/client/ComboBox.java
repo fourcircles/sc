@@ -209,6 +209,10 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @param fireEvents создавать ли события о выборе элемента
      */
     private void selectItem(DropDownList<V>.Item item, boolean fireEvents) {
+        if (item == null) {
+            return;
+        }
+
         selectedItem = item;
         textLabel.setText(item.getText());
         if (fireEvents) {
@@ -222,8 +226,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @param fireEvents создавать ли события о выборе элемента
      */
     public void selectValue(V value, boolean fireEvents) {
-        list.selectValue(value, false);
-        selectItem(list.getSelectedItem(), fireEvents);
+        selectItem(list.get(value), fireEvents);
     }
 
     /**
@@ -248,7 +251,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @return выбранное значение
      */
     public V getSelectedValue() {
-        DropDownList<V>.Item item = list.getSelectedItem();
+        DropDownList<V>.Item item = list.getFocusedItem();
         if (item != null) {
             return item.getValue();
         } else {
@@ -262,7 +265,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * @return выбранный текст
      */
     public String getSelectedText() {
-        DropDownList<V>.Item item = list.getSelectedItem();
+        DropDownList<V>.Item item = list.getFocusedItem();
         if (item != null) {
             return item.getText();
         } else {

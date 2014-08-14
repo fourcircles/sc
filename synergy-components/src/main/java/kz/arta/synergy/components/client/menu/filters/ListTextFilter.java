@@ -28,7 +28,8 @@ abstract public class ListTextFilter implements ListFilter {
         return new ListTextFilter() {
             @Override
             public boolean include(DropDownList.Item item) {
-                if (this.text == null || this.text.isEmpty()) {
+                if (this.text == null ||
+                        (this.text.isEmpty() && item.getText() != null)) {
                     return true;
                 }
                 String itemText = item.getText();
@@ -47,7 +48,8 @@ abstract public class ListTextFilter implements ListFilter {
         return new ListTextFilter() {
             @Override
             public boolean include(DropDownList.Item item) {
-                if (this.text == null || this.text.isEmpty()) {
+                if (this.text == null ||
+                        (this.text.isEmpty() && item.getText() != null)) {
                     return true;
                 }
                 if (item.getText() == null) {
@@ -74,7 +76,11 @@ abstract public class ListTextFilter implements ListFilter {
     public void setText(String text) {
         String oldText = this.text;
         this.text = text;
-        if (oldText != null && !oldText.equals(text)) {
+        if (oldText == null) {
+            if (text != null) {
+                bus.fireEventFromSource(new FilterUpdateEvent(), this);
+            }
+        } else if (!oldText.equals(text)) {
             bus.fireEventFromSource(new FilterUpdateEvent(), this);
         }
     }

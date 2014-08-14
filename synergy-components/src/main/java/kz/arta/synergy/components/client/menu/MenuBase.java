@@ -10,6 +10,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
+import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
 
@@ -108,9 +109,10 @@ public abstract class MenuBase {
     /**
      * Удаляет все элементы списка
      */
-    protected void clearItems() {
+    protected void clear() {
         root.clear();
         getItems().clear();
+        focusedIndex = -1;
     }
 
     /**
@@ -129,6 +131,14 @@ public abstract class MenuBase {
      */
     protected void addItem(MenuItem item) {
         root.add(item);
+    }
+
+    /**
+     * Удаляет элемент
+     * @param item элемент
+     */
+    protected void removeItem(MenuItem item) {
+        root.remove(item);
     }
 
     /**
@@ -211,18 +221,22 @@ public abstract class MenuBase {
     }
 
     /**
-     * Выделяет первый элемент списка.
+     * Фокусирует элемент находящийся на заданной позиции.
+     * @param index позиция
      */
-    public void selectFirst() {
-        int first = getFirst();
-        if (first >= 0 && first <= getItems().size()) {
-            getItems().get(first).focusItem();
+    protected void focus(int index) {
+        focusedIndex = index;
+        if (index != -1) {
+            getItems().get(index).focus();
         }
     }
 
-    public void selectNext() {
-        focusedIndex = getNext();
-        getItems().get(focusedIndex).focusItem();
+    public MenuItem getFocused() {
+        if (focusedIndex != -1) {
+            return getItems().get(focusedIndex);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -261,7 +275,6 @@ public abstract class MenuBase {
         if (resizeRegistration == null) {
             resizeRegistration = Window.addResizeHandler(resizeHandler);
         }
-//        focusedIndex = -1;
     }
 
     /**
@@ -270,13 +283,13 @@ public abstract class MenuBase {
     protected void showUnderParent() {
         if (relativeWidget != null && relativeWidget.isAttached()) {
             beforeShow();
-            popup.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - 8 + "px");
-            root.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - 8 + "px");
+            popup.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2 + "px");
+            root.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2 + "px");
 
             popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
                 @Override
                 public void setPosition(int offsetWidth, int offsetHeight) {
-                    int x = relativeWidget.getAbsoluteLeft() + 4;
+                    int x = relativeWidget.getAbsoluteLeft() + Constants.BORDER_RADIUS * 2;
                     int y = relativeWidget.getAbsoluteTop() + relativeWidget.getOffsetHeight() + 1;
                     popup.setPopupPosition(x, y);
                 }

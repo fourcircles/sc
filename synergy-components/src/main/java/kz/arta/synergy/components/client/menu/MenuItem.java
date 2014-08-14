@@ -3,7 +3,6 @@ package kz.arta.synergy.components.client.menu;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
@@ -36,11 +35,6 @@ abstract public class MenuItem extends Composite {
      */
     protected Label label;
 
-    /**
-     * EventBus на который публикуются события выделения пункта меню
-     */
-    protected EventBus bus;
-
     public MenuItem() {
         root = new ArtaFlowPanel();
         initWidget(root);
@@ -48,13 +42,13 @@ abstract public class MenuItem extends Composite {
         root.addMouseOverHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
-                focusItem();
+                focus();
             }
         });
         root.addMouseMoveHandler(new MouseMoveHandler() {
             @Override
             public void onMouseMove(MouseMoveEvent event) {
-                focusItem();
+                focus();
             }
         });
         root.addMouseOutHandler(new MouseOutHandler() {
@@ -66,7 +60,7 @@ abstract public class MenuItem extends Composite {
         root.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                selectItem();
+                select();
             }
         });
 
@@ -109,12 +103,12 @@ abstract public class MenuItem extends Composite {
     /**
      * Вызывается когда элемент был выбран
      */
-    abstract protected void selectItem();
+    abstract protected void select();
 
     /**
      * Вызывается при выделении
      */
-    protected void focusItem() {
+    protected void focus() {
         addStyleName(SynergyComponents.resources.cssComponents().over());
     }
 
@@ -139,13 +133,5 @@ abstract public class MenuItem extends Composite {
      */
     protected String getMainStyle() {
         return SynergyComponents.resources.cssComponents().contextMenuItem();
-    }
-
-    public EventBus getBus() {
-        return bus;
-    }
-
-    public void setBus(EventBus bus) {
-        this.bus = bus;
     }
 }

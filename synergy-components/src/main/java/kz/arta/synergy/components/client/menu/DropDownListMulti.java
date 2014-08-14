@@ -6,6 +6,9 @@ import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * User: vsl
  * Date: 01.08.14
@@ -14,10 +17,16 @@ import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
  * Выпадающий список с возможностью выделения нескольких пунктов
  */
 public class DropDownListMulti<V> extends DropDownList<V>{
+    /**
+     * Скрывать ли список после выбора значения
+     */
     private boolean hideAfterSelect = false;
+
+    protected ArrayList<DropDownList<V>.Item> selectedItems;
 
     public DropDownListMulti(Widget relativeWidget, EventBus bus) {
         super(relativeWidget, bus);
+        selectedItems = new ArrayList<DropDownList<V>.Item>();
     }
 
     public class Item extends DropDownList<V>.Item {
@@ -43,11 +52,13 @@ public class DropDownListMulti<V> extends DropDownList<V>{
         public void setSelected(boolean selected, boolean fireEvents) {
             if (selected) {
                 addStyleName(SynergyComponents.resources.cssComponents().selected());
+                selectedItems.add(this);
                 if (fireEvents) {
                     bus.fireEvent(new ListSelectionEvent<V>(this, ListSelectionEvent.ActionType.SELECT));
                 }
             } else {
                 removeStyleName(SynergyComponents.resources.cssComponents().selected());
+                selectedItems.remove(this);
                 if (fireEvents) {
                     bus.fireEvent(new ListSelectionEvent<V>(this, ListSelectionEvent.ActionType.DESELECT));
                 }
@@ -86,4 +97,9 @@ public class DropDownListMulti<V> extends DropDownList<V>{
     public void setHideAfterSelect(boolean hideAfterSelect) {
         this.hideAfterSelect = hideAfterSelect;
     }
+
+    public List<DropDownList<V>.Item> getSelected() {
+        return selectedItems;
+    }
+
 }

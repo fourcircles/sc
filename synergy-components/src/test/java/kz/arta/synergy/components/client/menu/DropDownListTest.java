@@ -99,6 +99,24 @@ public class DropDownListTest {
     }
 
     @Test
+    public void testAddNull() {
+        DropDownList<String> stringList = new DropDownList<String>();
+        stringList.addItem("null1", null);
+
+        assertTrue(stringList.contains((String) null));
+        assertFalse(stringList.contains("notnull"));
+
+        DropDownList.Item notNull = stringList.addItem("notnull", "notnull");
+        assertTrue(stringList.contains("notnull"));
+
+        assertEquals(notNull, stringList.get("notnull"));
+
+        stringList.remove("notnull");
+
+        assertFalse(stringList.contains("notnull"));
+    }
+
+    @Test
     public void testSelect() {
         ListSelectionEvent.Handler<Integer> handler = mock(ListSelectionEvent.Handler.class);
         bus.addHandlerToSource(ListSelectionEvent.TYPE, intList, handler);

@@ -171,11 +171,19 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
      * @param date  дата
      */
     public void setCurrentDate(Date date) {
-        calendarPanel.setCurrentDate(date, true);
+        setCurrentDate(date, true);
     }
 
     public void setCurrentDate(Date date, boolean setSelected) {
-        calendarPanel.setCurrentDate(date, setSelected);
+        calendarPanel.setCurrentDate(date, setSelected, true);
+    }
+
+    /**
+     * Метод устанавливает дату без вызова события изменения на datePicker
+     * @param date  дата
+     */
+    void setCurrentDateWithoutFireChange(Date date) {
+        calendarPanel.setCurrentDate(date, true, false);
     }
 
     @Override

@@ -3,8 +3,6 @@ package kz.arta.sc3.showcase.client;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -43,7 +41,8 @@ import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.client.util.PPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 //todo реализовать отложенную загрузку
 /**
@@ -62,9 +61,7 @@ public class ShowCasePanel extends LayoutPanel {
 
     TabLayoutPanel contentPanel;
 
-    TreeItem selectedItem;
-
-    private ArrayList<ShowComponent> tabbedComponents;
+    private Set<LoadPanel> tabs;
 
     public void setBorder(Widget w) {
         w.getElement().getStyle().setProperty("border", "solid 1px black");
@@ -173,40 +170,18 @@ public class ShowCasePanel extends LayoutPanel {
 
         forceLayout();
 
-        tabbedComponents = new ArrayList<ShowComponent>();
+        tabs = new HashSet<LoadPanel>();
 
         tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
             @Override
             public void onSelection(SelectionEvent<TreeItem> event) {
-                selectedItem = event.getSelectedItem();
-            }
-        });
-
-        tree.addMouseUpHandler(new MouseUpHandler() {
-            @Override
-            public void onMouseUp(MouseUpEvent event) {
+                TreeItem selectedItem = event.getSelectedItem();
                 if (selectedItem != null && selectedItem.getUserObject() != null) {
-                    ShowComponent component = (ShowComponent) selectedItem.getUserObject();
-                    showTab(component);
+                    ((LoadPanel) selectedItem.getUserObject()).execute();
                 }
             }
         });
-    }
 
-    public void closeTab(ShowComponent component) {
-        contentPanel.remove(component.asWidget());
-        tabbedComponents.remove(component);
-    }
-
-    public void showTab(ShowComponent component) {
-        if (tabbedComponents.contains(component)) {
-            contentPanel.selectTab(component);
-        } else {
-            //new tab
-            contentPanel.add(component, component.getTabTitle());
-            tabbedComponents.add(component);
-            contentPanel.selectTab(component);
-        }
     }
 
     public TreeItem addCategory(String text) {
@@ -313,6 +288,43 @@ public class ShowCasePanel extends LayoutPanel {
         }
     }
     public Widget getComboboxPanel() {
+//        FlowPanel comboBoxPanel = new FlowPanel();
+//
+//        final ComboBox<String> combo = new ComboBox<String>();
+//        fillCombobox(combo);
+//        combo.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
+//        combo.setReadOnly(false);
+//        comboBoxPanel.add(combo);
+//
+//        ComboBox<Integer> statesCombo = new ComboBox<Integer>();
+//        comboBoxPanel.add(statesCombo);
+//
+//        statesCombo.setReadOnly(true);
+//
+//        statesCombo.addItem("Включен editable", 1);
+//        statesCombo.addItem("Включен readonly", 2);
+//        statesCombo.addItem("Выключены", 3);
+//
+//        statesCombo.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+//            @Override
+//            public void onValueChange(ValueChangeEvent<Integer> event) {
+//                switch (event.getValue()) {
+//                    case 1:
+//                        combo.setEnabled(true);
+//                        combo.setReadOnly(false);
+//                        break;
+//                    case 2:
+//                        combo.setEnabled(true);
+//                        combo.setReadOnly(true);
+//                        break;
+//                    case 3:
+//                        combo.setEnabled(false);
+//                }
+//            }
+//        });
+//
+//
+//        return comboBoxPanel;
         FlowPanel comboBoxPanel = new FlowPanel();
 
         ComboBox<String> combo1 = new ComboBox<String>();
@@ -343,6 +355,67 @@ public class ShowCasePanel extends LayoutPanel {
         }
     }
 
+    private abstract class LoadPanel implements Command {
+        private Widget content;
+        private Widget tabWidget;
+
+        @Override
+        public void execute() {
+            if (!tabs.contains(this)) {
+                addTab();
+                tabs.add(this);
+            } else {
+                selectTab();
+            }
+        }
+
+        public void addTab() {
+            if (content == null) {
+                content = getContentWidget();
+            }
+            if (tabWidget == null) {
+                tabWidget = createTabWidget();
+            }
+            contentPanel.add(content, tabWidget);
+            contentPanel.selectTab(content);
+        }
+
+        private FlowPanel createTabWidget() {
+            FlowPanel tab = new FlowPanel();
+
+            InlineLabel textLabel = new InlineLabel(getText());
+            textLabel.getElement().getStyle().setDisplay(Style.Display.INLINE);
+            tab.add(textLabel);
+
+            InlineLabel closeLabel = new InlineLabel("[X]");
+            closeLabel.getElement().getStyle().setDisplay(Style.Display.INLINE);
+            closeLabel.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    if (content != null) {
+                        contentPanel.remove(content);
+                    }
+                    tabs.remove(LoadPanel.this);
+                }
+            });
+            tab.add(closeLabel);
+            return tab;
+        }
+
+        public void selectTab() {
+            contentPanel.selectTab(content);
+        }
+
+        public abstract String getText();
+        public abstract Widget getContentWidget();
+    }
+
+    private void addTreeItem(TreeItem parentItem, LoadPanel loadPanel) {
+        TreeItem newItem = new TreeItem();
+        newItem.setText(loadPanel.getText());
+        newItem.setUserObject(loadPanel);
+        parentItem.addItem(newItem);
+    }
     private void treeSetUp() {
         tree = new Tree();
 
@@ -350,20 +423,118 @@ public class ShowCasePanel extends LayoutPanel {
         TreeItem category2 = addCategory(SCMessages.i18n.tr("Диалог"));
         TreeItem category3 = addCategory(SCMessages.i18n.tr("Поля ввода"));
 
-        new ShowComponent(this, category1, SCMessages.i18n.tr("Простая кнопка"), SCMessages.i18n.tr("Простая кнопка"), getSimpleButtonPanel());
+        addTreeItem(category1, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Простая кнопка");
+            }
 
-        new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопка с иконкой"), SCMessages.i18n.tr("Кнопка с иконкой"), getIconButtonPanel());
+            @Override
+            public Widget getContentWidget() {
+                return getSimpleButtonPanel();
+            }
+        });
+        addTreeItem(category1, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Кнопка с иконкой");
+            }
 
-        new ShowComponent(this, category1, SCMessages.i18n.tr("Кнопки"), SCMessages.i18n.tr("Кнопки"), getColorButtonPanel());
+            @Override
+            public Widget getContentWidget() {
+                return getIconButtonPanel();
+            }
+        });
+        addTreeItem(category1, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Кнопки");
+            }
 
-        new ShowComponent(this, category1, SCMessages.i18n.tr("Групповые кнопки"), SCMessages.i18n.tr("Групповые кнопки"), getGroupButton());
+            @Override
+            public Widget getContentWidget() {
+                return getColorButtonPanel();
+            }
+        });
+        addTreeItem(category1, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Групповые кнопки");
+            }
 
-        new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог без кнопок"), SCMessages.i18n.tr("Диалог без кнопок"), setUpDialogs(false));
-        new ShowComponent(this, category2, SCMessages.i18n.tr("Диалог с кнопками"), SCMessages.i18n.tr("Диалог с кнопками"), setUpDialogs(true));
-        new ShowComponent(this, category3, SCMessages.i18n.tr("Поле ввода текста"), SCMessages.i18n.tr("Поле ввода текста"), getTextInputs());
-        new ShowComponent(this, category3, SCMessages.i18n.tr("Поле с тегами"), SCMessages.i18n.tr("Поле с тегами"), getTagInputs());
-        new ShowComponent(this, category3, SCMessages.i18n.tr("Комбобокс"), SCMessages.i18n.tr("Комбобокс"), getComboboxPanel());
-        new ShowComponent(this, category3, SCMessages.i18n.tr("Дата/время"), SCMessages.i18n.tr("Дата/время"), getDateInputs());
+            @Override
+            public Widget getContentWidget() {
+                return getGroupButton();
+            }
+        });
+
+        addTreeItem(category2, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Диалог без кнопок");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return setUpDialogs(false);
+            }
+        });
+        addTreeItem(category2, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Диалог с кнопками");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return setUpDialogs(true);
+            }
+        });
+
+        addTreeItem(category3, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Поле ввода текста");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getTextInputs();
+            }
+        });
+        addTreeItem(category3, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Поле с тегами");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getTagInputs();
+            }
+        });
+        addTreeItem(category3, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Комбобокс");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getComboboxPanel();
+            }
+        });
+        addTreeItem(category3, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Дата/время");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getDateInputs();
+            }
+        });
     }
 
     /**

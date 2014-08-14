@@ -105,8 +105,8 @@ public class ShowCasePanel extends LayoutPanel {
         titlePanel.add(about);
         about.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
-
         ComboBox<Theme> themesCombo = new ComboBox<Theme>();
+        themesCombo.setReadOnly(true);
         for (Theme th : Theme.values()) {
             themesCombo.addItem(th.name(), th);
         }
@@ -288,62 +288,43 @@ public class ShowCasePanel extends LayoutPanel {
         }
     }
     public Widget getComboboxPanel() {
-//        FlowPanel comboBoxPanel = new FlowPanel();
-//
-//        final ComboBox<String> combo = new ComboBox<String>();
-//        fillCombobox(combo);
-//        combo.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
-//        combo.setReadOnly(false);
-//        comboBoxPanel.add(combo);
-//
-//        ComboBox<Integer> statesCombo = new ComboBox<Integer>();
-//        comboBoxPanel.add(statesCombo);
-//
-//        statesCombo.setReadOnly(true);
-//
-//        statesCombo.addItem("Включен editable", 1);
-//        statesCombo.addItem("Включен readonly", 2);
-//        statesCombo.addItem("Выключены", 3);
-//
-//        statesCombo.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-//            @Override
-//            public void onValueChange(ValueChangeEvent<Integer> event) {
-//                switch (event.getValue()) {
-//                    case 1:
-//                        combo.setEnabled(true);
-//                        combo.setReadOnly(false);
-//                        break;
-//                    case 2:
-//                        combo.setEnabled(true);
-//                        combo.setReadOnly(true);
-//                        break;
-//                    case 3:
-//                        combo.setEnabled(false);
-//                }
-//            }
-//        });
-//
-//
-//        return comboBoxPanel;
         FlowPanel comboBoxPanel = new FlowPanel();
 
-        ComboBox<String> combo1 = new ComboBox<String>();
-        fillCombobox(combo1);
-        combo1.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
-        combo1.setReadOnly(false);
-        comboBoxPanel.add(combo1);
+        final ComboBox<String> combo = new ComboBox<String>();
+        fillCombobox(combo);
+        combo.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
+        combo.setReadOnly(false);
+        comboBoxPanel.add(combo);
 
-        ComboBox comboDisabled = new ComboBox();
-        comboDisabled.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
-        comboDisabled.setEnabled(false);
-        comboBoxPanel.add(comboDisabled);
+        ComboBox<Integer> statesCombo = new ComboBox<Integer>();
+        comboBoxPanel.add(statesCombo);
 
-        ComboBox<String> comboReadOnly = new ComboBox<String>();
-        fillCombobox(comboReadOnly);
-        comboReadOnly.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
-        comboReadOnly.setReadOnly(true);
-        comboReadOnly.setWidth(250);
-        comboBoxPanel.add(comboReadOnly);
+        statesCombo.setReadOnly(true);
+
+        statesCombo.addItem(SCMessages.i18n.tr("Включен, изменяем"), 1);
+        statesCombo.addItem(SCMessages.i18n.tr("Включен, неизменяем"), 2);
+        statesCombo.addItem(SCMessages.i18n.tr("Выключен"), 3);
+
+        statesCombo.selectValue(1, false);
+
+        statesCombo.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Integer> event) {
+                switch (event.getValue()) {
+                    case 1:
+                        combo.setEnabled(true);
+                        combo.setReadOnly(false);
+                        break;
+                    case 2:
+                        combo.setEnabled(true);
+                        combo.setReadOnly(true);
+                        break;
+                    case 3:
+                        combo.setEnabled(false);
+                }
+            }
+        });
+
 
         return comboBoxPanel;
     }

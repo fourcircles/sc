@@ -6,16 +6,16 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;
 import kz.arta.synergy.components.client.button.ImageButton;
-import kz.arta.synergy.components.client.input.TextInput;
+import kz.arta.synergy.components.client.input.InputWithEvents;
+import kz.arta.synergy.components.client.input.events.TextChangedEvent;
 import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
@@ -28,7 +28,7 @@ import kz.arta.synergy.components.style.client.Constants;
  * Time: 14:58
  * Комбо-бокс
  */
-public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandlers, HasValueChangeHandlers<V>, HasText{
+public class ComboBox<V> extends Composite implements HasEnabled, HasValueChangeHandlers<V>, HasText{
 
     /**
      * Выпадающий список
@@ -38,7 +38,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
     /**
      * Текст
      */
-    private TextInput textLabel;
+    private InputWithEvents input;
 
     /**
      * Отключен или включен комбобокс
@@ -46,25 +46,9 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
     private boolean isEnabled;
 
     /**
-     * Можно ли вводит значения в комбобокс для поиска нужных значений
+     * Можно ли вводить значения в комбобокс для поиска нужных значений
      */
-    private boolean readOnly;
-
-    /**
-     * Обработка событий в зависимости от статуса read-only. При изменении статуса
-     * прекращается обработка ненужных событий.
-     */
-    MouseOutHandler textLabelMouseOut;
-    HandlerRegistration textLabelMouseOutRegistration;
-    MouseDownHandler textLabelMouseDown;
-    HandlerRegistration textLabelMouseDownRegistration;
-    ClickHandler textLabelClick;
-    HandlerRegistration textLabelClickRegistration;
-    Timer textChangeTimer;
-    KeyPressHandler textPressKey;
-    HandlerRegistration textPressKeyRegistration;
-    KeyUpHandler textUpKey;
-    HandlerRegistration textUpKeyRegistration;
+    private boolean isReadOnly;
 
     /**
      * Фильтр для списка
@@ -72,15 +56,46 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
     private ListTextFilter filter = ListTextFilter.createPrefixFilter();
 
     private DropDownList<V>.Item selectedItem;
+    private final EventBus bus;
 
     public ComboBox() {
-        FlowPanel panel = new FlowPanel();
+        final ArtaFlowPanel root = new ArtaFlowPanel();
 
-        initWidget(panel);
+        initWidget(root);
+
+        root.addMouseDownHandler(new MouseDownHandler() {
+            @Override
+            public void onMouseDown(MouseDownEvent event) {
+                if (isEnabled && isReadOnly) {
+                    root.addStyleName(SynergyComponents.resources.cssComponents().pressed());
+                }
+            }
+        });
+        root.addMouseUpHandler(new MouseUpHandler() {
+            @Override
+            public void onMouseUp(MouseUpEvent event) {
+                if (isEnabled) {
+                    root.removeStyleName(SynergyComponents.resources.cssComponents().pressed());
+                    if (!list.isShowing()) {
+                        filter.setText("");
+                        list.show(selectedItem);
+                    } else {
+                        list.hide();
+                    }
+                }
+            }
+        });
+        root.addMouseOutHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                root.removeStyleName(SynergyComponents.resources.cssComponents().pressed());
+            }
+        });
 
         isEnabled = true;
 
-        EventBus bus = new SimpleEventBus();
+        bus = new SimpleEventBus();
+
         list = new DropDownList<V>(this, bus);
         list.setRelativeWidget(this);
         list.setFilter(filter);
@@ -93,76 +108,37 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
             }
         });
 
-        textLabel = new TextInput();
+        input = new InputWithEvents(bus);
 
-        textLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        input.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
-        //при blur поля ввода - возвращаем выбранное значение
-        textLabel.addBlurHandler(new BlurHandler() {
+        input.addFocusHandler(new FocusHandler() {
             @Override
-            public void onBlur(BlurEvent event) {
-                if (selectedItem != null) {
-                    textLabel.setText(selectedItem.getText());
+            public void onFocus(FocusEvent event) {
+                if (!isReadOnly) {
+                    addStyleName(SynergyComponents.resources.cssComponents().focus());
+                } else {
+                    //этот хак нужен для firefox
+                    //firefox показывает курсор при фокусировке readonly элемента,
+                    //поэтому надо предотвращать фокусировку
+                    input.setFocus(false);
                 }
             }
         });
-
-        ImageButton dropDownButton = new ImageButton(ImageResources.IMPL.comboBoxDropDown());
-        dropDownButton.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
-
-        textLabelClick = new ClickHandler() {
+        //при blur поля ввода - возвращаем выбранное значение
+        input.addBlurHandler(new BlurHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                if (isEnabled) {
-                    event.stopPropagation();
-                    removeStyleName(SynergyComponents.resources.cssComponents().pressed());
-                    if (list.isShowing()) {
-                        list.hide();
-                    } else {
-                        filter.setText("");
-                        list.show(selectedItem);
-                    }
+            public void onBlur(BlurEvent event) {
+                if (selectedItem != null) {
+                    input.setText(selectedItem.getText(), false);
                 }
+                removeStyleName(SynergyComponents.resources.cssComponents().focus());
             }
-        };
-        textLabelMouseDown = new MouseDownHandler() {
-            @Override
-            public void onMouseDown(MouseDownEvent event) {
-                //firefox показывает курсор даже если readonly, поэтому надо preventDefault
-                event.preventDefault();
-                addStyleName(SynergyComponents.resources.cssComponents().pressed());
-            }
-        };
-        textLabelMouseOut = new MouseOutHandler() {
-            @Override
-            public void onMouseOut(MouseOutEvent event) {
-                removeStyleName(SynergyComponents.resources.cssComponents().pressed());
-            }
-        };
-
-        textPressKey = new KeyPressHandler() {
-            @Override
-            public void onKeyPress(KeyPressEvent event) {
-                if (event.getNativeEvent().getKeyCode() != KeyCodes.KEY_ENTER) {
-                    new Timer() {
-                        @Override
-                        public void run() {
-                            changeText();
-                        }
-                    }.schedule(20);
-                }
-            }
-        };
-
-        textUpKey = new KeyUpHandler() {
+        });
+        input.addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
                 switch (event.getNativeKeyCode()) {
-                    case KeyCodes.KEY_BACKSPACE:
-                    case KeyCodes.KEY_DELETE:
-                    case KeyCodes.KEY_SPACE:
-                        changeText();
-                        break;
                     case KeyCodes.KEY_DOWN:
                         if (!list.isShowing()) {
                             list.show(selectedItem);
@@ -170,14 +146,20 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
                         break;
                 }
             }
-        };
+        });
 
-        dropDownButton.addClickHandler(textLabelClick);
+        TextChangedEvent.register(bus, new TextChangedEvent.Handler() {
+            @Override
+            public void onTextChanged(TextChangedEvent event) {
+                textChanged();
+            }
+        });
 
-        panel.add(textLabel);
-        panel.add(dropDownButton);
+        ImageButton dropDownButton = new ImageButton(ImageResources.IMPL.comboBoxDropDown());
+        dropDownButton.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
-        setReadOnly(true);
+        root.add(input);
+        root.add(dropDownButton);
 
         setStyleName(SynergyComponents.resources.cssComponents().comboBox());
         addStyleName(SynergyComponents.resources.cssComponents().mainText());
@@ -188,8 +170,8 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
      * Метод вызывается при изменении текста комбобокса и выполняет действия для
      * изменения контента выпадающего списка
      */
-    private void changeText() {
-        filter.setText(textLabel.getText());
+    private void textChanged() {
+        filter.setText(input.getText());
         if (!list.isShowing()) {
             list.show(selectedItem);
         }
@@ -214,7 +196,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         }
 
         selectedItem = item;
-        textLabel.setText(item.getText());
+        input.setText(item.getText());
         if (fireEvents) {
             ValueChangeEvent.fire(this, item.getValue());
         }
@@ -247,6 +229,29 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
     }
 
     /**
+     * Удаляет все элементы
+     */
+    public void clear() {
+        list.clear();
+        selectedItem = null;
+    }
+    /**
+     * Удалить элемент с заданным значением
+     * @param value значение
+     */
+    public void remove(V value) {
+        list.remove(value);
+    }
+
+    /**
+     * Содержит ли комбобокс это значение
+     * @param value значение
+     */
+    public boolean contains(V value) {
+        return list.contains(value);
+    }
+
+    /**
      * Возвращает значение выбранного элемента комбобокса
      * @return выбранное значение
      */
@@ -259,28 +264,18 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         }
     }
 
-    /**
-     * Возвращает текст выбранного пункта меню,
-     * если ничего не выбрано - возвращает пустой текст.
-     * @return выбранный текст
-     */
-    public String getSelectedText() {
-        DropDownList<V>.Item item = list.getFocusedItem();
-        if (item != null) {
-            return item.getText();
-        } else {
-            return "";
-        }
-    }
-
     @Override
     public boolean isEnabled() {
         return isEnabled;
     }
 
+    /**
+     * Отключает или включаем комбобокс
+     */
     @Override
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+        input.setEnabled(enabled);
         if (!enabled) {
             addStyleName(SynergyComponents.resources.cssComponents().disabled());
         } else {
@@ -288,62 +283,34 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
         }
     }
 
-    @Override
-    public HandlerRegistration addChangeHandler(ChangeHandler handler) {
-        return textLabel.addChangeHandler(handler);
-    }
-
-    @Override
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<V> handler) {
-        return addHandler(handler, ValueChangeEvent.getType());
-    }
-
     /**
      * Изменяет состояние read-only комбобокса.
      * @param readOnly true - нельзя вводить значения, false - можно.
      */
     public void setReadOnly(boolean readOnly) {
-        if (readOnly != this.readOnly) {
-            this.readOnly = readOnly;
-            textLabel.setReadOnly(readOnly);
-            //кнопки влево-вправо выделяют первый-последний элементы только для
-            //readonly комбобокса
-            list.setLeftRightKeysEnabled(readOnly);
-            if (readOnly) {
-                textLabelClickRegistration = textLabel.addClickHandler(textLabelClick);
-                textLabelMouseDownRegistration = textLabel.addMouseDownHandler(textLabelMouseDown);
-                textLabelMouseOutRegistration = textLabel.addMouseOutHandler(textLabelMouseOut);
-                if (textPressKeyRegistration != null) {
-                    textPressKeyRegistration.removeHandler();
-                }
-                if (textUpKeyRegistration != null) {
-                    textUpKeyRegistration.removeHandler();
-                }
-            } else {
-                textPressKeyRegistration = textLabel.addKeyPressHandler(textPressKey);
-                textUpKeyRegistration = textLabel.addKeyUpHandler(textUpKey);
+        this.isReadOnly = readOnly;
+        input.setReadOnly(readOnly);
 
-                if (textLabelClickRegistration != null) {
-                    textLabelClickRegistration.removeHandler();
-                }
-                if (textLabelMouseDownRegistration != null) {
-                    textLabelMouseDownRegistration.removeHandler();
-                }
-                if (textLabelMouseOutRegistration != null) {
-                    textLabelMouseOutRegistration.removeHandler();
-                }
-            }
-        }
     }
 
+    /**
+     * Возвращает текст в комбобоксе. Обычно это текст выбранного элемента, но
+     * может быть промежуточный текст в случае editable комбобокса.
+     * @return текст в комбобоксе
+     */
     @Override
     public String getText() {
-        return getSelectedText();
+        return input.getText();
     }
 
+    /**
+     * Задает текст поля ввода в комбобоксе.
+     * Возможно создание событий изменения текста.
+     * @param text новый текст комбобокса
+     */
     @Override
     public void setText(String text) {
-        textLabel.setText(text);
+        input.setText(text, true);
     }
 
     /**
@@ -353,7 +320,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
     public void setWidth(int width) {
         width = Math.max(Constants.FIELD_WITH_BUTTON_MIN_WIDTH, width);
         // -1 потому что правая граница кнопки перекрывает границу комбобокса
-        textLabel.setWidth(width - Constants.BUTTON_MIN_WIDTH -
+        input.setWidth(width - Constants.BUTTON_MIN_WIDTH -
                 Constants.COMMON_INPUT_PADDING * 2 - 1 + "px");
         super.setWidth(width + "px");
     }
@@ -361,6 +328,19 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasChangeHandl
     @Override
     public void setWidth(String width) {
         throw new UnsupportedOperationException("ширина должна задаваться в пикселях");
+    }
+
+    /**
+     * Добавляет хэндлер, который вызывается при выборе значения
+     */
+    @Override
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<V> handler) {
+        return bus.addHandlerToSource(ValueChangeEvent.getType(), this, handler);
+    }
+
+    @Override
+    public void fireEvent(GwtEvent<?> event) {
+        bus.fireEventFromSource(event, this);
     }
 }
 

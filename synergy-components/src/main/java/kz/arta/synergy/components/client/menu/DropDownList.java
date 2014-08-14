@@ -168,8 +168,12 @@ public class DropDownList<V> extends MenuBase {
      */
     public Item get(V value) {
         for (Item item : items) {
-            //noinspection NonJREEmulationClassesInClientCode
-            if ((item.getValue() == null && value == null) || item.getValue().equals(value)) {
+            if (item.getValue() == null) {
+                if (value == null) {
+                    return item;
+                }
+            } else //noinspection NonJREEmulationClassesInClientCode
+                if (item.getValue().equals(value)) {
                 return item;
             }
         }
@@ -181,13 +185,10 @@ public class DropDownList<V> extends MenuBase {
      * @param value значение
      */
     public void remove(V value) {
-        for (Item item : items) {
-            //noinspection NonJREEmulationClassesInClientCode
-            if ((item.getValue() == null && value == null) || item.getValue().equals(value)) {
-                items.remove(item);
-                root.remove(item);
-                break;
-            }
+        Item item = get(value);
+        if (item != null) {
+            items.remove(item);
+            root.remove(item);
         }
     }
 
@@ -202,8 +203,12 @@ public class DropDownList<V> extends MenuBase {
 
     public boolean contains(V value) {
         for (Item item : items) {
-            //noinspection NonJREEmulationClassesInClientCode
-            if ((item.getValue() == null && value == null) || item.getValue().equals(value)) {
+            if (item.getValue() == null) {
+                if (value == null) {
+                    return true;
+                }
+            } else //noinspection NonJREEmulationClassesInClientCode
+                if (item.getValue().equals(value)) {
                 return true;
             }
         }

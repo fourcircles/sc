@@ -730,6 +730,9 @@
 
     display: inline-block;
 }
+.comboBox.focus, .comboBox.focus .buttonSimple{
+    border-color: border1;
+}
 
 .comboBox .buttonSimple:hover, .dateInput .buttonSimple:hover{
     border-color: border1;

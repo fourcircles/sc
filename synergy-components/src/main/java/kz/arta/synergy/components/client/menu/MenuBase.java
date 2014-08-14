@@ -109,7 +109,7 @@ public abstract class MenuBase {
     /**
      * Удаляет все элементы списка
      */
-    protected void clear() {
+    public void clear() {
         root.clear();
         getItems().clear();
         focusedIndex = -1;
@@ -289,7 +289,7 @@ public abstract class MenuBase {
             popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
                 @Override
                 public void setPosition(int offsetWidth, int offsetHeight) {
-                    int x = relativeWidget.getAbsoluteLeft() + Constants.BORDER_RADIUS * 2;
+                    int x = relativeWidget.getAbsoluteLeft() + Constants.BORDER_RADIUS;
                     int y = relativeWidget.getAbsoluteTop() + relativeWidget.getOffsetHeight() + 1;
                     popup.setPopupPosition(x, y);
                 }

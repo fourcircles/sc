@@ -82,6 +82,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
         inputContainer.getElement().getStyle().setPaddingLeft(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
         inputContainer.getElement().getStyle().setPaddingRight(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
         inputContainer.getElement().getStyle().setProperty("boxSizing", "border-box");
+        inputContainer.getElement().getStyle().setProperty("MozBoxSizing", "border-box");
         inputContainer.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         inputContainer.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 

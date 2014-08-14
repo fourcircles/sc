@@ -461,6 +461,8 @@
 
 .dialog {
     box-sizing: border-box;
+    -moz-box-sizing: border-box;
+
     min-width: dialogMinWidth;
     min-height: 84px;
 
@@ -1064,6 +1066,7 @@ p {
     display: inline-block;
     white-space: nowrap;
     box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
 
 .searchResult .buttonSimple {

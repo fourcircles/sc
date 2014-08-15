@@ -41,7 +41,9 @@ import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.client.util.PPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 //todo реализовать отложенную загрузку
@@ -695,6 +697,7 @@ public class ShowCasePanel extends LayoutPanel {
         label.setStyleName(SynergyComponents.resources.cssComponents().mainText());
         label.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
         label.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        label.getElement().getStyle().setLineHeight(32, Style.Unit.PX);
         label.setWidth(width + "px");
         return label;
     }
@@ -705,33 +708,26 @@ public class ShowCasePanel extends LayoutPanel {
      */
     private Widget getTagInputs() {
 
-        FlowPanel panel = new FlowPanel();
-        panel.getElement().getStyle().setLineHeight(1, Style.Unit.PX);
 
-        PPanel firstRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
-        FlowPanel firstRowPanel = new FlowPanel();
-        firstRow.setWidget(firstRowPanel);
-        firstRowPanel.add(createLabel("Поля с индикаторами: "));
+        FlowPanel comboPanel = new FlowPanel();
+        comboPanel.getElement().getStyle().setLineHeight(1, Style.Unit.PX);
 
-        PPanel thirdRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
-        FlowPanel thirdRowPanel = new FlowPanel();
-        thirdRow.setWidget(thirdRowPanel);
-        thirdRowPanel.add(createLabel("Поля без кнопки: "));
+        final List<HasEnabled> enableds = new ArrayList<HasEnabled>();
 
-        PPanel forthRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
-        FlowPanel forthRowPanel = new FlowPanel();
-        forthRow.setWidget(forthRowPanel);
-        forthRowPanel.add(createLabel("Мультикомбобокс: "));
+        FlowPanel[] rows = new FlowPanel[5];
+        int currentRow = 0;
 
-        PPanel fifthRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
-        FlowPanel fifthRowPanel = new FlowPanel();
-        fifthRow.setWidget(fifthRowPanel);
-        fifthRowPanel.add(createLabel("Выбор объекта: "));
+        //first row
 
-        final TagInput noListHasIndicator= new TagInput();
+        rows[currentRow] = new FlowPanel();
+        rows[currentRow].add(createLabel("Поля с индикаторами: "));
+
+        final TagInput noListHasIndicator = new TagInput();
         noListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         noListHasIndicator.setWidth(350);
-        firstRowPanel.add(noListHasIndicator);
+
+        rows[currentRow].add(noListHasIndicator);
+        enableds.add(noListHasIndicator);
 
         final TagInput<String> hasListHasIndicator = new TagInput<String>();
         hasListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
@@ -741,41 +737,72 @@ public class ShowCasePanel extends LayoutPanel {
         hasListHasIndicator.setTitle(SCMessages.i18n.tr("Фильтрация списка по вхождению текста"));
         hasListHasIndicator.setFilterType(false);
 
-        firstRowPanel.add(hasListHasIndicator);
+        rows[currentRow].add(hasListHasIndicator);
+        enableds.add(hasListHasIndicator);
 
-        firstRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        panel.add(firstRow);
+        //второй ряд
+
+        currentRow++;
+        rows[currentRow] = new FlowPanel();
+        rows[currentRow].add(createLabel("Поля без кнопки"));
 
         TagInput noListNoButton = new TagInput(false);
         noListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        thirdRowPanel.add(noListNoButton);
+        rows[currentRow].add(noListNoButton);
+        enableds.add(noListNoButton);
 
         TagInput<String> hasListNoButton = new TagInput<String>(false);
         hasListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         hasListNoButton.setDropDownList(createMultiList(hasListNoButton));
         hasListNoButton.setTitle(SCMessages.i18n.tr("Префиксный выбор из списка"));
-        thirdRowPanel.add(hasListNoButton);
+        rows[currentRow].add(hasListNoButton);
+        enableds.add(hasListNoButton);
 
-        thirdRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        panel.add(thirdRow);
+        //третий ряд
+
+        currentRow++;
+        rows[currentRow] = new FlowPanel();
+        rows[currentRow].add(createLabel("Мультикомбобокс"));
 
         TagInput<String> multiComboBox = new TagInput<String>();
         multiComboBox.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         multiComboBox.setMultiComboBox(true);
         multiComboBox.setDropDownList(createMultiList(multiComboBox));
         multiComboBox.setWidth(300);
-        forthRowPanel.add(multiComboBox);
+        rows[currentRow].add(multiComboBox);
+        enableds.add(multiComboBox);
 
-        panel.add(forthRow);
-        forthRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        //четвертый ряд
+        currentRow++;
+        rows[currentRow] = new FlowPanel();
+        rows[currentRow].add(createLabel("Выбор объекта"));
 
         ObjectChooser chooser = new ObjectChooser(new SimpleEventBus());
         chooser.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        fifthRowPanel.add(chooser);
+        rows[currentRow].add(chooser);
+        enableds.add(chooser);
 
-        panel.add(fifthRow);
+        //пятый ряд
+        currentRow++;
+        rows[currentRow] = new FlowPanel();
 
-        return panel;
+        SimpleButton button = new SimpleButton(SCMessages.i18n.tr("Включить/выключить"));
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                for (HasEnabled item : enableds) {
+                    item.setEnabled(!item.isEnabled());
+                }
+            }
+        });
+        rows[currentRow].add(button);
+
+        for (int i = 0; i < rows.length; i++) {
+            comboPanel.add(rows[i]);
+            rows[i].getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        }
+
+        return comboPanel;
     }
 
     /**

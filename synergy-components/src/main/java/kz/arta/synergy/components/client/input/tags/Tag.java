@@ -21,7 +21,7 @@ import kz.arta.synergy.components.style.client.Constants;
  *
  * Тег для поля с тегами.
  */
-public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.HasHandler {
+public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.HasHandler, HasEnabled {
     /**
      * Корневая панель
      */
@@ -47,6 +47,11 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
      */
     private Image image;
 
+    /**
+     * Включен/выключен
+     */
+    private boolean isEnabled;
+
     private EventBus bus;
 
     /**
@@ -60,12 +65,15 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
         label = new GradientLabel(getFontStyle());
         label.setHeight(Constants.TAG_HEIGHT + "px");
         label.getElement().getStyle().setTextAlign(Style.TextAlign.CENTER);
+        label.getElement().getStyle().setCursor(Style.Cursor.DEFAULT);
 
         image = new Image(ImageResources.IMPL.tagClose());
         image.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                bus.fireEvent(new TagRemoveEvent(Tag.this));
+                if (isEnabled()) {
+                    bus.fireEvent(new TagRemoveEvent(Tag.this));
+                }
             }
         });
         setText(text);
@@ -149,5 +157,13 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
         return bus.addHandlerToSource(TagRemoveEvent.TYPE, this, handler);
     }
 
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
+    }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
 }

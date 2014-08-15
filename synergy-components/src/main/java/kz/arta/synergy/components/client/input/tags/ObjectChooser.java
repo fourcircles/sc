@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasEnabled;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
@@ -19,7 +20,7 @@ import kz.arta.synergy.components.style.client.Constants;
  *
  * Компонент выбора объекта
  */
-public class ObjectChooser extends Composite{
+public class ObjectChooser extends Composite implements HasEnabled{
 
     /**
      * Панель с тегами
@@ -30,6 +31,11 @@ public class ObjectChooser extends Composite{
      * Длина компонента без margins
      */
     private int offsetWidth;
+
+    /**
+     * Кнопка
+     */
+    private final ImageButton button;
 
     public ObjectChooser(final EventBus bus) {
         //корневая панель
@@ -44,7 +50,7 @@ public class ObjectChooser extends Composite{
         super.setWidth(offsetWidth - 2 * Constants.BORDER_WIDTH + "px");
 
         //кнопка
-        ImageButton button = new ImageButton(ImageResources.IMPL.zoom());
+        button = new ImageButton(ImageResources.IMPL.zoom());
         button.getElement().getStyle().setFloat(Style.Float.RIGHT);
         button.addClickHandler(new ClickHandler() {
             @Override
@@ -86,5 +92,21 @@ public class ObjectChooser extends Composite{
     @Override
     public void setWidth(String width) {
         throw new UnsupportedOperationException("надо использовать setWidth(int) для задания ширины");
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return button.isEnabled();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        button.setEnabled(enabled);
+        tagsPanel.setEnabled(enabled);
+        if (!enabled) {
+            addStyleName(SynergyComponents.resources.cssComponents().disabled());
+        } else {
+            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+        }
     }
 }

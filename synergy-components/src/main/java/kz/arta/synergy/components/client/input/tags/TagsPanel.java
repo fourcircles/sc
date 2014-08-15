@@ -5,6 +5,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.SimplePanel;
 import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
  * Панель для тегов
  * Управляется через события {@link TagAddEvent}, {@link TagRemoveEvent}
  */
-public class TagsPanel extends Composite{
+public class TagsPanel extends Composite implements HasEnabled{
 
     /**
      * Панель которая содержит корневую панель и позволяет
@@ -200,5 +201,18 @@ public class TagsPanel extends Composite{
      */
     public int getTagsWidth() {
         return root.getOffsetWidth() + Constants.COMMON_INPUT_PADDING;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return indicator.isEnabled();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        for (Tag tag: tags) {
+            tag.setEnabled(enabled);
+        }
+        indicator.setEnabled(enabled);
     }
 }

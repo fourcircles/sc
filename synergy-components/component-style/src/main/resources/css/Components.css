@@ -830,6 +830,9 @@
     overflow : visible;
     line-height: 0;
 }
+.tagInput.focus, .tagInput.focus .buttonSimple {
+    border-color: border1;
+}
 
 .tagInput .commonInput{
     border-width: 0px;
@@ -853,6 +856,11 @@
 
 .tagInput .tag {
     margin-left: 2px;
+}
+
+.tagInput.disabled .tag {
+    opacity: 0.5;
+    filter: literal("alpha(opacity=50)");
 }
 
 @eval tagHeight kz.arta.synergy.components.style.client.Constants.tagHeight();
@@ -903,6 +911,10 @@
     margin-left: 8px;
     margin-top: 5px;
     cursor: pointer;
+}
+
+.disabled .tag img {
+    cursor: auto;
 }
 
 .tagIndicator {

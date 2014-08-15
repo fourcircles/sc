@@ -27,7 +27,7 @@ import java.util.PriorityQueue;
  *
  * Индикатор количества скрытых тегов
  */
-public class TagIndicator extends Composite implements ArtaHasText {
+public class TagIndicator extends Composite implements ArtaHasText, HasEnabled {
     /**
      * Максимальное количество тегов при котором нет вертикального скролла
      */
@@ -53,6 +53,11 @@ public class TagIndicator extends Composite implements ArtaHasText {
      */
     private int maxTagWidth;
 
+    /**
+     * Включен/выключен
+     */
+    private boolean isEnabled;
+
     private EventBus bus;
 
     private PriorityQueue<Tag<?>> tags;
@@ -68,10 +73,12 @@ public class TagIndicator extends Composite implements ArtaHasText {
         label.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (popupPanel.isShowing()) {
-                    hide();
-                } else {
-                    show();
+                if (isEnabled()) {
+                    if (popupPanel.isShowing()) {
+                        hide();
+                    } else {
+                        show();
+                    }
                 }
             }
         });
@@ -228,4 +235,21 @@ public class TagIndicator extends Composite implements ArtaHasText {
         return Utils.getTextWidth(this) + Constants.TAG_PADDING * 2;
     }
 
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.isEnabled = enabled;
+
+        Style.Cursor cursor;
+        if (enabled) {
+            cursor = Style.Cursor.POINTER;
+        } else {
+            cursor = Style.Cursor.DEFAULT;
+        }
+        getElement().getStyle().setCursor(cursor);
+    }
 }

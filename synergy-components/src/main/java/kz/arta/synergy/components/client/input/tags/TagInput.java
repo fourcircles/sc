@@ -82,7 +82,6 @@ public class TagInput<V> extends Composite implements HasText,
     private ListTextFilter filter = ListTextFilter.createPrefixFilter();
 
     private EventBus innerBus;
-    private HandlerRegistration buttonRegistration;
 
     /**
      * Имеет ли поле кнопку
@@ -135,7 +134,7 @@ public class TagInput<V> extends Composite implements HasText,
         if (hasButton) {
             button = new ImageButton(ImageResources.IMPL.zoom());
 
-            buttonClick = new ClickHandler() {
+            button.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
                     if (dropDownList != null) {
@@ -146,8 +145,8 @@ public class TagInput<V> extends Composite implements HasText,
                         }
                     }
                 }
-            };
-            buttonRegistration = button.addClickHandler(buttonClick);
+            });
+
             root.add(button);
         }
 
@@ -184,6 +183,19 @@ public class TagInput<V> extends Composite implements HasText,
                 }
             }
         });
+        input.addFocusHandler(new FocusHandler() {
+            @Override
+            public void onFocus(FocusEvent event) {
+                addStyleName(SynergyComponents.resources.cssComponents().focus());
+            }
+        });
+        input.addBlurHandler(new BlurHandler() {
+            @Override
+            public void onBlur(BlurEvent event) {
+                removeStyleName(SynergyComponents.resources.cssComponents().focus());
+            }
+        });
+
 
         itemsToTags = new HashMap<DropDownList<V>.Item, Tag<V>>();
         tagsToItems = new HashMap<Tag<V>, DropDownList<V>.Item>();
@@ -310,6 +322,7 @@ public class TagInput<V> extends Composite implements HasText,
         inputWidth = getAvailableSpace() - offset;
         inputBox.setWidth(inputWidth + "px");
     }
+
     /**
      * Возвращает тег находящийся на указанной позиции.
      * @param i позиция
@@ -373,10 +386,6 @@ public class TagInput<V> extends Composite implements HasText,
         }
         dropDownList.setBus(innerBus);
         dropDownList.setHideAfterSelect(!isMultiComboBox);
-
-        if (isEnabled() && hasButton && buttonRegistration == null) {
-            buttonRegistration = button.addClickHandler(buttonClick);
-        }
     }
 
     @Override
@@ -386,15 +395,16 @@ public class TagInput<V> extends Composite implements HasText,
 
     @Override
     public void setEnabled(boolean enabled) {
-        if (!enabled && buttonRegistration != null) {
-            buttonRegistration.removeHandler();
-        } else if (dropDownList != null && !isEnabled()) {
-            buttonRegistration = button.addClickHandler(buttonClick);
+        if (!enabled) {
+            root.addStyleName(SynergyComponents.resources.cssComponents().disabled());
+        } else {
+            root.removeStyleName(SynergyComponents.resources.cssComponents().disabled());
         }
-
-        root.addStyleName(SynergyComponents.resources.cssComponents().disabled());
         input.setEnabled(enabled);
-        button.setEnabled(enabled);
+        if (hasButton) {
+            button.setEnabled(enabled);
+        }
+        tagsPanel.setEnabled(enabled);
     }
 
     public boolean isMultiComboBox() {

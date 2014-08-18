@@ -59,6 +59,10 @@ public class ContextMenu extends MenuBase {
                     command.execute();
                 }
             }
+
+            @Override
+            public void onDeselection(SelectionEvent<ContextMenuItem> event) {
+            }
         };
         setBus(new SimpleEventBus());
     }

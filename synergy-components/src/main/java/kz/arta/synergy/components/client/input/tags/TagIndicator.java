@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.input.tags;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -12,7 +13,6 @@ import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.Navigator;
-import kz.arta.synergy.components.client.util.PPanel;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -27,7 +27,7 @@ import java.util.PriorityQueue;
  *
  * Индикатор количества скрытых тегов
  */
-public class TagIndicator extends Composite implements ArtaHasText, HasEnabled {
+public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnabled {
     /**
      * Максимальное количество тегов при котором нет вертикального скролла
      */
@@ -56,14 +56,12 @@ public class TagIndicator extends Composite implements ArtaHasText, HasEnabled {
     /**
      * Включен/выключен
      */
-    private boolean isEnabled;
+    private boolean isEnabled = true;
 
-    private EventBus bus;
-
-    private PriorityQueue<Tag<?>> tags;
+    private PriorityQueue<Tag<V>> tags;
 
     public TagIndicator(EventBus bus) {
-        label = new Label();
+        label = GWT.create(Label.class);
         initWidget(label);
         label.setStyleName(SynergyComponents.resources.cssComponents().tag());
         label.addStyleName(getFontStyle());
@@ -83,18 +81,20 @@ public class TagIndicator extends Composite implements ArtaHasText, HasEnabled {
             }
         });
 
-        tags = new PriorityQueue<Tag<?>>(10, new Comparator<Tag<?>>() {
+        tags = new PriorityQueue<Tag<V>>(10, new Comparator<Tag<?>>() {
             @Override
             public int compare(Tag<?> tag1, Tag<?> tag2) {
-                return - tag1.getOffsetWidth() + tag2.getOffsetWidth();
+                return -tag1.getOffsetWidth() + tag2.getOffsetWidth();
             }
         });
 
-        popupPanel = new PopupPanel(true);
+        popupPanel = GWT.create(PopupPanel.class);
+        popupPanel.setAutoHideEnabled(true);
+
         popupPanel.addAutoHidePartner(label.getElement());
 
         popupRootPanel = new FlowPanel();
-        popupRootPanel.getElement().getStyle().setPadding(6, Style.Unit.PX);
+        popupRootPanel.addStyleName(SynergyComponents.resources.cssComponents().tagIndicatorContent());
 
         ArtaScrollPanel vScroll = new ArtaScrollPanel(popupRootPanel);
 
@@ -109,7 +109,7 @@ public class TagIndicator extends Composite implements ArtaHasText, HasEnabled {
                 if (tags.contains(event.getTag())) {
                     tags.remove(event.getTag());
 
-                    popupPanel.setHeight(getPopupHeight(tags.size()) + "px");
+                    popupPanel.setHeight(getPopupHeight() + "px");
                 }
                 if (popupRootPanel.getWidgetCount() == 0) {
                     popupPanel.hide();
@@ -125,28 +125,24 @@ public class TagIndicator extends Composite implements ArtaHasText, HasEnabled {
 
     /**
      * Возвращает высоту попапа в зависимости от количества тегов
-     * @param widgetCount количество тегов
      * @return высота
      */
-    private int getPopupHeight(int widgetCount) {
-        widgetCount = Math.min(MAX_TAG, widgetCount);
-        return widgetCount * (Constants.TAG_HEIGHT + Constants.TAG_INTERVAL) + 12 - Constants.TAG_INTERVAL;
-    }
-
-    /**
-     * Задает ширину попапа включая отступы и скроллбар (если он присутствует)
-     * @param width внутренняя ширина попапа
-     */
-    private void setPopupWidth(int width) {
-        popupPanel.setWidth(width + 12 + (tags.size() > MAX_TAG ? 17 : 0) + "px");
+    private int getPopupHeight() {
+        int widgetCount = Math.min(MAX_TAG, tags.size());
+        return widgetCount * (Constants.TAG_HEIGHT + Constants.TAG_INTERVAL) + Constants.TAG_INDICATOR_PADDING * 2 - Constants.TAG_INTERVAL;
     }
 
     /**
      * Показывает попап под индикатором
      */
     public void show() {
-        popupPanel.setHeight(getPopupHeight(popupRootPanel.getWidgetCount()) + "px");
-        popupPanel.setWidth(tags.peek().getOffsetWidth() + 12 + (tags.size() > MAX_TAG ? 17 : 0) + "px");
+        if (tags.isEmpty()) {
+            return;
+        }
+
+        popupPanel.setHeight(getPopupHeight() + "px");
+        popupPanel.setWidth(tags.peek().getOffsetWidth() +
+                Constants.TAG_INDICATOR_PADDING * 2 + (tags.size() > MAX_TAG ? Constants.STD_SCROLL_WIDTH : 0) + "px");
 
         int labelWidth = Utils.getTextWidth(label.getText(), getFontStyle()) + Constants.COMMON_INPUT_PADDING;
 
@@ -188,20 +184,18 @@ public class TagIndicator extends Composite implements ArtaHasText, HasEnabled {
      * Используется для добавления уже существующего тега.
      * @param tag тег
      */
-    public void add(final Tag<?> tag) {
+    public void add(final Tag<V> tag) {
         maxTagWidth = Math.max(maxTagWidth, tag.getOffsetWidth());
         tags.add(tag);
-        PPanel ptag = new PPanel();
-        ptag.setWidget(tag);
-        popupRootPanel.add(ptag);
+        popupRootPanel.add(tag);
     }
 
     /**
      * Добавляет все теги из списка
      * @param tags список тегов
      */
-    public void addAll(List<Tag<?>> tags) {
-        for (Tag tag : tags) {
+    public void addAll(List<Tag<V>> tags) {
+        for (Tag<V> tag : tags) {
             add(tag);
         }
     }

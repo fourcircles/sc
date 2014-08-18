@@ -10,7 +10,6 @@ import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.Utils;
 
-//todo подумать надо переносом цвета градиента из css сюда
 /**
  * User: vsl
  * Date: 02.07.14

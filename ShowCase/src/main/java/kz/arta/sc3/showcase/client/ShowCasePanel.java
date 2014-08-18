@@ -30,11 +30,13 @@ import kz.arta.synergy.components.client.input.date.ArtaDatePicker;
 import kz.arta.synergy.components.client.input.date.DateInput;
 import kz.arta.synergy.components.client.input.date.DateTimeInput;
 import kz.arta.synergy.components.client.input.date.TimeInput;
+import kz.arta.synergy.components.client.input.tags.MultiComboBox;
 import kz.arta.synergy.components.client.input.tags.ObjectChooser;
 import kz.arta.synergy.components.client.input.tags.TagInput;
 import kz.arta.synergy.components.client.menu.ContextMenu;
 import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.DropDownListMulti;
+import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.theme.Theme;
@@ -46,7 +48,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-//todo реализовать отложенную загрузку
 /**
  * User: vsl
  * Date: 23.06.14
@@ -735,7 +736,7 @@ public class ShowCasePanel extends LayoutPanel {
         hasListHasIndicator.setDropDownList(createMultiList(hasListHasIndicator));
 
         hasListHasIndicator.setTitle(SCMessages.i18n.tr("Фильтрация списка по вхождению текста"));
-        hasListHasIndicator.setFilterType(false);
+        hasListHasIndicator.setListFilter(ListTextFilter.createPrefixFilter());
 
         rows[currentRow].add(hasListHasIndicator);
         enableds.add(hasListHasIndicator);
@@ -764,9 +765,8 @@ public class ShowCasePanel extends LayoutPanel {
         rows[currentRow] = new FlowPanel();
         rows[currentRow].add(createLabel("Мультикомбобокс"));
 
-        TagInput<String> multiComboBox = new TagInput<String>();
+        MultiComboBox<String> multiComboBox = new MultiComboBox<String>();
         multiComboBox.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        multiComboBox.setMultiComboBox(true);
         multiComboBox.setDropDownList(createMultiList(multiComboBox));
         multiComboBox.setWidth(300);
         rows[currentRow].add(multiComboBox);
@@ -797,9 +797,9 @@ public class ShowCasePanel extends LayoutPanel {
         });
         rows[currentRow].add(button);
 
-        for (int i = 0; i < rows.length; i++) {
-            comboPanel.add(rows[i]);
-            rows[i].getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        for (FlowPanel row : rows) {
+            comboPanel.add(row);
+            row.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         }
 
         return comboPanel;

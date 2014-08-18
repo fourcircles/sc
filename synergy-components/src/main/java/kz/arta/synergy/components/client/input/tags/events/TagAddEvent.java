@@ -10,36 +10,37 @@ import kz.arta.synergy.components.client.input.tags.Tag;
  *
  * Событие для добавления тега
  */
-public class TagAddEvent extends GwtEvent<TagAddEvent.Handler> {
-    public static Type<Handler> TYPE = new Type<Handler>();
+public class TagAddEvent<V> extends GwtEvent<TagAddEvent.Handler<V>> {
+    public static Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Type<Handler<V>> getAssociatedType() {
+        return (Type) TYPE;
     }
 
-    protected void dispatch(Handler handler) {
+    protected void dispatch(Handler<V> handler) {
         handler.onTagAdd(this);
     }
 
-    private Tag tag;
+    private Tag<V> tag;
 
-    public TagAddEvent(Tag tag) {
+    public TagAddEvent(Tag<V> tag) {
         this.tag = tag;
     }
 
-    public Tag getTag() {
+    public Tag<V> getTag() {
         return tag;
     }
 
-    public static interface Handler extends EventHandler {
-        void onTagAdd(TagAddEvent event);
+    public static interface Handler<T> extends EventHandler {
+        void onTagAdd(TagAddEvent<T> event);
     }
 
-    public static interface HasHandler extends HasHandlers {
-            public HandlerRegistration addTagAddHandler(Handler handler);
+    public static interface HasHandler<T> extends HasHandlers {
+            public HandlerRegistration addTagAddHandler(Handler<T> handler);
     }
 
-    public static HandlerRegistration register(EventBus bus, Handler handler) {
+    public static HandlerRegistration register(EventBus bus, Handler<?> handler) {
         return bus.addHandler(TYPE, handler);
     }
 }

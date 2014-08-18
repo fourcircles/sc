@@ -138,7 +138,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
             @Override
             public void onKeyUp(KeyUpEvent event) {
                 if (event.getNativeKeyCode() == KeyCodes.KEY_DOWN && !list.isShowing()) {
-                    filter.setText(input.getText());
+                    filter.setText("");
                     list.show(selectedItem);
                 }
             }

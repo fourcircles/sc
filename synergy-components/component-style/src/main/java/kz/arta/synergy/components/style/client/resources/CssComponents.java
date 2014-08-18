@@ -138,6 +138,8 @@ public interface CssComponents extends CssResource {
 
     String tagIndicator();
 
+    String tagIndicatorContent();
+
     String selected();
 
     String leftIndicator();

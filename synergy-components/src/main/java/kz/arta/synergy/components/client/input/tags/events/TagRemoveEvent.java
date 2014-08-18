@@ -10,36 +10,37 @@ import kz.arta.synergy.components.client.input.tags.Tag;
  *
  * Событие для удаления тега
  */
-public class TagRemoveEvent extends GwtEvent<TagRemoveEvent.Handler> {
-    public static Type<Handler> TYPE = new Type<Handler>();
+public class TagRemoveEvent<V> extends GwtEvent<TagRemoveEvent.Handler<V>> {
+    public static Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Type<Handler<V>> getAssociatedType() {
+        return (Type) TYPE;
     }
 
-    protected void dispatch(Handler handler) {
+    protected void dispatch(Handler<V> handler) {
         handler.onTagRemove(this);
     }
 
-    private Tag tag;
+    private Tag<V> tag;
 
-    public TagRemoveEvent(Tag tag) {
+    public TagRemoveEvent(Tag<V> tag) {
         this.tag = tag;
     }
 
-    public Tag getTag() {
+    public Tag<V> getTag() {
         return tag;
     }
 
-    public static interface Handler extends EventHandler {
-        void onTagRemove(TagRemoveEvent event);
+    public static interface Handler<T> extends EventHandler {
+        void onTagRemove(TagRemoveEvent<T> event);
     }
 
-    public static interface HasHandler extends HasHandlers {
-        public HandlerRegistration addTagRemoveHandler(Handler handler);
+    public static interface HasHandler<T> extends HasHandlers {
+        public HandlerRegistration addTagRemoveHandler(Handler<T> handler);
     }
 
-    public static HandlerRegistration register(EventBus bus, Handler handler) {
+    public static HandlerRegistration register(EventBus bus, Handler<?> handler) {
         return bus.addHandler(TYPE, handler);
     }
 }

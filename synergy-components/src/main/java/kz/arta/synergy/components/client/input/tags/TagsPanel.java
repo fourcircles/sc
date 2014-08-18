@@ -9,11 +9,11 @@ import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.SimplePanel;
 import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
-import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: vsl
@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * Панель для тегов
  * Управляется через события {@link TagAddEvent}, {@link TagRemoveEvent}
  */
-public class TagsPanel extends Composite implements HasEnabled{
+public class TagsPanel<V> extends Composite implements HasEnabled {
 
     /**
      * Панель которая содержит корневую панель и позволяет
@@ -47,12 +47,12 @@ public class TagsPanel extends Composite implements HasEnabled{
     /**
      * Индикатор скрытых тегов
      */
-    private TagIndicator indicator;
+    private TagIndicator<V> indicator;
 
     /**
      * Список добавленых тегов
      */
-    private ArrayList<Tag<?>> tags;
+    private ArrayList<Tag<V>> tags;
 
     public TagsPanel(final EventBus bus, int maxWidth) {
         container = new SimplePanel();
@@ -75,8 +75,8 @@ public class TagsPanel extends Composite implements HasEnabled{
 
         this.maxWidth = maxWidth;
 
-        indicator = new TagIndicator(bus);
-        tags = new ArrayList<Tag<?>>();
+        indicator = new TagIndicator<V>(bus);
+        tags = new ArrayList<Tag<V>>();
 
         Style rootStyle = root.getElement().getStyle();
         rootStyle.setPosition(Style.Position.RELATIVE);
@@ -85,22 +85,22 @@ public class TagsPanel extends Composite implements HasEnabled{
         rootStyle.setDisplay(Style.Display.INLINE_BLOCK);
         rootStyle.setWhiteSpace(Style.WhiteSpace.NOWRAP);
 
-        TagAddEvent.register(bus, new TagAddEvent.Handler() {
+        TagAddEvent.register(bus, new TagAddEvent.Handler<V>() {
             @Override
-            public void onTagAdd(TagAddEvent event) {
+            public void onTagAdd(TagAddEvent<V> event) {
                 add(event.getTag());
             }
         });
 
-        TagRemoveEvent.register(bus, new TagRemoveEvent.Handler() {
+        TagRemoveEvent.register(bus, new TagRemoveEvent.Handler<V>() {
             @Override
-            public void onTagRemove(TagRemoveEvent event) {
+            public void onTagRemove(TagRemoveEvent<V> event) {
                 removeTag(event.getTag());
             }
         });
     }
 
-    public boolean contains(Tag<?> tag) {
+    public boolean contains(Tag<V> tag) {
         return tags.contains(tag);
     }
 
@@ -108,7 +108,7 @@ public class TagsPanel extends Composite implements HasEnabled{
      * Удаляет тег
      * @param tag тег
      */
-    private void removeTag(Tag<?> tag) {
+    public void removeTag(Tag<V> tag) {
         tags.remove(tag);
         root.remove(tag);
         rebuild();
@@ -159,9 +159,13 @@ public class TagsPanel extends Composite implements HasEnabled{
         container.setWidth(root.getOffsetWidth() + "px");
     }
 
-    private void add(Tag tag) {
+    public void add(Tag<V> tag) {
         tags.add(tag);
         rebuild();
+    }
+
+    public List<Tag<V>> getTags() {
+        return tags;
     }
 
     public int getMaxWidth() {

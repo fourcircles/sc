@@ -917,6 +917,18 @@
     cursor: auto;
 }
 
+@eval tagIndicatorPadding kz.arta.synergy.components.style.client.Constants.tagIndicatorPadding();
+.tagIndicatorContent {
+    padding: tagIndicatorPadding;
+}
+@eval tagInterval kz.arta.synergy.components.style.client.Constants.tagInterval();
+.tagIndicatorContent .tag {
+    margin-bottom: tagInterval;
+}
+.tagIndicatorContent .tag:last-child {
+    margin-bottom: 0px;
+}
+
 .tagIndicator {
     margin-top: 10px;
     position: relative;
@@ -968,7 +980,6 @@ p {
     margin-bottom: 0px;
 }
 
-@eval tagInterval kz.arta.synergy.components.style.client.Constants.tagInterval();
 .tagIndicator p {
     margin-bottom: tagInterval;
 }

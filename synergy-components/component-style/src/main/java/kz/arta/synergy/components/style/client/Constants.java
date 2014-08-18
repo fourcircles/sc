@@ -8,6 +8,7 @@ package kz.arta.synergy.components.style.client;
 public class Constants {
     public static final int BORDER_WIDTH = 1;
     public static final int BORDER_RADIUS = 4;
+    public static final int STD_SCROLL_WIDTH = 17;
 
     public static final int BUTTON_HEIGHT = 30;
     public static final int BUTTON_MIN_WIDTH = 30;
@@ -65,6 +66,7 @@ public class Constants {
     public static final int TAG_HEIGHT = 26;
     public static final int TAG_MAX_WIDTH = 100;
     public static final int TAG_INPUT_NO_BUTTON_MIN_WIDTH = 104;
+    public static final int TAG_INDICATOR_PADDING = 6;
 
 
     public static String borderWidth() {
@@ -156,6 +158,9 @@ public class Constants {
     }
     public static String tagInterval() {
         return TAG_INTERVAL + "px";
+    }
+    public static String tagIndicatorPadding() {
+        return TAG_INDICATOR_PADDING + "px";
     }
 
     public static String dateInputWidth() {

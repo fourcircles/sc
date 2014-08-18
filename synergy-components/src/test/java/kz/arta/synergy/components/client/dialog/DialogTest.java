@@ -90,24 +90,6 @@ public class DialogTest {
         spyDialog = spy(dialog);
     }
 
-    @Ignore
-    @Test
-    public void testAdjustMargin() {
-        when(leftButton.isVisible()).thenReturn(true);
-        when(leftButton.getOffsetWidth()).thenReturn(50);
-
-        when(rightButton.isVisible()).thenReturn(true);
-        when(rightButton.getOffsetWidth()).thenReturn(100);
-
-        when(saveButton.getOffsetWidth()).thenReturn(20);
-
-        when(spyDialog.getOffsetWidth()).thenReturn(100);
-
-        spyDialog.adjustSaveButtonMargin();
-
-        verify(spyDialog).setWidth((100 + 40) * 2 + 20 + "px");
-    }
-
     @Test
     public void testAdjustMarginNoAdjust() {
         when(leftButton.isVisible()).thenReturn(true);

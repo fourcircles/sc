@@ -141,6 +141,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
                 switch (event.getNativeKeyCode()) {
                     case KeyCodes.KEY_DOWN:
                         if (!list.isShowing()) {
+                            filter.setText("");
                             list.show(selectedItem);
                         }
                         break;

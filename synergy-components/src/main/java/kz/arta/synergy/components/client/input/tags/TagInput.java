@@ -22,8 +22,7 @@ import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 /**
  * User: vsl
@@ -31,9 +30,12 @@ import java.util.HashMap;
  * Time: 16:20
  *
  * Поле с тегами
+ *
+ * Добавление и удаление тегов происходит через соответствующие методы и
+ * выбором элементов из списка (при отсутствии списка через поле ввода и enter).
  */
 public class TagInput<V> extends Composite implements HasText,
-        TagAddEvent.HasHandler, TagRemoveEvent.HasHandler, HasEnabled {
+        TagAddEvent.HasHandler<V>, TagRemoveEvent.HasHandler<V>, HasEnabled {
     /**
      * Корневая панель
      */
@@ -47,22 +49,17 @@ public class TagInput<V> extends Composite implements HasText,
     /**
      * Элемент для ввода текста
      */
-    private InputWithEvents input;
+    InputWithEvents input;
 
     /**
      * Кнопка поля
      */
-    private ImageButton button;
+    protected ImageButton button;
 
     /**
      * Панель для отображения тегов, которые не скрыты в индикаторе
      */
-    private TagsPanel tagsPanel;
-
-    /**
-     * Список всех добавленных тегов
-     */
-    private ArrayList<Tag> tags;
+    protected TagsPanel<V> tagsPanel;
 
     /**
      * Ширина элемента для ввода текста (без всех отступов и границ)
@@ -77,31 +74,16 @@ public class TagInput<V> extends Composite implements HasText,
     /**
      * Выпадающий список для поля
      */
-    private DropDownListMulti<V> dropDownList;
+    protected DropDownListMulti<V> dropDownList;
 
     private ListTextFilter filter = ListTextFilter.createPrefixFilter();
 
-    private EventBus innerBus;
+    EventBus innerBus;
 
     /**
      * Имеет ли поле кнопку
      */
     private boolean hasButton;
-
-    /**
-     * Хэндлер для клика кнопки
-     */
-    private ClickHandler buttonClick;
-
-    /**
-     * Мультикомбобокс отличается от поля с тегами у которого есть список и кнопка двумя вещами
-     * 1. Картинкой кнопки
-     * 2. После выбора значения из списка список не закрывается
-     */
-    private boolean isMultiComboBox;
-
-    private HashMap<Tag<V>, DropDownList<V>.Item> tagsToItems;
-    private HashMap<DropDownList<V>.Item, Tag<V>> itemsToTags;
 
     public TagInput() {
         this(true);
@@ -115,7 +97,6 @@ public class TagInput<V> extends Composite implements HasText,
         initWidget(root);
 
         innerBus = new SimpleEventBus();
-        tags = new ArrayList<Tag>();
 
         this.hasButton = hasButton;
 
@@ -150,7 +131,7 @@ public class TagInput<V> extends Composite implements HasText,
             root.add(button);
         }
 
-        tagsPanel = new TagsPanel(innerBus, 0);
+        tagsPanel = new TagsPanel<V>(innerBus, 0);
 
         if (hasButton) {
             setWidth(Constants.FIELD_WITH_BUTTON_MIN_WIDTH);
@@ -196,34 +177,18 @@ public class TagInput<V> extends Composite implements HasText,
             }
         });
 
-
-        itemsToTags = new HashMap<DropDownList<V>.Item, Tag<V>>();
-        tagsToItems = new HashMap<Tag<V>, DropDownList<V>.Item>();
-
         //Удаление тега
-        TagRemoveEvent.register(innerBus, new TagRemoveEvent.Handler() {
+        TagRemoveEvent.register(innerBus, new TagRemoveEvent.Handler<V>() {
             @Override
-            public void onTagRemove(TagRemoveEvent event) {
-                if (dropDownList != null) {
-
-                    //innerBus не публикуется, внутри класса к нему подключается только мульти-список
-                    //поэтому cast легален
-                    @SuppressWarnings("unchecked")
-                    DropDownListMulti<V>.Item item = (DropDownListMulti.Item) tagsToItems.get(event.getTag());
-
-                    item.setSelected(false, false);
-
-                    tagsToItems.remove(event.getTag());
-                    itemsToTags.remove(item);
-                    dropDownList.noFocused();
+            public void onTagRemove(TagRemoveEvent<V> event) {
+                Tag<V> tag = event.getTag();
+                if (!tag.isDummy() && dropDownList.contains(tag.getValue())) {
+                    ((DropDownListMulti.Item) dropDownList.get(tag.getValue())).setSelected(false, false);
                 }
-
                 new Timer() {
                     @Override
                     public void run() {
-                        input.setText("");
-                        setInputOffset(Math.min(tagsPanel.getOffsetWidth(), getAvailableSpace()));
-                        input.setFocus(true);
+                        tagRemoved();
                     }
                 }.schedule(20);
             }
@@ -236,37 +201,52 @@ public class TagInput<V> extends Composite implements HasText,
                 Tag<V> tag = new Tag<V>(selectionEvent.getItem().getText(), selectionEvent.getItem().getValue());
                 tag.setBus(innerBus);
 
-                tagsToItems.put(tag, selectionEvent.getItem());
-                itemsToTags.put(selectionEvent.getItem(), tag);
+                addTag(tag);
+                setInputOffset(tagsPanel.getOffsetWidth());
 
-                innerBus.fireEvent(new TagAddEvent(tag));
-
-                input.setText("");
-                setInputOffset(Math.min(tagsPanel.getOffsetWidth(), getAvailableSpace()));
-                input.setFocus(true);
-                dropDownList.noFocused();
+                listItemSelected(selectionEvent.getItem());
             }
 
             @Override
             public void onDeselection(ListSelectionEvent<V> event) {
-                innerBus.fireEvent(new TagRemoveEvent(itemsToTags.get(event.getItem())));
+                for (Tag<V> tag : tagsPanel.getTags()) {
+                    //noinspection NonJREEmulationClassesInClientCode
+                    if (tag.getValue().equals(event.getItem().getValue())) {
+                        removeTag(tag);
+                        break;
+                    }
+                }
                 setInputOffset(tagsPanel.getOffsetWidth());
-                input.setFocus(true);
             }
         });
     }
 
+    protected void tagRemoved() {
+        input.setText("");
+        setInputOffset(tagsPanel.getOffsetWidth());
+        input.setFocus(true);
+    }
+
+    protected void listItemSelected(DropDownList<V>.Item item) {
+        input.setText("");
+        dropDownList.noFocused();
+        input.setFocus(true);
+        dropDownList.hide();
+    }
+
     /**
      * Действия при нажатии клавиши "Enter".
-     * Если у поля нет списка, то это приводит к добавлению тега.
+     * Добавляется dummy тег.
      */
-    private void keyEnter() {
-        if (dropDownList == null && !input.getText().isEmpty()) {
-            Tag tag = new Tag(input.getText());
+    protected void keyEnter() {
+        if (!getText().isEmpty()) {
+            Tag<V> tag = Tag.createDummy(input.getText());
             tag.setBus(innerBus);
-            innerBus.fireEvent(new TagAddEvent(tag));
+            addTag(tag);
+
             input.setText("");
             setInputOffset(tagsPanel.getOffsetWidth());
+            dropDownList.hide();
         }
     }
 
@@ -313,7 +293,7 @@ public class TagInput<V> extends Composite implements HasText,
      * вводить текст, причем offsetWidth элемента ввода не изменяется.
      * @param offset расстояние от левой границы поля
      */
-    private void setInputOffset(int offset) {
+    protected void setInputOffset(int offset) {
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             inputBox.getElement().getStyle().setPaddingRight(offset, Style.Unit.PX);
         } else {
@@ -323,13 +303,26 @@ public class TagInput<V> extends Composite implements HasText,
         inputBox.setWidth(inputWidth + "px");
     }
 
-    /**
-     * Возвращает тег находящийся на указанной позиции.
-     * @param i позиция
-     * @return тег
-     */
-    public Tag getTag(int i) {
-        return tags.get(i);
+    public void removeTag(Tag<V> tag) {
+        innerBus.fireEventFromSource(new TagRemoveEvent<V>(tag), this);
+    }
+
+    public void addTag(Tag<V> tag) {
+        innerBus.fireEventFromSource(new TagAddEvent<V>(tag), this);
+    }
+
+    public List<Tag<V>> getTags() {
+        return tagsPanel.getTags();
+    }
+
+    public Tag<V> getTag(V value) {
+        for (Tag<V> tag : tagsPanel.getTags()) {
+            //noinspection NonJREEmulationClassesInClientCode
+            if (tag.getValue().equals(value)) {
+                return tag;
+            }
+        }
+        return null;
     }
 
     /**
@@ -351,6 +344,7 @@ public class TagInput<V> extends Composite implements HasText,
 
         inputWidth = width;
         inputBox.setWidth(width + "px");
+
         setInputOffset(Constants.COMMON_INPUT_PADDING);
 
         tagsPanel.setMaxWidth(getAvailableSpace() - 26);
@@ -372,7 +366,7 @@ public class TagInput<V> extends Composite implements HasText,
         textChanged();
     }
 
-    public DropDownListMulti<V> getDropDownList() {
+    public DropDownListMulti<?> getDropDownList() {
         return dropDownList;
     }
 
@@ -385,7 +379,6 @@ public class TagInput<V> extends Composite implements HasText,
             dropDownList.addAutoHidePartner(button.getElement());
         }
         dropDownList.setBus(innerBus);
-        dropDownList.setHideAfterSelect(!isMultiComboBox);
     }
 
     @Override
@@ -407,47 +400,23 @@ public class TagInput<V> extends Composite implements HasText,
         tagsPanel.setEnabled(enabled);
     }
 
-    public boolean isMultiComboBox() {
-        return isMultiComboBox;
-    }
-
-    public void setMultiComboBox(boolean isMultiComboBox) {
-        this.isMultiComboBox = isMultiComboBox;
-        if (isMultiComboBox) {
-            if (button != null) {
-                button.setIcon(ImageResources.IMPL.comboBoxDropDown());
-            }
-        }
-        if (dropDownList != null) {
-            dropDownList.setHideAfterSelect(!isMultiComboBox);
-        }
+    @Override
+    public HandlerRegistration addTagAddHandler(TagAddEvent.Handler<V> handler) {
+        return innerBus.addHandlerToSource(TagAddEvent.TYPE, this, handler);
     }
 
     @Override
-    public HandlerRegistration addTagAddHandler(TagAddEvent.Handler handler) {
-        return addHandler(handler, TagAddEvent.TYPE);
+    public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler<V> handler) {
+        return innerBus.addHandlerToSource(TagRemoveEvent.TYPE, this, handler);
     }
 
-    @Override
-    public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler handler) {
-        return addHandler(handler, TagRemoveEvent.TYPE);
-    }
-
-    /**
-     * Задает тип фильтра.
-     * Пока есть только два фильтра, поэтому выбор регулируется boolean переменной,
-     * в будущем возможно сделать enum.
-     * @param filterType true - префиксный фильтр, false - фильтр на содержание
-     */
-    public void setFilterType(boolean filterType) {
-        if (filterType) {
-            filter = ListTextFilter.createPrefixFilter();
-        } else {
-            filter = ListTextFilter.createContainsFilter();
-        }
+    public void setListFilter(ListTextFilter filter) {
+        this.filter = filter;
         if (dropDownList != null) {
             dropDownList.setFilter(filter);
         }
-        filter.setText(input.getText());
+        if (filter != null) {
+            filter.setText(getText());
+        }
     }
 }

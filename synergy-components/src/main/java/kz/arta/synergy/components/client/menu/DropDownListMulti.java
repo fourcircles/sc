@@ -17,10 +17,6 @@ import java.util.List;
  * Выпадающий список с возможностью выделения нескольких пунктов
  */
 public class DropDownListMulti<V> extends DropDownList<V>{
-    /**
-     * Скрывать ли список после выбора значения
-     */
-    private boolean hideAfterSelect = false;
 
     protected ArrayList<DropDownList<V>.Item> selectedItems;
 
@@ -35,10 +31,6 @@ public class DropDownListMulti<V> extends DropDownList<V>{
         @Override
         protected void select() {
             setSelected(!isSelected, true);
-
-            if (hideAfterSelect) {
-                hide();
-            }
         }
 
         public boolean isSelected() {
@@ -88,14 +80,6 @@ public class DropDownListMulti<V> extends DropDownList<V>{
 
         addItem(item);
         return item;
-    }
-
-    public boolean isHideAfterSelect() {
-        return hideAfterSelect;
-    }
-
-    public void setHideAfterSelect(boolean hideAfterSelect) {
-        this.hideAfterSelect = hideAfterSelect;
     }
 
     public List<DropDownList<V>.Item> getSelected() {

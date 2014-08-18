@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.input.tags;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -21,7 +22,7 @@ import kz.arta.synergy.components.style.client.Constants;
  *
  * Тег для поля с тегами.
  */
-public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.HasHandler, HasEnabled {
+public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.HasHandler<V>, HasEnabled {
     /**
      * Корневая панель
      */
@@ -45,15 +46,31 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
     /**
      * Элемент для закрытия тега
      */
-    private Image image;
+    protected Image image;
 
     /**
      * Включен/выключен
      */
-    private boolean isEnabled;
+    private boolean isEnabled = true;
 
     private EventBus bus;
 
+    /**
+     * Имеет ли тег значение, true - не имеет, false - имеет.
+     */
+    private boolean isDummy = false;
+
+    /**
+     * Создает новый тег без значения
+     * @param text текст тега
+     * @return тег
+     */
+    public static <T> Tag<T> createDummy(String text) {
+        Tag<T> dummy = new Tag<T>(text);
+        dummy.isDummy = true;
+
+        return dummy;
+    }
     /**
      * Конструктор для случая когда у тега нет значения
      * @param text текст тега
@@ -67,7 +84,8 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
         label.getElement().getStyle().setTextAlign(Style.TextAlign.CENTER);
         label.getElement().getStyle().setCursor(Style.Cursor.DEFAULT);
 
-        image = new Image(ImageResources.IMPL.tagClose());
+        image = GWT.create(Image.class);
+        image.setResource(ImageResources.IMPL.tagClose());
         image.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -139,6 +157,11 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
         return bus;
     }
 
+    /**
+     * При изменении EventBus все события создаются на новом, поэтому все
+     * хэндлеры добавленые до становятся недействительными.
+     * @param bus новый EventBus
+     */
     public void setBus(EventBus bus) {
         this.bus = bus;
     }
@@ -147,13 +170,13 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
     protected void onLoad() {
         super.onLoad();
         getElement().getStyle().clearWidth();
-            if (getElement().getScrollWidth() > getElement().getClientWidth()) {
+        if (getElement().getScrollWidth() > getElement().getClientWidth()) {
             label.setWidth(label.getOffsetWidth() - (getElement().getScrollWidth() - getElement().getClientWidth()));
         }
     }
 
     @Override
-    public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler handler) {
+    public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler<V> handler) {
         return bus.addHandlerToSource(TagRemoveEvent.TYPE, this, handler);
     }
 
@@ -165,5 +188,9 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
     @Override
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public boolean isDummy() {
+        return isDummy;
     }
 }

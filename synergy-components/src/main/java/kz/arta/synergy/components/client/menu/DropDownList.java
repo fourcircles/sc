@@ -17,6 +17,7 @@ import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * User: vsl
@@ -32,7 +33,7 @@ import java.util.ArrayList;
  * уже существующий элемент списка с данным значением будет заменен на новый.
  * Таким образом гарантируется, что в списке нет элементов с одинаковыми значениями.
  */
-public class DropDownList<V> extends MenuBase {
+public class DropDownList<V> extends MenuBase{
     protected EventBus bus;
 
     /**
@@ -451,7 +452,7 @@ public class DropDownList<V> extends MenuBase {
             return value;
         }
 
-        public void setValue(V value) {
+        protected void setValue(V value) {
             this.value = value;
         }
 

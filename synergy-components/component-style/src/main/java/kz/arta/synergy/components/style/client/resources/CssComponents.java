@@ -147,7 +147,8 @@ public interface CssComponents extends CssResource {
     String searchResult();
 
     String tab();
-    String tabs();
-    String tabPanel();
     String tabContent();
+
+    String collapsingTitle();
+    String collapsingPanel();
 }

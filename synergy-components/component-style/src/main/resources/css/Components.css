@@ -732,6 +732,7 @@
     background-color: buttonBG;
 
     display: inline-block;
+    float: right;
 }
 .comboBox.focus, .comboBox.focus .buttonSimple{
     border-color: border1;
@@ -1225,5 +1226,16 @@ p {
     left: 0px;
 }
 
-.tabs{}
-.tabPanel{}
+.collapsingTitle{
+    height: 38px;
+    padding-left: 18px;
+    padding-right: 14px;
+    line-height: 38px;
+}
+
+.collapsingPanel{
+    border: 1px buttonBorder solid;
+    border-radius: 4px;
+    color: textColor2;
+}
+

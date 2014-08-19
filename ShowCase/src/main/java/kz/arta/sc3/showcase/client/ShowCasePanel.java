@@ -21,6 +21,7 @@ import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.*;
+import kz.arta.synergy.components.client.collapsing.CollapsingPanel;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
@@ -345,7 +346,6 @@ public class ShowCasePanel extends LayoutPanel {
             }
         });
 
-
         return comboBoxPanel;
     }
 
@@ -371,7 +371,8 @@ public class ShowCasePanel extends LayoutPanel {
         public void addTab() {
             if (content == null) {
                 content = getContentWidget();
-                content.setSize("100%", "100%");
+                content.setHeight("100%");
+//                content.setSize("100%", "100%");
             }
             tabPanel.addTab(getText(), content);
         }
@@ -509,6 +510,18 @@ public class ShowCasePanel extends LayoutPanel {
                 return getDateInputs();
             }
         });
+        addTreeItem(category3, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Коллапсинг-панели");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getCollapsingPanel();
+            }
+        });
+
     }
 
     /**
@@ -625,6 +638,66 @@ public class ShowCasePanel extends LayoutPanel {
 
         return new ArtaScrollPanel(panel);
     }
+
+    private Widget makeLineForCollapsingPanel(String text, int textWidth, int inputWidth, boolean dateInput) {
+
+        FlowPanel row = new FlowPanel();
+        row.getElement().getStyle().setLineHeight(32, Style.Unit.PX);
+        row.setStyleName(SynergyComponents.resources.cssComponents().mainText());
+        row.setWidth(textWidth + inputWidth + 5 + "px");
+
+        InlineLabel label = new InlineLabel(text);
+        label.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        label.setWidth(textWidth + "px");
+
+        row.add(label);
+
+
+        if (!dateInput) {
+            TextInput input = new TextInput();
+            input.setWidth(inputWidth - Constants.COMMON_INPUT_PADDING * 2 - Constants.BORDER_WIDTH * 2 + "px");
+            row.add(input);
+        } else {
+            DateInput input = new DateInput();
+            input.setWidth(inputWidth - Constants.BORDER_WIDTH * 2 + "px");
+            row.add(input);
+        }
+
+        row.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        return row;
+    }
+
+    private Widget getCollapsingPanel() {
+        FlowPanel root = new FlowPanel();
+        root.getElement().getStyle().setPadding(10, Style.Unit.PX);
+
+        CollapsingPanel meta = new CollapsingPanel(SCMessages.i18n.tr("Метаданные"));
+        meta.setWidth("500px");
+        meta.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        meta.getPanel().getElement().getStyle().setPadding(18, Style.Unit.PX);
+
+        meta.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Дата публикации"), 200, 264, true));
+        meta.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Название"), 200, 264, false));
+        meta.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Создатель"), 200, 264, false));
+        meta.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Тема"), 200, 264, false));
+        meta.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Описание"), 200, 264, false));
+
+        root.add(meta);
+
+        CollapsingPanel classifier = new CollapsingPanel(SCMessages.i18n.tr("Классификатор"));
+        classifier.setWidth("500px");
+        classifier.getPanel().getElement().getStyle().setPadding(18, Style.Unit.PX);
+
+        classifier.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Дата публикации"), 200, 264, true));
+        classifier.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Название"), 200, 264, false));
+        classifier.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Создатель"), 200, 264, false));
+        classifier.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Тема"), 200, 264, false));
+        classifier.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Описание"), 200, 264, false));
+        root.add(classifier);
+
+        return new ArtaScrollPanel(root);
+    }
+
     /**
      * Смешивает массив
      * @param array массив

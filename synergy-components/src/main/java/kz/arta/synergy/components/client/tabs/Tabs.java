@@ -8,7 +8,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.tabs.events.HasTabHandlers;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.tabs.events.TabSelectionEvent;
@@ -56,8 +55,6 @@ public class Tabs extends Composite implements HasTabHandlers {
     public Tabs() {
         root = new FlowPanel();
         initWidget(root);
-
-        addStyleName(SynergyComponents.resources.cssComponents().tabs());
 
         tabs = new ArrayList<Tab>();
 

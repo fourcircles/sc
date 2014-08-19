@@ -78,7 +78,10 @@
 
 @def stackPanelText2 #808080;
 @def selectColor #deefff;
-@def tabBg2 #f9f9f9;
+
+@eval tabBg2 kz.arta.synergy.components.style.client.Colors.tabBG2().hex();
+@eval tabBg2_0 kz.arta.synergy.components.style.client.Colors.tabBG2().alpha0();
+@eval tabBg2_0_ie kz.arta.synergy.components.style.client.Colors.tabBG2().alpha0IE();
 
 @eval tagBG kz.arta.synergy.components.style.client.Colors.tagBG().hex();
 @eval tagBG_0 kz.arta.synergy.components.style.client.Colors.tagBG().alpha0();
@@ -471,13 +474,13 @@
 }
 
 @eval dialogCloseButtonPadding kz.arta.synergy.components.style.client.Constants.dialogCloseButtonPadding();
-
+@eval dialogCloseButtonRightMargin kz.arta.synergy.components.style.client.Constants.dialogCloseButtonRightMargin();
 .dialogTitleButton {
     padding: dialogCloseButtonPadding;
     margin-top: 8px;
     float: right;
     background-repeat: no-repeat;
-    margin-right: 10px;
+    margin-right: dialogCloseButtonRightMargin;
 }
 .dialogTitleButton:last-child{
     margin-right: 0px;
@@ -1122,3 +1125,105 @@ p {
     padding: 0px;
     width: 100%;
 }
+
+@eval tabMaxWidth kz.arta.synergy.components.style.client.Constants.tabMaxWidth();
+@eval tabHeight kz.arta.synergy.components.style.client.Constants.tabHeight();
+.tab{
+    display: inline-block;
+    position: relative;
+    z-index: 5;
+    vertical-align: top;
+
+
+    border: 1px solid buttonBorder;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+
+    background-color: tabBg2;
+    color: border1;
+
+    box-sizing: border-box;
+    max-width: tabMaxWidth;
+    height: 31px;
+    line-height: 30px;
+
+    /*все вкладки кроме выбранной имеют этот отступ*/
+    margin-top: 1px;
+    cursor: default;
+}
+.tab img {
+    vertical-align: top;
+    margin: 6px dialogCloseButtonRightMargin 0 0;
+    cursor: pointer;
+}
+.tab > div {
+    margin: 0 commonInputPadding;
+}
+.tab + .tab {
+    border-left-style: hidden;
+}
+.tab.selected {
+    border-color: buttonPressed;
+    background-color: whiteBG;
+    color: textColor2;
+    margin-top: 0px;
+
+    height: 32px;
+
+    border-bottom-color: whiteBG;
+}
+
+.tab .gradient {
+    background: -moz-linear-gradient(left, tabBg2_0 0%, tabBg2 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,tabBg2_0), color-stop(100%,tabBg2));
+    background: -webkit-linear-gradient(left, tabBg2_0 0%,tabBg2 100%);
+    background: -o-linear-gradient(left, tabBg2_0 0%,tabBg2 100%);
+    background: -ms-linear-gradient(left, tabBg2_0 0%,tabBg2 100%);
+    background: linear-gradient(to right, tabBg2_0 0%,tabBg2 100%);
+
+    filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")tabBg2_0_ie literal("endColorstr=")tabBg2 literal(",GradientType=1 )");
+}
+*[dir="rtl"] .tab .gradient {
+    background: -moz-linear-gradient(left, tabBg2 0%, tabBg2_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,tabBg2), color-stop(100%,tabBg2_0));
+    background: -webkit-linear-gradient(left, tabBg2 0%,tabBg2_0 100%);
+    background: -o-linear-gradient(left, tabBg2 0%,tabBg2_0 100%);
+    background: -ms-linear-gradient(left, tabBg2 0%,tabBg2_0 100%);
+    background: linear-gradient(to right, tabBg2 0%,tabBg2_0 100%);
+}
+
+.tab.selected .gradient {
+    background: -moz-linear-gradient(left, whiteBG_0 0%, whiteBG 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,whiteBG_0), color-stop(100%,whiteBG));
+    background: -webkit-linear-gradient(left, whiteBG_0 0%,whiteBG 100%);
+    background: -o-linear-gradient(left, whiteBG_0 0%,whiteBG 100%);
+    background: -ms-linear-gradient(left, whiteBG_0 0%,whiteBG 100%);
+    background: linear-gradient(to right, whiteBG_0 0%,whiteBG 100%);
+
+    filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")whiteBG_0_ie literal("endColorstr=")whiteBG literal(",GradientType=1 )");
+}
+*[dir="rtl"] .tab.selected .gradient {
+    background: -moz-linear-gradient(left, whiteBG 0%, whiteBG_0 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,whiteBG), color-stop(100%,whiteBG_0));
+    background: -webkit-linear-gradient(left, whiteBG 0%,whiteBG_0 100%);
+    background: -o-linear-gradient(left, whiteBG 0%,whiteBG_0 100%);
+    background: -ms-linear-gradient(left, whiteBG 0%,whiteBG_0 100%);
+    background: linear-gradient(to right, whiteBG 0%,whiteBG_0 100%);
+}
+.tabContent{
+    border: 1px solid buttonBorder;
+    background-color: whiteBG;
+    border-radius: 4px;
+
+    height: auto;
+
+    position: absolute;
+    top: tabHeight;
+    /*эти два пикселя для того, чтобы было видно границы*/
+    bottom: 2px;
+    right: 2px;
+    left: 0px;
+}
+
+.tabs{}
+.tabPanel{}

@@ -120,8 +120,6 @@ public interface CssComponents extends CssResource {
 
     String stackPanelText2();
 
-    String tabBg2();
-
     String textColor1();
 
     String textColor2();
@@ -147,4 +145,9 @@ public interface CssComponents extends CssResource {
     String centerIndicator();
 
     String searchResult();
+
+    String tab();
+    String tabs();
+    String tabPanel();
+    String tabContent();
 }

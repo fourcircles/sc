@@ -68,6 +68,12 @@ public class Constants {
     public static final int TAG_INPUT_NO_BUTTON_MIN_WIDTH = 104;
     public static final int TAG_INDICATOR_PADDING = 6;
 
+    /**
+     * Максимальная ширина вкладки
+     */
+    public static final int TAB_MAX_WIDTH = 200;
+    public static final int TAB_HEIGHT = 31;
+
 
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
@@ -173,6 +179,13 @@ public class Constants {
 
     public static String weekInputWidth() {
         return WEEK_INPUT_WIDTH + "px";
+    }
+
+    public static String tabMaxWidth() {
+        return TAB_MAX_WIDTH + "px";
+    }
+    public static String tabHeight() {
+        return TAB_HEIGHT + "px";
     }
 
 }

@@ -39,6 +39,8 @@ import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+import kz.arta.synergy.components.client.tabs.TabPanel;
+import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.client.util.PPanel;
 import kz.arta.synergy.components.style.client.Constants;
@@ -62,9 +64,10 @@ public class ShowCasePanel extends LayoutPanel {
 
     Tree tree;
 
-    TabLayoutPanel contentPanel;
+//    TabLayoutPanel contentPanel;
+    TabPanel tabPanel;
 
-    private Set<LoadPanel> tabs;
+    private Set<Widget> tabs;
 
     public void setBorder(Widget w) {
         w.getElement().getStyle().setProperty("border", "solid 1px black");
@@ -77,7 +80,8 @@ public class ShowCasePanel extends LayoutPanel {
             currentTheme = Theme.getTheme(Cookies.getCookie("theme"));
         }
 
-        contentPanel = new TabLayoutPanel(30, Style.Unit.PX);
+//        contentPanel = new TabLayoutPanel(30, Style.Unit.PX);
+        tabPanel = new TabPanel();
 
         treeSetUp();
 
@@ -155,25 +159,26 @@ public class ShowCasePanel extends LayoutPanel {
         ArtaScrollPanel treeScroll = new ArtaScrollPanel(navigationPanel);
         add(titlePanel);
         add(treeScroll);
-        add(contentPanel);
+//        add(contentPanel);
+        add(tabPanel);
 
         setWidgetLeftWidth(treeScroll, 0, Style.Unit.PCT, TREE_WIDTH, Style.Unit.PCT);
         setWidgetTopBottom(treeScroll, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
 
-        setWidgetRightWidth(contentPanel, 0, Style.Unit.PCT, 100 - TREE_WIDTH - SPACING, Style.Unit.PCT);
-        setWidgetTopBottom(contentPanel, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
+        setWidgetRightWidth(tabPanel, 0, Style.Unit.PCT, 100 - TREE_WIDTH - SPACING, Style.Unit.PCT);
+        setWidgetTopBottom(tabPanel, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
 
         setWidgetTopBottom(titlePanel, 0, Style.Unit.PCT, 100 - TITLE_HEIGHT, Style.Unit.PCT);
 
         setBorder(treeScroll);
         setBorder(titlePanel);
-        setBorder(contentPanel);
+//        setBorder(contentPanel);
 
         setSize("100%", "100%");
 
         forceLayout();
 
-        tabs = new HashSet<LoadPanel>();
+        tabs = new HashSet<Widget>();
 
         tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
             @Override
@@ -182,6 +187,13 @@ public class ShowCasePanel extends LayoutPanel {
                 if (selectedItem != null && selectedItem.getUserObject() != null) {
                     ((LoadPanel) selectedItem.getUserObject()).execute();
                 }
+            }
+        });
+
+        tabPanel.addTabCloseHandler(new TabCloseEvent.Handler() {
+            @Override
+            public void onTabClose(TabCloseEvent event) {
+                tabs.remove(event.getTab().getContent());
             }
         });
 
@@ -243,14 +255,18 @@ public class ShowCasePanel extends LayoutPanel {
 
     private Panel setUpDialogs(boolean buttons) {
         FlowPanel panel = new FlowPanel();
+        panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         if (!buttons) {
             SimpleButton empty = setUpDialog(SCMessages.i18n.tr("Пустой"), new DialogSimple());
-            empty.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
             panel.add(empty);
         }
+
         SimpleButton tiny = setUpDialog(116, 84, buttons, true, true);
-        tiny.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        if (panel.getWidgetCount() > 0) {
+            tiny.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        }
+
         SimpleButton small = setUpDialog(300, 300, buttons, true, true);
         small.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         SimpleButton middle = setUpDialog(400, 400, buttons, true, true);
@@ -292,6 +308,7 @@ public class ShowCasePanel extends LayoutPanel {
     }
     public Widget getComboboxPanel() {
         FlowPanel comboBoxPanel = new FlowPanel();
+        comboBoxPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         final ComboBox<String> combo = new ComboBox<String>();
         fillCombobox(combo);
@@ -341,53 +358,26 @@ public class ShowCasePanel extends LayoutPanel {
 
     private abstract class LoadPanel implements Command {
         private Widget content;
-        private Widget tabWidget;
 
         @Override
         public void execute() {
-            if (!tabs.contains(this)) {
+            if (!tabs.contains(content)) {
                 addTab();
-                tabs.add(this);
-            } else {
-                selectTab();
+                tabs.add(content);
             }
+            selectTab();
         }
 
         public void addTab() {
             if (content == null) {
                 content = getContentWidget();
+                content.setSize("100%", "100%");
             }
-            if (tabWidget == null) {
-                tabWidget = createTabWidget();
-            }
-            contentPanel.add(content, tabWidget);
-            contentPanel.selectTab(content);
-        }
-
-        private FlowPanel createTabWidget() {
-            FlowPanel tab = new FlowPanel();
-
-            InlineLabel textLabel = new InlineLabel(getText());
-            textLabel.getElement().getStyle().setDisplay(Style.Display.INLINE);
-            tab.add(textLabel);
-
-            InlineLabel closeLabel = new InlineLabel("[X]");
-            closeLabel.getElement().getStyle().setDisplay(Style.Display.INLINE);
-            closeLabel.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    if (content != null) {
-                        contentPanel.remove(content);
-                    }
-                    tabs.remove(LoadPanel.this);
-                }
-            });
-            tab.add(closeLabel);
-            return tab;
+            tabPanel.addTab(getText(), content);
         }
 
         public void selectTab() {
-            contentPanel.selectTab(content);
+            tabPanel.selectTab(content);
         }
 
         public abstract String getText();
@@ -526,6 +516,7 @@ public class ShowCasePanel extends LayoutPanel {
      */
     private Widget getDateInputs() {
         FlowPanel panel = new FlowPanel();
+        panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         int width = 300;
 
@@ -708,10 +699,9 @@ public class ShowCasePanel extends LayoutPanel {
      * @return панель с полями с тегами
      */
     private Widget getTagInputs() {
-
-
         FlowPanel comboPanel = new FlowPanel();
         comboPanel.getElement().getStyle().setLineHeight(1, Style.Unit.PX);
+        comboPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         final List<HasEnabled> enableds = new ArrayList<HasEnabled>();
 
@@ -811,9 +801,10 @@ public class ShowCasePanel extends LayoutPanel {
      */
     private Widget getTextInputs() {
         FlowPanel panel = new FlowPanel();
+        panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
+
         final TextInput textInput = new TextInput();
         textInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        textInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         panel.add(textInput);
         textInput.setPlaceHolder(SCMessages.i18n.tr("Необязательное поле"));
 
@@ -850,7 +841,6 @@ public class ShowCasePanel extends LayoutPanel {
         searchResultPanel.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
 
         SearchResultInput<String> searchEnabledWithButton = new SearchResultInput<String>(true);
-        searchEnabledWithButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         DropDownList<String> list = createList(searchEnabledWithButton);
         for (DropDownList.Item item : list.getItems()) {
             item.setIcon(ImageResources.IMPL.magzhan());
@@ -882,7 +872,6 @@ public class ShowCasePanel extends LayoutPanel {
 
         final ArtaTextArea textArea = new ArtaTextArea();
         textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        textArea.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         textArea.setPlaceHolder(SCMessages.i18n.tr("Многострочное поле ввода"));
         textAreaPanel.add(textArea);
 
@@ -939,7 +928,7 @@ public class ShowCasePanel extends LayoutPanel {
         ArtaScrollPanel scroll = new ArtaScrollPanel();
         scroll.setWidget(panel);
 
-        return panel;
+        return scroll;
 
     }
 
@@ -963,11 +952,11 @@ public class ShowCasePanel extends LayoutPanel {
                 super.onBrowserEvent(event);
             }
         };
+        simpleButtonPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         SimpleButton simpleButton = new SimpleButton(SCMessages.i18n.tr("Простая кнопка"));
         simpleButton.setWidth("140px");
         simpleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        simpleButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton);
 
         SimpleButton simpleButton1 = new SimpleButton(SCMessages.i18n.tr("Неактивная кнопка"));
@@ -1001,13 +990,6 @@ public class ShowCasePanel extends LayoutPanel {
         simpleButtonPanel.add(simpleButton4);
         simpleButton4.setContextMenu(menuForSimple);
 
-//        Tabs tabs = new Tabs();
-//        simpleButtonPanel.add(tabs);
-//        tabs.addTab("first tab");
-//        tabs.addTab("second tab");
-//        tabs.addTab("third tab");
-//        tabs.addTab("very very very very very long tab");
-
         return simpleButtonPanel;
     }
 
@@ -1016,11 +998,11 @@ public class ShowCasePanel extends LayoutPanel {
      */
     private Widget getIconButtonPanel() {
         FlowPanel iconButtonPanel = new FlowPanel();
+        iconButtonPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         SimpleButton iconButton = new SimpleButton(SCMessages.i18n.tr("Кнопка с иконкой"), SCImageResources.IMPL.zoom());
         iconButtonPanel.add(iconButton);
         iconButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         SimpleButton iconButton1 = new SimpleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"), SCImageResources.IMPL.zoom());
         iconButtonPanel.add(iconButton1);
@@ -1084,13 +1066,13 @@ public class ShowCasePanel extends LayoutPanel {
      */
     private Widget getColorButtonPanel() {
         FlowPanel colorButtonPanel = new FlowPanel();
+        colorButtonPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
         colorButtonPanel.setHeight("2000px");
         colorButtonPanel.setWidth("2000px");
 
         SimpleButton colorButton = new SimpleButton((SCMessages.i18n.tr("Создать")), SimpleButton.Type.APPROVE);
         colorButtonPanel.add(colorButton);
         colorButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         SimpleButton colorButton1 = new SimpleButton(SCMessages.i18n.tr("Удалить"), SimpleButton.Type.DECLINE);
         colorButtonPanel.add(colorButton1);
@@ -1150,9 +1132,10 @@ public class ShowCasePanel extends LayoutPanel {
      */
     private Widget getGroupButton() {
         FlowPanel panel = new FlowPanel();
+        panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
+
         final SimpleToggleButton toggleButton = new SimpleToggleButton(SCMessages.i18n.tr("Кнопка с длинным текстом"));
         toggleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        toggleButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         panel.add(toggleButton);
 
         final SimpleToggleButton toggleButton1 = new SimpleToggleButton(SCMessages.i18n.tr("Не нажата"));

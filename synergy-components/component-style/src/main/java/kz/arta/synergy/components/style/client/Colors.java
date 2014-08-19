@@ -17,6 +17,7 @@ public class Colors {
     public static final Color declineButtonBG3 = new Color("#df6c6d");
     public static final Color declineButtonBG4 = new Color("#b05253");
     public static final Color tagBG = new Color("#f2efd0");
+    public static final Color tabBG2 = new Color("#f9f9f9");
     public static final Color mainBG = new Color("#373d49");
 
     public static Color whiteBG() {
@@ -48,5 +49,8 @@ public class Colors {
     }
     public static Color mainBG() {
         return mainBG;
+    }
+    public static Color tabBG2() {
+        return tabBG2;
     }
 }

@@ -155,6 +155,9 @@ public class DialogSimple extends PopupPanel {
         setUpDragging();
 
         setPreviewingAllNativeEvents(true);
+
+        getGlassElement().getStyle().setZIndex(1000);
+        getElement().getStyle().setZIndex(2000);
     }
 
     public DialogSimple(String title, Widget content) {

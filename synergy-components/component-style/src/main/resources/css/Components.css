@@ -97,6 +97,10 @@
 @eval borderWidth kz.arta.synergy.components.style.client.Constants.borderWidth();
 @eval borderRadius kz.arta.synergy.components.style.client.Constants.borderRadius();
 
+@def navigatorBG #292f3b;
+@def stackPanelBG #f1f1f1;
+@def panelBG #f8f8f8;
+
 .buttonSimple, .approveButton, .declineButton, .dropDownButton {
     height: buttonHeight;
     line-height: buttonHeight;
@@ -1238,4 +1242,95 @@ p {
     border-radius: 4px;
     color: textColor2;
 }
+
+.stackPanel {
+    width: 292px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+
+    background-color: navigatorBG;
+    border: 1px solid navigatorBG;
+    border-left-style: none;
+}
+.stackPanel.white {
+    background-color: panelBG;
+    border-color: buttonBG;
+    border-left-style: none;
+}
+
+
+.stackPanel .stack {
+    width: 291px;
+    position: relative;
+}
+.stack + .stack {
+    border-top: 1px solid navigatorBG;
+}
+.stackPanel.white .stack {
+    border-color: buttonBG;
+}
+.stackPanel.white .stack.open .title {
+    border-bottom: 1px solid buttonPressed;
+}
+
+@eval stackHeight kz.arta.synergy.components.style.client.Constants.stackHeight();
+.stackPanel .stack .title {
+    cursor: pointer;
+    height: stackHeight;
+    line-height: stackHeight;
+    display: block;
+    padding-left: 18px;
+
+    color: buttonPressed;
+    background-color: mainBG;
+}
+.stackPanel.white .stack .title {
+    color: textColor1;
+    background-color: whiteBG;
+}
+
+.stackPanel .stack .indicator{
+    height: stackHeight;
+    width: 13px;
+    position: absolute;
+    right: -1px;
+    top: 0;
+    background-color: #C23A3A;
+    display: none;
+}
+.stackPanel.white .stack .indicator {
+    background-color: #03A2E4;
+    right: 0;
+}
+.stackPanel .stack.open {
+    border-bottom-style: none;
+}
+.stackPanel.white .stack.open .title{
+    color: textColor2;
+    background-color: stackPanelBG;
+}
+.stack.open .indicator {
+    display: block;
+}
+.stack.disabled {
+    color: stackPanelText2;
+    cursor: default;
+}
+.stackPanel.white .stack.disabled .title {
+    color: stackPanelText2;
+}
+
+.stack .stackContent {
+    background-color: navigatorBG;
+    display: none;
+    overflow: hidden;
+    position: relative;
+}
+.stackPanel.white .stack .stackContent {
+    background-color: panelBG;
+}
+.stack.open .stackContent {
+    display: block;
+}
+
 

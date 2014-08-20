@@ -74,6 +74,7 @@ public class Constants {
     public static final int TAB_MAX_WIDTH = 200;
     public static final int TAB_HEIGHT = 31;
 
+    public static final int STACK_HEIGHT = 48;
 
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
@@ -188,4 +189,7 @@ public class Constants {
         return TAB_HEIGHT + "px";
     }
 
+    public static String stackHeight() {
+        return STACK_HEIGHT + "px";
+    }
 }

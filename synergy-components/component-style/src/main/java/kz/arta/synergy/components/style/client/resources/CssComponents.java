@@ -151,4 +151,12 @@ public interface CssComponents extends CssResource {
 
     String collapsingTitle();
     String collapsingPanel();
+
+    String stackPanel();
+    String stack();
+    String title();
+    String indicator();
+    String open();
+    String stackContent();
+    String white();
 }

@@ -13,6 +13,7 @@ import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.*;
+import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
@@ -40,16 +41,16 @@ import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+import kz.arta.synergy.components.client.stack.*;
+import kz.arta.synergy.components.client.stack.StackPanel;
+import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
 import kz.arta.synergy.components.client.tabs.TabPanel;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.client.util.PPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User: vsl
@@ -671,6 +672,8 @@ public class ShowCasePanel extends LayoutPanel {
         FlowPanel root = new FlowPanel();
         root.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
+        FlowPanel collapsingPanels = new FlowPanel();
+
         CollapsingPanel meta = new CollapsingPanel(SCMessages.i18n.tr("Метаданные"));
         meta.setWidth("500px");
         meta.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
@@ -682,7 +685,7 @@ public class ShowCasePanel extends LayoutPanel {
         meta.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Тема"), 200, 264, false));
         meta.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Описание"), 200, 264, false));
 
-        root.add(meta);
+        collapsingPanels.add(meta);
 
         CollapsingPanel classifier = new CollapsingPanel(SCMessages.i18n.tr("Классификатор"));
         classifier.setWidth("500px");
@@ -693,7 +696,51 @@ public class ShowCasePanel extends LayoutPanel {
         classifier.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Создатель"), 200, 264, false));
         classifier.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Тема"), 200, 264, false));
         classifier.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n.tr("Описание"), 200, 264, false));
-        root.add(classifier);
+        collapsingPanels.add(classifier);
+        root.add(collapsingPanels);
+
+        final StackPanel stacks =
+                new StackPanel(Arrays.asList(new String[]{
+                        SCMessages.i18n.tr("Первая"),
+                        SCMessages.i18n.tr("Вторая"),
+                        SCMessages.i18n.tr("Третья"),
+                        SCMessages.i18n.tr("Четвертая"),
+                }), 500);
+        stacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            stacks.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        } else {
+            stacks.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
+        }
+        stacks.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
+        stacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        root.add(stacks);
+
+        final StackPanel whiteStacks =
+                new StackPanel(Arrays.asList(new String[]{
+                        SCMessages.i18n.tr("Первая"),
+                        SCMessages.i18n.tr("Вторая"),
+                        SCMessages.i18n.tr("Третья"),
+                        SCMessages.i18n.tr("Четвертая"),
+                }), 500, StackPanel.Type.WHITE);
+        whiteStacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        whiteStacks.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
+        whiteStacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        root.add(whiteStacks);
+
+        stacks.addStackOpenHandler(new StackOpenEvent.Handler() {
+            @Override
+            public void onStackOpened(StackOpenEvent event) {
+                whiteStacks.openStack(event.getIndex(), false);
+            }
+        });
+
+        whiteStacks.addStackOpenHandler(new StackOpenEvent.Handler() {
+            @Override
+            public void onStackOpened(StackOpenEvent event) {
+                stacks.openStack(event.getIndex(), false);
+            }
+        });
 
         return new ArtaScrollPanel(root);
     }

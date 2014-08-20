@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.tabs;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -55,6 +56,8 @@ public class Tabs extends Composite implements HasTabHandlers {
     public Tabs() {
         root = new FlowPanel();
         initWidget(root);
+
+        root.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
 
         tabs = new ArrayList<Tab>();
 

@@ -53,7 +53,7 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
 
         stacks = new ArrayList<Stack>();
 
-        int contentHeight = offsetHeight - (texts.size() * (Constants.STACK_HEIGHT + 1)) - Constants.BORDER_WIDTH;
+        int contentHeight = offsetHeight - (texts.size() * (Constants.STACK_HEIGHT + 1)) - Constants.BORDER_WIDTH * 2;
 
         for (String text : texts) {
             final Stack stack = new Stack(text);

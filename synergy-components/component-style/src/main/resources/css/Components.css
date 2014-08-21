@@ -1269,9 +1269,6 @@ p {
 .stackPanel.white .stack {
     border-color: buttonBG;
 }
-.stackPanel.white .stack.open .title {
-    border-bottom: 1px solid buttonPressed;
-}
 
 @eval stackHeight kz.arta.synergy.components.style.client.Constants.stackHeight();
 .stackPanel .stack .title {
@@ -1298,6 +1295,7 @@ p {
     background-color: #C23A3A;
     display: none;
 }
+
 .stackPanel.white .stack .indicator {
     background-color: #03A2E4;
     right: 0;
@@ -1305,9 +1303,13 @@ p {
 .stackPanel .stack.open {
     border-bottom-style: none;
 }
+.stack.open .title {
+    border-bottom: 1px solid navigatorBG;
+}
 .stackPanel.white .stack.open .title{
     color: textColor2;
     background-color: stackPanelBG;
+    border-bottom-color: buttonPressed;
 }
 .stack.open .indicator {
     display: block;

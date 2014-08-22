@@ -50,6 +50,8 @@ import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.*;
 
+//todo анимация скролла табов
+//todo скролл табов на один таб
 /**
  * User: vsl
  * Date: 23.06.14
@@ -64,7 +66,6 @@ public class ShowCasePanel extends LayoutPanel {
 
     Tree tree;
 
-//    TabLayoutPanel contentPanel;
     TabPanel tabPanel;
 
     private Set<Widget> tabs;
@@ -80,7 +81,6 @@ public class ShowCasePanel extends LayoutPanel {
             currentTheme = Theme.getTheme(Cookies.getCookie("theme"));
         }
 
-//        contentPanel = new TabLayoutPanel(30, Style.Unit.PX);
         tabPanel = new TabPanel();
 
         treeSetUp();
@@ -159,7 +159,6 @@ public class ShowCasePanel extends LayoutPanel {
         ArtaScrollPanel treeScroll = new ArtaScrollPanel(navigationPanel);
         add(titlePanel);
         add(treeScroll);
-//        add(contentPanel);
         add(tabPanel);
 
         setWidgetLeftWidth(treeScroll, 0, Style.Unit.PCT, TREE_WIDTH, Style.Unit.PCT);
@@ -172,7 +171,6 @@ public class ShowCasePanel extends LayoutPanel {
 
         setBorder(treeScroll);
         setBorder(titlePanel);
-//        setBorder(contentPanel);
 
         setSize("100%", "100%");
 
@@ -558,7 +556,17 @@ public class ShowCasePanel extends LayoutPanel {
                 return getTabsPanel();
             }
         });
+        addTreeItem(category3, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Чекбоксы и радиокнопки");
+            }
 
+            @Override
+            public Widget getContentWidget() {
+                return getCheckBoxPanel();
+            }
+        });
 
     }
 
@@ -868,6 +876,40 @@ public class ShowCasePanel extends LayoutPanel {
         });
 
         return new ArtaScrollPanel(root);
+    }
+
+    public Widget getCheckBoxPanel() {
+        FlowPanel root = new FlowPanel();
+        root.getElement().getStyle().setPadding(10, Style.Unit.PX);
+
+        ArtaCheckBox[] checkBoxes = new ArtaCheckBox[] {
+                new ArtaCheckBox(), new ArtaCheckBox(),
+                new ArtaCheckBox(), new ArtaCheckBox()
+        };
+        checkBoxes[3].setEnabled(false);
+
+        ArtaRadioButton[] radios = new ArtaRadioButton[] {
+                new ArtaRadioButton("showCaseRadio"), new ArtaRadioButton("showCaseRadio"),
+                new ArtaRadioButton("showCaseRadio"), new ArtaRadioButton("showCaseRadio")
+        };
+        radios[3].setEnabled(false);
+
+        FlowPanel row1 = new FlowPanel();
+        for (ArtaCheckBox box : checkBoxes) {
+            box.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+            row1.add(box);
+        }
+        FlowPanel row2 = new FlowPanel();
+        row2.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        for (ArtaRadioButton radio : radios) {
+            radio.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+            row2.add(radio);
+        }
+
+        root.add(row1);
+        root.add(row2);
+
+        return root;
     }
 
     /**

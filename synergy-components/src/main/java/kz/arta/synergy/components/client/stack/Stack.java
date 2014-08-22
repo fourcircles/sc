@@ -1,12 +1,10 @@
 package kz.arta.synergy.components.client.stack;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasEnabled;
-import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.util.ArtaHasText;
@@ -45,6 +43,8 @@ public class Stack extends Composite implements HasEnabled, ArtaHasText, HasClic
      */
     private FlowPanel contentPanel;
 
+    SimplePanel contentContainer;
+
     /**
      * @param text текст панели
      */
@@ -66,7 +66,10 @@ public class Stack extends Composite implements HasEnabled, ArtaHasText, HasClic
         contentPanel = new FlowPanel();
         contentPanel.setStyleName(SynergyComponents.resources.cssComponents().stackContent());
 
-        root.add(contentPanel);
+        contentContainer = new SimplePanel(contentPanel);
+        contentContainer.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
+
+        root.add(contentContainer);
 
         close();
     }

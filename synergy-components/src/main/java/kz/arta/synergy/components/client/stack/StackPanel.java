@@ -21,6 +21,7 @@ import java.util.List;
  * Стек-панель
  */
 public class StackPanel extends Composite implements HasStackOpenHandlers {
+    private static final int ANIMATION_DURATION = 500;
     /**
      * Корневая панель
      */
@@ -35,6 +36,7 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
      * Список стек-панелей
      */
     private List<Stack> stacks;
+    private int contentHeight;
 
     /**
      * @param texts текст панелей
@@ -53,7 +55,7 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
 
         stacks = new ArrayList<Stack>();
 
-        int contentHeight = offsetHeight - (texts.size() * (Constants.STACK_HEIGHT + 1)) - Constants.BORDER_WIDTH * 2;
+        contentHeight = offsetHeight - (texts.size() * (Constants.STACK_HEIGHT + 1)) - Constants.BORDER_WIDTH * 2;
 
         for (String text : texts) {
             final Stack stack = new Stack(text);
@@ -91,17 +93,26 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
         openStack(stacks.get(index), fireEvents);
     }
 
+    StackAnimation animation;
     /**
      * Открыть панель
      * @param stack панель
      * @param fireEvents создавать ли события
      */
     public void openStack(Stack stack, boolean fireEvents) {
-        if (openedStack != null) {
-            openedStack.close();
+        if (animation == null) {
+            animation = new StackAnimation(openedStack, stack, contentHeight);
+        } else {
+            if (animation.isRunning()) {
+                animation.cancel();
+            }
+            animation.setClosingStack(openedStack);
+            animation.setOpeningStack(stack);
+            animation.setContentHeight(contentHeight);
         }
+        animation.run(ANIMATION_DURATION);
+
         openedStack = stack;
-        openedStack.open();
         if (fireEvents) {
             fireEvent(new StackOpenEvent(stack, stacks.indexOf(stack)));
         }

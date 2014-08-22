@@ -1393,6 +1393,7 @@ p {
 }
 @sprite .checkbox.disabled input[type=checkbox] + label {
     gwt-image: "checkboxDisabled";
+    cursor: default;
 }
 
 .radio input[type=radio] {
@@ -1412,4 +1413,5 @@ p {
 }
 @sprite .radio.disabled label {
     gwt-image: "radioDisabled";
+    cursor: default;
 }

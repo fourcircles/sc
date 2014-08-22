@@ -148,6 +148,8 @@ public interface CssComponents extends CssResource {
 
     String tab();
     String tabContent();
+    String tabs();
+    String tabsContainer();
 
     String collapsingTitle();
     String collapsingPanel();
@@ -159,4 +161,9 @@ public interface CssComponents extends CssResource {
     String open();
     String stackContent();
     String white();
+
+    String unselectable();
+
+    String checkbox();
+    String radio();
 }

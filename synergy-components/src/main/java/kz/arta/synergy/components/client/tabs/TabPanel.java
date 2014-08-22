@@ -39,12 +39,6 @@ public class TabPanel extends Composite implements HasTabHandlers {
         initWidget(root);
 
         tabs = new Tabs();
-        tabs.getElement().getStyle().setPosition(Style.Position.RELATIVE);
-        if (LocaleInfo.getCurrentLocale().isRTL()) {
-            tabs.getElement().getStyle().setRight(4, Style.Unit.PX);
-        } else {
-            tabs.getElement().getStyle().setLeft(4, Style.Unit.PX);
-        }
         root.add(tabs);
 
         contentPanel = new FlowPanel();

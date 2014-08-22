@@ -18,8 +18,7 @@ import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
-import kz.arta.synergy.components.client.ComboBox;
-import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.*;
 import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.collapsing.CollapsingPanel;
@@ -41,7 +40,6 @@ import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
-import kz.arta.synergy.components.client.stack.*;
 import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
 import kz.arta.synergy.components.client.tabs.TabPanel;
@@ -350,6 +348,33 @@ public class ShowCasePanel extends LayoutPanel {
         return comboBoxPanel;
     }
 
+    public Widget getTabsPanel() {
+        FlowPanel root = new FlowPanel();
+        root.getElement().getStyle().setPadding(10, Style.Unit.PX);
+
+        SimpleButton addTab = new SimpleButton(SCMessages.i18n.tr("Добавить вкладку"));
+
+        root.add(addTab);
+
+        final TabPanel tabPanel = new TabPanel();
+        tabPanel.getElement().getStyle().setPosition(Style.Position.RELATIVE);
+        tabPanel.setWidth("500px");
+        tabPanel.setHeight("300px");
+
+        root.add(tabPanel);
+
+        tabPanel.addTab(SCMessages.i18n.tr("Вкладка") + " 1", new SimplePanel());
+        addTab.addClickHandler(new ClickHandler() {
+            private int tabCount = 2;
+            @Override
+            public void onClick(ClickEvent event) {
+                tabPanel.addTab(SCMessages.i18n.tr("Вкладка") + " " + tabCount++, new SimplePanel());
+            }
+        });
+
+        return root;
+    }
+
     private static class FlowPanel_ extends FlowPanel {
         public FlowPanel_() {
             super();
@@ -522,6 +547,18 @@ public class ShowCasePanel extends LayoutPanel {
                 return getCollapsingPanel();
             }
         });
+        addTreeItem(category3, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Вкладки");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getTabsPanel();
+            }
+        });
+
 
     }
 
@@ -714,7 +751,6 @@ public class ShowCasePanel extends LayoutPanel {
         }
         stacks.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         stacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
-        root.add(stacks);
 
         final StackPanel whiteStacks =
                 new StackPanel(Arrays.asList(new String[]{
@@ -726,12 +762,93 @@ public class ShowCasePanel extends LayoutPanel {
         whiteStacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         whiteStacks.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         whiteStacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+
+        final FlowPanel checkBoxesPanel = new FlowPanel();
+        checkBoxesPanel.setSize("20px", "500px");
+        checkBoxesPanel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        checkBoxesPanel.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            checkBoxesPanel.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        } else {
+            checkBoxesPanel.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
+        }
+        final ArtaCheckBox[] checkBoxes = new ArtaCheckBox[] {
+            new ArtaCheckBox(), new ArtaCheckBox(), new ArtaCheckBox(), new ArtaCheckBox()
+        };
+
+        final ArtaRadioButton[] radioButtons = new ArtaRadioButton[] {
+                new ArtaRadioButton("stacks"), new ArtaRadioButton("stacks"),
+                new ArtaRadioButton("stacks"), new ArtaRadioButton("stacks"),
+        };
+
+        for (int i = 0; i < checkBoxes.length; i++) {
+            final int finalI = i;
+            checkBoxes[i].addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+                @Override
+                public void onValueChange(ValueChangeEvent<Boolean> event) {
+                    stacks.getStacks().get(finalI).setEnabled(event.getValue());
+                    whiteStacks.getStacks().get(finalI).setEnabled(event.getValue());
+                    radioButtons[finalI].setEnabled(event.getValue());
+                }
+            });
+            checkBoxesPanel.add(checkBoxes[i]);
+            checkBoxes[i].getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+            checkBoxes[i].setValue(true, false);
+            checkBoxes[i].getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        }
+        checkBoxes[0].setEnabled(false);
+
+        root.add(checkBoxesPanel);
+        root.add(stacks);
         root.add(whiteStacks);
+
+        FlowPanel radioButtonsPanel = new FlowPanel();
+        radioButtonsPanel.setSize("20px", "500px");
+        radioButtonsPanel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        radioButtonsPanel.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            radioButtonsPanel.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
+        } else {
+            radioButtonsPanel.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        }
+        radioButtonsPanel.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
+
+        for (int i = 0; i < radioButtons.length; i++) {
+            final int finalI = i;
+            radioButtonsPanel.add(radioButtons[i]);
+            radioButtons[i].getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+            radioButtons[i].getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+            radioButtons[i].addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+                @Override
+                public void onValueChange(ValueChangeEvent<Boolean> event) {
+                    stacks.openStack(finalI, false);
+                    whiteStacks.openStack(finalI, false);
+                    for (int j = 0; j < checkBoxes.length; j++) {
+                        if (j != finalI) {
+                            checkBoxes[j].setEnabled(true);
+                        } else {
+                            checkBoxes[j].setEnabled(false);
+                        }
+                    }
+                }
+            });
+        }
+        radioButtons[0].setValue(true, false);
+
+        root.add(radioButtonsPanel);
 
         stacks.addStackOpenHandler(new StackOpenEvent.Handler() {
             @Override
             public void onStackOpened(StackOpenEvent event) {
                 whiteStacks.openStack(event.getIndex(), false);
+                radioButtons[event.getIndex()].setValue(true, false);
+                for (int i = 0; i < checkBoxes.length; i++) {
+                    if (i != event.getIndex()) {
+                        checkBoxes[i].setEnabled(true);
+                    } else {
+                        checkBoxes[i].setEnabled(false);
+                    }
+                }
             }
         });
 
@@ -739,6 +856,14 @@ public class ShowCasePanel extends LayoutPanel {
             @Override
             public void onStackOpened(StackOpenEvent event) {
                 stacks.openStack(event.getIndex(), false);
+                radioButtons[event.getIndex()].setValue(true, false);
+                for (int i = 0; i < checkBoxes.length; i++) {
+                    if (i != event.getIndex()) {
+                        checkBoxes[i].setEnabled(true);
+                    } else {
+                        checkBoxes[i].setEnabled(false);
+                    }
+                }
             }
         });
 

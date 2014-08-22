@@ -87,4 +87,18 @@ public interface ImageResources extends ClientBundle {
 
     @Source("images/magzhan.png")
     ImageResource magzhan();
+
+    @Source("images/tabs/tabs-button-left.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource tabsLeft();
+    @Source("images/tabs/tabs-button-left-over.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource tabsLeftOver();
+    @Source("images/tabs/tabs-button-right.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource tabsRight();
+    @Source("images/tabs/tabs-button-right-over.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource tabsRightOver();
+
 }

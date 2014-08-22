@@ -96,6 +96,7 @@ public class SimpleButton extends ButtonBase implements HasText {
             default:
                 break;
         }
+        addStyleName(SynergyComponents.resources.cssComponents().unselectable());
     }
 
     public Type getType() {

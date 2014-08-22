@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.tabs;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -9,6 +10,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.button.ImageButton;
+import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.tabs.events.HasTabHandlers;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.tabs.events.TabSelectionEvent;
@@ -24,7 +28,11 @@ import java.util.List;
  * Панель на которой расположены только вкладки (без содержимого).
  */
 public class Tabs extends Composite implements HasTabHandlers {
+    private static final int SCROLL_STEP = 60;
+
     static final EventBus innerBus = new SimpleEventBus();
+
+    private FlowPanel rootContainer;
 
     /**
      * Корневая панель
@@ -53,11 +61,20 @@ public class Tabs extends Composite implements HasTabHandlers {
      */
     boolean restoreCloseButton = false;
 
-    public Tabs() {
-        root = new FlowPanel();
-        initWidget(root);
+    /**
+     * Кнопки для скроллинга табов, когда табов слишком много
+     */
+    private ImageButton backButton;
+    private ImageButton forwardButton;
 
-        root.getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
+    public Tabs() {
+        rootContainer = new FlowPanel();
+        initWidget(rootContainer);
+        root = new FlowPanel();
+        rootContainer.add(root);
+
+        root.addStyleName(SynergyComponents.resources.cssComponents().tabs());
+        rootContainer.addStyleName(SynergyComponents.resources.cssComponents().tabsContainer());
 
         tabs = new ArrayList<Tab>();
 
@@ -73,6 +90,50 @@ public class Tabs extends Composite implements HasTabHandlers {
                 closeTab(event.getTab(), true);
             }
         };
+
+        backButton = new ImageButton(ImageResources.IMPL.tabsLeft());
+        forwardButton = new ImageButton(ImageResources.IMPL.tabsRight());
+
+        backButton.getElement().getStyle().setLeft(0, Style.Unit.PX);
+        backButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                root.getElement().setScrollLeft(root.getElement().getScrollLeft() - SCROLL_STEP);
+            }
+        });
+        backButton.addMouseOverHandler(new MouseOverHandler() {
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                backButton.setIcon(ImageResources.IMPL.tabsLeftOver());
+            }
+        });
+        backButton.addMouseOutHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                backButton.setIcon(ImageResources.IMPL.tabsLeft());
+            }
+        });
+
+        forwardButton.getElement().getStyle().setRight(0, Style.Unit.PX);
+        forwardButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                root.getElement().setScrollLeft(root.getElement().getScrollLeft() + SCROLL_STEP);
+            }
+        });
+        forwardButton.addMouseOverHandler(new MouseOverHandler() {
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                forwardButton.setIcon(ImageResources.IMPL.tabsRightOver());
+            }
+        });
+        forwardButton.addMouseOutHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                forwardButton.setIcon(ImageResources.IMPL.tabsRight());
+            }
+        });
+
     }
 
     /**
@@ -110,6 +171,31 @@ public class Tabs extends Composite implements HasTabHandlers {
         if (tabs.size() == 2 && restoreCloseButton) {
             tabs.get(0).setHasCloseButton(true);
             restoreCloseButton = false;
+        }
+
+        checkScrollButtons();
+    }
+
+    private void checkScrollButtons() {
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            root.getElement().getStyle().clearRight();
+        } else {
+            root.getElement().getStyle().clearLeft();
+        }
+        root.getElement().getStyle().clearWidth();
+
+        if (root.getElement().getScrollWidth() > root.getOffsetWidth()) {
+            if (LocaleInfo.getCurrentLocale().isRTL()) {
+                root.getElement().getStyle().setRight(20, Style.Unit.PX);
+            } else {
+                root.getElement().getStyle().setLeft(20, Style.Unit.PX);
+            }
+            root.setWidth(rootContainer.getOffsetWidth() - 20 - 19 + "px");
+            rootContainer.insert(backButton, 0);
+            rootContainer.add(forwardButton);
+        } else {
+            rootContainer.remove(backButton);
+            rootContainer.remove(forwardButton);
         }
     }
 
@@ -216,6 +302,8 @@ public class Tabs extends Composite implements HasTabHandlers {
         if (fireEvents) {
             innerBus.fireEventFromSource(new TabCloseEvent(tab), this);
         }
+
+        checkScrollButtons();
     }
 
     /**

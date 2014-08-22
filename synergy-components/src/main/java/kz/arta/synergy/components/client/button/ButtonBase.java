@@ -27,7 +27,7 @@ import kz.arta.synergy.components.style.client.Constants;
  * Time: 18:20
  * Базовый класс для кнопок
  */
-public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusHandlers, HasEnabled{
+public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusHandlers, HasEnabled, HasAllMouseHandlers{
 
     /**
      * Активна ли кнопка
@@ -146,16 +146,6 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
                 adjustMargins();
             }
         });
-    }
-
-    @Override
-    public HandlerRegistration addClickHandler(ClickHandler handler) {
-        return addHandler(handler, ClickEvent.getType());
-    }
-
-    @Override
-    public HandlerRegistration addFocusHandler(FocusHandler handler) {
-        return addHandler(handler, FocusEvent.getType());
     }
 
     @Override
@@ -336,5 +326,43 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
         return this;
     }
 
+    @Override
+    public HandlerRegistration addClickHandler(ClickHandler handler) {
+        return addHandler(handler, ClickEvent.getType());
+    }
 
+    @Override
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+        return addHandler(handler, FocusEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {
+        return addHandler(handler, MouseDownEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler) {
+        return addHandler(handler, MouseMoveEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
+        return addHandler(handler, MouseOutEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
+        return addHandler(handler, MouseOverEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addMouseUpHandler(MouseUpHandler handler) {
+        return addHandler(handler, MouseUpEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
+        return addHandler(handler, MouseWheelEvent.getType());
+    }
 }

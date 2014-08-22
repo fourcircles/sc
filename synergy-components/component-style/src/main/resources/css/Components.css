@@ -101,6 +101,15 @@
 @def stackPanelBG #f1f1f1;
 @def panelBG #f8f8f8;
 
+/*Это не работает для ie9 - пока там выделяется все*/
+.unselectable {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .buttonSimple, .approveButton, .declineButton, .dropDownButton {
     height: buttonHeight;
     line-height: buttonHeight;
@@ -1131,6 +1140,37 @@ p {
     width: 100%;
 }
 
+.tabs{
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    position: relative;
+}
+.tabsContainer{
+    position: absolute;
+    left: 4px;
+    right: 6px;
+
+}
+.tabsContainer > .buttonSimple {
+    position: absolute;
+    top: 0px;
+    z-index: 9;
+
+    min-width: 17px;
+    top: 1px;
+    height: 29px;
+
+    border-radius: 0px;
+}
+.tabsContainer > .buttonSimple:first-child {
+    border-top-left-radius: 4px;
+}
+.tabsContainer > .buttonSimple:last-child {
+    border-top-right-radius: 4px;
+}
+
 @eval tabMaxWidth kz.arta.synergy.components.style.client.Constants.tabMaxWidth();
 @eval tabHeight kz.arta.synergy.components.style.client.Constants.tabHeight();
 .tab{
@@ -1259,7 +1299,7 @@ p {
 }
 
 
-.stackPanel .stack {
+.stack {
     width: 291px;
     position: relative;
 }
@@ -1271,7 +1311,7 @@ p {
 }
 
 @eval stackHeight kz.arta.synergy.components.style.client.Constants.stackHeight();
-.stackPanel .stack .title {
+.stack .title {
     cursor: pointer;
     height: stackHeight;
     line-height: stackHeight;
@@ -1282,7 +1322,7 @@ p {
     background-color: mainBG;
 }
 .stackPanel.white .stack .title {
-    color: textColor1;
+    color: stackPanelText2;
     background-color: whiteBG;
 }
 
@@ -1305,6 +1345,7 @@ p {
 }
 .stack.open .title {
     border-bottom: 1px solid navigatorBG;
+    color: whiteBG;
 }
 .stackPanel.white .stack.open .title{
     color: textColor2;
@@ -1314,12 +1355,12 @@ p {
 .stack.open .indicator {
     display: block;
 }
-.stack.disabled {
+.stack.disabled .title {
     color: stackPanelText2;
     cursor: default;
 }
 .stackPanel.white .stack.disabled .title {
-    color: stackPanelText2;
+    color: buttonPressed;
 }
 
 .stack .stackContent {
@@ -1335,4 +1376,40 @@ p {
     display: block;
 }
 
+.checkbox input[type=checkbox] {
+    display: none;
+}
+@sprite .checkbox label{
+    gwt-image: "checkboxOff";
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
 
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .checkbox input[type=checkbox]:checked + label {
+    gwt-image: "checkboxOn";
+}
+@sprite .checkbox.disabled input[type=checkbox] + label {
+    gwt-image: "checkboxDisabled";
+}
+
+.radio input[type=radio] {
+    display: none;
+}
+@sprite .radio label {
+    gwt-image: "radioOff";
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+
+    display:inline-block;
+    vertical-align: middle;
+}
+@sprite .radio input[type=radio]:checked + label {
+    gwt-image: "radioOn";
+}
+@sprite .radio.disabled label {
+    gwt-image: "radioDisabled";
+}

@@ -21,7 +21,7 @@ import java.util.List;
  * Стек-панель
  */
 public class StackPanel extends Composite implements HasStackOpenHandlers {
-    private static final int ANIMATION_DURATION = 500;
+    private static final int ANIMATION_DURATION = 250;
     /**
      * Корневая панель
      */
@@ -100,6 +100,10 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
      * @param fireEvents создавать ли события
      */
     public void openStack(Stack stack, boolean fireEvents) {
+        if (openedStack == stack) {
+            return;
+        }
+
         if (animation == null) {
             animation = new StackAnimation(openedStack, stack, contentHeight);
         } else {
@@ -110,6 +114,7 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
             animation.setOpeningStack(stack);
             animation.setContentHeight(contentHeight);
         }
+
         animation.run(ANIMATION_DURATION);
 
         openedStack = stack;

@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.tabs;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
@@ -28,10 +29,16 @@ import java.util.List;
  * Панель на которой расположены только вкладки (без содержимого).
  */
 public class Tabs extends Composite implements HasTabHandlers {
-    private static final int SCROLL_STEP = 60;
+    /**
+     * Продолжительность анимации
+     */
+    private static final int SCROLL_DURATION = 200;
 
     static final EventBus innerBus = new SimpleEventBus();
 
+    /**
+     * Панель в которую добавляются кнопки для скролла
+     */
     private FlowPanel rootContainer;
 
     /**
@@ -67,6 +74,11 @@ public class Tabs extends Composite implements HasTabHandlers {
     private ImageButton backButton;
     private ImageButton forwardButton;
 
+    /**
+     * Анимация для скролла
+     */
+    private ScrollAnimation scroll;
+
     public Tabs() {
         rootContainer = new FlowPanel();
         initWidget(rootContainer);
@@ -98,7 +110,7 @@ public class Tabs extends Composite implements HasTabHandlers {
         backButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                root.getElement().setScrollLeft(root.getElement().getScrollLeft() - SCROLL_STEP);
+                scrollTo(getPreviousHiddenTab(), false);
             }
         });
         backButton.addMouseOverHandler(new MouseOverHandler() {
@@ -118,7 +130,7 @@ public class Tabs extends Composite implements HasTabHandlers {
         forwardButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                root.getElement().setScrollLeft(root.getElement().getScrollLeft() + SCROLL_STEP);
+                scrollTo(getNextHiddenTab(), true);
             }
         });
         forwardButton.addMouseOverHandler(new MouseOverHandler() {
@@ -134,6 +146,62 @@ public class Tabs extends Composite implements HasTabHandlers {
             }
         });
 
+    }
+
+    /**
+     * Возвращает первый таб, часть которого скрыта за правым краем панели табов.
+     * Если такого нет - возвращает последний.
+     */
+    private Tab getNextHiddenTab() {
+        int scollStart = root.getAbsoluteLeft();
+        int scrollEnd = scollStart + root.getOffsetWidth();
+
+        for (Tab tab : tabs) {
+            if (tab.getAbsoluteLeft() + tab.getOffsetWidth() > scrollEnd) {
+                return tab;
+            }
+        }
+        return tabs.get(tabs.size() - 1);
+    }
+
+    /**
+     * Возвращает последний там, часть которого скрыта за левым краем панели табов.
+     * Если такого нет - возвращает первый.
+     */
+    private Tab getPreviousHiddenTab() {
+        Tab previous = tabs.get(0);
+        for (Tab tab : tabs) {
+            if (tab.getAbsoluteLeft() >= root.getAbsoluteLeft()) {
+                return previous;
+            }
+            previous = tab;
+        }
+        return tabs.get(0);
+    }
+
+    private void scrollTo(int left) {
+        if (scroll == null) {
+            scroll = new ScrollAnimation();
+        }
+        scroll.scrollTo(left);
+    }
+
+    private void scrollTo(Tab targetTab, boolean direction) {
+        int leftOffset = 0;
+        for (Tab tab : tabs) {
+            if (tab == targetTab) {
+                break;
+            }
+            leftOffset += tab.getOffsetWidth();
+        }
+
+        if (direction) {
+            //правая граница таба - правая граница таб панели
+            scrollTo(leftOffset + targetTab.getOffsetWidth() - root.getOffsetWidth());
+        } else {
+            //левая граница таба - левая граница таб панели
+            scrollTo(leftOffset);
+        }
     }
 
     /**
@@ -262,6 +330,8 @@ public class Tabs extends Composite implements HasTabHandlers {
             }
         }
 
+        selectedTab.getElement().scrollIntoView();
+
         if (fireEvents) {
             innerBus.fireEventFromSource(new TabSelectionEvent(tab), this);
         }
@@ -321,5 +391,36 @@ public class Tabs extends Composite implements HasTabHandlers {
     @Override
     public HandlerRegistration addTabCloseHandler(TabCloseEvent.Handler handler) {
         return innerBus.addHandlerToSource(TabCloseEvent.TYPE, this, handler);
+    }
+
+    /**
+     * Анимация для скролла табов
+     */
+    private class ScrollAnimation extends Animation {
+        /**
+         * Старое значение scrollLeft
+         */
+        private int oldLeft;
+
+        /**
+         * Значение scrollLeft к которому скроллится
+         */
+        private int newLeft;
+
+        @Override
+        protected void onUpdate(double progress) {
+            int change = (int) ((newLeft - oldLeft) * progress);
+            root.getElement().setScrollLeft(oldLeft + change);
+        }
+
+        /**
+         * Скроллит панель табов к заданному значению
+         * @param left значение scrollLeft к которому скроллит
+         */
+        public void scrollTo(int left) {
+            this.oldLeft = root.getElement().getScrollLeft();
+            this.newLeft = left;
+            run(SCROLL_DURATION);
+        }
     }
 }

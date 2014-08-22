@@ -50,8 +50,8 @@ import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.*;
 
-//todo анимация скролла табов
-//todo скролл табов на один таб
+//todo анимация коллапсинг панели
+
 /**
  * User: vsl
  * Date: 23.06.14
@@ -418,11 +418,13 @@ public class ShowCasePanel extends LayoutPanel {
     private void treeSetUp() {
         tree = new Tree();
 
-        TreeItem category1 = addCategory(SCMessages.i18n.tr("Кнопки"));
-        TreeItem category2 = addCategory(SCMessages.i18n.tr("Диалог"));
-        TreeItem category3 = addCategory(SCMessages.i18n.tr("Поля ввода"));
+        TreeItem basicComponents = new TreeItem(new Label(SCMessages.i18n.tr("Базовые компоненты")));
+        tree.addItem(basicComponents);
 
-        addTreeItem(category1, new LoadPanel() {
+        TreeItem buttons = new TreeItem(new Label(SCMessages.i18n.tr("Кнопки")));
+        basicComponents.addItem(buttons);
+
+        addTreeItem(buttons, new LoadPanel() {
             @Override
             public String getText() {
                 return SCMessages.i18n.tr("Простая кнопка");
@@ -433,7 +435,7 @@ public class ShowCasePanel extends LayoutPanel {
                 return getSimpleButtonPanel();
             }
         });
-        addTreeItem(category1, new LoadPanel() {
+        addTreeItem(buttons, new LoadPanel() {
             @Override
             public String getText() {
                 return SCMessages.i18n.tr("Кнопка с иконкой");
@@ -444,10 +446,10 @@ public class ShowCasePanel extends LayoutPanel {
                 return getIconButtonPanel();
             }
         });
-        addTreeItem(category1, new LoadPanel() {
+        addTreeItem(buttons, new LoadPanel() {
             @Override
             public String getText() {
-                return SCMessages.i18n.tr("Кнопки");
+                return SCMessages.i18n.tr("Цветные кнопки");
             }
 
             @Override
@@ -455,7 +457,7 @@ public class ShowCasePanel extends LayoutPanel {
                 return getColorButtonPanel();
             }
         });
-        addTreeItem(category1, new LoadPanel() {
+        addTreeItem(buttons, new LoadPanel() {
             @Override
             public String getText() {
                 return SCMessages.i18n.tr("Групповые кнопки");
@@ -467,7 +469,94 @@ public class ShowCasePanel extends LayoutPanel {
             }
         });
 
-        addTreeItem(category2, new LoadPanel() {
+        TreeItem fields = new TreeItem(new Label(SCMessages.i18n.tr("Поля")));
+        basicComponents.addItem(fields);
+
+        addTreeItem(fields, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Поле ввода текста");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getTextInputs();
+            }
+        });
+        addTreeItem(fields, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Поле с тегами");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getTagInputs();
+            }
+        });
+        addTreeItem(fields, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Комбобокс");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getComboboxPanel();
+            }
+        });
+
+        addTreeItem(basicComponents, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Коллапсинг-панели");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getCollapsingPanel();
+            }
+        });
+        addTreeItem(basicComponents, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Вкладки");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getTabsPanel();
+            }
+        });
+        addTreeItem(basicComponents, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Чекбоксы и радиокнопки");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getCheckBoxPanel();
+            }
+        });
+
+        TreeItem complexComponents = new TreeItem(new Label(SCMessages.i18n.tr("Сложные компоненты")));
+        tree.addItem(complexComponents);
+        addTreeItem(complexComponents, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Дата/время");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getDateInputs();
+            }
+        });
+
+        TreeItem shell = new TreeItem(new Label(SCMessages.i18n.tr("Оболочка интерфейса")));
+        tree.addItem(shell);
+        addTreeItem(shell, new LoadPanel() {
             @Override
             public String getText() {
                 return SCMessages.i18n.tr("Диалог без кнопок");
@@ -478,7 +567,7 @@ public class ShowCasePanel extends LayoutPanel {
                 return setUpDialogs(false);
             }
         });
-        addTreeItem(category2, new LoadPanel() {
+        addTreeItem(shell, new LoadPanel() {
             @Override
             public String getText() {
                 return SCMessages.i18n.tr("Диалог с кнопками");
@@ -490,83 +579,7 @@ public class ShowCasePanel extends LayoutPanel {
             }
         });
 
-        addTreeItem(category3, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Поле ввода текста");
-            }
 
-            @Override
-            public Widget getContentWidget() {
-                return getTextInputs();
-            }
-        });
-        addTreeItem(category3, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Поле с тегами");
-            }
-
-            @Override
-            public Widget getContentWidget() {
-                return getTagInputs();
-            }
-        });
-        addTreeItem(category3, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Комбобокс");
-            }
-
-            @Override
-            public Widget getContentWidget() {
-                return getComboboxPanel();
-            }
-        });
-        addTreeItem(category3, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Дата/время");
-            }
-
-            @Override
-            public Widget getContentWidget() {
-                return getDateInputs();
-            }
-        });
-        addTreeItem(category3, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Коллапсинг-панели");
-            }
-
-            @Override
-            public Widget getContentWidget() {
-                return getCollapsingPanel();
-            }
-        });
-        addTreeItem(category3, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Вкладки");
-            }
-
-            @Override
-            public Widget getContentWidget() {
-                return getTabsPanel();
-            }
-        });
-        addTreeItem(category3, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Чекбоксы и радиокнопки");
-            }
-
-            @Override
-            public Widget getContentWidget() {
-                return getCheckBoxPanel();
-            }
-        });
 
     }
 

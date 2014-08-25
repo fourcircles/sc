@@ -50,8 +50,6 @@ import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.*;
 
-//todo анимация коллапсинг панели
-
 /**
  * User: vsl
  * Date: 23.06.14
@@ -356,7 +354,7 @@ public class ShowCasePanel extends LayoutPanel {
 
         final TabPanel tabPanel = new TabPanel();
         tabPanel.getElement().getStyle().setPosition(Style.Position.RELATIVE);
-        tabPanel.setWidth("500px");
+        tabPanel.setWidth("450px");
         tabPanel.setHeight("300px");
 
         root.add(tabPanel);

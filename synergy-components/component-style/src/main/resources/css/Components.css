@@ -1167,9 +1167,16 @@ p {
 .tabsContainer > .buttonSimple:first-child {
     border-top-left-radius: 4px;
 }
+*[dir="rtl"] .tabsContainer > .buttonSimple:first-child {
+    border-top-right-radius: 4px;
+}
 .tabsContainer > .buttonSimple:last-child {
     border-top-right-radius: 4px;
 }
+*[dir="rtl"] .tabsContainer > .buttonSimple:last-child {
+    border-top-left-radius: 4px;
+}
+
 
 @eval tabMaxWidth kz.arta.synergy.components.style.client.Constants.tabMaxWidth();
 @eval tabHeight kz.arta.synergy.components.style.client.Constants.tabHeight();
@@ -1277,10 +1284,38 @@ p {
     line-height: 38px;
 }
 
+.collapsingTitle img {
+    -webkit-transition: -webkit-transform 0.2s;
+
+    -moz-transition: transform 0.2s;
+    -o-transition: transform 0.2s;
+    transition: transform 0.2s;
+
+    -ms-transition: -ms-transform 0.2s;
+}
+.collapsingPanel.open .collapsingTitle img {
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+}
+*[dir="rtl"] .collapsingPanel.open .collapsingTitle img {
+    transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+}
 .collapsingPanel{
     border: 1px buttonBorder solid;
     border-radius: 4px;
     color: textColor2;
+}
+.collapsingContent {
+    display: none;
+    overflow: hidden;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+.collapsingPanel.open .collapsingContent {
+    display: block;
 }
 
 .stackPanel {

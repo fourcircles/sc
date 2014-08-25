@@ -1,6 +1,9 @@
 package kz.arta.synergy.components.client.util;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.useragent.client.UserAgent;
 
 /**
  * User: vsl
@@ -27,5 +30,18 @@ public class Utils {
      */
     public static int getTextWidth(ArtaHasText textWidget) {
         return ruler.getTextWidth(textWidget);
+    }
+
+    public static void setRotate(Element element, int degrees) {
+
+        String degreesStr = "rotate(" + degrees + ")";
+        System.out.println(degreesStr);
+        if (Window.Navigator.getUserAgent().toLowerCase().contains("msie")) {
+            element.getStyle().setProperty("MsTransform", degreesStr);
+        } else if (Navigator.isChrome) {
+            element.getStyle().setProperty("WebkitTransform", degreesStr);
+        } else {
+            element.getStyle().setProperty("transform", degreesStr);
+        }
     }
 }

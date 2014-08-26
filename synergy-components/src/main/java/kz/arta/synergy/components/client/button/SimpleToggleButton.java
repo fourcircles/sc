@@ -61,8 +61,7 @@ public class SimpleToggleButton extends SimpleButton {
         } else {
             getElement().getStyle().setMarginLeft(-1, Style.Unit.PX);
         }
-        textLabel.removeStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
-        textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainText());
+        setFontStyle(SynergyComponents.resources.cssComponents().mainText());
         getElement().getStyle().setPosition(Style.Position.RELATIVE);
     }
 
@@ -121,6 +120,7 @@ public class SimpleToggleButton extends SimpleButton {
                     groupPanel.pressedButton.setPressed(true);
                 } else {
                     setPressed(false);
+                    //noinspection NonJREEmulationClassesInClientCode
                     if (groupPanel.isAllowEmptyToggle() && this.equals(groupPanel.pressedButton)) {
                         groupPanel.pressedButton = null;
                     }
@@ -144,15 +144,13 @@ public class SimpleToggleButton extends SimpleButton {
         if (pressed) {
             getElement().getStyle().setZIndex(2);
             MouseStyle.setPressed(this);
-            textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
-            textLabel.removeStyleName(SynergyComponents.resources.cssComponents().mainText());
+            setFontStyle(SynergyComponents.resources.cssComponents().mainTextBold());
         } else {
             if (!over) {
                 getElement().getStyle().setZIndex(1);
             }
             MouseStyle.removeAll(this);
-            textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainText());
-            textLabel.removeStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
+            setFontStyle(SynergyComponents.resources.cssComponents().mainText());
         }
     }
 
@@ -163,13 +161,11 @@ public class SimpleToggleButton extends SimpleButton {
     public void onLoad() {
         super.onLoad();
         if (!isPressed()) {
-            textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
-            textLabel.removeStyleName(SynergyComponents.resources.cssComponents().mainText());
+            setFontStyle(SynergyComponents.resources.cssComponents().mainTextBold());
         }
         setWidth(WidthUtil.getWidth(getElement()) + "px");
         if (!isPressed()) {
-            textLabel.addStyleName(SynergyComponents.resources.cssComponents().mainText());
-            textLabel.removeStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
+            setFontStyle(SynergyComponents.resources.cssComponents().mainText());
         }
     }
 

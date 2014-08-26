@@ -22,6 +22,7 @@ public class SimpleButton extends ButtonBase implements HasText {
     public SimpleButton(String text, ImageResource iconResource, boolean enabled) {
         super(text, iconResource);
         setEnabled(enabled);
+        init();
     }
 
     /**
@@ -97,6 +98,7 @@ public class SimpleButton extends ButtonBase implements HasText {
                 break;
         }
         addStyleName(SynergyComponents.resources.cssComponents().unselectable());
+        setFontStyle(SynergyComponents.resources.cssComponents().mainTextBold());
     }
 
     public Type getType() {
@@ -154,7 +156,7 @@ public class SimpleButton extends ButtonBase implements HasText {
         /**
          * обычная кнопка
          */
-        REGULAR;
+        REGULAR
     }
 
     /**

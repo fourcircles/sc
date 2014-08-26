@@ -174,8 +174,9 @@ public class GradientLabel extends Composite implements HasDirection, ArtaHasTex
      */
     public void setFontStyle(String textStyle) {
         if (this.textStyle != null) {
-            textLabel.removeStyleName(textStyle);
+            textLabel.removeStyleName(this.textStyle);
         }
+        this.textStyle = textStyle;
         textLabel.addStyleName(textStyle);
         adjustGradient();
     }

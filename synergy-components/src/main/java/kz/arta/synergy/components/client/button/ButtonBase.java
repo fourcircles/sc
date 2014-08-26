@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Image;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.label.GradientLabel;
 import kz.arta.synergy.components.client.resources.Messages;
+import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.MouseStyle;
 import kz.arta.synergy.components.client.util.Selection;
 import kz.arta.synergy.components.style.client.Constants;
@@ -27,7 +28,8 @@ import kz.arta.synergy.components.style.client.Constants;
  * Time: 18:20
  * Базовый класс для кнопок
  */
-public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusHandlers, HasEnabled, HasAllMouseHandlers{
+public class ButtonBase extends FlowPanel implements
+        HasClickHandlers, HasFocusHandlers, HasEnabled, HasAllMouseHandlers, ArtaHasText{
 
     /**
      * Активна ли кнопка
@@ -60,7 +62,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
      * Позиция иконки
      */
     public enum IconPosition {
-        LEFT, RIGHT;
+        LEFT, RIGHT
     }
 
     /**
@@ -197,11 +199,7 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
             needRebuild = true;
             textLabel = GWT.create(GradientLabel.class);
 
-            textLabel.setFontStyle(SynergyComponents.resources.cssComponents().mainTextBold());
-            textLabel.addStyleName(SynergyComponents.resources.cssComponents().buttonText());
-
-//            textLabel.getElement().getStyle().setMarginRight(Constants.BUTTON_PADDING, Style.Unit.PX);
-//            textLabel.getElement().getStyle().setMarginLeft(Constants.BUTTON_PADDING, Style.Unit.PX);
+            textLabel.setStyleName(SynergyComponents.resources.cssComponents().buttonText());
 
             Selection.disableTextSelectInternal(getElement());
         }
@@ -364,5 +362,19 @@ public class ButtonBase extends FlowPanel implements HasClickHandlers, HasFocusH
     @Override
     public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
         return addHandler(handler, MouseWheelEvent.getType());
+    }
+
+    @Override
+    public String getFontStyle() {
+        if (textLabel != null) {
+            return textLabel.getFontStyle();
+        } else {
+            return null;
+        }
+
+    }
+
+    public void setFontStyle(String fontStyle) {
+        textLabel.setFontStyle(fontStyle);
     }
 }

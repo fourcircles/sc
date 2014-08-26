@@ -1,5 +1,6 @@
 package kz.arta.sc3.showcase.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -12,6 +13,8 @@ import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.*;
@@ -1102,6 +1105,11 @@ public class ShowCasePanel extends LayoutPanel {
         panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         final TextInput textInput = new TextInput();
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            textInput.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
+        } else {
+            textInput.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
+        }
         textInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         panel.add(textInput);
         textInput.setPlaceHolder(SCMessages.i18n.tr("Необязательное поле"));
@@ -1110,26 +1118,30 @@ public class ShowCasePanel extends LayoutPanel {
         input.setEnabled(false);
         panel.add(input);
         input.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        input.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        input.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
+        input.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
         input.setPlaceHolder(SCMessages.i18n.tr("Неактивное поле"));
 
         final TextInput inputAllow = new TextInput(false);
         panel.add(inputAllow);
         inputAllow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        inputAllow.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        inputAllow.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
+        inputAllow.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
         inputAllow.setPlaceHolder(SCMessages.i18n.tr("Обязательное поле"));
 
         final TextInput widthInput = new TextInput(false);
         panel.add(widthInput);
         widthInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        widthInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        widthInput.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
+        widthInput.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
         widthInput.setPlaceHolder(SCMessages.i18n.tr("Широкое поле ввода"));
         widthInput.setWidth("300px");
 
         final TextInput smallWidthInput = new TextInput(false);
         panel.add(smallWidthInput);
         smallWidthInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        smallWidthInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        smallWidthInput.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
+        smallWidthInput.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
         smallWidthInput.setPlaceHolder(SCMessages.i18n.tr("Маленькое поле ввода"));
         smallWidthInput.setWidth("100px");
 
@@ -1139,6 +1151,11 @@ public class ShowCasePanel extends LayoutPanel {
         searchResultPanel.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
 
         SearchResultInput<String> searchEnabledWithButton = new SearchResultInput<String>(true);
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            searchEnabledWithButton.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
+        } else {
+            searchEnabledWithButton.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
+        }
         DropDownList<String> list = createList(searchEnabledWithButton);
         for (DropDownList.Item item : list.getItems()) {
             item.setIcon(ImageResources.IMPL.magzhan());
@@ -1147,7 +1164,8 @@ public class ShowCasePanel extends LayoutPanel {
         searchResultPanel.add(searchEnabledWithButton);
 
         SearchResultInput<String> searchDisabledWithButton = new SearchResultInput<String>(true);
-        searchDisabledWithButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        searchDisabledWithButton.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
+        searchDisabledWithButton.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
         DropDownList<String> list2 = createList(searchDisabledWithButton);
         for (DropDownList.Item item : list2.getItems()) {
             item.setIcon(ImageResources.IMPL.magzhan());
@@ -1157,7 +1175,8 @@ public class ShowCasePanel extends LayoutPanel {
         searchResultPanel.add(searchDisabledWithButton);
 
         SearchResultInput<String> searchNoButton = new SearchResultInput<String>(false);
-        searchNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        searchNoButton.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
+        searchNoButton.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
         DropDownList<String> list3 = createList(searchNoButton);
         searchNoButton.setList(list3);
         searchResultPanel.add(searchNoButton);
@@ -1356,8 +1375,6 @@ public class ShowCasePanel extends LayoutPanel {
         iconButton8.setContextMenu(menu5);
         return iconButtonPanel;
     }
-
-
 
     /**
      * Цветные кнопки

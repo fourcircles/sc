@@ -354,9 +354,11 @@
     color: border1;
 }
 
-.buttonSimple.disabled img {
-    /*без фона ie странно применяет фильтр прозрачности*/
-    background-color: whiteBG;
+/*без фона ie странно применяет фильтр прозрачности*/
+@if user.agent ie9 {
+    .buttonSimple.disabled img {
+        background-color: whiteBG;
+    }
 }
 
 
@@ -783,6 +785,12 @@
     background-color: buttonBG;
 }
 
+@if user.agent ie9 {
+    .dateInput.disabled .buttonSimple img {
+        background-color: buttonBG;
+    }
+}
+
 .vscroll {
     width: 17px;
     height: 200px;
@@ -1159,14 +1167,18 @@ p {
     left: 4px;
     right: 6px;
 }
+@eval tabScrollButtonWidth kz.arta.synergy.components.style.client.Constants.tabScrollButtonWidth();
 .tabsContainer > .buttonSimple {
     position: absolute;
     top: 0px;
     z-index: 9;
 
-    min-width: 17px;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    min-width: tabScrollButtonWidth;
     top: 1px;
-    height: 29px;
+    height: 31px;
 
     border-radius: 0px;
 }
@@ -1174,12 +1186,14 @@ p {
     border-top-left-radius: 4px;
 }
 *[dir="rtl"] .tabsContainer > .buttonSimple:first-child {
+    border-top-left-radius: 0px;
     border-top-right-radius: 4px;
 }
 .tabsContainer > .buttonSimple:last-child {
     border-top-right-radius: 4px;
 }
 *[dir="rtl"] .tabsContainer > .buttonSimple:last-child {
+    border-top-right-radius: 0px;
     border-top-left-radius: 4px;
 }
 
@@ -1211,9 +1225,9 @@ p {
 
     left: 0px;
     right: 0px;
-    -webkit-transition: left 0.5s, right 0.5s;
-    transition: left 0.5s, right 0.5s;
-    -ms-transition: left 0.5s, right 0.5s;
+    -webkit-transition: left 0.5s ease-out, right 0.5s ease-out;
+    transition: left 0.5s ease-out, right 0.5s ease-out;
+    -ms-transition: left 0.5s ease-out, right 0.5s ease-out;
 }
 .tab img {
     vertical-align: top;
@@ -1432,9 +1446,9 @@ p {
 
 .stackPanel .indicator + div {
     height: 0px;
-    -webkit-transition: height 250ms;
-    transition: height 250ms;
-    -ms-transition: height 250ms;
+    -webkit-transition: height 250ms ease-out;
+    transition: height 250ms ease-out;
+    -ms-transition: height 250ms ease-out;
 }
 
 .checkbox input[type=checkbox] {

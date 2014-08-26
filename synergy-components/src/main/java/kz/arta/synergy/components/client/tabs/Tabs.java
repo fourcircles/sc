@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.tabs;
 
 import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
@@ -18,9 +19,11 @@ import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.tabs.events.HasTabHandlers;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.tabs.events.TabSelectionEvent;
+import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * User: vsl
@@ -78,18 +81,22 @@ public class Tabs extends Composite implements HasTabHandlers {
     /**
      * Анимация для скролла
      */
-    private ScrollAnimation scrollAnimation = new ScrollAnimation();
+    private TabScrollAnimationIE9 offsetAnimationIE9 = new TabScrollAnimationIE9();
 
     /**
      * Текущий оффсет для табов
      */
     private int leftOffset;
-    private boolean hasScrollButtons = false;
+
+    /**
+     * Добавлены ли кнопки для скролла
+     */
+    boolean hasScrollButtons = false;
 
     public Tabs() {
         rootContainer = new FlowPanel();
         initWidget(rootContainer);
-        root = new FlowPanel();
+        root = GWT.create(FlowPanel.class);
         rootContainer.add(root);
 
         root.addStyleName(SynergyComponents.resources.cssComponents().tabs());
@@ -180,7 +187,7 @@ public class Tabs extends Composite implements HasTabHandlers {
      * Видна ли вкладка
      * @param tab вкладка
      */
-    private boolean isVisible(Tab tab) {
+    public boolean isTabVisible(Tab tab) {
         int left = tab.getAbsoluteLeft();
         int right = left + tab.getOffsetWidth();
 
@@ -192,7 +199,7 @@ public class Tabs extends Composite implements HasTabHandlers {
      */
     private Tab getFirstVisible() {
         for (Tab tab : tabs) {
-            if (isVisible(tab)) {
+            if (isTabVisible(tab)) {
                 return tab;
             }
         }
@@ -203,9 +210,11 @@ public class Tabs extends Composite implements HasTabHandlers {
      * Возвращает последнюю видимую вкладку
      */
     private Tab getLastVisible() {
-        for (int i = tabs.size() - 1; i >= 0; i--) {
-            if (isVisible(tabs.get(i))) {
-                return tabs.get(i);
+        ListIterator<Tab> iterator = tabs.listIterator(tabs.size());
+        while (iterator.hasPrevious()) {
+            Tab tab = iterator.previous();
+            if (isTabVisible(tab)) {
+                return tab;
             }
         }
         return null;
@@ -247,7 +256,7 @@ public class Tabs extends Composite implements HasTabHandlers {
      */
     private void offsetBy(int left) {
         if (Window.Navigator.getAppVersion().contains("MSIE")) {
-            scrollAnimation.scrollTo(left);
+            offsetAnimationIE9.scrollTo(left);
         } else {
             for (Tab tab : tabs) {
                 if (LocaleInfo.getCurrentLocale().isRTL()) {
@@ -342,11 +351,11 @@ public class Tabs extends Composite implements HasTabHandlers {
         if (root.getElement().getScrollWidth() > root.getOffsetWidth()) {
             hasScrollButtons = true;
             if (LocaleInfo.getCurrentLocale().isRTL()) {
-                root.getElement().getStyle().setRight(20, Style.Unit.PX);
+                root.getElement().getStyle().setRight(Constants.TAB_SCROLL_BUTTON_WIDTH + 1, Style.Unit.PX);
             } else {
-                root.getElement().getStyle().setLeft(20, Style.Unit.PX);
+                root.getElement().getStyle().setLeft(Constants.TAB_SCROLL_BUTTON_WIDTH + 1, Style.Unit.PX);
             }
-            root.setWidth(rootContainer.getOffsetWidth() - 20 - 19 + "px");
+            root.setWidth(rootContainer.getOffsetWidth() - Constants.TAB_SCROLL_BUTTON_WIDTH * 2 - 1 + "px");
             rootContainer.insert(backButton, 0);
             rootContainer.add(forwardButton);
         } else {
@@ -397,7 +406,7 @@ public class Tabs extends Composite implements HasTabHandlers {
      * Выбрать владку (сделать ее активной).
      * Если события не создаются, то это может привести к расхождению между
      * отображенным содержимым вкладки и выбранной вкладкой.
-     * @param tab вкладка
+     * @param tab вкладка; если null, то уже выделенная вкладка становится невыделенной
      * @param fireEvents создавать ли события
      */
     public void selectTab(Tab tab, boolean fireEvents) {
@@ -409,28 +418,30 @@ public class Tabs extends Composite implements HasTabHandlers {
             selectedTab.setActive(false, false);
         }
         selectedTab = tab;
-        selectedTab.setActive(true, false);
+        if (selectedTab != null) {
+            selectedTab.setActive(true, false);
 
-        int selectedIndex = tabs.indexOf(selectedTab);
-        if (selectedIndex > 0) {
-            if (LocaleInfo.getCurrentLocale().isRTL()) {
-                tabs.get(selectedIndex - 1).getElement().getStyle().setProperty("borderLeftStyle", "hidden");
-            } else {
-                tabs.get(selectedIndex - 1).getElement().getStyle().setProperty("borderRightStyle", "hidden");
+            int selectedIndex = tabs.indexOf(selectedTab);
+            if (selectedIndex > 0) {
+                if (LocaleInfo.getCurrentLocale().isRTL()) {
+                    tabs.get(selectedIndex - 1).getElement().getStyle().setProperty("borderLeftStyle", "hidden");
+                } else {
+                    tabs.get(selectedIndex - 1).getElement().getStyle().setProperty("borderRightStyle", "hidden");
+                }
             }
-        }
 
-        if (selectedTab.getAbsoluteLeft() < root.getAbsoluteLeft()) {
-            //выделяем вкладку, ее левая часть скрыта
-            offsetTo(selectedTab, false);
-        } else if (selectedTab.getAbsoluteLeft() + selectedTab.getOffsetWidth() >
-                root.getAbsoluteLeft() + root.getOffsetWidth()) {
-            //правая часть скрыта
-            offsetTo(selectedTab, true);
-        }
+            if (selectedTab.getAbsoluteLeft() < root.getAbsoluteLeft()) {
+                //выделяем вкладку, ее левая часть скрыта
+                offsetTo(selectedTab, false);
+            } else if (selectedTab.getAbsoluteLeft() + selectedTab.getOffsetWidth() >
+                    root.getAbsoluteLeft() + root.getOffsetWidth()) {
+                //правая часть скрыта
+                offsetTo(selectedTab, true);
+            }
 
-        if (fireEvents) {
-            innerBus.fireEventFromSource(new TabSelectionEvent(tab), this);
+            if (fireEvents) {
+                innerBus.fireEventFromSource(new TabSelectionEvent(tab), this);
+            }
         }
     }
 
@@ -503,9 +514,9 @@ public class Tabs extends Composite implements HasTabHandlers {
     }
 
     /**
-     * Анимация для скролла табов
+     * Анимация для скролла табов (IE9).
      */
-    private class ScrollAnimation extends Animation {
+    private class TabScrollAnimationIE9 extends Animation {
         /**
          * Старое значение scrollLeft
          */

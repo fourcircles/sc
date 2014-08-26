@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.stack;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -14,10 +15,12 @@ import kz.arta.synergy.components.client.util.ArtaHasText;
  * Date: 19.08.14
  * Time: 17:51
  *
- * Стек стек-панели
+ * Одна стек-панель.
  *
+ * Никаких событий не генерирует, вся обработка действий пользователя
+ * в StackPanel. Управляется через open, close.
  */
-public class Stack extends Composite implements HasEnabled, ArtaHasText, HasClickHandlers{
+public class Stack extends Composite implements HasEnabled, ArtaHasText, HasClickHandlers {
     /**
      * Корневая панель
      */
@@ -54,7 +57,8 @@ public class Stack extends Composite implements HasEnabled, ArtaHasText, HasClic
 
         root.setStyleName(SynergyComponents.resources.cssComponents().stack());
 
-        label = new InlineLabel(text);
+        label = GWT.create(InlineLabel.class);
+        label.setText(text);
         label.setStyleName(SynergyComponents.resources.cssComponents().title());
         label.addStyleName(getFontStyle());
         root.add(label);

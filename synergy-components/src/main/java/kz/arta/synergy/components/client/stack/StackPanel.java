@@ -3,7 +3,9 @@ package kz.arta.synergy.components.client.stack;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -20,9 +22,15 @@ import java.util.List;
  * Date: 19.08.14
  * Time: 17:23
  *
- * Стек-панель
+ * Стек-панели
+ *
+ * Генерирует события открытия стек-панелей.
+ * Не может быть состояния, когда закрыты все панели, поэтому по умолчанию открывается
+ * первая панель или это можно указать в конструкторе.
  */
 public class StackPanel extends Composite implements HasStackOpenHandlers {
+
+    EventBus bus = new SimpleEventBus();
     /**
      * Корневая панель
      */
@@ -51,8 +59,9 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
     /**
      * @param texts текст панелей
      * @param offsetHeight общая высота панели
+     * @param initialOpened номер стек-панели открытой в начале
      */
-    public StackPanel(List<String> texts, int offsetHeight) {
+    public StackPanel(List<String> texts, int offsetHeight, int initialOpened) {
         if (texts.size() == 0) {
             throw new UnsupportedOperationException("стек панель не может быть пустой");
         }
@@ -73,15 +82,17 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
             stack.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    if (stack.isEnabled()) {
-                        openStack(stack, true);
-                    }
+                    openStack(stack, true);
                 }
             });
             stacks.add(stack);
             root.add(stack);
         }
-        openStack(0, false);
+        openStack(initialOpened, false);
+    }
+
+    public StackPanel(List<String> texts, int offsetHeight) {
+        this(texts, offsetHeight, 0);
     }
 
     /**
@@ -109,7 +120,7 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
      * @param fireEvents создавать ли события
      */
     public void openStack(Stack stack, boolean fireEvents) {
-        if (openedStack == stack) {
+        if (openedStack == stack || !stack.isEnabled()) {
             return;
         }
         if (Window.Navigator.getAppVersion().contains("MSIE")) {
@@ -136,7 +147,7 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
         }
 
         if (fireEvents) {
-            fireEvent(new StackOpenEvent(stack, stacks.indexOf(stack)));
+            bus.fireEventFromSource(new StackOpenEvent(stack, stacks.indexOf(stack)), this);
         }
     }
 
@@ -144,9 +155,13 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
         return stacks;
     }
 
+    public Stack getOpenedStack() {
+        return openedStack;
+    }
+
     @Override
     public HandlerRegistration addStackOpenHandler(StackOpenEvent.Handler handler) {
-        return addHandler(handler, StackOpenEvent.TYPE);
+        return bus.addHandlerToSource(StackOpenEvent.TYPE, this, handler);
     }
 
     /**

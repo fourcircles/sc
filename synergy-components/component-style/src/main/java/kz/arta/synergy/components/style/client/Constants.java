@@ -73,6 +73,7 @@ public class Constants {
      */
     public static final int TAB_MAX_WIDTH = 200;
     public static final int TAB_HEIGHT = 31;
+    public static final int TAB_SCROLL_BUTTON_WIDTH = 19;
 
     public static final int STACK_HEIGHT = 48;
 
@@ -187,6 +188,9 @@ public class Constants {
     }
     public static String tabHeight() {
         return TAB_HEIGHT + "px";
+    }
+    public static String tabScrollButtonWidth() {
+        return TAB_SCROLL_BUTTON_WIDTH + "px";
     }
 
     public static String stackHeight() {

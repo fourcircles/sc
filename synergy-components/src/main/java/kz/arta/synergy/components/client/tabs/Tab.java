@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.tabs;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -33,7 +34,7 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
     /**
      * Корневая панель
      */
-    private ArtaFlowPanel root;
+    ArtaFlowPanel root;
 
     /**
      * Картинка для закрытия вкладки
@@ -60,8 +61,11 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
      */
     private boolean hasCloseButton;
 
+    /**
+     * @param hasCloseButton имеет ли вкладка кнопку закрыть
+     */
     public Tab(boolean hasCloseButton) {
-        root = new ArtaFlowPanel();
+        root = GWT.create(ArtaFlowPanel.class);
         initWidget(root);
         addStyleName(SynergyComponents.resources.cssComponents().tab());
         addStyleName(getFontStyle());
@@ -69,7 +73,8 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
         label = new GradientLabel(SynergyComponents.resources.cssComponents().mainTextBold());
         label.setHeight(Constants.TAB_HEIGHT - Constants.BORDER_WIDTH * 2 + "px");
 
-        closeImage = new Image(ImageResources.IMPL.dialogCloseButton());
+        closeImage = GWT.create(Image.class);
+        closeImage.setResource(ImageResources.IMPL.dialogCloseButton());
 
         root.add(label);
 
@@ -90,7 +95,7 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
         closeImage.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                bus.fireEventFromSource(new TabCloseEvent(Tab.this), Tab.this);
+                close();
             }
         });
     }
@@ -177,6 +182,13 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
             removeStyleName(SynergyComponents.resources.cssComponents().selected());
             getElement().getStyle().clearBorderStyle();
         }
+    }
+
+    /**
+     * Закрывает вкладку
+     */
+    public void close() {
+        bus.fireEventFromSource(new TabCloseEvent(this), this);
     }
 
     public IsWidget getContent() {

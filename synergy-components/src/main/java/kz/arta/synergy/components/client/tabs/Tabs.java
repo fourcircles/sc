@@ -7,6 +7,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -32,7 +33,7 @@ public class Tabs extends Composite implements HasTabHandlers {
     /**
      * Продолжительность анимации
      */
-    private static final int SCROLL_DURATION = 200;
+    private static final int SCROLL_DURATION = 500;
 
     static final EventBus innerBus = new SimpleEventBus();
 
@@ -77,7 +78,13 @@ public class Tabs extends Composite implements HasTabHandlers {
     /**
      * Анимация для скролла
      */
-    private ScrollAnimation scroll;
+    private ScrollAnimation scrollAnimation = new ScrollAnimation();
+
+    /**
+     * Текущий оффсет для табов
+     */
+    private int leftOffset;
+    private boolean hasScrollButtons = false;
 
     public Tabs() {
         rootContainer = new FlowPanel();
@@ -103,105 +110,181 @@ public class Tabs extends Composite implements HasTabHandlers {
             }
         };
 
-        backButton = new ImageButton(ImageResources.IMPL.tabsLeft());
-        forwardButton = new ImageButton(ImageResources.IMPL.tabsRight());
-
-        backButton.getElement().getStyle().setLeft(0, Style.Unit.PX);
-        backButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                scrollTo(getPreviousHiddenTab(), false);
-            }
-        });
-        backButton.addMouseOverHandler(new MouseOverHandler() {
-            @Override
-            public void onMouseOver(MouseOverEvent event) {
-                backButton.setIcon(ImageResources.IMPL.tabsLeftOver());
-            }
-        });
-        backButton.addMouseOutHandler(new MouseOutHandler() {
-            @Override
-            public void onMouseOut(MouseOutEvent event) {
-                backButton.setIcon(ImageResources.IMPL.tabsLeft());
-            }
-        });
-
-        forwardButton.getElement().getStyle().setRight(0, Style.Unit.PX);
-        forwardButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                scrollTo(getNextHiddenTab(), true);
-            }
-        });
-        forwardButton.addMouseOverHandler(new MouseOverHandler() {
-            @Override
-            public void onMouseOver(MouseOverEvent event) {
-                forwardButton.setIcon(ImageResources.IMPL.tabsRightOver());
-            }
-        });
-        forwardButton.addMouseOutHandler(new MouseOutHandler() {
-            @Override
-            public void onMouseOut(MouseOutEvent event) {
-                forwardButton.setIcon(ImageResources.IMPL.tabsRight());
-            }
-        });
-
+        backButton = createBackButton();
+        forwardButton = createForwardButton();
     }
 
     /**
-     * Возвращает первый таб, часть которого скрыта за правым краем панели табов.
-     * Если такого нет - возвращает последний.
+     * Кнопка "назад"
      */
-    private Tab getNextHiddenTab() {
-        int scollStart = root.getAbsoluteLeft();
-        int scrollEnd = scollStart + root.getOffsetWidth();
+    ImageButton createBackButton() {
+        final ImageButton button = new ImageButton(ImageResources.IMPL.tabsLeft());
+        button.getElement().getStyle().setLeft(0, Style.Unit.PX);
+        button.addMouseOverHandler(new MouseOverHandler() {
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                button.setIcon(ImageResources.IMPL.tabsLeftOver());
+            }
+        });
+        button.addMouseOutHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                button.setIcon(ImageResources.IMPL.tabsLeft());
+            }
+        });
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (LocaleInfo.getCurrentLocale().isRTL()) {
+                    offsetTo(getNext(getLastVisible()), false);
+                } else {
+                    offsetTo(getPrevious(getFirstVisible()), false);
+                }
+            }
+        });
+        return button;
+    }
 
+    /**
+     * Кнопка "вперед"
+     */
+    ImageButton createForwardButton() {
+        final ImageButton button = new ImageButton(ImageResources.IMPL.tabsRight());
+        button.getElement().getStyle().setRight(0, Style.Unit.PX);
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (LocaleInfo.getCurrentLocale().isRTL()) {
+                    offsetTo(getPrevious(getFirstVisible()), true);
+                } else {
+                    offsetTo(getNext(getLastVisible()), true);
+                }
+            }
+        });
+        button.addMouseOverHandler(new MouseOverHandler() {
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                button.setIcon(ImageResources.IMPL.tabsRightOver());
+            }
+        });
+        button.addMouseOutHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                button.setIcon(ImageResources.IMPL.tabsRight());
+            }
+        });
+        return button;
+    }
+
+    /**
+     * Видна ли вкладка
+     * @param tab вкладка
+     */
+    private boolean isVisible(Tab tab) {
+        int left = tab.getAbsoluteLeft();
+        int right = left + tab.getOffsetWidth();
+
+        return left >= root.getAbsoluteLeft() && right <= root.getAbsoluteLeft() + root.getOffsetWidth();
+    }
+
+    /**
+     * Возвращает первую видимую вкладку
+     */
+    private Tab getFirstVisible() {
         for (Tab tab : tabs) {
-            if (tab.getAbsoluteLeft() + tab.getOffsetWidth() > scrollEnd) {
+            if (isVisible(tab)) {
                 return tab;
             }
         }
-        return tabs.get(tabs.size() - 1);
+        return null;
     }
 
     /**
-     * Возвращает последний там, часть которого скрыта за левым краем панели табов.
-     * Если такого нет - возвращает первый.
+     * Возвращает последнюю видимую вкладку
      */
-    private Tab getPreviousHiddenTab() {
-        Tab previous = tabs.get(0);
-        for (Tab tab : tabs) {
-            if (tab.getAbsoluteLeft() >= root.getAbsoluteLeft()) {
-                return previous;
+    private Tab getLastVisible() {
+        for (int i = tabs.size() - 1; i >= 0; i--) {
+            if (isVisible(tabs.get(i))) {
+                return tabs.get(i);
             }
-            previous = tab;
         }
-        return tabs.get(0);
+        return null;
     }
 
-    private void scrollTo(int left) {
-        if (scroll == null) {
-            scroll = new ScrollAnimation();
+    /**
+     * Возвращает вкладку, следующую за заданной, если такой нет - последнюю.
+     */
+    private Tab getNext(Tab tab) {
+        int index = tabs.indexOf(tab);
+        if (index != -1) {
+            if (index < tabs.size() - 1) {
+                return tabs.get(index + 1);
+            } else {
+                return tab;
+            }
         }
-        scroll.scrollTo(left);
+        return null;
     }
 
-    private void scrollTo(Tab targetTab, boolean direction) {
-        int leftOffset = 0;
+    /**
+     * Возвращает вкладку перед заданной, если такой нет - первую.
+     */
+    private Tab getPrevious(Tab tab) {
+        int index = tabs.indexOf(tab);
+        if (index != -1) {
+            if (index > 0) {
+                return tabs.get(index - 1);
+            } else {
+                return tab;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Смещает все вкладки на заданную величину
+     * @param left величина смещения
+     */
+    private void offsetBy(int left) {
+        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+            scrollAnimation.scrollTo(left);
+        } else {
+            for (Tab tab : tabs) {
+                if (LocaleInfo.getCurrentLocale().isRTL()) {
+                    tab.getElement().getStyle().setRight(-left, Style.Unit.PX);
+                } else {
+                    tab.getElement().getStyle().setLeft(-left, Style.Unit.PX);
+                }
+            }
+        }
+        leftOffset = left;
+    }
+
+    /**
+     * Скроллит панель к данной вкладке двумя разными способами
+     * @param targetTab вкладка
+     * @param direction true - правая граница вкладки у правого края панели,
+     *                  false - левая граница вкладки у левого края панели
+     */
+    private void offsetTo(Tab targetTab, boolean direction) {
+        int beforeTabsWidth = 0;
         for (Tab tab : tabs) {
             if (tab == targetTab) {
                 break;
             }
-            leftOffset += tab.getOffsetWidth();
+            beforeTabsWidth += tab.getOffsetWidth();
+        }
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            if (!direction) {
+                beforeTabsWidth = beforeTabsWidth + targetTab.getOffsetWidth() - root.getOffsetWidth();
+            }
+        } else {
+            if (direction) {
+                beforeTabsWidth = beforeTabsWidth + targetTab.getOffsetWidth() - root.getOffsetWidth();
+            }
         }
 
-        if (direction) {
-            //правая граница таба - правая граница таб панели
-            scrollTo(leftOffset + targetTab.getOffsetWidth() - root.getOffsetWidth());
-        } else {
-            //левая граница таба - левая граница таб панели
-            scrollTo(leftOffset);
-        }
+        offsetBy(beforeTabsWidth);
     }
 
     /**
@@ -230,6 +313,7 @@ public class Tabs extends Composite implements HasTabHandlers {
             tab.setHasCloseButton(false);
         }
 
+        tab.getElement().getStyle().setLeft(-leftOffset, Style.Unit.PX);
         tab.addTabSelectionHandler(selectionHandler);
         tab.addTabCloseHandler(closeHandler);
         root.add(tab);
@@ -244,6 +328,9 @@ public class Tabs extends Composite implements HasTabHandlers {
         checkScrollButtons();
     }
 
+    /**
+     * Добавляет кнопки скрола вкладок если они нужны
+     */
     private void checkScrollButtons() {
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             root.getElement().getStyle().clearRight();
@@ -253,6 +340,7 @@ public class Tabs extends Composite implements HasTabHandlers {
         root.getElement().getStyle().clearWidth();
 
         if (root.getElement().getScrollWidth() > root.getOffsetWidth()) {
+            hasScrollButtons = true;
             if (LocaleInfo.getCurrentLocale().isRTL()) {
                 root.getElement().getStyle().setRight(20, Style.Unit.PX);
             } else {
@@ -262,8 +350,10 @@ public class Tabs extends Composite implements HasTabHandlers {
             rootContainer.insert(backButton, 0);
             rootContainer.add(forwardButton);
         } else {
+            hasScrollButtons = false;
             rootContainer.remove(backButton);
             rootContainer.remove(forwardButton);
+            offsetBy(0);
         }
     }
 
@@ -330,7 +420,14 @@ public class Tabs extends Composite implements HasTabHandlers {
             }
         }
 
-        selectedTab.getElement().scrollIntoView();
+        if (selectedTab.getAbsoluteLeft() < root.getAbsoluteLeft()) {
+            //выделяем вкладку, ее левая часть скрыта
+            offsetTo(selectedTab, false);
+        } else if (selectedTab.getAbsoluteLeft() + selectedTab.getOffsetWidth() >
+                root.getAbsoluteLeft() + root.getOffsetWidth()) {
+            //правая часть скрыта
+            offsetTo(selectedTab, true);
+        }
 
         if (fireEvents) {
             innerBus.fireEventFromSource(new TabSelectionEvent(tab), this);
@@ -374,6 +471,18 @@ public class Tabs extends Composite implements HasTabHandlers {
         }
 
         checkScrollButtons();
+
+        if (hasScrollButtons) {
+            Tab lastTab = tabs.get(tabs.size() - 1);
+            if (LocaleInfo.getCurrentLocale().isRTL()) {
+                if (lastTab.getAbsoluteLeft() > root.getAbsoluteLeft()) {
+                    offsetTo(lastTab, false);
+                }
+            } else if (lastTab.getAbsoluteLeft() + lastTab.getOffsetWidth() <
+                    root.getAbsoluteLeft() + root.getOffsetWidth()) {
+                offsetTo(lastTab, true);
+            }
+        }
     }
 
     /**
@@ -409,8 +518,11 @@ public class Tabs extends Composite implements HasTabHandlers {
 
         @Override
         protected void onUpdate(double progress) {
-            int change = (int) ((newLeft - oldLeft) * progress);
-            root.getElement().setScrollLeft(oldLeft + change);
+            double change = (newLeft - oldLeft) * progress;
+
+            for (Tab tab : tabs) {
+                tab.getElement().getStyle().setLeft(oldLeft + change, Style.Unit.PX);
+            }
         }
 
         /**
@@ -418,8 +530,8 @@ public class Tabs extends Composite implements HasTabHandlers {
          * @param left значение scrollLeft к которому скроллит
          */
         public void scrollTo(int left) {
-            this.oldLeft = root.getElement().getScrollLeft();
-            this.newLeft = left;
+            this.oldLeft = -leftOffset;
+            this.newLeft = -left;
             run(SCROLL_DURATION);
         }
     }

@@ -1,8 +1,10 @@
 package kz.arta.synergy.components.client.stack;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -21,7 +23,6 @@ import java.util.List;
  * Стек-панель
  */
 public class StackPanel extends Composite implements HasStackOpenHandlers {
-    private static final int ANIMATION_DURATION = 250;
     /**
      * Корневая панель
      */
@@ -36,7 +37,16 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
      * Список стек-панелей
      */
     private List<Stack> stacks;
+
+    /**
+     * Высота контента
+     */
     private int contentHeight;
+
+    /**
+     * Анимация для ie9
+     */
+    private StackAnimationIE9 ie9Animation;
 
     /**
      * @param texts текст панелей
@@ -93,7 +103,6 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
         openStack(stacks.get(index), fireEvents);
     }
 
-    StackAnimation animation;
     /**
      * Открыть панель
      * @param stack панель
@@ -103,21 +112,29 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
         if (openedStack == stack) {
             return;
         }
-
-        if (animation == null) {
-            animation = new StackAnimation(openedStack, stack, contentHeight);
-        } else {
-            if (animation.isRunning()) {
-                animation.cancel();
+        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+            if (ie9Animation == null) {
+                ie9Animation = new StackAnimationIE9(contentHeight);
+            } else {
+                if (ie9Animation.isRunning()) {
+                    ie9Animation.cancel();
+                }
             }
-            animation.setClosingStack(openedStack);
-            animation.setOpeningStack(stack);
-            animation.setContentHeight(contentHeight);
+            ie9Animation.setClosingStack(openedStack);
+            ie9Animation.setOpeningStack(stack);
+
+            ie9Animation.openStack(openedStack, stack);
+            openedStack = stack;
+        } else {
+            if (openedStack != null) {
+                openedStack.close();
+                openedStack.contentContainer.getElement().getStyle().clearHeight();
+            }
+            openedStack = stack;
+            openedStack.open();
+            openedStack.contentContainer.getElement().getStyle().setHeight(contentHeight, Style.Unit.PX);
         }
 
-        animation.run(ANIMATION_DURATION);
-
-        openedStack = stack;
         if (fireEvents) {
             fireEvent(new StackOpenEvent(stack, stacks.indexOf(stack)));
         }

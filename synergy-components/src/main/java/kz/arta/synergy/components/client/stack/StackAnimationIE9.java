@@ -2,16 +2,20 @@ package kz.arta.synergy.components.client.stack;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Style;
-import kz.arta.synergy.components.client.SynergyComponents;
 
 /**
  * User: vsl
  * Date: 22.08.14
  * Time: 11:21
  *
- * Анимация для открытия-закрытия стек-панелей
+ * Анимация для открытия-закрытия стек-панелей (IE9)
  */
-public class StackAnimation extends Animation {
+public class StackAnimationIE9 extends Animation {
+    /**
+     * Продолжительность анимации
+     */
+    private static final int DURATION = 250;
+
     /**
      * Закрывающаяся панель
      */
@@ -27,28 +31,30 @@ public class StackAnimation extends Animation {
      */
     private int contentHeight;
 
-    public StackAnimation(Stack closingStack, Stack openingStack, int contentHeight) {
-        this.closingStack = closingStack;
-        this.openingStack = openingStack;
+    /**
+     * @param contentHeight высота контента
+     */
+    public StackAnimationIE9(int contentHeight) {
         this.contentHeight = contentHeight;
     }
 
     @Override
     protected void onUpdate(double progress) {
-        int height = (int) (contentHeight * progress);
+        int openingHeight = (int) (contentHeight * progress);
 
         if (closingStack != null) {
-            closingStack.contentContainer.setHeight(contentHeight - height + "px");
+            closingStack.contentContainer.setHeight(contentHeight - openingHeight + "px");
         }
         if (openingStack != null) {
-            openingStack.contentContainer.setHeight(height + "px");
+            openingStack.contentContainer.setHeight(openingHeight + "px");
         }
     }
 
     @Override
     protected void onComplete() {
         super.onComplete();
-        cleanUp();
+        closingStack.contentContainer.getElement().getStyle().clearHeight();
+        openingStack.contentContainer.getElement().getStyle().setHeight(contentHeight, Style.Unit.PX);
     }
 
     @Override
@@ -61,7 +67,6 @@ public class StackAnimation extends Animation {
         if (closingStack != null) {
             closingStack.close();
             closingStack.contentContainer.setHeight(contentHeight + "px");
-            closingStack.getPanel().getElement().getStyle().setDisplay(Style.Display.BLOCK);
         }
     }
 
@@ -74,7 +79,6 @@ public class StackAnimation extends Animation {
         }
         if (closingStack != null) {
             closingStack.contentContainer.getElement().getStyle().clearHeight();
-            closingStack.getPanel().getElement().getStyle().clearDisplay();
         }
     }
 
@@ -94,5 +98,16 @@ public class StackAnimation extends Animation {
 
     public void setContentHeight(int contentHeight) {
         this.contentHeight = contentHeight;
+    }
+
+    /**
+     * Закрывает closingStack, открывает openingStack
+     * @param closingStack панель, которую надо закрыть
+     * @param openingStack панель, которую надо открыть
+     */
+    public void openStack(Stack closingStack, Stack openingStack) {
+        this.closingStack = closingStack;
+        this.openingStack = openingStack;
+        run(DURATION);
     }
 }

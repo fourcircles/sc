@@ -1,16 +1,15 @@
 package kz.arta.synergy.components.client.collapsing;
 
-import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.ArtaHasText;
-import kz.arta.synergy.components.client.util.Utils;
 
 /**
  * User: vsl
@@ -57,15 +56,13 @@ public class CollapsingPanel extends Composite implements ArtaHasText {
     private final SimplePanel contentContainer;
 
     /**
-     * Изменение высоты
+     * Анимация для ie9
      */
-    private SlideAnimation slideAnimation = new SlideAnimation();
+    private CollapsingAnimationIE9 ie9Animation;
 
     /**
-     * Изменение прозрачности
+     * @param titleText текст для коллапсинг-панели
      */
-    private FadeAnimation fadeAnimation = new FadeAnimation();
-
     public CollapsingPanel(String titleText) {
         FlowPanel root = new FlowPanel();
         initWidget(root);
@@ -82,11 +79,6 @@ public class CollapsingPanel extends Composite implements ArtaHasText {
 
         arrow = new Image();
         arrow.setResource(ImageResources.IMPL.navigationRight());
-//        if (LocaleInfo.getCurrentLocale().isRTL()) {
-//            arrow.setResource(ImageResources.IMPL.navigationLeft());
-//        } else {
-//            arrow.setResource(ImageResources.IMPL.navigationRight());
-//        }
         arrow.getElement().getStyle().setMarginTop(11, Style.Unit.PX);
         arrow.getElement().getStyle().setMarginLeft(14, Style.Unit.PX);
         if (LocaleInfo.getCurrentLocale().isRTL()) {
@@ -103,9 +95,6 @@ public class CollapsingPanel extends Composite implements ArtaHasText {
         title.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (fadeAnimation.isRunning() || slideAnimation.isRunning()) {
-                    return;
-                }
                 if (isOpen) {
                     close();
                 } else {
@@ -126,20 +115,35 @@ public class CollapsingPanel extends Composite implements ArtaHasText {
      * Открыть панель
      */
     public void open() {
-        slideAnimation.open();
         isOpen = true;
         addStyleName(SynergyComponents.resources.cssComponents().open());
-//        arrow.setResource(ImageResources.IMPL.whiteButtonDropdown());
+        contentContainer.getElement().getStyle().setHeight(contentPanel.getElement().getPropertyInt("scrollHeight"), Style.Unit.PX);
+
+        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+            if (ie9Animation == null) {
+                ie9Animation = new CollapsingAnimationIE9(contentContainer,
+                        contentPanel.getElement().getPropertyInt("scrollHeight"), arrow);
+            }
+            ie9Animation.open();
+        }
     }
 
     /**
      * Закрыть панель
      */
     public void close() {
-        fadeAnimation.fadeOut();
         isOpen = false;
         removeStyleName(SynergyComponents.resources.cssComponents().open());
-//        arrow.setResource(ImageResources.IMPL.navigationRight());
+
+        contentContainer.getElement().getStyle().clearHeight();
+
+        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+            if (ie9Animation == null) {
+                ie9Animation = new CollapsingAnimationIE9(contentContainer,
+                        contentPanel.getElement().getPropertyInt("scrollHeight"), arrow);
+            }
+            ie9Animation.close();
+        }
     }
 
     /**
@@ -174,143 +178,4 @@ public class CollapsingPanel extends Composite implements ArtaHasText {
     public void setText(String text) {
         titleLabel.setText(text);
     }
-
-    /**
-     * Постепенное изменение прозрачности
-     */
-    public class FadeAnimation extends Animation {
-        /**
-         * Скрывать или проявлять контент
-         */
-        private boolean open;
-
-        @Override
-        protected void onUpdate(double progress) {
-            if (open) {
-                contentPanel.getElement().getStyle().setOpacity(progress);
-            } else {
-                contentPanel.getElement().getStyle().setOpacity(1.0 - progress);
-            }
-        }
-
-        @Override
-        protected void onStart() {
-            super.onStart();
-            if (!open) {
-                contentContainer.setHeight(contentPanel.getOffsetHeight() + "px");
-                contentPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
-            }
-        }
-
-        @Override
-        protected void onComplete() {
-            super.onComplete();
-            contentPanel.getElement().getStyle().clearOpacity();
-
-            if (!open) {
-                slideAnimation.close();
-            }
-        }
-
-        /**
-         * Проявить контент
-         */
-        public void fadeIn() {
-            open = true;
-            run(300);
-        }
-
-        /**
-         * Скрыть контент
-         */
-        public void fadeOut() {
-            open = false;
-            run(300);
-        }
-    }
-
-    /**
-     * Постепенное изменение размера контента
-     */
-    public class SlideAnimation extends Animation {
-        /**
-         * Выдвигать или задвигать контент
-         */
-        private boolean open;
-
-        /**
-         * Начальная высота
-         */
-        private int startHeight;
-
-        /**
-         * Показать контент
-         */
-        public void open() {
-            open = true;
-            run(300);
-        }
-
-        /**
-         * Скрыть контент
-         */
-        public void close() {
-            open = false;
-            run(300);
-        }
-
-        @Override
-        protected void onStart() {
-            super.onStart();
-            contentPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
-            startHeight = contentPanel.getElement().getPropertyInt("scrollHeight");
-
-            if (open) {
-                contentContainer.getElement().getStyle().setHeight(0, Style.Unit.PX);
-                //скрываем контент перед открытием
-                contentPanel.getElement().getStyle().setOpacity(0);
-
-//                Utils.setRotate(arrow.getElement(), 0);
-            } else {
-                contentPanel.getElement().getStyle().setOpacity(0);
-                contentContainer.getElement().getStyle().setHeight(startHeight, Style.Unit.PX);
-
-//                Utils.setRotate(arrow.getElement(), 90);
-            }
-        }
-
-        private void cleanUp() {
-            contentPanel.getElement().getStyle().clearDisplay();
-            contentContainer.getElement().getStyle().clearHeight();
-            contentPanel.getElement().getStyle().clearOpacity();
-        }
-
-        @Override
-        protected void onCancel() {
-            super.onCancel();
-            cleanUp();
-        }
-
-        @Override
-        protected void onComplete() {
-            super.onComplete();
-            cleanUp();
-
-            if (open) {
-                fadeAnimation.fadeIn();
-            }
-        }
-
-        @Override
-        protected void onUpdate(double progress) {
-            if (open) {
-                contentContainer.getElement().getStyle().setHeight(startHeight * progress, Style.Unit.PX);
-//                Utils.setRotate(arrow.getElement(), (int) (90 * progress));
-            } else {
-                contentContainer.getElement().getStyle().setHeight(startHeight * (1 - progress), Style.Unit.PX);
-//                Utils.setRotate(arrow.getElement(), (int) (90 * (1 - progress)));
-            }
-        }
-    }
-
 }

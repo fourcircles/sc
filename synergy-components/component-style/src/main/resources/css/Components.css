@@ -1141,17 +1141,23 @@ p {
 }
 
 .tabs{
-    max-width: 100%;
+    width: 100%;
     overflow: hidden;
     white-space: nowrap;
     display: inline-block;
     position: relative;
+
+    left: 0px;
+
+    -webkit-transition: left 0.2s, right 0.2s;
+    transition: left 0.2s, right 0.2s;
+    -ms-transition: left 0.2s, right 0.2s;
+
 }
 .tabsContainer{
     position: absolute;
     left: 4px;
     right: 6px;
-
 }
 .tabsContainer > .buttonSimple {
     position: absolute;
@@ -1177,7 +1183,6 @@ p {
     border-top-left-radius: 4px;
 }
 
-
 @eval tabMaxWidth kz.arta.synergy.components.style.client.Constants.tabMaxWidth();
 @eval tabHeight kz.arta.synergy.components.style.client.Constants.tabHeight();
 .tab{
@@ -1195,6 +1200,7 @@ p {
     color: border1;
 
     box-sizing: border-box;
+    -moz-box-sizing: border-box;
     max-width: tabMaxWidth;
     height: 31px;
     line-height: 30px;
@@ -1202,6 +1208,12 @@ p {
     /*все вкладки кроме выбранной имеют этот отступ*/
     margin-top: 1px;
     cursor: default;
+
+    left: 0px;
+    right: 0px;
+    -webkit-transition: left 0.5s, right 0.5s;
+    transition: left 0.5s, right 0.5s;
+    -ms-transition: left 0.5s, right 0.5s;
 }
 .tab img {
     vertical-align: top;
@@ -1286,36 +1298,47 @@ p {
 
 .collapsingTitle img {
     -webkit-transition: -webkit-transform 0.2s;
-
     -moz-transition: transform 0.2s;
-    -o-transition: transform 0.2s;
     transition: transform 0.2s;
+}
+@if !user.agent ie9 {
+    .collapsingPanel.open .collapsingTitle img {
+        transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+    }
+    *[dir="rtl"] .collapsingPanel.open .collapsingTitle img {
+        transform: rotate(-90deg);
+        -webkit-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+    }
+}
 
-    -ms-transition: -ms-transform 0.2s;
-}
-.collapsingPanel.open .collapsingTitle img {
-    transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-}
-*[dir="rtl"] .collapsingPanel.open .collapsingTitle img {
-    transform: rotate(-90deg);
-    -webkit-transform: rotate(-90deg);
-    -ms-transform: rotate(-90deg);
-}
 .collapsingPanel{
     border: 1px buttonBorder solid;
     border-radius: 4px;
     color: textColor2;
 }
 .collapsingContent {
-    display: none;
     overflow: hidden;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
 }
-.collapsingPanel.open .collapsingContent {
-    display: block;
+
+/*Преобразования для закрытия*/
+.collapsingTitle + div {
+    height: 0px;
+    opacity: 0;
+    -webkit-transition: height 200ms 250ms, opacity 200ms;
+    transition: height 200ms 250ms, opacity 200ms;
+    -ms-transition: height 200ms 250ms, opacity 200ms;
+}
+/*Преобразования для открытия*/
+.collapsingPanel.open .collapsingTitle + div {
+    opacity: 1;
+    -webkit-transition: height 200ms, opacity 200ms 250ms;
+    transition:  height 200ms, opacity 200ms 250ms;
+    -ms-transition:  height 200ms, opacity 200ms 250ms;
 }
 
 .stackPanel {
@@ -1400,15 +1423,18 @@ p {
 
 .stack .stackContent {
     background-color: navigatorBG;
-    display: none;
     overflow: hidden;
     position: relative;
 }
 .stackPanel.white .stack .stackContent {
     background-color: panelBG;
 }
-.stack.open .stackContent {
-    display: block;
+
+.stackPanel .indicator + div {
+    height: 0px;
+    -webkit-transition: height 250ms;
+    transition: height 250ms;
+    -ms-transition: height 250ms;
 }
 
 .checkbox input[type=checkbox] {

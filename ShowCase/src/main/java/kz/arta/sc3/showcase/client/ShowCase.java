@@ -5,6 +5,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import kz.arta.synergy.components.client.SynergyComponents;
 
 /**
  * User: user
@@ -17,5 +18,6 @@ public class ShowCase implements EntryPoint {
     public void onModuleLoad() {
         Window.setMargin("0px");
         RootLayoutPanel.get().add(new ShowCasePanel());
+        RootLayoutPanel.get().addStyleName(SynergyComponents.resources.cssComponents().mainText());
     }
 }

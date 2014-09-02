@@ -57,12 +57,12 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
     private StackAnimationIE9 ie9Animation;
 
     /**
-     * @param texts текст панелей
+     * @param stacks текст панелей
      * @param offsetHeight общая высота панели
      * @param initialOpened номер стек-панели открытой в начале
      */
-    public StackPanel(List<String> texts, int offsetHeight, int initialOpened) {
-        if (texts.size() == 0) {
+    public StackPanel(List<Stack> stacks, int offsetHeight, int initialOpened) {
+        if (stacks.size() == 0) {
             throw new UnsupportedOperationException("стек панель не может быть пустой");
         }
 
@@ -72,12 +72,11 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
 
         root.setStyleName(SynergyComponents.resources.cssComponents().stackPanel());
 
-        stacks = new ArrayList<Stack>();
+        this.stacks = new ArrayList<Stack>();
 
-        contentHeight = offsetHeight - (texts.size() * (Constants.STACK_HEIGHT + 1)) - Constants.BORDER_WIDTH * 2;
+        contentHeight = offsetHeight - (stacks.size() * (Constants.STACK_HEIGHT + 1)) - Constants.BORDER_WIDTH * 2;
 
-        for (String text : texts) {
-            final Stack stack = new Stack(text);
+        for (final Stack stack : stacks) {
             stack.setContentHeight(contentHeight);
             stack.addClickHandler(new ClickHandler() {
                 @Override
@@ -85,23 +84,67 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
                     openStack(stack, true);
                 }
             });
-            stacks.add(stack);
+            this.stacks.add(stack);
             root.add(stack);
         }
         openStack(initialOpened, false);
     }
 
-    public StackPanel(List<String> texts, int offsetHeight) {
-        this(texts, offsetHeight, 0);
+    public StackPanel(List<Stack> stacks, int offsetHeight) {
+        this(stacks, offsetHeight, 0);
     }
 
     /**
      * @param type тип панели (белая или черная)
      */
-    public StackPanel(List<String> texts, int offsetHeight, Type type) {
-        this(texts, offsetHeight);
+    public StackPanel(List<Stack> stacks, int offsetHeight, Type type) {
+        this(stacks, offsetHeight);
         if (type == Type.WHITE) {
             root.addStyleName(SynergyComponents.resources.cssComponents().white());
+        }
+    }
+
+    /**
+     * Добавляет новый стек на заданную позицию
+     * Т. к. высота стек-панель статична и задается при создании возможна ситуация,
+     * когда места для контента не останется.
+     * @param newStack стек
+     * @param beforeIndex позиция
+     */
+    public void insertStack(final Stack newStack, int beforeIndex) {
+        if (beforeIndex < 0 || beforeIndex > stacks.size() - 1) {
+            return;
+        }
+        newStack.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                openStack(newStack, true);
+            }
+        });
+        stacks.add(beforeIndex, newStack);
+        root.insert(newStack, beforeIndex);
+        contentHeight -= Constants.STACK_HEIGHT;
+
+        for (Stack stack : stacks) {
+            stack.setContentHeight(contentHeight);
+        }
+    }
+
+    /**
+     * Удаляет стек из стекпанели
+     * @param oldStack стек, который надо убрать
+     */
+    public void removeStack(Stack oldStack) {
+        //не разрешаем удалять последний стек
+        if (!stacks.contains(oldStack) || stacks.size() < 1) {
+            return;
+        }
+        stacks.remove(oldStack);
+        root.remove(oldStack);
+        contentHeight += Constants.STACK_HEIGHT;
+
+        for (Stack stack : stacks) {
+            stack.setContentHeight(contentHeight);
         }
     }
 

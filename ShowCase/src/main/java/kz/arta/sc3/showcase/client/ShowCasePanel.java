@@ -1,6 +1,5 @@
 package kz.arta.sc3.showcase.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -13,15 +12,16 @@ import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
-import kz.arta.synergy.components.client.*;
+import kz.arta.synergy.components.client.ArtaCheckBox;
+import kz.arta.synergy.components.client.ArtaRadioButton;
+import kz.arta.synergy.components.client.ComboBox;
+import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.collapsing.CollapsingPanel;
@@ -43,6 +43,7 @@ import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+import kz.arta.synergy.components.client.stack.Stack;
 import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
 import kz.arta.synergy.components.client.tabs.TabPanel;
@@ -758,13 +759,12 @@ public class ShowCasePanel extends LayoutPanel {
         collapsingPanels.add(classifier);
         root.add(collapsingPanels);
 
-        final StackPanel stacks =
-                new StackPanel(Arrays.asList(new String[]{
-                        SCMessages.i18n.tr("Первая"),
-                        SCMessages.i18n.tr("Вторая"),
-                        SCMessages.i18n.tr("Третья"),
-                        SCMessages.i18n.tr("Четвертая"),
-                }), 500);
+        final StackPanel stacks = new StackPanel(Arrays.asList(new Stack[]{
+                new Stack(SCMessages.i18n.tr("Первая")),
+                new Stack(SCMessages.i18n.tr("Вторая")),
+                new Stack(SCMessages.i18n.tr("Третья")),
+                new Stack(SCMessages.i18n.tr("Четвертая")),
+        }), 500);
         stacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             stacks.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
@@ -774,13 +774,12 @@ public class ShowCasePanel extends LayoutPanel {
         stacks.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         stacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
 
-        final StackPanel whiteStacks =
-                new StackPanel(Arrays.asList(new String[]{
-                        SCMessages.i18n.tr("Первая"),
-                        SCMessages.i18n.tr("Вторая"),
-                        SCMessages.i18n.tr("Третья"),
-                        SCMessages.i18n.tr("Четвертая"),
-                }), 500, StackPanel.Type.WHITE);
+        final StackPanel whiteStacks = new StackPanel(Arrays.asList(new Stack[] {
+                new Stack(SCMessages.i18n.tr("Первая")),
+                new Stack(SCMessages.i18n.tr("Вторая")),
+                new Stack(SCMessages.i18n.tr("Третья")),
+                new Stack(SCMessages.i18n.tr("Четвертая")),
+        }), 500, StackPanel.Type.WHITE);
         whiteStacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         whiteStacks.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         whiteStacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
@@ -1307,6 +1306,61 @@ public class ShowCasePanel extends LayoutPanel {
         simpleButtonPanel.add(simpleButton4);
         simpleButton4.setContextMenu(menuForSimple);
 
+//        Table4<User> table = new Table4<User>(20);
+//        table.addColumn(new Column<User, String>(new ArtaEditCell(null)) {
+//            @Override
+//            public String getValue(User object) {
+//                return object.getFirstName();
+//            }
+//        });
+//        table.addColumn(new Column<User, String>(new ArtaEditCell(null)) {
+//            @Override
+//            public String getValue(User object) {
+//                return object.getLastName();
+//            }
+//        });
+
+//        table.addColumn(new ArtaTextColumn<User>() {
+//            @Override
+//            public String getText(User value) {
+//                return "" + value.getKey();
+//            }
+//        });
+//        table.addColumn(new ArtaTextColumn<User>() {
+//            @Override
+//            public String getText(User value) {
+//                return value.getFirstName();
+//            }
+//        });
+//        table.addColumn(new ArtaTextColumn<User>() {
+//            @Override
+//            public String getText(User value) {
+//                return value.getLastName();
+//            }
+//        });
+//        table.addColumn(new ArtaTextColumn<User>() {
+//            @Override
+//            public String getText(User value) {
+//                return value.getAddress();
+//            }
+//        });
+
+
+//        ListDataProvider<User> provider = new ListDataProvider<User>();
+//        provider.addDataDisplay(table);
+//
+//        List<User> list = provider.getList();
+//        list.add(new User("jon", "jones", "la"));
+//        list.add(new User("jane", "jones", "ny"));
+//        list.add(new User("jack", "black", "sf"));
+//        list.add(new User("jack", "jacksonville", "sf"));
+//        list.add(new User("jack", "black", "sf"));
+//        list.add(new User("jack", "black", "sf"));
+//        list.add(new User("jack", "black", "sf"));
+//        list.add(new User("jack", "black", "sf"));
+//
+//        simpleButtonPanel.add(table);
+//
         return simpleButtonPanel;
     }
 

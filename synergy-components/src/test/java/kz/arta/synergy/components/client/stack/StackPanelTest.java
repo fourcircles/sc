@@ -31,7 +31,11 @@ public class StackPanelTest {
     @GwtMock InlineLabel label;
 
     private StackPanel createStackPanel(int height, String... titles) {
-        return new StackPanel(Arrays.asList(titles), height);
+        Stack[] stacks = new Stack[titles.length];
+        for (int i = 0; i < titles.length; i++) {
+            stacks[i] = new Stack(titles[i]);
+        }
+        return new StackPanel(Arrays.asList(stacks), height);
     }
 
     @Before

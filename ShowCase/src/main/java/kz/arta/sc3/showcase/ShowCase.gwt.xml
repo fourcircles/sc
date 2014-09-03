@@ -6,5 +6,5 @@
 
 
     <entry-point class='kz.arta.sc3.showcase.client.ShowCase'/>
-    <set-configuration-property name="CssResource.style" value="stable-notype"/>
+    <set-configuration-property name="CssResource.style" value="pretty"/>
 </module>

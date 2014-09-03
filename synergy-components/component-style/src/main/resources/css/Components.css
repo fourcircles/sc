@@ -101,6 +101,8 @@
 @def stackPanelBG #f1f1f1;
 @def panelBG #f8f8f8;
 
+@def tableString2 #fbfbfb;
+
 /*Это не работает для ie9 - пока там выделяется все*/
 .unselectable {
     -moz-user-select: -moz-none;
@@ -1490,3 +1492,119 @@ p {
     gwt-image: "radioDisabled";
     cursor: default;
 }
+
+.row.even {
+    background-color: tableString2;
+}
+.row.odd {
+    background-color: whiteBG;
+}
+.table {
+    border: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    table-layout: fixed;
+}
+.table tr {
+    height: 26px;
+}
+.table td {
+    border: 1px dotted buttonPressed;
+    padding: 0 0 0 12px;
+    height: 26px;
+    text-align: left;
+    color: textColor1;
+    border-bottom-style: none;
+    border-left-style: none;
+    overflow: hidden;
+    min-width: 80px;
+}
+.table tr:nth-child\(even\) {
+    background-color: tableString2;
+}
+
+.table tr:first-child td {
+    border-top-style: none;
+}
+.table tr:last-child td {
+    border-bottom-style: none;
+}
+.table tr td:last-child {
+    border-right-style: none;
+}
+.table tr td:first-child {
+    border-left-style: none;
+}
+.table tr:first-child td:first-child {
+    border-top-left-radius: 4px;
+}
+.table tr:first-child td:last-child {
+    border-top-right-radius: 4px;
+}
+.table tr:last-child td:first-child {
+    border-bottom-left-radius: 4px;
+}
+.table tr:last-child td:last-child {
+    border-bottom-right-radius: 4px;
+}
+
+.table td input {
+    height: 25px;
+    outline: none;
+    border: 0;
+    display: inline-block;
+    width: 100%;
+    color: textColor1;
+    padding: 0;
+}
+.table td:hover {
+    background-color: selectColor;
+}
+.table td.selected {
+    background-color: beige;
+}
+.table tr td.edit {
+    border-style: solid;
+    border-bottom-style: none;
+    border-color: border1;
+    background-color: whiteBG;
+    height: 25px;
+}
+.table tr:last-child td.edit {
+    border-bottom-style: solid;
+}
+.table tr td.underEdit {
+    border-top: 1px solid border1;
+}
+
+.tableContainer{
+    overflow: hidden;
+
+    border-radius: 4px;
+    width: 300px;
+
+    border: 1px solid buttonPressed;
+    position: relative;
+}
+.tableInput{
+}
+
+/*Временно*/
+@external gwt-Label;
+.gwt-Label {
+    font-family: DroidSans;
+    font-size:14px;
+}
+
+.tableDivider {
+    height: 100%;
+    width: 5px;
+    cursor: col-resize;
+    position: absolute;
+    top: 0;
+    display: inline-block;
+}
+
+.first{}
+.last{}

@@ -167,4 +167,16 @@ public interface CssComponents extends CssResource {
 
     String checkbox();
     String radio();
+
+    String even();
+    String odd();
+    String table();
+    String tableContainer();
+    String row();
+    String tableInput();
+    String edit();
+    String last();
+    String first();
+    String underEdit();
+    String tableDivider();
 }

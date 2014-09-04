@@ -1469,7 +1469,18 @@ p {
     gwt-image: "checkboxOn";
 }
 @sprite .checkbox.disabled input[type=checkbox] + label {
-    gwt-image: "checkboxDisabled";
+    gwt-image: "checkboxOffDisabled";
+    cursor: default;
+}
+@sprite .checkbox.disabled input[type=checkbox]:checked + label {
+    gwt-image: "checkboxOnDisabled";
+    cursor: default;
+}
+@sprite .checkbox.group input[type=checkbox]:checked + label {
+    gwt-image: "checkboxGroup"
+}
+@sprite .checkbox.group.disabled input[type=checkbox]:checked + label {
+    gwt-image: "checkboxGroupDisabled";
     cursor: default;
 }
 

@@ -18,8 +18,8 @@ import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
-import kz.arta.synergy.components.client.ArtaCheckBox;
-import kz.arta.synergy.components.client.ArtaRadioButton;
+import kz.arta.synergy.components.client.checkbox.ArtaCheckBox;
+import kz.arta.synergy.components.client.checkbox.ArtaRadioButton;
 import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ButtonBase;
@@ -899,6 +899,11 @@ public class ShowCasePanel extends LayoutPanel {
                 new ArtaCheckBox(), new ArtaCheckBox(),
                 new ArtaCheckBox(), new ArtaCheckBox()
         };
+        checkBoxes[1].addStyleName(SynergyComponents.resources.cssComponents().group());
+        checkBoxes[1].setValue(true);
+        checkBoxes[1].setEnabled(false);
+        checkBoxes[2].setEnabled(false);
+        checkBoxes[3].setValue(true);
         checkBoxes[3].setEnabled(false);
 
         ArtaRadioButton[] radios = new ArtaRadioButton[] {
@@ -919,8 +924,27 @@ public class ShowCasePanel extends LayoutPanel {
             row2.add(radio);
         }
 
+        FlowPanel row3 = new FlowPanel();
+        row3.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+
+        ArtaCheckBox[] group = new ArtaCheckBox[] {
+                new ArtaCheckBox(), new ArtaCheckBox(), new ArtaCheckBox(), new ArtaCheckBox()
+        };
+        ArtaCheckBox groupCheckbox = new ArtaCheckBox();
+        groupCheckbox.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        row3.add(groupCheckbox);
+
+        row3.add(groupCheckbox);
+        for (ArtaCheckBox box : group) {
+            groupCheckbox.add(box);
+            row3.add(box);
+            box.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        }
+        group[0].getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+
         root.add(row1);
         root.add(row2);
+        root.add(row3);
 
         return root;
     }

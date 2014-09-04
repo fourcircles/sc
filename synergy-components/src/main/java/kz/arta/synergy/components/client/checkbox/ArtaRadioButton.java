@@ -1,5 +1,7 @@
-package kz.arta.synergy.components.client;
+package kz.arta.synergy.components.client.checkbox;
 
+
+import kz.arta.synergy.components.client.SynergyComponents;
 
 /**
  * User: vsl

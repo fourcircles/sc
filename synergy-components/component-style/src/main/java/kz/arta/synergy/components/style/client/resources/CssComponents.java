@@ -167,6 +167,7 @@ public interface CssComponents extends CssResource {
 
     String checkbox();
     String radio();
+    String group();
 
     String even();
     String odd();

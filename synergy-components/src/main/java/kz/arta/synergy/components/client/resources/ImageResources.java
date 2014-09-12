@@ -103,4 +103,12 @@ public interface ImageResources extends ClientBundle {
     @Source("images/tabs/tabs-button-right-over.png")
     ImageResource tabsRightOver();
 
+    @Source("images/tree/folder.png")
+    ImageResource folder();
+    @Source("images/tree/node-closed.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource nodeClosed();
+    @Source("images/tree/node-open.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource nodeOpen();
 }

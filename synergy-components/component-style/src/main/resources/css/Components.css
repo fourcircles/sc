@@ -1703,3 +1703,43 @@ p {
     position: fixed;
     visibility: hidden;
 }
+
+.tree {
+    border: 1px solid buttonPressed;
+}
+
+.treeItem {
+    cursor: default;
+    color: textColor1;
+    line-height: 19px;
+    white-space: nowrap;
+    margin-left: 24px;
+}
+.treeItem.selected {
+    color: textColor2;
+}
+.treeItem img {
+    cursor: pointer;
+}
+.treeItem img + img {
+    cursor: default;
+    margin-left: 10px;
+}
+.treeItem span {
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+.treeItem {
+    margin-top: 16px;
+}
+.tree > .treeItem:first-child {
+    margin-top: 24px;
+}
+
+.treeItem .content {
+    overflow: hidden;
+    -webkit-transition: height 0.3s;
+    transition: height 0.3s;
+    -ms-transition: height 0.3s;
+}

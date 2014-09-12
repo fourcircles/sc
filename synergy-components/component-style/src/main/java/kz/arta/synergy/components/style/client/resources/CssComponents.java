@@ -179,4 +179,8 @@ public interface CssComponents extends CssResource {
     String headersTable();
     String headerDivider();
     String drag();
+
+    String tree();
+    String treeItem();
+    String content();
 }

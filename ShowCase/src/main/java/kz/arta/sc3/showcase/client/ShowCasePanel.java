@@ -3,8 +3,6 @@ package kz.arta.sc3.showcase.client;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -55,6 +53,9 @@ import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.client.tabs.TabPanel;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.theme.Theme;
+import kz.arta.synergy.components.client.tree.ArtaTree;
+import kz.arta.synergy.components.client.tree.TreeItem;
+import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
 import kz.arta.synergy.components.client.util.PPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -67,12 +68,12 @@ import java.util.*;
  */
 public class ShowCasePanel extends LayoutPanel {
     private final static int TITLE_HEIGHT = 8;
-    private final static int TREE_WIDTH = 15;
+    private final static int TREE_WIDTH = 25;
     private final static int SPACING = 1;
 
     private Theme currentTheme;
 
-    Tree tree;
+    ArtaTree tree;
 
     TabPanel tabPanel;
 
@@ -99,7 +100,6 @@ public class ShowCasePanel extends LayoutPanel {
         navigationPanel.add(tree);
 
         navigationLabel.setWidth("100%");
-        tree.setWidth("100%");
         navigationPanel.setWidth("100%");
         navigationLabel.getElement().getStyle().setProperty("borderBottom", "solid 1px");
 
@@ -164,20 +164,23 @@ public class ShowCasePanel extends LayoutPanel {
         localesCombo.getElement().getStyle().setFloat(Style.Float.RIGHT);
         about.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
-        ArtaScrollPanel treeScroll = new ArtaScrollPanel(navigationPanel);
+//        ArtaScrollPanel treeScroll = new ArtaScrollPanel(navigationPanel);
         add(titlePanel);
-        add(treeScroll);
+        add(tree);
         add(tabPanel);
 
-        setWidgetLeftWidth(treeScroll, 0, Style.Unit.PCT, TREE_WIDTH, Style.Unit.PCT);
-        setWidgetTopBottom(treeScroll, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
+
+        setWidgetLeftWidth(tree, 5, Style.Unit.PX, TREE_WIDTH - 1, Style.Unit.PCT);
+        setWidgetTopBottom(tree, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
+//        setWidgetLeftWidth(treeScroll, 0, Style.Unit.PCT, TREE_WIDTH, Style.Unit.PCT);
+//        setWidgetTopBottom(treeScroll, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
 
         setWidgetRightWidth(tabPanel, 0, Style.Unit.PCT, 100 - TREE_WIDTH - SPACING, Style.Unit.PCT);
         setWidgetTopBottom(tabPanel, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
 
         setWidgetTopBottom(titlePanel, 0, Style.Unit.PCT, 100 - TITLE_HEIGHT, Style.Unit.PCT);
 
-        setBorder(treeScroll);
+//        setBorder(treeScroll);
         setBorder(titlePanel);
 
         setSize("100%", "100%");
@@ -186,12 +189,12 @@ public class ShowCasePanel extends LayoutPanel {
 
         tabs = new HashSet<Widget>();
 
-        tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
+        tree.addTreeSelectionEvent(new TreeSelectionEvent.Handler() {
             @Override
-            public void onSelection(SelectionEvent<TreeItem> event) {
-                TreeItem selectedItem = event.getSelectedItem();
-                if (selectedItem != null && selectedItem.getUserObject() != null) {
-                    ((LoadPanel) selectedItem.getUserObject()).execute();
+            public void onTreeSelection(TreeSelectionEvent event) {
+                Object loadPanel = event.getTreeItem().getUserObject();
+                if (loadPanel != null) {
+                    ((LoadPanel) loadPanel).execute();
                 }
             }
         });
@@ -203,15 +206,6 @@ public class ShowCasePanel extends LayoutPanel {
             }
         });
 
-    }
-
-    public TreeItem addCategory(String text) {
-        TreeItem item = new TreeItem();
-        Label label = new Label(text);
-        item.setWidget(label);
-        tree.addItem(item);
-
-        return item;
     }
 
     private SimpleButton setUpDialog(String title, final DialogSimple dialog) {
@@ -418,19 +412,27 @@ public class ShowCasePanel extends LayoutPanel {
     }
 
     private void addTreeItem(TreeItem parentItem, LoadPanel loadPanel) {
-        TreeItem newItem = new TreeItem();
-        newItem.setText(loadPanel.getText());
-        newItem.setUserObject(loadPanel);
-        parentItem.addItem(newItem);
+        TreeItem item = tree.addItem(parentItem, loadPanel.getText());
+        item.setUserObject(loadPanel);
+
+//        TreeItem newItem = new TreeItem(loadPanel.getText());
+//        newItem.setText(loadPanel.getText());
+//        newItem.setUserObject(loadPanel);
+//        parentItem.addItem(newItem);
     }
+
     private void treeSetUp() {
-        tree = new Tree();
+//        tree = new Tree();
 
-        TreeItem basicComponents = new TreeItem(new Label(SCMessages.i18n.tr("Базовые компоненты")));
-        tree.addItem(basicComponents);
+        tree = new ArtaTree();
 
-        TreeItem buttons = new TreeItem(new Label(SCMessages.i18n.tr("Кнопки")));
-        basicComponents.addItem(buttons);
+//        TreeItem basicComponents = new TreeItem(new Label(SCMessages.i18n.tr("Базовые компоненты")));
+        TreeItem basicComponents = tree.addItem(SCMessages.i18n.tr("Базовые компоненты"));
+
+//        TreeItem buttons = new TreeItem(new Label(SCMessages.i18n.tr("Кнопки")));
+//        basicComponents.addItem(buttons);
+
+        TreeItem buttons = tree.addItem(basicComponents, SCMessages.i18n.tr("Кнопки"));
 
         addTreeItem(buttons, new LoadPanel() {
             @Override
@@ -477,8 +479,9 @@ public class ShowCasePanel extends LayoutPanel {
             }
         });
 
-        TreeItem fields = new TreeItem(new Label(SCMessages.i18n.tr("Поля")));
-        basicComponents.addItem(fields);
+        TreeItem fields = tree.addItem(basicComponents, SCMessages.i18n.tr("Поля"));
+//        TreeItem fields = new TreeItem(new Label(SCMessages.i18n.tr("Поля")));
+//        basicComponents.addItem(fields);
 
         addTreeItem(fields, new LoadPanel() {
             @Override
@@ -559,8 +562,9 @@ public class ShowCasePanel extends LayoutPanel {
             }
         });
 
-        TreeItem complexComponents = new TreeItem(new Label(SCMessages.i18n.tr("Сложные компоненты")));
-        tree.addItem(complexComponents);
+        TreeItem complexComponents = tree.addItem(SCMessages.i18n.tr("Сложные компоненты"));
+//        TreeItem complexComponents = new TreeItem(new Label(SCMessages.i18n.tr("Сложные компоненты")));
+//        tree.addItem(complexComponents);
         addTreeItem(complexComponents, new LoadPanel() {
             @Override
             public String getText() {
@@ -573,8 +577,9 @@ public class ShowCasePanel extends LayoutPanel {
             }
         });
 
-        TreeItem shell = new TreeItem(new Label(SCMessages.i18n.tr("Оболочка интерфейса")));
-        tree.addItem(shell);
+        TreeItem shell = tree.addItem(SCMessages.i18n.tr("Оболочка интерфейса"));
+//        TreeItem shell = new TreeItem(new Label(SCMessages.i18n.tr("Оболочка интерфейса")));
+//        tree.addItem(shell);
         addTreeItem(shell, new LoadPanel() {
             @Override
             public String getText() {
@@ -597,9 +602,6 @@ public class ShowCasePanel extends LayoutPanel {
                 return setUpDialogs(true);
             }
         });
-
-
-
     }
 
     private Widget getTablePanel() {
@@ -1457,22 +1459,6 @@ public class ShowCasePanel extends LayoutPanel {
         simpleButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton4);
         simpleButton4.setContextMenu(menuForSimple);
-
-//        ArtaTree tree = new ArtaTree();
-//        tree.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
-//        tree.getElement().getStyle().setTop(50, Style.Unit.PX);
-//        tree.getElement().getStyle().setHeight(100, Style.Unit.PX);
-//        tree.getElement().getStyle().setWidth(123, Style.Unit.PX);
-//
-//        kz.arta.synergy.components.client.tree.TreeItem i1 = tree.addItem("hello");
-//        tree.addItem(i1, "hello again");
-//        tree.addItem(i1, "another");
-//        tree.addItem(i1, "one more");
-//        kz.arta.synergy.components.client.tree.TreeItem i2 = tree.addItem("second");
-//        tree.addItem(i2, "third");
-//        tree.addItem(i2, "forth");
-//
-//        simpleButtonPanel.add(tree);
 
         return simpleButtonPanel;
     }

@@ -77,6 +77,8 @@ public class Constants {
 
     public static final int STACK_HEIGHT = 48;
 
+    public static final int TABLE_DIVIDER_WIDTH = 7;
+
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
     }
@@ -195,5 +197,9 @@ public class Constants {
 
     public static String stackHeight() {
         return STACK_HEIGHT + "px";
+    }
+
+    public static String tableDividerWidth() {
+        return TABLE_DIVIDER_WIDTH + "px";
     }
 }

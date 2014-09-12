@@ -24,7 +24,7 @@ import kz.arta.synergy.components.client.util.Utils;
  *
  * Можно задавать ширину как до отображения, так и после.
  */
-public class GradientLabel extends Composite implements HasDirection, ArtaHasText {
+public class GradientLabel extends Composite implements ArtaHasText {
 
     /**
      * Главная панель
@@ -86,7 +86,7 @@ public class GradientLabel extends Composite implements HasDirection, ArtaHasTex
      * Добавляет градиент, если текст слишком длинный для заданной ширины элемента.
      * Метод вызывается при изменении текста, стиля текста, ширины виджета и при присоединении к DOM.
      */
-    protected void adjustGradient() {
+    public void adjustGradient() {
         if (isAttached() && widthSet && Utils.getTextWidth(this) > width) {
             if (Utils.getTextWidth(this) > width) {
                 panel.add(gradient);
@@ -141,18 +141,6 @@ public class GradientLabel extends Composite implements HasDirection, ArtaHasTex
     @Override
     public void setWidth(String width) {
         throw new UnsupportedOperationException("ширина текста с градиентом задается используя целое значение в пикселях");
-    }
-
-
-
-    @Override
-    public void setDirection(Direction direction) {
-        System.out.println(direction.toString());
-    }
-
-    @Override
-    public Direction getDirection() {
-        return null;
     }
 
     @Override

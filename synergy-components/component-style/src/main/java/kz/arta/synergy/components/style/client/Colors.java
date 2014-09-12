@@ -19,6 +19,7 @@ public class Colors {
     public static final Color tagBG = new Color("#f2efd0");
     public static final Color tabBG2 = new Color("#f9f9f9");
     public static final Color mainBG = new Color("#373d49");
+    public static final Color border1 = new Color("#afafaf");
 
     public static Color whiteBG() {
         return whiteBG;
@@ -53,4 +54,5 @@ public class Colors {
     public static Color tabBG2() {
         return tabBG2;
     }
+    public static Color border1() { return border1;}
 }

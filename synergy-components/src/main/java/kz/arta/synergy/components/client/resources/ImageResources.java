@@ -40,6 +40,12 @@ public interface ImageResources extends ClientBundle {
     @ImageResource.ImageOptions(flipRtl = true)
     ImageResource navigationLeft();
 
+    @Source("images/buttons/navigation_up.png")
+    ImageResource navigationUp();
+
+    @Source("images/buttons/navigation_down.png")
+    ImageResource navigationDown();
+
     @Source("images/buttons/white_button_dropdown_icon.png")
     ImageResource whiteButtonDropdown();
 

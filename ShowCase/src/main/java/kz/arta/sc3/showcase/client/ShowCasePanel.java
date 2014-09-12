@@ -12,10 +12,12 @@ import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DatePicker;
+import com.google.gwt.view.client.ListDataProvider;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
 import kz.arta.synergy.components.client.checkbox.ArtaCheckBox;
@@ -46,6 +48,10 @@ import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.stack.Stack;
 import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
+import kz.arta.synergy.components.client.table.Table;
+import kz.arta.synergy.components.client.table.User;
+import kz.arta.synergy.components.client.table.column.ArtaEditableTextColumn;
+import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.client.tabs.TabPanel;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.theme.Theme;
@@ -541,6 +547,17 @@ public class ShowCasePanel extends LayoutPanel {
                 return getCheckBoxPanel();
             }
         });
+        addTreeItem(basicComponents, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Таблица");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getTablePanel();
+            }
+        });
 
         TreeItem complexComponents = new TreeItem(new Label(SCMessages.i18n.tr("Сложные компоненты")));
         tree.addItem(complexComponents);
@@ -583,6 +600,114 @@ public class ShowCasePanel extends LayoutPanel {
 
 
 
+    }
+
+    private Widget getTablePanel() {
+        FlowPanel panel = new FlowPanel();
+        panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
+        panel.getElement().getStyle().setPaddingRight(20, Style.Unit.PX);
+
+        Table<User> table = new Table<User>(30);
+//        table.getElement().getStyle().setHeight(100, Style.Unit.PX);
+
+        final ArtaEditableTextColumn<User> idColumn = new ArtaEditableTextColumn<User>() {
+            @Override
+            public String getValue(User value) {
+                return "" + value.getKey();
+            }
+
+            @Override
+            public void setValue(User value, String text) {
+            }
+        };
+        idColumn.setSortable(true);
+        table.addColumn(idColumn, "#");
+
+        final ArtaEditableTextColumn<User> firstNameColumn = new ArtaEditableTextColumn<User>() {
+            @Override
+            public String getValue(User value) {
+                return value.getFirstName();
+            }
+
+            @Override
+            public void setValue(User value, String text) {
+                value.setFirstName(text);
+            }
+        };
+        table.addColumn(firstNameColumn, "first name");
+        firstNameColumn.setSortable(true);
+
+        final ArtaEditableTextColumn<User> lastNameColumn = new ArtaEditableTextColumn<User>() {
+            @Override
+            public String getValue(User value) {
+                return value.getLastName();
+            }
+
+            @Override
+            public void setValue(User value, String text) {
+                value.setLastName(text);
+            }
+        };
+        lastNameColumn.setSortable(true);
+        table.addColumn(lastNameColumn, "last name");
+
+        ArtaEditableTextColumn<User> addressColumn = new ArtaEditableTextColumn<User>() {
+            @Override
+            public String getValue(User value) {
+                return value.getAddress();
+            }
+
+            @Override
+            public void setValue(User value, String text) {
+                value.setAddress(text);
+            }
+        };
+        table.addColumn(addressColumn, "address");
+        addressColumn.setSortable(true);
+
+        final ListDataProvider<User> provider = new ListDataProvider<User>();
+        provider.addDataDisplay(table);
+
+        final List<User> list = provider.getList();
+        for (int i = 0; i < 200; i++) {
+            list.add(new User("jon" + i, "jones" + i, "la" + i));
+        }
+//        list.add(new User("jon", "jones", "la"));
+//        list.add(new User("jane", "jones", "ny"));
+//        list.add(new User("jack", "black", "sf"));
+//        list.add(new User("jack", "jacksonville", "sf"));
+//        list.add(new User("jack", "black", "sf"));
+//        list.add(new User("jack", "black", "sf"));
+//        list.add(new User("jack", "black", "sf"));
+//        list.add(new User("jack", "black", "sf"));
+//        list.add(new User("jack", "black", "sf"));
+//        list.add(new User("jack", "black", "sf"));
+//        list.add(new User("jack", "black", "sf"));
+//        list.add(new User("jack", "black", "sf"));
+        provider.flush();
+
+        TableSortEvent.ListHandler<User> listHandler = new TableSortEvent.ListHandler<User>(list);
+        listHandler.setComparator(idColumn, new Comparator<User>() {
+            @Override
+            public int compare(User user1, User user2) {
+                return user1.getKey() > user2.getKey() ? 1 : user1.getKey() < user2.getKey() ? -1 : 0;
+            }
+        });
+        listHandler.setComparator(lastNameColumn, new Comparator<User>() {
+            @Override
+            public int compare(User user1, User user2) {
+                return user1.getLastName().compareTo(user2.getLastName());
+            }
+        });
+        table.addSortHandler(listHandler);
+
+        SimplePager pager = new SimplePager();
+        pager.setDisplay(table);
+
+        panel.add(pager);
+        panel.add(table);
+
+        return new ArtaScrollPanel(panel);
     }
 
     /**
@@ -1330,61 +1455,6 @@ public class ShowCasePanel extends LayoutPanel {
         simpleButtonPanel.add(simpleButton4);
         simpleButton4.setContextMenu(menuForSimple);
 
-//        Table4<User> table = new Table4<User>(20);
-//        table.addColumn(new Column<User, String>(new ArtaEditCell(null)) {
-//            @Override
-//            public String getValue(User object) {
-//                return object.getFirstName();
-//            }
-//        });
-//        table.addColumn(new Column<User, String>(new ArtaEditCell(null)) {
-//            @Override
-//            public String getValue(User object) {
-//                return object.getLastName();
-//            }
-//        });
-
-//        table.addColumn(new ArtaTextColumn<User>() {
-//            @Override
-//            public String getText(User value) {
-//                return "" + value.getKey();
-//            }
-//        });
-//        table.addColumn(new ArtaTextColumn<User>() {
-//            @Override
-//            public String getText(User value) {
-//                return value.getFirstName();
-//            }
-//        });
-//        table.addColumn(new ArtaTextColumn<User>() {
-//            @Override
-//            public String getText(User value) {
-//                return value.getLastName();
-//            }
-//        });
-//        table.addColumn(new ArtaTextColumn<User>() {
-//            @Override
-//            public String getText(User value) {
-//                return value.getAddress();
-//            }
-//        });
-
-
-//        ListDataProvider<User> provider = new ListDataProvider<User>();
-//        provider.addDataDisplay(table);
-//
-//        List<User> list = provider.getList();
-//        list.add(new User("jon", "jones", "la"));
-//        list.add(new User("jane", "jones", "ny"));
-//        list.add(new User("jack", "black", "sf"));
-//        list.add(new User("jack", "jacksonville", "sf"));
-//        list.add(new User("jack", "black", "sf"));
-//        list.add(new User("jack", "black", "sf"));
-//        list.add(new User("jack", "black", "sf"));
-//        list.add(new User("jack", "black", "sf"));
-//
-//        simpleButtonPanel.add(table);
-//
         return simpleButtonPanel;
     }
 

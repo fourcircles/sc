@@ -16,8 +16,6 @@ public interface CssComponents extends CssResource {
 
     String bigText();
 
-    String border1();
-
     String buttonBorder();
 
     String buttonPressed();
@@ -169,15 +167,16 @@ public interface CssComponents extends CssResource {
     String radio();
     String group();
 
-    String even();
-    String odd();
     String table();
     String tableContainer();
-    String row();
     String tableInput();
     String edit();
     String last();
-    String first();
     String underEdit();
     String tableDivider();
+    String header();
+    String tableWhole();
+    String headersTable();
+    String headerDivider();
+    String drag();
 }

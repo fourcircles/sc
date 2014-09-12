@@ -20,12 +20,12 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 import com.google.gwt.view.client.ListDataProvider;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
-import kz.arta.synergy.components.client.checkbox.ArtaCheckBox;
-import kz.arta.synergy.components.client.checkbox.ArtaRadioButton;
 import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.*;
+import kz.arta.synergy.components.client.checkbox.ArtaCheckBox;
+import kz.arta.synergy.components.client.checkbox.ArtaRadioButton;
 import kz.arta.synergy.components.client.collapsing.CollapsingPanel;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
@@ -634,8 +634,8 @@ public class ShowCasePanel extends LayoutPanel {
                 value.setFirstName(text);
             }
         };
-        table.addColumn(firstNameColumn, "first name");
         firstNameColumn.setSortable(true);
+        table.addColumn(firstNameColumn, "first name");
 
         final ArtaEditableTextColumn<User> lastNameColumn = new ArtaEditableTextColumn<User>() {
             @Override
@@ -662,8 +662,8 @@ public class ShowCasePanel extends LayoutPanel {
                 value.setAddress(text);
             }
         };
-        table.addColumn(addressColumn, "address");
         addressColumn.setSortable(true);
+        table.addColumn(addressColumn, "address");
 
         final ListDataProvider<User> provider = new ListDataProvider<User>();
         provider.addDataDisplay(table);
@@ -672,18 +672,6 @@ public class ShowCasePanel extends LayoutPanel {
         for (int i = 0; i < 200; i++) {
             list.add(new User("jon" + i, "jones" + i, "la" + i));
         }
-//        list.add(new User("jon", "jones", "la"));
-//        list.add(new User("jane", "jones", "ny"));
-//        list.add(new User("jack", "black", "sf"));
-//        list.add(new User("jack", "jacksonville", "sf"));
-//        list.add(new User("jack", "black", "sf"));
-//        list.add(new User("jack", "black", "sf"));
-//        list.add(new User("jack", "black", "sf"));
-//        list.add(new User("jack", "black", "sf"));
-//        list.add(new User("jack", "black", "sf"));
-//        list.add(new User("jack", "black", "sf"));
-//        list.add(new User("jack", "black", "sf"));
-//        list.add(new User("jack", "black", "sf"));
         provider.flush();
 
         TableSortEvent.ListHandler<User> listHandler = new TableSortEvent.ListHandler<User>(list);
@@ -693,10 +681,25 @@ public class ShowCasePanel extends LayoutPanel {
                 return user1.getKey() > user2.getKey() ? 1 : user1.getKey() < user2.getKey() ? -1 : 0;
             }
         });
+        listHandler.setComparator(firstNameColumn, new Comparator<User>() {
+            @Override
+            public int compare(User user, User user2) {
+                //noinspection NonJREEmulationClassesInClientCode
+                return user.getFirstName().compareTo(user2.getFirstName());
+            }
+        });
         listHandler.setComparator(lastNameColumn, new Comparator<User>() {
             @Override
             public int compare(User user1, User user2) {
+                //noinspection NonJREEmulationClassesInClientCode
                 return user1.getLastName().compareTo(user2.getLastName());
+            }
+        });
+        listHandler.setComparator(addressColumn, new Comparator<User>() {
+            @Override
+            public int compare(User user, User user2) {
+                //noinspection NonJREEmulationClassesInClientCode
+                return user.getAddress().compareTo(user2.getAddress());
             }
         });
         table.addSortHandler(listHandler);
@@ -1454,6 +1457,22 @@ public class ShowCasePanel extends LayoutPanel {
         simpleButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton4);
         simpleButton4.setContextMenu(menuForSimple);
+
+//        ArtaTree tree = new ArtaTree();
+//        tree.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
+//        tree.getElement().getStyle().setTop(50, Style.Unit.PX);
+//        tree.getElement().getStyle().setHeight(100, Style.Unit.PX);
+//        tree.getElement().getStyle().setWidth(123, Style.Unit.PX);
+//
+//        kz.arta.synergy.components.client.tree.TreeItem i1 = tree.addItem("hello");
+//        tree.addItem(i1, "hello again");
+//        tree.addItem(i1, "another");
+//        tree.addItem(i1, "one more");
+//        kz.arta.synergy.components.client.tree.TreeItem i2 = tree.addItem("second");
+//        tree.addItem(i2, "third");
+//        tree.addItem(i2, "forth");
+//
+//        simpleButtonPanel.add(tree);
 
         return simpleButtonPanel;
     }

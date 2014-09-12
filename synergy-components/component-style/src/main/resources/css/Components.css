@@ -952,6 +952,9 @@
 @eval tagInterval kz.arta.synergy.components.style.client.Constants.tagInterval();
 .tagIndicatorContent .tag {
     margin-bottom: tagInterval;
+    /*это небольшой хак, чтобы inline-block отображались на новой строке*/
+    float:left;
+    clear:left;
 }
 .tagIndicatorContent .tag:last-child {
     margin-bottom: 0px;
@@ -1003,15 +1006,6 @@
 p {
     margin: 0px;
 }
-
-.tagIndicator p:last-child {
-    margin-bottom: 0px;
-}
-
-.tagIndicator p {
-    margin-bottom: tagInterval;
-}
-
 
 .datePicker {
     width: 295px;

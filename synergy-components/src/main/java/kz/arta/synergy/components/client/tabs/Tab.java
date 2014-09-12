@@ -68,9 +68,8 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
         root = GWT.create(ArtaFlowPanel.class);
         initWidget(root);
         addStyleName(SynergyComponents.resources.cssComponents().tab());
-        addStyleName(getFontStyle());
 
-        label = new GradientLabel(SynergyComponents.resources.cssComponents().mainTextBold());
+        label = new GradientLabel(getFontStyle());
         label.setHeight(Constants.TAB_HEIGHT - Constants.BORDER_WIDTH * 2 + "px");
 
         closeImage = GWT.create(Image.class);
@@ -171,7 +170,8 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
      * @param fireEvents создавать ли события выбора вкладки
      */
     public void setActive(boolean isActive, boolean fireEvents) {
-        this.isActive = isActive;
+
+        label.removeStyleName(getFontStyle());
         if (isActive) {
             addStyleName(SynergyComponents.resources.cssComponents().selected());
             getElement().getStyle().setBorderStyle(Style.BorderStyle.SOLID);
@@ -182,6 +182,8 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
             removeStyleName(SynergyComponents.resources.cssComponents().selected());
             getElement().getStyle().clearBorderStyle();
         }
+        this.isActive = isActive;
+        label.setStyleName(getFontStyle());
     }
 
     /**

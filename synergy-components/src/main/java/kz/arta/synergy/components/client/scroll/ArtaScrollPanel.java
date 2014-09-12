@@ -1,21 +1,19 @@
 package kz.arta.synergy.components.client.scroll;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
-import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
-import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 
 /**
  * User: vsl
  * Date: 17.07.14
  * Time: 10:50
- * Панель с вертикальным скролом.
- * Горизонтальный скролл не отображается.
+ * Скролл панель Synergy
  */
 public class ArtaScrollPanel extends CustomScrollPanel {
     /**
@@ -44,8 +42,13 @@ public class ArtaScrollPanel extends CustomScrollPanel {
                 hScroll.setHorizontalScrollPosition(getHorizontalScrollPosition());
             }
         });
-        //без этого если ширина контента меньше ширины родителя, то выделяться будет только часть строки
-//        getContainerElement().getStyle().setDisplay(com.google.gwt.dom.client.Style.Display.BLOCK);
+        Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                vScroll.setScrollHeight(event.getHeight());
+                hScroll.setScrollWidth(event.getWidth());
+            }
+        });
     }
 
     public ArtaScrollPanel(Widget widget) {

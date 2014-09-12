@@ -2,10 +2,9 @@ package kz.arta.synergy.components.client.input.date;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -77,7 +76,16 @@ public class DateInput extends Composite implements HasEnabled, HasValueChangeHa
     /**
      * Popup панель календаря
      */
-    private PopupPanel calendarPopup = new PopupPanel(true);
+    private PopupPanel calendarPopup;
+
+    /**
+     * Находится ли мышь над выпадающим календарем
+     */
+    private boolean mouseOver = false;
+
+    private ResizeHandler resizeHandler;
+
+    private HandlerRegistration resizeRegistration;
 
     /**
      * Можно ли оставлять поле ввода пустым
@@ -142,6 +150,39 @@ public class DateInput extends Composite implements HasEnabled, HasValueChangeHa
 
         datePicker = new ArtaDatePicker(calendarMode);
 
+        calendarPopup = new PopupPanel(true) {
+            public void hide() {
+                if (resizeRegistration != null) {
+                    resizeRegistration.removeHandler();
+                    resizeRegistration = null;
+                }
+                mouseOver = false;
+                super.hide();
+            }
+
+            protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+                if (event.getTypeInt() == Event.ONMOUSEWHEEL) {
+                    if (!mouseOver) {
+                        calendarPopup.hide();
+                    }
+                }
+            }
+        };
+
+        datePicker.addMouseOverHandler(new MouseOverHandler() {
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                mouseOver = true;
+            }
+        });
+
+        datePicker.addMouseOutHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                mouseOver = false;
+            }
+        });
+
         datePicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
             public void onValueChange(ValueChangeEvent<Date> event) {
@@ -157,6 +198,9 @@ public class DateInput extends Composite implements HasEnabled, HasValueChangeHa
                 calendarPopup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
                     @Override
                     public void setPosition(int offsetWidth, int offsetHeight) {
+                        if (resizeRegistration == null) {
+                            resizeRegistration = Window.addResizeHandler(resizeHandler);
+                        }
                         int x = calendarButton.getAbsoluteLeft();
                         int y = calendarButton.getAbsoluteTop() + calendarButton.getOffsetHeight();
 
@@ -196,6 +240,13 @@ public class DateInput extends Composite implements HasEnabled, HasValueChangeHa
                 removeStyleName(SynergyComponents.resources.cssComponents().focus());
             }
         });
+
+        resizeHandler = new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                calendarPopup.hide();
+            }
+        };
     }
 
     /**

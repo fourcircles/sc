@@ -1,8 +1,7 @@
 package kz.arta.synergy.components.client.input.date;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -20,7 +19,7 @@ import java.util.Date;
  * Time: 9:57
  * Компонент выбора даты
  */
-public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<Date> {
+public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<Date>, HasAllMouseHandlers {
 
     /**
      * Формат отображения календаря
@@ -199,5 +198,36 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
         this.calendarMode = calendarMode;
         calendarPanel.reDrawDays();
     }
+
+    @Override
+    public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {
+        return null;
+    }
+
+    @Override
+    public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler) {
+        return null;
+    }
+
+    @Override
+    public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
+        return null;
+    }
+
+    @Override
+    public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
+        return null;
+    }
+
+    @Override
+    public HandlerRegistration addMouseUpHandler(MouseUpHandler handler) {
+        return null;
+    }
+
+    @Override
+    public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
+        return null;
+    }
+
 
 }

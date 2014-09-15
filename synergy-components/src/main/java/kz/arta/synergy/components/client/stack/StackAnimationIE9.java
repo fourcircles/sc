@@ -9,6 +9,8 @@ import com.google.gwt.dom.client.Style;
  * Time: 11:21
  *
  * Анимация для открытия-закрытия стек-панелей (IE9)
+ * Одновременно обновляется высота для открывающейся и закрывающейся панелей
+ * для того, чтобы общая высота не изменялась.
  */
 public class StackAnimationIE9 extends Animation {
     /**
@@ -40,7 +42,7 @@ public class StackAnimationIE9 extends Animation {
 
     @Override
     protected void onUpdate(double progress) {
-        int openingHeight = (int) (contentHeight * progress);
+        int openingHeight = (int) (progress * contentHeight);
 
         if (closingStack != null) {
             closingStack.contentContainer.setHeight(contentHeight - openingHeight + "px");
@@ -53,8 +55,7 @@ public class StackAnimationIE9 extends Animation {
     @Override
     protected void onComplete() {
         super.onComplete();
-        closingStack.contentContainer.getElement().getStyle().clearHeight();
-        openingStack.contentContainer.getElement().getStyle().setHeight(contentHeight, Style.Unit.PX);
+        cleanUp();
     }
 
     @Override
@@ -75,10 +76,10 @@ public class StackAnimationIE9 extends Animation {
      */
     private void cleanUp() {
         if (openingStack != null) {
-            openingStack.contentContainer.getElement().getStyle().clearHeight();
+            openingStack.contentContainer.getElement().getStyle().setHeight(contentHeight, Style.Unit.PX);
         }
         if (closingStack != null) {
-            closingStack.contentContainer.getElement().getStyle().clearHeight();
+            closingStack.contentContainer.getElement().getStyle().setHeight(0, Style.Unit.PX);
         }
     }
 

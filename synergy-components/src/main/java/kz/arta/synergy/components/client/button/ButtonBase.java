@@ -20,8 +20,6 @@ import kz.arta.synergy.components.client.util.MouseStyle;
 import kz.arta.synergy.components.client.util.Selection;
 import kz.arta.synergy.components.style.client.Constants;
 
-//todo исправить прыгающие кнопки
-
 /**
  * User: user
  * Date: 23.06.14

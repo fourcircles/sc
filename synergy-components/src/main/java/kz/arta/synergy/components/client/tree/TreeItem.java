@@ -12,6 +12,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -34,7 +35,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     /**
      * Длительность анимации
      */
-    private static final int ANIMATION_DURATION = 300;
+    static final int ANIMATION_DURATION = 300;
 
     /**
      * Корневая панель
@@ -99,6 +100,11 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
      */
     private int contentHeight;
 
+    /**
+     * Анимация открытия-закрытия для IE9
+     */
+    private TreeAnimationIE9 animation;
+
     interface TreeItemUiBinder extends UiBinder<ArtaFlowPanel, TreeItem> {
     }
 
@@ -136,7 +142,6 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
 
     /**
      * Клик по индикатору открытия/закрытия
-     * @param event
      */
     @UiHandler("indicator")
     void indicatorClick(ClickEvent event) {
@@ -284,8 +289,15 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     }
 
     public void setContentHeight(int height) {
+        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+            if (animation == null) {
+                animation = new TreeAnimationIE9(content.getElement());
+            }
+            animation.updateHeight(contentHeight, height);
+        } else {
+            content.getElement().getStyle().setHeight(height, Style.Unit.PX);
+        }
         contentHeight = height;
-        content.getElement().getStyle().setHeight(height, Style.Unit.PX);
     }
 
     public int getContentHeight() {

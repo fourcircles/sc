@@ -1458,12 +1458,18 @@ p {
     background-color: panelBG;
 }
 
+@if !user.agent ie9 {
+    .stackPanel .indicator + div {
+        -webkit-transition: height 250ms ease-out;
+        transition: height 250ms ease-out;
+        -ms-transition: height 250ms ease-out;
+    }
+}
+
 .stackPanel .indicator + div {
     height: 0px;
-    -webkit-transition: height 250ms ease-out;
-    transition: height 250ms ease-out;
-    -ms-transition: height 250ms ease-out;
 }
+
 
 .checkbox input[type=checkbox] {
     display: none;
@@ -1754,9 +1760,13 @@ p {
     margin-top: 24px;
 }
 
+@if !user.agent ie9 {
+    .treeItem .content {
+        -webkit-transition: height 0.3s;
+        transition: height 0.3s;
+        -ms-transition: height 0.3s;
+    }
+}
 .treeItem .content {
     overflow: hidden;
-    -webkit-transition: height 0.3s;
-    transition: height 0.3s;
-    -ms-transition: height 0.3s;
 }

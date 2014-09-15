@@ -104,6 +104,20 @@
 
 @def tableString2 #fbfbfb;
 
+#titlePanel {
+    line-height: 54px;
+    padding-left: 20px;
+    padding-right: 5px;
+    border-bottom: 1px solid buttonPressed;
+}
+#titlePanel > span {
+    color: textColor2;
+}
+
+#titlePanel > .buttonSimple, #titlePanel > .comboBox {
+    margin-top: 11px;
+}
+
 /*Это не работает для ie9 - пока там выделяется все*/
 .unselectable {
     -moz-user-select: -moz-none;

@@ -1,5 +1,6 @@
 package kz.arta.sc3.showcase.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -10,6 +11,8 @@ import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.Random;
@@ -66,22 +69,20 @@ import java.util.*;
  * Date: 23.06.14
  * Time: 12:43
  */
-public class ShowCasePanel extends LayoutPanel {
-    private final static int TITLE_HEIGHT = 8;
-    private final static int TREE_WIDTH = 25;
-    private final static int SPACING = 1;
+public class ShowCasePanel extends FlowPanel {
 
     private Theme currentTheme;
 
-    ArtaTree tree;
-
-    TabPanel tabPanel;
+    @UiField ArtaTree tree;
+    @UiField TabPanel tabPanel;
+    @UiField FlowPanel titlePanel;
+    @UiField InlineLabel showCaseLabel;
 
     private Set<Widget> tabs;
 
-    public void setBorder(Widget w) {
-        w.getElement().getStyle().setProperty("border", "solid 1px black");
+    interface ShowCasePanelUiBinder extends UiBinder<FlowPanel, ShowCasePanel> {
     }
+    private static ShowCasePanelUiBinder binder = GWT.create(ShowCasePanelUiBinder.class);
 
     public ShowCasePanel() {
         if (Cookies.getCookie("theme") == null) {
@@ -90,26 +91,16 @@ public class ShowCasePanel extends LayoutPanel {
             currentTheme = Theme.getTheme(Cookies.getCookie("theme"));
         }
 
-        tabPanel = new TabPanel();
+        binder.createAndBindUi(this);
+
+        titlePanel.getElement().setId("titlePanel");
+        showCaseLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
 
         treeSetUp();
 
-        Label navigationLabel = new Label(SCMessages.i18n.tr("Навигация"));
-        FlowPanel navigationPanel = new FlowPanel();
-        navigationPanel.add(navigationLabel);
-        navigationPanel.add(tree);
-
-        navigationLabel.setWidth("100%");
-        navigationPanel.setWidth("100%");
-        navigationLabel.getElement().getStyle().setProperty("borderBottom", "solid 1px");
-
-        FlowPanel titlePanel = new FlowPanel();
-        Label showCaseLabel = new Label("ShowCase");
-        titlePanel.add(showCaseLabel);
-
         final Dictionary theme = Dictionary.getDictionary("properties");
 
-        Button about = new Button("About");
+        SimpleButton about = new SimpleButton("About");
         about.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -158,34 +149,14 @@ public class ShowCasePanel extends LayoutPanel {
             RootPanel.getBodyElement().getStyle().setProperty("direction", HasDirection.Direction.RTL.name());
         }
 
-        titlePanel.setWidth("100%");
         showCaseLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
         themesCombo.getElement().getStyle().setFloat(Style.Float.RIGHT);
         localesCombo.getElement().getStyle().setFloat(Style.Float.RIGHT);
         about.getElement().getStyle().setFloat(Style.Float.RIGHT);
 
-//        ArtaScrollPanel treeScroll = new ArtaScrollPanel(navigationPanel);
         add(titlePanel);
         add(tree);
         add(tabPanel);
-
-
-        setWidgetLeftWidth(tree, 5, Style.Unit.PX, TREE_WIDTH - 1, Style.Unit.PCT);
-        setWidgetTopBottom(tree, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
-//        setWidgetLeftWidth(treeScroll, 0, Style.Unit.PCT, TREE_WIDTH, Style.Unit.PCT);
-//        setWidgetTopBottom(treeScroll, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
-
-        setWidgetRightWidth(tabPanel, 0, Style.Unit.PCT, 100 - TREE_WIDTH - SPACING, Style.Unit.PCT);
-        setWidgetTopBottom(tabPanel, TITLE_HEIGHT + SPACING, Style.Unit.PCT, 0, Style.Unit.PCT);
-
-        setWidgetTopBottom(titlePanel, 0, Style.Unit.PCT, 100 - TITLE_HEIGHT, Style.Unit.PCT);
-
-//        setBorder(treeScroll);
-        setBorder(titlePanel);
-
-        setSize("100%", "100%");
-
-        forceLayout();
 
         tabs = new HashSet<Widget>();
 
@@ -202,10 +173,9 @@ public class ShowCasePanel extends LayoutPanel {
         tabPanel.addTabCloseHandler(new TabCloseEvent.Handler() {
             @Override
             public void onTabClose(TabCloseEvent event) {
-                tabs.remove(event.getTab().getContent());
+                tabs.remove(event.getTab().getContent().asWidget());
             }
         });
-
     }
 
     private SimpleButton setUpDialog(String title, final DialogSimple dialog) {
@@ -414,23 +384,11 @@ public class ShowCasePanel extends LayoutPanel {
     private void addTreeItem(TreeItem parentItem, LoadPanel loadPanel) {
         TreeItem item = tree.addItem(parentItem, loadPanel.getText());
         item.setUserObject(loadPanel);
-
-//        TreeItem newItem = new TreeItem(loadPanel.getText());
-//        newItem.setText(loadPanel.getText());
-//        newItem.setUserObject(loadPanel);
-//        parentItem.addItem(newItem);
     }
 
     private void treeSetUp() {
-//        tree = new Tree();
-
-        tree = new ArtaTree();
-
-//        TreeItem basicComponents = new TreeItem(new Label(SCMessages.i18n.tr("Базовые компоненты")));
+        tree.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
         TreeItem basicComponents = tree.addItem(SCMessages.i18n.tr("Базовые компоненты"));
-
-//        TreeItem buttons = new TreeItem(new Label(SCMessages.i18n.tr("Кнопки")));
-//        basicComponents.addItem(buttons);
 
         TreeItem buttons = tree.addItem(basicComponents, SCMessages.i18n.tr("Кнопки"));
 
@@ -563,8 +521,6 @@ public class ShowCasePanel extends LayoutPanel {
         });
 
         TreeItem complexComponents = tree.addItem(SCMessages.i18n.tr("Сложные компоненты"));
-//        TreeItem complexComponents = new TreeItem(new Label(SCMessages.i18n.tr("Сложные компоненты")));
-//        tree.addItem(complexComponents);
         addTreeItem(complexComponents, new LoadPanel() {
             @Override
             public String getText() {
@@ -578,8 +534,6 @@ public class ShowCasePanel extends LayoutPanel {
         });
 
         TreeItem shell = tree.addItem(SCMessages.i18n.tr("Оболочка интерфейса"));
-//        TreeItem shell = new TreeItem(new Label(SCMessages.i18n.tr("Оболочка интерфейса")));
-//        tree.addItem(shell);
         addTreeItem(shell, new LoadPanel() {
             @Override
             public String getText() {
@@ -889,12 +843,10 @@ public class ShowCasePanel extends LayoutPanel {
         collapsingPanels.add(classifier);
         root.add(collapsingPanels);
 
-        final StackPanel stacks = new StackPanel(Arrays.asList(new Stack[]{
-                new Stack(SCMessages.i18n.tr("Первая")),
+        final StackPanel stacks = new StackPanel(Arrays.asList(new Stack(SCMessages.i18n.tr("Первая")),
                 new Stack(SCMessages.i18n.tr("Вторая")),
                 new Stack(SCMessages.i18n.tr("Третья")),
-                new Stack(SCMessages.i18n.tr("Четвертая")),
-        }), 500);
+                new Stack(SCMessages.i18n.tr("Четвертая"))), 500);
         stacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             stacks.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
@@ -904,12 +856,10 @@ public class ShowCasePanel extends LayoutPanel {
         stacks.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         stacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
 
-        final StackPanel whiteStacks = new StackPanel(Arrays.asList(new Stack[] {
-                new Stack(SCMessages.i18n.tr("Первая")),
+        final StackPanel whiteStacks = new StackPanel(Arrays.asList(new Stack(SCMessages.i18n.tr("Первая")),
                 new Stack(SCMessages.i18n.tr("Вторая")),
                 new Stack(SCMessages.i18n.tr("Третья")),
-                new Stack(SCMessages.i18n.tr("Четвертая")),
-        }), 500, StackPanel.Type.WHITE);
+                new Stack(SCMessages.i18n.tr("Четвертая"))), 500, StackPanel.Type.WHITE);
         whiteStacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         whiteStacks.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         whiteStacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);

@@ -117,6 +117,9 @@
 #titlePanel > .buttonSimple, #titlePanel > .comboBox {
     margin-top: 11px;
 }
+#titlePanel > .comboBox {
+    margin-right: 20px;
+}
 
 /*Это не работает для ie9 - пока там выделяется все*/
 .unselectable {

@@ -109,7 +109,7 @@ public class ShowCasePanel extends FlowPanel {
             }
         });
         titlePanel.add(about);
-        about.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
 
         ComboBox<Theme> themesCombo = new ComboBox<Theme>();
         themesCombo.setReadOnly(true);
@@ -143,16 +143,22 @@ public class ShowCasePanel extends FlowPanel {
             chosenLocale = LocaleInfo.getCurrentLocale().getLocaleName();
         }
         localesCombo.selectValue(chosenLocale, false);
-        localesCombo.getElement().getStyle().setMarginRight(20, Style.Unit.PX);
+
         titlePanel.add(localesCombo);
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             RootPanel.getBodyElement().getStyle().setProperty("direction", HasDirection.Direction.RTL.name());
         }
 
-        showCaseLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
-        themesCombo.getElement().getStyle().setFloat(Style.Float.RIGHT);
-        localesCombo.getElement().getStyle().setFloat(Style.Float.RIGHT);
-        about.getElement().getStyle().setFloat(Style.Float.RIGHT);
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            themesCombo.getElement().getStyle().setFloat(Style.Float.LEFT);
+            localesCombo.getElement().getStyle().setFloat(Style.Float.LEFT);
+            about.getElement().getStyle().setFloat(Style.Float.LEFT);
+        } else {
+//            showCaseLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
+            themesCombo.getElement().getStyle().setFloat(Style.Float.RIGHT);
+            localesCombo.getElement().getStyle().setFloat(Style.Float.RIGHT);
+            about.getElement().getStyle().setFloat(Style.Float.RIGHT);
+        }
 
         add(titlePanel);
         add(tree);

@@ -155,6 +155,7 @@ public class TagsPanel<V> extends Composite implements HasEnabled {
 
         for (int j = i; j < tags.size(); j++) {
             root.add(tags.get(j));
+            tags.get(j).setMaxWidth(Constants.TAG_MAX_WIDTH);
         }
         container.setWidth(root.getOffsetWidth() + "px");
     }

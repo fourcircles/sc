@@ -65,6 +65,10 @@ public class Constants {
     public static final int TAG_PADDING = 8;
     public static final int TAG_HEIGHT = 26;
     public static final int TAG_MAX_WIDTH = 100;
+    /**
+     * Максимальная ширина тега в индикаторе
+     */
+    public static final int INDICATOR_TAG_MAX_WIDTH = 200;
     public static final int TAG_INPUT_NO_BUTTON_MIN_WIDTH = 104;
     public static final int TAG_INDICATOR_PADDING = 6;
 

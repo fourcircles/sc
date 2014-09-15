@@ -374,7 +374,6 @@ public class ShowCasePanel extends FlowPanel {
             if (content == null) {
                 content = getContentWidget();
                 content.setHeight("100%");
-//                content.setSize("100%", "100%");
             }
             tabPanel.addTab(getText(), content);
         }
@@ -1109,9 +1108,9 @@ public class ShowCasePanel extends FlowPanel {
      * @return панель с полями с тегами
      */
     private Widget getTagInputs() {
-        FlowPanel comboPanel = new FlowPanel();
-        comboPanel.getElement().getStyle().setLineHeight(1, Style.Unit.PX);
-        comboPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
+        FlowPanel tagInputPanel = new FlowPanel();
+        tagInputPanel.getElement().getStyle().setLineHeight(1, Style.Unit.PX);
+        tagInputPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         final List<HasEnabled> enableds = new ArrayList<HasEnabled>();
 
@@ -1198,11 +1197,11 @@ public class ShowCasePanel extends FlowPanel {
         rows[currentRow].add(button);
 
         for (FlowPanel row : rows) {
-            comboPanel.add(row);
+            tagInputPanel.add(row);
             row.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         }
 
-        return comboPanel;
+        return tagInputPanel;
     }
 
     /**

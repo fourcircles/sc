@@ -61,6 +61,12 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
     private boolean isDummy = false;
 
     /**
+     * Максимальная ширина тега.
+     * Изменяется в зависимости от местоположения тега. В индикаторе больше.
+     */
+    private int maxWidth = Constants.TAG_MAX_WIDTH;
+
+    /**
      * Создает новый тег без значения
      * @param text текст тега
      * @return тег
@@ -123,7 +129,7 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
      */
     @Override
     public int getOffsetWidth() {
-        return Math.min(Constants.TAG_MAX_WIDTH,
+        return Math.min(getMaxWidth(),
                 Utils.getTextWidth(this) + Constants.TAG_PADDING * 3 + 16);
     }
 
@@ -136,12 +142,29 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
     public void setText(String text) {
         this.text = text;
         label.setText(text);
+        adjustWidth();
+    }
+
+    /**
+     * Возвращает ширину тега. Она однозначно определяется текстом.
+     * @return ширина тега
+     */
+    public int getWidth() {
         int totalWidth = Utils.getTextWidth(this);
         totalWidth += 3 * Constants.COMMON_INPUT_PADDING;
         totalWidth += Constants.STD_ICON_WIDTH;
 
-        if (totalWidth > Constants.TAG_MAX_WIDTH) {
-            label.setWidth(Constants.TAG_MAX_WIDTH - 3 * Constants.COMMON_INPUT_PADDING - Constants.STD_ICON_WIDTH);
+        return Math.min(totalWidth, getMaxWidth());
+    }
+
+    /**
+     * Изменяет ширину текста с градиентом
+     */
+    private void adjustWidth() {
+        if (getWidth() >= getMaxWidth()) {
+            label.setWidth(getMaxWidth() - 3 * Constants.COMMON_INPUT_PADDING - Constants.STD_ICON_WIDTH);
+        } else {
+            label.clearWidth();
         }
     }
 
@@ -192,5 +215,15 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
 
     public boolean isDummy() {
         return isDummy;
+    }
+
+    public int getMaxWidth() {
+        return maxWidth;
+    }
+
+    public void setMaxWidth(int maxWidth) {
+        this.maxWidth = maxWidth;
+        root.getElement().getStyle().setProperty("maxWidth", maxWidth + "px");
+        adjustWidth();
     }
 }

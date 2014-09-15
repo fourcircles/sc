@@ -912,6 +912,8 @@
 @eval tagMaxWidth kz.arta.synergy.components.style.client.Constants.tagMaxWidth();
 
 .tag {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
     display: inline-block;
     position: relative;
     border-radius: 3px;
@@ -965,6 +967,9 @@
 @eval tagIndicatorPadding kz.arta.synergy.components.style.client.Constants.tagIndicatorPadding();
 .tagIndicatorContent {
     padding: tagIndicatorPadding;
+
+    /*хак, который предотвращает коллапс из-за того, что все элементы являются floats*/
+    overflow: auto;
 }
 @eval tagInterval kz.arta.synergy.components.style.client.Constants.tagInterval();
 .tagIndicatorContent .tag {
@@ -972,6 +977,7 @@
     /*это небольшой хак, чтобы inline-block отображались на новой строке*/
     float:left;
     clear:left;
+    max-width: 200px;
 }
 .tagIndicatorContent .tag:last-child {
     margin-bottom: 0px;

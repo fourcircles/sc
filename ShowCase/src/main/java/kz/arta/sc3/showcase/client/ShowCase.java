@@ -18,6 +18,7 @@ public class ShowCase implements EntryPoint {
     @Override
     public void onModuleLoad() {
         Window.setMargin("0px");
+        RootPanel.get().getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
         RootPanel.get().add(new ShowCasePanel());
         RootPanel.get().addStyleName(SynergyComponents.resources.cssComponents().mainText());
     }

@@ -1,8 +1,6 @@
 package kz.arta.synergy.components.client.util;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.Window;
 
 /**
  * User: vsl
@@ -31,21 +29,8 @@ public class Utils {
         return ruler.getTextWidth(textWidget);
     }
 
-    public static void setRotate(Element element, int degrees) {
-
-        String degreesStr = "rotate(" + degrees + ")";
-        System.out.println(degreesStr);
-        if (Window.Navigator.getUserAgent().toLowerCase().contains("msie")) {
-            element.getStyle().setProperty("MsTransform", degreesStr);
-        } else if (Navigator.isChrome) {
-            element.getStyle().setProperty("WebkitTransform", degreesStr);
-        } else {
-            element.getStyle().setProperty("transform", degreesStr);
-        }
-    }
-
     /**
-     * Предотвращает нажатие клики всеми кнопками мыши кроме левой.
+     * Предотвращает клик всеми кнопками мыши кроме левой.
      * Причина использования - некорректная работа метода getButton для {@link com.google.gwt.user.client.ui.RadioButton}
      * @param element элемент
      */
@@ -67,6 +52,4 @@ public class Utils {
             }
         });
     }-*/;
-
-
 }

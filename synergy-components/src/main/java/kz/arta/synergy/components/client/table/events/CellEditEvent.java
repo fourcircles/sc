@@ -54,10 +54,21 @@ public class CellEditEvent<T> extends GwtEvent<CellEditEvent.Handler<T>> {
      */
     private EditType editType;
 
-    public CellEditEvent(T object, ArtaColumn<T, ?> column, EditType type) {
+    /**
+     * Перевести ли выделение на следующую ячейку после завершения
+     * изменения
+     */
+    private boolean jumpForward;
+
+    public CellEditEvent(T object, ArtaColumn<T, ?> column, EditType type, boolean jumpForward) {
         this.object = object;
         this.column = column;
         this.editType = type;
+        this.jumpForward = jumpForward;
+    }
+
+    public CellEditEvent(T object, ArtaColumn<T, ?> column, EditType type) {
+        this(object, column, type, false);
     }
 
     public T getObject() {
@@ -66,6 +77,10 @@ public class CellEditEvent<T> extends GwtEvent<CellEditEvent.Handler<T>> {
 
     public ArtaColumn<T, ?> getColumn() {
         return column;
+    }
+
+    public boolean jumpForward() {
+        return jumpForward;
     }
 
     /**

@@ -967,9 +967,13 @@
 @eval tagIndicatorPadding kz.arta.synergy.components.style.client.Constants.tagIndicatorPadding();
 .tagIndicatorContent {
     padding: tagIndicatorPadding;
-
-    /*хак, который предотвращает коллапс из-за того, что все элементы являются floats*/
-    overflow: auto;
+}
+/*предотвращение collapse'а родителя т.к. внутри только floats*/
+.tagIndicatorContent:after {
+    content: " ";
+    display: block;
+    height: 0;
+    clear: both;
 }
 @eval tagInterval kz.arta.synergy.components.style.client.Constants.tagInterval();
 .tagIndicatorContent .tag {
@@ -1318,7 +1322,7 @@ p {
     position: absolute;
     top: tabHeight;
     /*эти два пикселя для того, чтобы было видно границы*/
-    bottom: 2px;
+    bottom: 0px;
     right: 2px;
     left: 0px;
 }
@@ -1532,7 +1536,8 @@ p {
     outline: none;
 }
 .tableContainer{
-    overflow: auto;
+    /*height: 100%;*/
+    /*overflow: auto;*/
 }
 
 .table {
@@ -1540,6 +1545,9 @@ p {
     border-spacing: 0;
     table-layout: fixed;
     width: 100%;
+}
+.table.notFull{
+    border-bottom: 1px solid buttonBG;
 }
 .table td {
     border: 1px dotted buttonBG;
@@ -1574,18 +1582,6 @@ p {
 .table tr:nth-child\(even\) {
     background-color: tableString2;
 }
-/*.table tr td:first-child {*/
-    /*border-left-style: solid;*/
-    /*border-left-color: buttonPressed;*/
-/*}*/
-/*.table tr td:last-child {*/
-    /*border-right-style: solid;*/
-    /*border-right-color: buttonPressed;*/
-/*}*/
-/*.table tr:first-child td {*/
-    /*border-top-style: solid;*/
-    /*border-top-color: buttonPressed;*/
-/*}*/
 
 .table tr:first-child td {
     border-top-style: none;
@@ -1603,12 +1599,6 @@ p {
 .table tr.last td {
     border-bottom-style: dotted;
 }
-/*.table tr:first-child td:first-child {*/
-    /*border-top-left-radius: 4px;*/
-/*}*/
-/*.table tr:first-child td:last-child {*/
-    /*border-top-right-radius: 4px;*/
-/*}*/
 .table tr:last-child td:first-child {
     border-bottom-left-radius: 4px;
 }
@@ -1629,7 +1619,14 @@ p {
 .table td:hover {
     background-color: selectColor;
 }
-.table td.selected {
+.table.onlyRows tr:hover {
+    background-color: selectColor;
+}
+.table.onlyRows td:hover {
+    background-color: inherit;
+}
+
+.table td.selected, .table tr.selected {
     background-color: beige;
 }
 .table tr td.edit {

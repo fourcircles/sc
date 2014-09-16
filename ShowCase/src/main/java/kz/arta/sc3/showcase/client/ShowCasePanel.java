@@ -52,6 +52,7 @@ import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
 import kz.arta.synergy.components.client.table.Table;
 import kz.arta.synergy.components.client.table.User;
 import kz.arta.synergy.components.client.table.column.ArtaEditableTextColumn;
+import kz.arta.synergy.components.client.table.column.ArtaTextColumn;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.client.tabs.TabPanel;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
@@ -513,15 +514,27 @@ public class ShowCasePanel extends FlowPanel {
                 return getCheckBoxPanel();
             }
         });
-        addTreeItem(basicComponents, new LoadPanel() {
+        TreeItem trees = tree.addItem(basicComponents, SCMessages.i18n.tr("Таблица"));
+        addTreeItem(trees, new LoadPanel() {
             @Override
             public String getText() {
-                return SCMessages.i18n.tr("Таблица");
+                return SCMessages.i18n.tr("Таблица - ряды");
             }
 
             @Override
             public Widget getContentWidget() {
-                return getTablePanel();
+                return getTablePanel(true);
+            }
+        });
+        addTreeItem(trees, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Таблица - ячейки");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getTablePanel(false);
             }
         });
 
@@ -563,22 +576,26 @@ public class ShowCasePanel extends FlowPanel {
         });
     }
 
-    private Widget getTablePanel() {
+    private Widget getTablePanel(boolean onlyRows) {
         FlowPanel panel = new FlowPanel();
         panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
-        panel.getElement().getStyle().setPaddingRight(20, Style.Unit.PX);
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            panel.getElement().getStyle().setPaddingLeft(20, Style.Unit.PX);
+        } else {
+            panel.getElement().getStyle().setPaddingRight(20, Style.Unit.PX);
+        }
 
-        Table<User> table = new Table<User>(30);
-//        table.getElement().getStyle().setHeight(100, Style.Unit.PX);
+        Table<User> table = new Table<User>(29);
 
-        final ArtaEditableTextColumn<User> idColumn = new ArtaEditableTextColumn<User>() {
+        table.setOnlyRows(onlyRows);
+        if (onlyRows) {
+            table.setHeight(600);
+        }
+
+        final ArtaTextColumn<User> idColumn = new ArtaTextColumn<User>() {
             @Override
-            public String getValue(User value) {
-                return "" + value.getKey();
-            }
-
-            @Override
-            public void setValue(User value, String text) {
+            public String getValue(User object) {
+                return "" + object.getKey();
             }
         };
         idColumn.setSortable(true);
@@ -596,7 +613,7 @@ public class ShowCasePanel extends FlowPanel {
             }
         };
         firstNameColumn.setSortable(true);
-        table.addColumn(firstNameColumn, "first name");
+        table.addColumn(firstNameColumn, SCMessages.i18n.tr("Имя"));
 
         final ArtaEditableTextColumn<User> lastNameColumn = new ArtaEditableTextColumn<User>() {
             @Override
@@ -610,7 +627,7 @@ public class ShowCasePanel extends FlowPanel {
             }
         };
         lastNameColumn.setSortable(true);
-        table.addColumn(lastNameColumn, "last name");
+        table.addColumn(lastNameColumn, "Фамилия");
 
         ArtaEditableTextColumn<User> addressColumn = new ArtaEditableTextColumn<User>() {
             @Override
@@ -624,14 +641,14 @@ public class ShowCasePanel extends FlowPanel {
             }
         };
         addressColumn.setSortable(true);
-        table.addColumn(addressColumn, "address");
+        table.addColumn(addressColumn, "Почтовый индекс");
 
         final ListDataProvider<User> provider = new ListDataProvider<User>();
         provider.addDataDisplay(table);
 
         final List<User> list = provider.getList();
-        for (int i = 0; i < 200; i++) {
-            list.add(new User("jon" + i, "jones" + i, "la" + i));
+        for (int i = 0; i < 190; i++) {
+            list.add(new User("jon" + i, "jones" + i, "" + (85281 + i)));
         }
         provider.flush();
 

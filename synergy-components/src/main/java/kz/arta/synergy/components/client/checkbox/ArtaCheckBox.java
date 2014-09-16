@@ -3,6 +3,7 @@ package kz.arta.synergy.components.client.checkbox;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.util.Utils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,6 +36,7 @@ public class ArtaCheckBox extends com.google.gwt.user.client.ui.CheckBox {
     public ArtaCheckBox() {
         super();
         setStyleName(SynergyComponents.resources.cssComponents().checkbox());
+        Utils.cancelNonLeftButtons(getElement().getFirstChildElement().getNextSiblingElement());
     }
 
     /**
@@ -141,5 +143,4 @@ public class ArtaCheckBox extends com.google.gwt.user.client.ui.CheckBox {
         on.remove(checkBox);
         off.remove(checkBox);
     }
-
 }

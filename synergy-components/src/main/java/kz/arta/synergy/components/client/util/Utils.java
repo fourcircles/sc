@@ -1,9 +1,8 @@
 package kz.arta.synergy.components.client.util;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.useragent.client.UserAgent;
 
 /**
  * User: vsl
@@ -44,4 +43,30 @@ public class Utils {
             element.getStyle().setProperty("transform", degreesStr);
         }
     }
+
+    /**
+     * Предотвращает нажатие клики всеми кнопками мыши кроме левой.
+     * Причина использования - некорректная работа метода getButton для {@link com.google.gwt.user.client.ui.RadioButton}
+     * @param element элемент
+     */
+    public static native void cancelNonLeftButtons(com.google.gwt.dom.client.Element element) /*-{
+        element.addEventListener('click', function(e) {
+            var cancel = false;
+            if (e.which != null) {
+                if (e.which > 1) {
+                    cancel = true;
+                }
+            } else {
+                if (e.button > 0) {
+                    cancel = true;
+                }
+            }
+            if (cancel) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+    }-*/;
+
+
 }

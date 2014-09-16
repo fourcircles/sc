@@ -2,6 +2,7 @@ package kz.arta.synergy.components.client.checkbox;
 
 
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.util.Utils;
 
 /**
  * User: vsl
@@ -14,6 +15,7 @@ public class ArtaRadioButton extends com.google.gwt.user.client.ui.RadioButton {
     public ArtaRadioButton(String name) {
         super(name);
         setStyleName(SynergyComponents.resources.cssComponents().radio());
+        Utils.cancelNonLeftButtons(getElement().getFirstChildElement().getNextSiblingElement());
     }
 
     /**

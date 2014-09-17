@@ -1758,15 +1758,17 @@ p {
 .treeItem.selected {
     color: textColor2;
 }
+/*индикатор*/
 .treeItem img {
     cursor: pointer;
+    margin-right: 10px;
 }
+/*иконка*/
 .treeItem img + img {
     cursor: default;
-    margin-left: 10px;
+    margin-right: 8px;
 }
 .treeItem span {
-    margin-left: 8px;
     white-space: nowrap;
 }
 

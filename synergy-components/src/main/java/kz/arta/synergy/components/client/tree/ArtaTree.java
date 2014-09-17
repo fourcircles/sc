@@ -20,10 +20,6 @@ import java.util.ArrayList;
  * Дерево
  */
 public class ArtaTree extends Composite {
-    /**
-     * Панель со скроллом
-     */
-    private ArtaScrollPanel scroll;
 
     /**
      * Корневая панель
@@ -42,7 +38,7 @@ public class ArtaTree extends Composite {
     ArrayList<TreeItem> items;
 
     public ArtaTree() {
-        scroll = new ArtaScrollPanel();
+        ArtaScrollPanel scroll = new ArtaScrollPanel();
         initWidget(scroll);
         scroll.addStyleName(SynergyComponents.resources.cssComponents().tree());
 
@@ -66,6 +62,13 @@ public class ArtaTree extends Composite {
                 selectedItem.asWidget().getElement().scrollIntoView();
             }
         });
+    }
+
+    /**
+     * Возвращает все добавленные корневые узлы дерева
+     */
+    public ArrayList<TreeItem> getItems() {
+        return items;
     }
 
     /**

@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -45,7 +46,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     /**
      * Узлы внутри данного узла
      */
-    private ArrayList<TreeItem> children = new ArrayList<TreeItem>();
+    private ArrayList<TreeItem> items;
 
     /**
      * Текст узла
@@ -124,6 +125,8 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
         label.addClickHandler(selectionHandler);
         icon.addClickHandler(selectionHandler);
 
+        icon.getElement().getStyle().setDisplay(Style.Display.NONE);
+
         this.bus = bus;
         label.setText(text);
 
@@ -152,15 +155,24 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
      * Добавить узел
      */
     public void addTreeItem(TreeItem item) {
-        if (children == null) {
-            children = new ArrayList<TreeItem>();
+        if (items == null) {
+            items = new ArrayList<TreeItem>();
         }
-        children.add(item);
+        items.add(item);
         item.setParent(this);
 
         content.add(item.asTreeItem());
 
-        indicator.getElement().getStyle().clearDisplay();
+        indicator.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+    }
+
+    public void setIcon(ImageResource resource) {
+        if (resource == null) {
+            icon.getElement().getStyle().setDisplay(Style.Display.NONE);
+        } else {
+            icon.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        }
+        icon.setResource(resource);
     }
 
     public boolean isOpen() {
@@ -228,6 +240,14 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
         } else {
             return SynergyComponents.resources.cssComponents().mainText();
         }
+    }
+
+    public boolean hasItems() {
+        return items != null && !items.isEmpty();
+    }
+
+    public ArrayList<TreeItem> getItems() {
+        return items;
     }
 
     @Override

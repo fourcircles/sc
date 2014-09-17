@@ -11,9 +11,9 @@ import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.*;
@@ -49,7 +49,6 @@ import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.stack.Stack;
 import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
-import kz.arta.synergy.components.client.table.Pager;
 import kz.arta.synergy.components.client.table.Table;
 import kz.arta.synergy.components.client.table.User;
 import kz.arta.synergy.components.client.table.column.ArtaEditableTextColumn;
@@ -99,6 +98,7 @@ public class ShowCasePanel extends FlowPanel {
         showCaseLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
 
         treeSetUp();
+        setTreeIcons(ImageResources.IMPL.folder());
 
         final Dictionary theme = Dictionary.getDictionary("properties");
 
@@ -184,6 +184,22 @@ public class ShowCasePanel extends FlowPanel {
                 tabs.remove(event.getTab().getContent().asWidget());
             }
         });
+    }
+
+    private void setTreeIcons(TreeItem item, ImageResource icon) {
+        item.setIcon(icon);
+
+        if (item.hasItems()) {
+            for (TreeItem child : item.getItems()) {
+                setTreeIcons(child, icon);
+            }
+        }
+    }
+
+    private void setTreeIcons(ImageResource icon) {
+        for (TreeItem item : tree.getItems()) {
+            setTreeIcons(item, icon);
+        }
     }
 
     private SimpleButton setUpDialog(String title, final DialogSimple dialog) {
@@ -515,6 +531,17 @@ public class ShowCasePanel extends FlowPanel {
                 return getCheckBoxPanel();
             }
         });
+        addTreeItem(basicComponents, new LoadPanel() {
+            @Override
+            public String getText() {
+                return SCMessages.i18n.tr("Дерево");
+            }
+
+            @Override
+            public Widget getContentWidget() {
+                return getTreePanel();
+            }
+        });
         TreeItem trees = tree.addItem(basicComponents, SCMessages.i18n.tr("Таблица"));
         addTreeItem(trees, new LoadPanel() {
             @Override
@@ -575,6 +602,43 @@ public class ShowCasePanel extends FlowPanel {
                 return setUpDialogs(true);
             }
         });
+    }
+
+    private void copyTreeItem(ArtaTree tree, TreeItem src, TreeItem dst) {
+        if (!src.hasItems()) {
+            return;
+        }
+        for (TreeItem item : src.getItems()) {
+            TreeItem newItem = tree.addItem(dst, item.getText());
+            copyTreeItem(tree, item, newItem);
+        }
+    }
+
+    private ArtaTree copyTree(ArtaTree tree) {
+        ArtaTree newTree = new ArtaTree();
+        for (TreeItem item : tree.getItems()) {
+            TreeItem newItem = newTree.addItem(item.getText());
+            copyTreeItem(newTree, item, newItem);
+        }
+        return newTree;
+    }
+
+    private Widget getTreePanel() {
+        FlowPanel root = new FlowPanel();
+
+        ArtaTree localTree = copyTree(tree);
+        localTree.setSize("400px", "400px");
+        localTree.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        localTree.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
+
+        setTreeIcons(localTree.getItems().get(0).getItems().get(0), ImageResources.IMPL.folder());
+        setTreeIcons(localTree.getItems().get(0).getItems().get(1), ImageResources.IMPL.calendarIcon());
+        setTreeIcons(localTree.getItems().get(1), ImageResources.IMPL.zoom());
+        setTreeIcons(localTree.getItems().get(2), ImageResources.IMPL.zoom());
+
+        root.add(localTree);
+
+        return root;
     }
 
     private Widget getTablePanel(boolean onlyRows) {

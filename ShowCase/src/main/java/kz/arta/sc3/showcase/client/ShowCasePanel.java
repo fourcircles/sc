@@ -49,6 +49,7 @@ import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.stack.Stack;
 import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
+import kz.arta.synergy.components.client.table.Pager;
 import kz.arta.synergy.components.client.table.Table;
 import kz.arta.synergy.components.client.table.User;
 import kz.arta.synergy.components.client.table.column.ArtaEditableTextColumn;
@@ -682,7 +683,8 @@ public class ShowCasePanel extends FlowPanel {
         });
         table.addSortHandler(listHandler);
 
-        SimplePager pager = new SimplePager();
+        Pager pager = new Pager(true);
+        pager.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         pager.setDisplay(table);
 
         panel.add(pager);

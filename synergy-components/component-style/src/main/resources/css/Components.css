@@ -1773,3 +1773,47 @@ p {
 .treeItem .content {
     overflow: hidden;
 }
+
+@eval pagerHeight kz.arta.synergy.components.style.client.Constants.pagerHeight();
+.pager {
+    height: pagerHeight;
+    overflow: visible;
+    border: 1px solid buttonBorder;
+    border-radius: 4px;
+    position: relative;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+@eval pagerButtonWidth kz.arta.synergy.components.style.client.Constants.pagerButtonWidth();
+.pager .buttonSimple {
+    width: 32px;
+    position: absolute;
+    top: -1px;
+}
+.pager .buttonSimple:hover {
+    z-index: 1;
+}
+.pager .buttonSimple:first-child {
+    left: -1px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+.pager .buttonSimple:last-child {
+    right: -1px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+@eval pagerTextWidth kz.arta.synergy.components.style.client.Constants.pagerTextWidth();
+@eval pagerTextPadding kz.arta.synergy.components.style.client.Constants.pagerTextPadding();
+
+.pager span {
+    display: inline-block;
+    width: pagerTextWidth;
+    line-height: 14px;
+    padding-left: pagerTextPadding;
+    padding-right: pagerTextPadding;
+    position: absolute;
+    color: textColor2;
+    text-align: center;
+}

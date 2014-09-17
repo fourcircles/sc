@@ -185,4 +185,6 @@ public interface CssComponents extends CssResource {
     String tree();
     String treeItem();
     String content();
+
+    String pager();
 }

@@ -83,6 +83,11 @@ public class Constants {
 
     public static final int TABLE_DIVIDER_WIDTH = 7;
 
+    public static final int PAGER_BUTTON_WIDTH = 34;
+    public static final int PAGER_TEXT_WIDTH = 91;
+    public static final int PAGER_TEXT_PADDING = 5;
+    public static final int PAGER_HEIGHT = 32;
+
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
     }
@@ -205,5 +210,18 @@ public class Constants {
 
     public static String tableDividerWidth() {
         return TABLE_DIVIDER_WIDTH + "px";
+    }
+
+    public static String pagerButtonWidth() {
+        return PAGER_BUTTON_WIDTH + "px";
+    }
+    public static String pagerTextWidth() {
+        return PAGER_TEXT_WIDTH + "px";
+    }
+    public static String pagerTextPadding() {
+        return PAGER_TEXT_PADDING + "px";
+    }
+    public static String pagerHeight() {
+        return PAGER_HEIGHT + "px";
     }
 }

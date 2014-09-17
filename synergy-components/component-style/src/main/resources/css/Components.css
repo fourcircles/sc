@@ -1535,9 +1535,32 @@ p {
 :focus {
     outline: none;
 }
-.tableContainer{
-    /*height: 100%;*/
-    /*overflow: auto;*/
+
+.tableWhole {
+    border: 1px solid buttonPressed;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.hat {
+    height: 39px;
+    line-height: 39px;
+    border-bottom: 1px solid buttonPressed;
+}
+.tableWhole .hat > span {
+    color: textColor2;
+    margin-left: 16px;
+}
+.tableWhole .hat > .buttonSimple {
+    float: right;
+    margin-right: 4px;
+    margin-top: 4px;
+}
+.tableWhole .hat > .pager {
+    float: right;
+    margin-top: 4px;
+    margin-right: 4px;
 }
 
 .table {
@@ -1652,9 +1675,6 @@ p {
     border-top: 1px solid border1;
 }
 
-.tableInput{
-}
-
 /*Временно*/
 @external gwt-Label;
 .gwt-Label {
@@ -1717,12 +1737,6 @@ p {
     margin-left: 5px;
 }
 
-.tableWhole {
-    border: 1px solid buttonPressed;
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
-}
 .headerDivider {
     background-color: selectColor;
     height: 32px;

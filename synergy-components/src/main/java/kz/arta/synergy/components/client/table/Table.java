@@ -155,7 +155,7 @@ public class Table<T> extends Composite implements HasData<T> {
     /**
      * Заданная высота
      */
-    private int height;
+    private int wholeTableHeight;
 
     /**
      * Режим выбора в таблице.
@@ -172,6 +172,8 @@ public class Table<T> extends Composite implements HasData<T> {
      * Выбранный столбец
      */
     private int selectedColumn = -1;
+
+    private TableHat hat;
 
     /**
      * Переривывает таблицу
@@ -196,7 +198,12 @@ public class Table<T> extends Composite implements HasData<T> {
         redrawDividers();
 
         if (isHeightSet) {
-            tableContainer.getElement().getStyle().setHeight(height - 32, Style.Unit.PX);
+            int tableHeight = wholeTableHeight;
+            if (hasHat()) {
+                tableHeight -= 40; //шапка
+            }
+            tableHeight -= 32; //хедеры
+            tableContainer.getElement().getStyle().setHeight(tableHeight, Style.Unit.PX);
         } else {
             tableContainer.getElement().getStyle().setHeight(table.getOffsetHeight(), Style.Unit.PX);
         }
@@ -233,7 +240,15 @@ public class Table<T> extends Composite implements HasData<T> {
             int absoluteLeft = table.getFlexCellFormatter().getElement(0, i).getAbsoluteLeft() - 1;
             absoluteLeft -= root.getAbsoluteLeft();
             absoluteLeft -= Constants.TABLE_DIVIDER_WIDTH / 2;
-            dividers.get(dividersCount++).getElement().getStyle().setLeft(absoluteLeft, Style.Unit.PX);
+
+            ArtaFlowPanel divider = dividers.get(dividersCount++);
+            divider.getElement().getStyle().setLeft(absoluteLeft, Style.Unit.PX);
+
+            if (hasHat()) {
+                divider.getElement().getStyle().setTop(40, Style.Unit.PX);
+            } else {
+                divider.getElement().getStyle().setTop(0, Style.Unit.PX);
+            }
         }
     }
 
@@ -389,8 +404,7 @@ public class Table<T> extends Composite implements HasData<T> {
         root.add(headersTable);
 
         tableContainer = new ArtaScrollPanel();
-//        FocusPanel tableContainer = new FocusPanel();
-        tableContainer.setStyleName(SynergyComponents.resources.cssComponents().tableContainer());
+//        tableContainer.setStyleName(SynergyComponents.resources.cssComponents().tableContainer());
 
         table = new FlexTable();
         table.addStyleName(SynergyComponents.resources.cssComponents().table());
@@ -1206,7 +1220,7 @@ public class Table<T> extends Composite implements HasData<T> {
 
     public void setHeight(int height) {
         isHeightSet = true;
-        this.height = height;
+        this.wholeTableHeight = height;
         root.getElement().getStyle().setHeight(height, Style.Unit.PX);
         if (isAttached()) {
             redraw();
@@ -1215,7 +1229,7 @@ public class Table<T> extends Composite implements HasData<T> {
 
     public void clearHeight(int height) {
         isHeightSet = false;
-        this.height = height;
+        this.wholeTableHeight = height;
         root.getElement().getStyle().clearHeight();
         if (isAttached()) {
             redraw();
@@ -1249,5 +1263,35 @@ public class Table<T> extends Composite implements HasData<T> {
             }
         }
         return -1;
+    }
+
+    public TableHat getHat() {
+        return hat;
+    }
+
+    public boolean hasHat() {
+        return hat != null && hat.isAttached();
+    }
+
+    public void enableHat(boolean enabled) {
+        if (enabled) {
+            if (hat == null) {
+                hat = new TableHat(this);
+            }
+            root.insert(hat, 0);
+        } else {
+            if (hat != null) {
+                hat.removeFromParent();
+            }
+        }
+
+        for (FlowPanel divider : dividers) {
+            Style dividerStyle = divider.getElement().getStyle();
+            if (hasHat()) {
+                dividerStyle.setTop(40, Style.Unit.PX);
+            } else {
+                dividerStyle.setTop(0, Style.Unit.PX);
+            }
+        }
     }
 }

@@ -168,8 +168,6 @@ public interface CssComponents extends CssResource {
     String group();
 
     String table();
-    String tableContainer();
-    String tableInput();
     String edit();
     String last();
     String underEdit();
@@ -181,6 +179,7 @@ public interface CssComponents extends CssResource {
     String drag();
     String notFull();
     String onlyRows();
+    String hat();
 
     String tree();
     String treeItem();

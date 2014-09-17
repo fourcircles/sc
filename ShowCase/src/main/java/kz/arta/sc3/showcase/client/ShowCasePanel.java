@@ -587,6 +587,11 @@ public class ShowCasePanel extends FlowPanel {
         }
 
         Table<User> table = new Table<User>(29);
+        table.enableHat(true);
+        table.getHat().setName(SCMessages.i18n.tr("Таблица"));
+        table.getHat().enableButton(true);
+        table.getHat().enablePagerAlways(true);
+        table.getHat().enablePager(true);
 
         table.setOnlyRows(onlyRows);
         if (onlyRows) {
@@ -683,11 +688,6 @@ public class ShowCasePanel extends FlowPanel {
         });
         table.addSortHandler(listHandler);
 
-        Pager pager = new Pager(true);
-        pager.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        pager.setDisplay(table);
-
-        panel.add(pager);
         panel.add(table);
 
         return new ArtaScrollPanel(panel);

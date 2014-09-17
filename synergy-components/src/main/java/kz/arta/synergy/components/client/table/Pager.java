@@ -146,7 +146,7 @@ public class Pager extends AbstractPager {
      * Изменяет позицию текста, для сохранение центрального положения текста по вертикали.
      */
     private void updateTextPosition() {
-        if (isAttached()) {
+        if (isAttached() && label != null) {
             int top = (Constants.PAGER_HEIGHT - Constants.BORDER_WIDTH * 2 - label.getOffsetHeight()) / 2;
             label.getElement().getStyle().setTop(Math.max(0, top), Style.Unit.PX);
         }

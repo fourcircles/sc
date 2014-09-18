@@ -49,6 +49,7 @@ import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.stack.Stack;
 import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
+import kz.arta.synergy.components.client.table.Pager;
 import kz.arta.synergy.components.client.table.Table;
 import kz.arta.synergy.components.client.table.User;
 import kz.arta.synergy.components.client.table.column.ArtaEditableTextColumn;
@@ -59,6 +60,7 @@ import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.client.tree.ArtaTree;
 import kz.arta.synergy.components.client.tree.TreeItem;
+import kz.arta.synergy.components.client.tree.events.TreeItemContextMenuEvent;
 import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
 import kz.arta.synergy.components.client.util.PPanel;
 import kz.arta.synergy.components.style.client.Constants;
@@ -71,6 +73,8 @@ import java.util.*;
  * Time: 12:43
  */
 public class ShowCasePanel extends FlowPanel {
+    public static final String THEME = "theme";
+    public static final int LOCAL_TREE_SIZE = 400;
 
     private Theme currentTheme;
 
@@ -79,14 +83,14 @@ public class ShowCasePanel extends FlowPanel {
     @UiField FlowPanel titlePanel;
     @UiField InlineLabel showCaseLabel;
 
-    private Set<Widget> tabs;
+    private Set<Widget> openTabs;
 
     interface ShowCasePanelUiBinder extends UiBinder<FlowPanel, ShowCasePanel> {
     }
     private static ShowCasePanelUiBinder binder = GWT.create(ShowCasePanelUiBinder.class);
 
     public ShowCasePanel() {
-        if (Cookies.getCookie("theme") == null) {
+        if (Cookies.getCookie(THEME) == null) {
             currentTheme = Theme.standard;
         } else {
             currentTheme = Theme.getTheme(Cookies.getCookie("theme"));
@@ -99,6 +103,52 @@ public class ShowCasePanel extends FlowPanel {
 
         treeSetUp();
         setTreeIcons(ImageResources.IMPL.folder());
+
+        final ContextMenu menu = new ContextMenu();
+        setTreeItemHandler(tree, new TreeItemContextMenuEvent.Handler() {
+            @Override
+            public void onTreeContextMenu(TreeItemContextMenuEvent event) {
+                event.getEvent().preventDefault();
+                event.getEvent().stopPropagation();
+                menu.clear();
+                final TreeItem item = event.getItem();
+                if (item.isSelected()) {
+                    menu.addItem(SCMessages.i18n.tr("Снять выделение"), new Command() {
+                        @Override
+                        public void execute() {
+                            item.setSelected(false);
+                        }
+                    });
+                } else {
+                    menu.addItem(SCMessages.i18n.tr("Выделить"), new Command() {
+                        @Override
+                        public void execute() {
+                            item.setSelected(true);
+                        }
+                    });
+                }
+
+                if (item.hasItems()) {
+                    menu.addSeparator();
+                    if (item.isOpen()) {
+                        menu.addItem(SCMessages.i18n.tr("Закрыть"), new Command() {
+                            @Override
+                            public void execute() {
+                                item.setOpen(false);
+                            }
+                        });
+                    } else {
+                        menu.addItem(SCMessages.i18n.tr("Открыть"), new Command() {
+                            @Override
+                            public void execute() {
+                                item.setOpen(true);
+                            }
+                        });
+                    }
+                }
+                menu.show(event.getX(), event.getY());
+            }
+        });
 
         final Dictionary theme = Dictionary.getDictionary("properties");
 
@@ -156,7 +206,6 @@ public class ShowCasePanel extends FlowPanel {
             localesCombo.getElement().getStyle().setFloat(Style.Float.LEFT);
             about.getElement().getStyle().setFloat(Style.Float.LEFT);
         } else {
-//            showCaseLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
             themesCombo.getElement().getStyle().setFloat(Style.Float.RIGHT);
             localesCombo.getElement().getStyle().setFloat(Style.Float.RIGHT);
             about.getElement().getStyle().setFloat(Style.Float.RIGHT);
@@ -166,7 +215,7 @@ public class ShowCasePanel extends FlowPanel {
         add(tree);
         add(tabPanel);
 
-        tabs = new HashSet<Widget>();
+        openTabs = new HashSet<Widget>();
 
         tree.addTreeSelectionEvent(new TreeSelectionEvent.Handler() {
             @Override
@@ -181,7 +230,7 @@ public class ShowCasePanel extends FlowPanel {
         tabPanel.addTabCloseHandler(new TabCloseEvent.Handler() {
             @Override
             public void onTabClose(TabCloseEvent event) {
-                tabs.remove(event.getTab().getContent().asWidget());
+                openTabs.remove(event.getTab().getContent().asWidget());
             }
         });
     }
@@ -335,6 +384,7 @@ public class ShowCasePanel extends FlowPanel {
                         break;
                     case 3:
                         combo.setEnabled(false);
+                    default:
                 }
             }
         });
@@ -350,57 +400,49 @@ public class ShowCasePanel extends FlowPanel {
 
         root.add(addTab);
 
-        final TabPanel tabPanel = new TabPanel();
-        tabPanel.getElement().getStyle().setPosition(Style.Position.RELATIVE);
-        tabPanel.setWidth("450px");
-        tabPanel.setHeight("300px");
+        final TabPanel localTabPanel = new TabPanel();
+        localTabPanel.getElement().getStyle().setPosition(Style.Position.RELATIVE);
+        localTabPanel.setWidth("450px");
+        localTabPanel.setHeight("300px");
 
-        root.add(tabPanel);
+        root.add(localTabPanel);
 
-        tabPanel.addTab(SCMessages.i18n.tr("Вкладка") + " 1", new SimplePanel());
+        localTabPanel.addTab(SCMessages.i18n.tr("Вкладка") + " 1", new SimplePanel());
         addTab.addClickHandler(new ClickHandler() {
             private int tabCount = 2;
             @Override
             public void onClick(ClickEvent event) {
-                tabPanel.addTab(SCMessages.i18n.tr("Вкладка") + " " + tabCount++, new SimplePanel());
+                localTabPanel.addTab(SCMessages.i18n.tr("Вкладка") + " " + tabCount++, new SimplePanel());
             }
         });
 
         return root;
     }
 
-    private static class FlowPanel_ extends FlowPanel {
-        public FlowPanel_() {
-            super();
-            sinkEvents(Event.ONCONTEXTMENU);
-        }
-    }
-
     private abstract class LoadPanel implements Command {
         private Widget content;
+        private String text;
+
+        public LoadPanel(String text) {
+            this.text = text;
+        }
 
         @Override
         public void execute() {
-            if (!tabs.contains(content)) {
-                addTab();
-                tabs.add(content);
-            }
-            selectTab();
-        }
-
-        public void addTab() {
             if (content == null) {
                 content = getContentWidget();
-                content.setHeight("100%");
             }
-            tabPanel.addTab(getText(), content);
-        }
-
-        public void selectTab() {
+            if (!openTabs.contains(content)) {
+                tabPanel.addTab(getText(), content);
+                openTabs.add(content);
+            }
             tabPanel.selectTab(content);
         }
 
-        public abstract String getText();
+        public String getText() {
+            return text;
+        }
+
         public abstract Widget getContentWidget();
     }
 
@@ -415,45 +457,25 @@ public class ShowCasePanel extends FlowPanel {
 
         TreeItem buttons = tree.addItem(basicComponents, SCMessages.i18n.tr("Кнопки"));
 
-        addTreeItem(buttons, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Простая кнопка");
-            }
-
+        addTreeItem(buttons, new LoadPanel(SCMessages.i18n.tr("Простая кнопка")) {
             @Override
             public Widget getContentWidget() {
                 return getSimpleButtonPanel();
             }
         });
-        addTreeItem(buttons, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Кнопка с иконкой");
-            }
-
+        addTreeItem(buttons, new LoadPanel(SCMessages.i18n.tr("Кнопка с иконкой")) {
             @Override
             public Widget getContentWidget() {
                 return getIconButtonPanel();
             }
         });
-        addTreeItem(buttons, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Цветные кнопки");
-            }
-
+        addTreeItem(buttons, new LoadPanel(SCMessages.i18n.tr("Цветные кнопки")) {
             @Override
             public Widget getContentWidget() {
                 return getColorButtonPanel();
             }
         });
-        addTreeItem(buttons, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Групповые кнопки");
-            }
-
+        addTreeItem(buttons, new LoadPanel(SCMessages.i18n.tr("Групповые кнопки")) {
             @Override
             public Widget getContentWidget() {
                 return getGroupButton();
@@ -461,105 +483,58 @@ public class ShowCasePanel extends FlowPanel {
         });
 
         TreeItem fields = tree.addItem(basicComponents, SCMessages.i18n.tr("Поля"));
-//        TreeItem fields = new TreeItem(new Label(SCMessages.i18n.tr("Поля")));
-//        basicComponents.addItem(fields);
 
-        addTreeItem(fields, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Поле ввода текста");
-            }
-
+        addTreeItem(fields, new LoadPanel(SCMessages.i18n.tr("Поле ввода текста")) {
             @Override
             public Widget getContentWidget() {
                 return getTextInputs();
             }
         });
-        addTreeItem(fields, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Поле с тегами");
-            }
-
+        addTreeItem(fields, new LoadPanel(SCMessages.i18n.tr("Поле с тегами")) {
             @Override
             public Widget getContentWidget() {
                 return getTagInputs();
             }
         });
-        addTreeItem(fields, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Комбобокс");
-            }
-
+        addTreeItem(fields, new LoadPanel(SCMessages.i18n.tr("Комбобокс")) {
             @Override
             public Widget getContentWidget() {
                 return getComboboxPanel();
             }
         });
 
-        addTreeItem(basicComponents, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Коллапсинг-панели");
-            }
-
+        addTreeItem(basicComponents, new LoadPanel(SCMessages.i18n.tr("Коллапсинг-панели")) {
             @Override
             public Widget getContentWidget() {
                 return getCollapsingPanel();
             }
         });
-        addTreeItem(basicComponents, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Вкладки");
-            }
-
+        addTreeItem(basicComponents, new LoadPanel(SCMessages.i18n.tr("Вкладки")) {
             @Override
             public Widget getContentWidget() {
                 return getTabsPanel();
             }
         });
-        addTreeItem(basicComponents, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Чекбоксы и радиокнопки");
-            }
-
+        addTreeItem(basicComponents, new LoadPanel(SCMessages.i18n.tr("Чекбоксы и радиокнопки")) {
             @Override
             public Widget getContentWidget() {
                 return getCheckBoxPanel();
             }
         });
-        addTreeItem(basicComponents, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Дерево");
-            }
-
+        addTreeItem(basicComponents, new LoadPanel(SCMessages.i18n.tr("Дерево")) {
             @Override
             public Widget getContentWidget() {
                 return getTreePanel();
             }
         });
         TreeItem trees = tree.addItem(basicComponents, SCMessages.i18n.tr("Таблица"));
-        addTreeItem(trees, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Таблица - ряды");
-            }
-
+        addTreeItem(trees, new LoadPanel(SCMessages.i18n.tr("Таблица - ряды")) {
             @Override
             public Widget getContentWidget() {
                 return getTablePanel(true);
             }
         });
-        addTreeItem(trees, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Таблица - ячейки");
-            }
-
+        addTreeItem(trees, new LoadPanel(SCMessages.i18n.tr("Таблица - ячейки")) {
             @Override
             public Widget getContentWidget() {
                 return getTablePanel(false);
@@ -567,12 +542,7 @@ public class ShowCasePanel extends FlowPanel {
         });
 
         TreeItem complexComponents = tree.addItem(SCMessages.i18n.tr("Сложные компоненты"));
-        addTreeItem(complexComponents, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Дата/время");
-            }
-
+        addTreeItem(complexComponents, new LoadPanel(SCMessages.i18n.tr("Дата/время")) {
             @Override
             public Widget getContentWidget() {
                 return getDateInputs();
@@ -580,23 +550,13 @@ public class ShowCasePanel extends FlowPanel {
         });
 
         TreeItem shell = tree.addItem(SCMessages.i18n.tr("Оболочка интерфейса"));
-        addTreeItem(shell, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Диалог без кнопок");
-            }
-
+        addTreeItem(shell, new LoadPanel(SCMessages.i18n.tr("Диалог без кнопок")) {
             @Override
             public Widget getContentWidget() {
                 return setUpDialogs(false);
             }
         });
-        addTreeItem(shell, new LoadPanel() {
-            @Override
-            public String getText() {
-                return SCMessages.i18n.tr("Диалог с кнопками");
-            }
-
+        addTreeItem(shell, new LoadPanel(SCMessages.i18n.tr("Диалог с кнопками")) {
             @Override
             public Widget getContentWidget() {
                 return setUpDialogs(true);
@@ -604,6 +564,21 @@ public class ShowCasePanel extends FlowPanel {
         });
     }
 
+    private void setTreeItemHandler(TreeItem item, TreeItemContextMenuEvent.Handler handler) {
+        item.addTreeContextMenuHandler(handler);
+        if (!item.hasItems()) {
+            return;
+        }
+        for (TreeItem child : item.getItems()) {
+            setTreeItemHandler(child, handler);
+        }
+    }
+
+    private void setTreeItemHandler(ArtaTree tree, TreeItemContextMenuEvent.Handler handler) {
+        for (TreeItem item : tree.getItems()) {
+            setTreeItemHandler(item, handler);
+        }
+    }
     private void copyTreeItem(ArtaTree tree, TreeItem src, TreeItem dst) {
         if (!src.hasItems()) {
             return;
@@ -627,7 +602,10 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel root = new FlowPanel();
 
         ArtaTree localTree = copyTree(tree);
-        localTree.setSize("400px", "400px");
+
+        localTree.getElement().getStyle().setHeight(LOCAL_TREE_SIZE, Style.Unit.PX);
+        localTree.getElement().getStyle().setWidth(LOCAL_TREE_SIZE, Style.Unit.PX);
+
         localTree.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
         localTree.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
 
@@ -752,9 +730,16 @@ public class ShowCasePanel extends FlowPanel {
         });
         table.addSortHandler(listHandler);
 
+        Pager simplePager = new Pager(false);
+        simplePager.setDisplay(table);
+        simplePager.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+
+        panel.add(simplePager);
         panel.add(table);
 
-        return new ArtaScrollPanel(panel);
+        ArtaScrollPanel scroll = new ArtaScrollPanel(panel);
+        scroll.setHeight("100%");
+        return scroll;
     }
 
     /**
@@ -869,7 +854,10 @@ public class ShowCasePanel extends FlowPanel {
         panel.add(dateTest);
         dateTest.getElement().getStyle().setPadding(5, Style.Unit.PX);
 
-        return new ArtaScrollPanel(panel);
+        ArtaScrollPanel scroll = new ArtaScrollPanel(panel);
+        scroll.setHeight("100%");
+
+        return scroll;
     }
 
     private Widget makeLineForCollapsingPanel(String text, int textWidth, int inputWidth, boolean dateInput) {
@@ -1056,7 +1044,9 @@ public class ShowCasePanel extends FlowPanel {
             }
         });
 
-        return new ArtaScrollPanel(root);
+        ArtaScrollPanel scroll = new ArtaScrollPanel(root);
+        scroll.setHeight("100%");
+        return scroll;
     }
 
     public Widget getCheckBoxPanel() {
@@ -1076,9 +1066,12 @@ public class ShowCasePanel extends FlowPanel {
 
         ArtaRadioButton[] radios = new ArtaRadioButton[] {
                 new ArtaRadioButton("showCaseRadio"), new ArtaRadioButton("showCaseRadio"),
-                new ArtaRadioButton("showCaseRadio"), new ArtaRadioButton("showCaseRadio")
+                new ArtaRadioButton("showCaseRadio"), new ArtaRadioButton("showCaseRadio"),
+                new ArtaRadioButton("showCaseRadio2")
         };
         radios[3].setEnabled(false);
+        radios[4].setValue(true);
+        radios[4].setEnabled(false);
 
         FlowPanel row1 = new FlowPanel();
         for (ArtaCheckBox box : checkBoxes) {
@@ -1435,6 +1428,7 @@ public class ShowCasePanel extends FlowPanel {
 
         ArtaScrollPanel scroll = new ArtaScrollPanel();
         scroll.setWidget(panel);
+        scroll.setHeight("100%");
 
         return scroll;
 
@@ -1446,20 +1440,8 @@ public class ShowCasePanel extends FlowPanel {
      * Простые кнопки
      */
     private Widget getSimpleButtonPanel() {
-        final ContextMenu menu = createSimpleMenu();
+        final FlowPanel simpleButtonPanel = new FlowPanel();
 
-        FlowPanel simpleButtonPanel = new FlowPanel_() {
-            @Override
-            public void onBrowserEvent(Event event) {
-                switch(DOM.eventGetType(event)) {
-                    case Event.ONCONTEXTMENU :
-                        event.preventDefault();
-                        menu.show(event.getClientX(), event.getClientY());
-                        break;
-                }
-                super.onBrowserEvent(event);
-            }
-        };
         simpleButtonPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         SimpleButton simpleButton = new SimpleButton(SCMessages.i18n.tr("Простая кнопка"));
@@ -1630,6 +1612,7 @@ public class ShowCasePanel extends FlowPanel {
 
         ArtaScrollPanel scroll = new ArtaScrollPanel();
         scroll.setWidget(colorButtonPanel);
+        scroll.setHeight("100%");
         return scroll;
     }
 

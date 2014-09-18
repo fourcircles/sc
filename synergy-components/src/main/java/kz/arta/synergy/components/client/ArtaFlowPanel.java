@@ -9,7 +9,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * Date: 21.07.14
  * Time: 10:37
  */
-public class ArtaFlowPanel extends FlowPanel implements HasAllMouseHandlers, HasClickHandlers {
+public class ArtaFlowPanel extends FlowPanel implements
+        HasAllMouseHandlers, HasClickHandlers, HasContextMenuHandlers {
+
+    @Override
+    public HandlerRegistration addContextMenuHandler(ContextMenuHandler handler) {
+        return addDomHandler(handler, ContextMenuEvent.getType());
+    }
+
     @Override
     public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {
         return addDomHandler(handler, MouseDownEvent.getType());

@@ -1531,6 +1531,9 @@ p {
     gwt-image: "radioDisabled";
     cursor: default;
 }
+@sprite .radio.disabled input[type=radio]:checked + label {
+    gwt-image: "radioOnDisabled";
+}
 
 :focus {
     outline: none;

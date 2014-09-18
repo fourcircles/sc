@@ -121,7 +121,7 @@ public class ContextMenu extends MenuBase {
      * @param posY координата Y
      */
     public void show(int posX, int posY) {
-        show();
+        super.show();
         int lenX = popup.getOffsetWidth();
         int lenY = popup.getOffsetHeight();
 

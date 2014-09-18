@@ -2,9 +2,7 @@ package kz.arta.synergy.components.client.tree;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -18,6 +16,7 @@ import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.client.tree.events.TreeItemContextMenuEvent;
 import kz.arta.synergy.components.client.tree.events.TreeOpenEvent;
 import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
 import kz.arta.synergy.components.client.util.ArtaHasText;
@@ -111,10 +110,10 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
 
     private static TreeItemUiBinder ourUiBinder = GWT.create(TreeItemUiBinder.class);
 
-
-    public TreeItem(String text, EventBus bus) {
+    public TreeItem(String text, final EventBus bus) {
         root = ourUiBinder.createAndBindUi(this);
         root.addStyleName(SynergyComponents.resources.cssComponents().treeItem());
+
 
         ClickHandler selectionHandler = new ClickHandler() {
             @Override
@@ -141,6 +140,16 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
                 content.getElement().getStyle().setDisplay(Style.Display.NONE);
             }
         };
+        root.addContextMenuHandler(new ContextMenuHandler() {
+            @Override
+            public void onContextMenu(ContextMenuEvent event) {
+                if (bus != null) {
+                    bus.fireEventFromSource(new TreeItemContextMenuEvent(TreeItem.this,
+                            event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY(), event),
+                            TreeItem.this);
+                }
+            }
+        });
     }
 
     /**
@@ -322,5 +331,14 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
 
     public int getContentHeight() {
         return contentHeight;
+    }
+
+    /**
+     * Добавляет хендлер для элемента дерева.
+     * Если хендлеры добавлены для элемента дерева и для дерева, то при обработке
+     * события вызова контекстного меню для элемента дерева надо предотвращать bubbling.
+     */
+    public HandlerRegistration addTreeContextMenuHandler(TreeItemContextMenuEvent.Handler handler) {
+        return bus.addHandlerToSource(TreeItemContextMenuEvent.TYPE, this, handler);
     }
 }

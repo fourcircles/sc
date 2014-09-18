@@ -1,5 +1,8 @@
 package kz.arta.synergy.components.client.tree;
 
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.ContextMenuHandler;
+import com.google.gwt.event.dom.client.HasContextMenuHandlers;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -19,7 +22,7 @@ import java.util.ArrayList;
  *
  * Дерево
  */
-public class ArtaTree extends Composite {
+public class ArtaTree extends Composite implements HasContextMenuHandlers {
 
     /**
      * Корневая панель
@@ -103,5 +106,10 @@ public class ArtaTree extends Composite {
 
     public HandlerRegistration addTreeSelectionEvent(TreeSelectionEvent.Handler handler) {
         return bus.addHandler(TreeSelectionEvent.TYPE, handler);
+    }
+
+    @Override
+    public HandlerRegistration addContextMenuHandler(ContextMenuHandler handler) {
+        return root.addDomHandler(handler, ContextMenuEvent.getType());
     }
 }

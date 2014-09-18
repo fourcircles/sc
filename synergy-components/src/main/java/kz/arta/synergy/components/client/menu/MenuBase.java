@@ -250,9 +250,9 @@ public abstract class MenuBase {
         relativeWidget = widget;
         if (widget != null) {
             popup.addAutoHidePartner(widget.getElement());
-            popup.getElement().getStyle().setProperty("borderTop", "0px");
+            popup.getElement().getStyle().setProperty("borderTopStyle", "none");
         } else {
-            popup.getElement().getStyle().setProperty("borderTop", "1px");
+            popup.getElement().getStyle().setProperty("borderTopStyle", "solid");
         }
     }
 
@@ -264,6 +264,9 @@ public abstract class MenuBase {
         popup.removeAutoHidePartner(e);
     }
 
+    public boolean hasRelativeWidget() {
+        return relativeWidget != null && relativeWidget.isAttached();
+    }
     public Widget getRelativeWidget() {
         return relativeWidget;
     }
@@ -281,7 +284,7 @@ public abstract class MenuBase {
      * Показывает меню под родителем.
      */
     protected void showUnderParent() {
-        if (relativeWidget != null && relativeWidget.isAttached()) {
+        if (hasRelativeWidget()) {
             beforeShow();
             popup.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2 + "px");
             root.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2 + "px");

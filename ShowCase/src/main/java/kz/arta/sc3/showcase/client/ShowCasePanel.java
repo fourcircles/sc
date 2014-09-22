@@ -58,7 +58,7 @@ import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.client.tabs.TabPanel;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.theme.Theme;
-import kz.arta.synergy.components.client.tree.ArtaTree;
+import kz.arta.synergy.components.client.tree.Tree;
 import kz.arta.synergy.components.client.tree.TreeItem;
 import kz.arta.synergy.components.client.tree.events.TreeItemContextMenuEvent;
 import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
@@ -78,7 +78,7 @@ public class ShowCasePanel extends FlowPanel {
 
     private Theme currentTheme;
 
-    @UiField ArtaTree tree;
+    @UiField Tree tree;
     @UiField TabPanel tabPanel;
     @UiField FlowPanel titlePanel;
     @UiField InlineLabel showCaseLabel;
@@ -575,12 +575,12 @@ public class ShowCasePanel extends FlowPanel {
         }
     }
 
-    private void setTreeItemHandler(ArtaTree tree, TreeItemContextMenuEvent.Handler handler) {
+    private void setTreeItemHandler(Tree tree, TreeItemContextMenuEvent.Handler handler) {
         for (TreeItem item : tree.getItems()) {
             setTreeItemHandler(item, handler);
         }
     }
-    private void copyTreeItem(ArtaTree tree, TreeItem src, TreeItem dst) {
+    private void copyTreeItem(Tree tree, TreeItem src, TreeItem dst) {
         if (!src.hasItems()) {
             return;
         }
@@ -590,8 +590,8 @@ public class ShowCasePanel extends FlowPanel {
         }
     }
 
-    private ArtaTree copyTree(ArtaTree tree) {
-        ArtaTree newTree = new ArtaTree();
+    private Tree copyTree(Tree tree) {
+        Tree newTree = new Tree();
         for (TreeItem item : tree.getItems()) {
             TreeItem newItem = newTree.addItem(item.getText());
             copyTreeItem(newTree, item, newItem);
@@ -602,7 +602,7 @@ public class ShowCasePanel extends FlowPanel {
     private Widget getTreePanel() {
         FlowPanel root = new FlowPanel();
 
-        ArtaTree localTree = copyTree(tree);
+        kz.arta.synergy.components.client.tree.Tree localTree = copyTree(tree);
 
         localTree.getElement().getStyle().setHeight(LOCAL_TREE_SIZE, Style.Unit.PX);
         localTree.getElement().getStyle().setWidth(LOCAL_TREE_SIZE, Style.Unit.PX);

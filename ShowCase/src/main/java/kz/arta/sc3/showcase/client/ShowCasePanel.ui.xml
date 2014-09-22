@@ -32,7 +32,7 @@
         <g:FlowPanel addStyleNames="{style.titlePanel}" ui:field="titlePanel">
             <g:InlineLabel text="ShowCase" ui:field="showCaseLabel" />
         </g:FlowPanel>
-        <artaTree:ArtaTree addStyleNames="{style.tree}" ui:field="tree"/>
+        <artaTree:Tree addStyleNames="{style.tree}" ui:field="tree"/>
         <artaTabs:TabPanel addStyleNames="{style.tabs}" ui:field="tabPanel"/>
     </g:FlowPanel>
 </ui:UiBinder>

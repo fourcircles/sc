@@ -87,7 +87,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     /**
      * Изменения свойства display при закрытии производится с отложением
      */
-    private final Timer closeTimer;
+    Timer closeTimer;
 
     /**
      * Родительский узел.
@@ -110,7 +110,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
 
     private static TreeItemUiBinder ourUiBinder = GWT.create(TreeItemUiBinder.class);
 
-    public TreeItem(String text, final EventBus bus) {
+    TreeItem(String text, final EventBus bus) {
         root = ourUiBinder.createAndBindUi(this);
         root.addStyleName(SynergyComponents.resources.cssComponents().treeItem());
 
@@ -144,6 +144,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
             @Override
             public void onContextMenu(ContextMenuEvent event) {
                 if (bus != null) {
+                    //при вызове контекстного меню создаем кастомное событие о контекстном меню узла
                     bus.fireEventFromSource(new TreeItemContextMenuEvent(TreeItem.this,
                             event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY(), event),
                             TreeItem.this);
@@ -161,20 +162,54 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     }
 
     /**
-     * Добавить узел
+     * Скрывает или показывает индикатор открытия в зависимости от наличия внутренниз узлов
      */
-    public void addTreeItem(TreeItem item) {
+    private void updateIndicator() {
+        if (items != null && !items.isEmpty()) {
+            indicator.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        } else {
+            indicator.getElement().getStyle().setDisplay(Style.Display.NONE);
+        }
+    }
+
+    /**
+     * Удаляет узел
+     * @param item узел
+     */
+    public void removeTreeItem(TreeItem item) {
+        if (items != null && items.contains(item)) {
+            items.remove(item);
+            item.setParent(null);
+
+            content.remove(item.asTreeItem());
+
+            updateIndicator();
+        }
+    }
+
+    /**
+     * Добавить узел.
+     * Повторное добавление узла запрещено.
+     */
+    void addTreeItem(TreeItem item) {
         if (items == null) {
             items = new ArrayList<TreeItem>();
+        }
+        if (item == null || items.contains(item)) {
+            return;
         }
         items.add(item);
         item.setParent(this);
 
         content.add(item.asTreeItem());
 
-        indicator.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        updateIndicator();
     }
 
+    /**
+     * Изменить иконку узла
+     * @param resource картинка
+     */
     public void setIcon(ImageResource resource) {
         if (resource == null) {
             icon.getElement().getStyle().setDisplay(Style.Display.NONE);
@@ -197,7 +232,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
         if (isOpen) {
             indicator.setResource(ImageResources.IMPL.nodeOpen());
 
-            content.getElement().getStyle().clearDisplay();
+            content.getElement().getStyle().setDisplay(Style.Display.BLOCK);
             updateContentHeight(content.getElement().getScrollHeight());
         } else {
             indicator.setResource(ImageResources.IMPL.nodeClosed());
@@ -219,7 +254,8 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     }
 
     /**
-     * Выбрать/убрать выделение узел дерева
+     * Выбрать/убрать выделение узел дерева.
+     * Событие создается для каждого вызова, где selected==true, даже если узел уже был выбран.
      * @param selected true - выделить, false - убрать выделение
      * @param fireEvents создавать ли события
      */
@@ -253,6 +289,10 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
 
     public boolean hasItems() {
         return items != null && !items.isEmpty();
+    }
+
+    public boolean contains(TreeItem item) {
+        return items != null && items.contains(item);
     }
 
     public ArrayList<TreeItem> getItems() {
@@ -301,8 +341,16 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
         return parent;
     }
 
+    /**
+     * Изменяет родительский узел.
+     */
     public void setParent(TreeItem parent) {
-        this.parent = parent;
+        if (this.parent == null) {
+            this.parent = parent;
+        } else {
+            this.parent.removeTreeItem(this);
+            this.parent = parent;
+        }
     }
 
     /**
@@ -310,14 +358,18 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
      * Рекурсивно вызывается для всех родителей.
      * @param deltaHeight величина, на которую изменяется высота
      */
-    public void updateContentHeight(int deltaHeight) {
+    void updateContentHeight(int deltaHeight) {
         setContentHeight(getContentHeight() + deltaHeight);
         if (parent != null) {
             parent.updateContentHeight(deltaHeight);
         }
     }
 
-    public void setContentHeight(int height) {
+    /**
+     * Изменяет высоту контента
+     * @param height новая высота
+     */
+    private void setContentHeight(int height) {
         if (Window.Navigator.getAppVersion().contains("MSIE")) {
             if (animation == null) {
                 animation = new TreeAnimationIE9(content.getElement());

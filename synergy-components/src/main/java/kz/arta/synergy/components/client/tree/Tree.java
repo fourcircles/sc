@@ -22,7 +22,7 @@ import java.util.ArrayList;
  *
  * Дерево
  */
-public class ArtaTree extends Composite implements HasContextMenuHandlers {
+public class Tree extends Composite implements HasContextMenuHandlers {
 
     /**
      * Корневая панель
@@ -40,7 +40,7 @@ public class ArtaTree extends Composite implements HasContextMenuHandlers {
      */
     ArrayList<TreeItem> items;
 
-    public ArtaTree() {
+    public Tree() {
         ArtaScrollPanel scroll = new ArtaScrollPanel();
         initWidget(scroll);
         scroll.addStyleName(SynergyComponents.resources.cssComponents().tree());

@@ -22,6 +22,10 @@ import kz.arta.synergy.components.client.table.events.CellEditEvent;
  */
 public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T, String> {
 
+    protected ArtaEditableTextColumn(String headerText) {
+        super(headerText);
+    }
+
     public abstract String getValue(T object);
 
     /**
@@ -46,7 +50,7 @@ public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T, St
 
     @Override
     public int getMinWidth() {
-        return 40;
+        return 60;
     }
 
     @Override

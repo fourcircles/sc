@@ -1,25 +1,26 @@
 package kz.arta.synergy.components.client.table;
 
-import com.google.gwt.dom.client.Element;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.*;
-import com.google.gwt.view.client.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.view.client.ProvidesKey;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.table.column.ArtaColumn;
-import kz.arta.synergy.components.client.table.events.CellEditEvent;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.style.client.Constants;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: vsl
@@ -28,16 +29,21 @@ import java.util.*;
  *
  * Таблица
  */
-public class Table<T> extends Composite implements HasData<T> {
+public class Table<T> extends Composite {
     /**
      * Ширина разделительной линии, в хэдерах, при перетаскивании столбцов
      * Очень желательно, чтобы эта величина была нечетной
      */
     private static final int HEADER_DIVIDER_WIDTH = 11;
 
-    private EventBus bus = new SimpleEventBus();
+    /**
+     * Ширина интервала дропа для заголовка.
+     * Вне этого интервала дроп не будет срабатывать и
+     * индикатор не будет появляться
+     */
+    public static final double HEADER_DROP_SIZE = 0.25;
 
-    private final ProvidesKey<T> keyProvider;
+    private EventBus bus = new SimpleEventBus();
 
     /**
      * Корневая панель таблицы
@@ -45,29 +51,9 @@ public class Table<T> extends Composite implements HasData<T> {
     private FlowPanel root;
 
     /**
-     * Таблица
-     */
-    private FlexTable table;
-
-    /**
-     * Объекты добавленные в таблицу
-     */
-    private ArrayList<T> objects;
-
-    /**
-     * Столбцы
-     */
-    private List<ArtaColumn<T, ?>> columns;
-
-    /**
      * Таблица заголовков
      */
     private final FlexTable headersTable;
-
-    /**
-     * Ширина заголовков
-     */
-    private Map<ArtaColumn<T, ?>, Integer> widths = new HashMap<ArtaColumn<T, ?>, Integer>();
 
     /**
      * Невидимые разделители для изменения ширины столбцов
@@ -75,18 +61,21 @@ public class Table<T> extends Composite implements HasData<T> {
     private List<ArtaFlowPanel> dividers = new ArrayList<ArtaFlowPanel>();
 
     /**
+     * Самая левая позиция для перемещения разделителя.
+     * Определяется минимальной шириной столбца слева от разделителя
+     */
+    private int leftDividerLimit;
+    private int rightDividerLimit;
+
+    /**
+     * Начальная позиция разделителя до drag'а
+     */
+    private int oldDividerPosition;
+
+    /**
      * Производится ли изменение ширины столбцов в данный момент
      */
     private boolean resizing = false;
-
-    /**
-     * Столбец, по которому отсортирована таблица
-     */
-    private ArtaColumn<T, ?> sortedColumn;
-    /**
-     * Соответствие между столбцами и заголовками
-     */
-    private HashMap<ArtaColumn<T, ?>, Header> headersMap = new HashMap<ArtaColumn<T, ?>, Header>();
 
     /**
      * Заголовок, который отображается при перетаскивании
@@ -102,50 +91,19 @@ public class Table<T> extends Composite implements HasData<T> {
     private boolean isDragging;
 
     /**
-     * Расположения границ заголовков
+     * Столбец, который перемещается
      */
-    private TreeSet<Integer> borderLocations = new TreeSet<Integer>();
+    private ArtaColumn<T, ?> movingColumn;
 
     /**
-     * Граница заголовка куда должен переместиться перетаскиваемый заголовок
+     * Позиция на которую будет перемещен столбец при drop'е
      */
-    private int selectedHeadersBorder;
+    private int targetPosition;
 
     /**
      * Указатель новой позиции стоблца при завершении перетаскивания
      */
     private FlowPanel headerDivider;
-
-    /**
-     * Предыдущая координата мыши при перемещении заголовка.
-     * Используется для определения направления перемещения.
-     */
-    private int oldX;
-
-    /**
-     * Заголовок, который надо перенести при завершении перетаскивания
-     */
-    private Header headerToMove;
-
-    /**
-     * Модель выбора объекта
-     */
-    private TableSelectionModel<T> selectionModel;
-
-    /**
-     * Начало отображаемого множества объектов
-     */
-    private int start;
-
-    /**
-     * Количество объектов на странице
-     */
-    private int pageSize;
-
-    /**
-     * Внутренний скролл таблицы
-     */
-    private final ArtaScrollPanel tableContainer;
 
     /**
      * Задана ли высота. Если не задана, то таблица растягивается
@@ -158,230 +116,14 @@ public class Table<T> extends Composite implements HasData<T> {
     private int wholeTableHeight;
 
     /**
-     * Режим выбора в таблице.
-     * true - выбираются ряды, false - ячейки
+     * Шапка
      */
-    private boolean onlyRows = false;
-
-    /**
-     * Выбранный ряд.
-     */
-    private int selectedRow = -1;
-
-    /**
-     * Выбранный столбец
-     */
-    private int selectedColumn = -1;
-
     private TableHat hat;
 
     /**
-     * Переривывает таблицу
+     * Таблица
      */
-    public void redraw() {
-        selectionModel.clear();
-        for (int i = 0; i < Math.min(pageSize, objects.size() - start); i++) {
-            setRow(i, objects.get(start + i));
-        }
-        if (pageSize > objects.size() - start) {
-            table.addStyleName(SynergyComponents.resources.cssComponents().notFull());
-        } else {
-            table.removeStyleName(SynergyComponents.resources.cssComponents().notFull());
-        }
-
-        if (table.getRowCount() > pageSize) {
-            for (int i = pageSize; i < table.getRowCount(); i++) {
-                table.getRowFormatter().getElement(objects.size()).removeFromParent();
-            }
-        }
-        table.getRowFormatter().getElement(pageSize - 1).addClassName(SynergyComponents.resources.cssComponents().last());
-        redrawDividers();
-
-        if (isHeightSet) {
-            int tableHeight = wholeTableHeight;
-            if (hasHat()) {
-                tableHeight -= 40; //шапка
-            }
-            tableHeight -= 32; //хедеры
-            tableContainer.getElement().getStyle().setHeight(tableHeight, Style.Unit.PX);
-        } else {
-            tableContainer.getElement().getStyle().setHeight(table.getOffsetHeight(), Style.Unit.PX);
-        }
-    }
-
-    /**
-     * Изменяет количество и положение разделителей в соответствии со столбцами
-     */
-    public void redrawDividers() {
-        if (dividers.size() != columns.size() - 1) {
-            while (dividers.size() > columns.size() - 1) {
-                ArtaFlowPanel divider = dividers.get(columns.size());
-                divider.removeFromParent();
-                dividers.remove(divider);
-            }
-            while (dividers.size() < columns.size() - 1) {
-                ArtaFlowPanel divider = createDivider();
-                dividers.add(divider);
-                root.add(divider);
-            }
-        }
-
-        int first;
-        int last;
-        if (LocaleInfo.getCurrentLocale().isRTL()) {
-            first = 0;
-            last = columns.size() - 1;
-        } else {
-            first = 1;
-            last = columns.size();
-        }
-        int dividersCount = 0;
-        for (int i = first; i < last; i++) {
-            int absoluteLeft = table.getFlexCellFormatter().getElement(0, i).getAbsoluteLeft() - 1;
-            absoluteLeft -= root.getAbsoluteLeft();
-            absoluteLeft -= Constants.TABLE_DIVIDER_WIDTH / 2;
-
-            ArtaFlowPanel divider = dividers.get(dividersCount++);
-            divider.getElement().getStyle().setLeft(absoluteLeft, Style.Unit.PX);
-
-            if (hasHat()) {
-                divider.getElement().getStyle().setTop(40, Style.Unit.PX);
-            } else {
-                divider.getElement().getStyle().setTop(0, Style.Unit.PX);
-            }
-        }
-    }
-
-    @Override
-    protected void onLoad() {
-        super.onLoad();
-        for (int i = 0; i < columns.size(); i++) {
-            widths.put(columns.get(i), table.getFlexCellFormatter().getElement(0, i).getOffsetWidth());
-        }
-        widths.put(columns.get(columns.size() - 1), -1);
-        redraw();
-    }
-
-    /**
-     * Изменяет ширину столбца на заданной позиции
-     * @param index позиция
-     * @param width ширина, если -1, то свойство width убирается и столбец растягивается
-     */
-    private void setColumnWidth(int index, int width) {
-        Style tableStyle = table.getFlexCellFormatter().getElement(0, index).getStyle();
-        Style headersStyle = headersTable.getFlexCellFormatter().getElement(0, index).getStyle();
-        widths.put(columns.get(index), width);
-        if (width == -1) {
-            tableStyle.clearWidth();
-            headersStyle.clearWidth();
-        } else {
-            tableStyle.setWidth(width, Style.Unit.PX);
-            headersStyle.setWidth(width, Style.Unit.PX);
-        }
-        headersMap.get(columns.get(index)).setWidth(headersTable.getFlexCellFormatter().getElement(0, index).getOffsetWidth());
-    }
-
-    /**
-     * Изменяет ширину столбцов в соответствии с положением разделителей.
-     * Обычно вызывается после перетаскивания разделителя.
-     */
-    public void resizeToDividers() {
-        if (LocaleInfo.getCurrentLocale().isRTL()) {
-            for (int i = 0; i < dividers.size(); i++) {
-                if (widths.get(columns.get(i)) != -1) {
-                    setColumnWidth(i, root.getAbsoluteLeft() + root.getOffsetWidth() - dividers.get(i).getAbsoluteLeft());
-                } else {
-                    headersMap.get(columns.get(i)).setWidth(headersTable.getFlexCellFormatter().getElement(0, i).getOffsetWidth());
-                }
-
-            }
-        }
-        int lastColumnEnd = 0;
-        for (int i = 0; i < dividers.size(); i++) {
-            int offset;
-            if (LocaleInfo.getCurrentLocale().isRTL()) {
-                offset = root.getAbsoluteLeft() + root.getOffsetWidth() - dividers.get(i).getAbsoluteLeft();
-            } else {
-                offset = dividers.get(i).getAbsoluteLeft() - root.getAbsoluteLeft();
-            }
-
-            if (widths.get(columns.get(i)) != -1) {
-                setColumnWidth(i, offset - lastColumnEnd);
-            } else {
-                headersMap.get(columns.get(i)).setWidth(headersTable.getFlexCellFormatter().getElement(0, i).getOffsetWidth());
-            }
-
-            lastColumnEnd = offset;
-        }
-        if (widths.get(columns.get(columns.size() - 1)) != -1) {
-            if (LocaleInfo.getCurrentLocale().isRTL()) {
-                setColumnWidth(columns.size() - 1, lastColumnEnd - root.getAbsoluteLeft());
-            } else {
-                setColumnWidth(columns.size() - 1, table.getOffsetWidth() - lastColumnEnd);
-            }
-        } else {
-            headersMap.get(columns.get(columns.size() - 1)).setWidth(headersTable.getFlexCellFormatter().getElement(0, columns.size() - 1).getOffsetWidth());
-        }
-    }
-
-    /**
-     * Создает разделитель с необходимыми событиями
-     */
-    private ArtaFlowPanel createDivider() {
-        final ArtaFlowPanel divider = new ArtaFlowPanel();
-        divider.setStyleName(SynergyComponents.resources.cssComponents().tableDivider());
-
-        divider.addMouseDownHandler(new MouseDownHandler() {
-            @Override
-            public void onMouseDown(MouseDownEvent event) {
-                event.stopPropagation();
-                event.preventDefault();
-                resizing = true;
-                Event.setCapture(divider.getElement());
-                divider.addStyleName(SynergyComponents.resources.cssComponents().drag());
-                RootPanel.get().getElement().getStyle().setCursor(Style.Cursor.COL_RESIZE);
-            }
-        });
-        divider.addMouseMoveHandler(new MouseMoveHandler() {
-            @Override
-            public void onMouseMove(MouseMoveEvent event) {
-                if (resizing) {
-                    int index = dividers.indexOf(divider);
-
-                    Element previousTd = table.getFlexCellFormatter().getElement(0, index);
-                    Element nextTd = table.getFlexCellFormatter().getElement(0, index + 1);
-
-                    int leftMax;
-                    int rightMax;
-                    if (LocaleInfo.getCurrentLocale().isRTL()) {
-                        leftMax = nextTd.getAbsoluteLeft() + columns.get(index + 1).getMinWidth();
-                        rightMax = previousTd.getAbsoluteLeft() + previousTd.getOffsetWidth() - columns.get(index).getMinWidth();
-                    } else {
-                        leftMax = previousTd.getAbsoluteLeft() + columns.get(index).getMinWidth();
-                        rightMax = nextTd.getAbsoluteLeft() + nextTd.getOffsetWidth() - columns.get(index + 1).getMinWidth();
-                    }
-
-                    int x = event.getClientX();
-                    x = Math.max(x, leftMax);
-                    x = Math.min(x, rightMax);
-
-                    divider.getElement().getStyle().setLeft(x - root.getAbsoluteLeft(), Style.Unit.PX);
-                }
-            }
-        });
-        divider.addMouseUpHandler(new MouseUpHandler() {
-            @Override
-            public void onMouseUp(MouseUpEvent event) {
-                Event.releaseCapture(divider.getElement());
-                resizing = false;
-                divider.removeStyleName(SynergyComponents.resources.cssComponents().drag());
-                RootPanel.get().getElement().getStyle().clearCursor();
-                resizeToDividers();
-            }
-        });
-
-        return divider;
-    }
+    private TableCore<T> tableCore;
 
     public Table(int pageSize) {
         this(pageSize, null);
@@ -396,334 +138,237 @@ public class Table<T> extends Composite implements HasData<T> {
         initWidget(root);
         root.addStyleName(SynergyComponents.resources.cssComponents().tableWhole());
 
-        this.keyProvider = keyProvider;
-        selectionModel = new TableSelectionModel<T>(bus, keyProvider);
+        tableCore = new TableCore<T>(pageSize, keyProvider, bus);
 
         headersTable = new FlexTable();
         headersTable.setStyleName(SynergyComponents.resources.cssComponents().headersTable());
         root.add(headersTable);
 
-        tableContainer = new ArtaScrollPanel();
-//        tableContainer.setStyleName(SynergyComponents.resources.cssComponents().tableContainer());
-
-        table = new FlexTable();
-        table.addStyleName(SynergyComponents.resources.cssComponents().table());
-        for (int i = 0; i < pageSize; i++) {
-            table.insertRow(0);
-        }
-        tableContainer.setWidget(table);
-        root.add(tableContainer);
-
-        this.pageSize = pageSize;
-        columns = new ArrayList<ArtaColumn<T, ?>>();
-        objects = new ArrayList<T>(pageSize);
-
-        table.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                HTMLTable.Cell cell = table.getCellForEvent(event);
-                T object = objects.get(cell.getRowIndex() + start);
-
-
-                if (onlyRows) {
-                    selectionModel.setSelected(object, null, true);
-                } else {
-                    ArtaColumn<T, ?> column = columns.get(cell.getCellIndex());
-                    if (column.isEditable()) {
-                        selectionModel.setSelected(object, column, true);
-                    }
-                }
-            }
-        });
-
-        bus.addHandler(CellEditEvent.TYPE, new CellEditEvent.Handler<T>() {
-            @Override
-            public void onCommit(CellEditEvent<T> event) {
-                enableBorder(event, false);
-            }
-
-            @Override
-            public void onCancel(CellEditEvent<T> event) {
-                enableBorder(event, false);
-            }
-
-            @Override
-            public void onEdit(CellEditEvent<T> event) {
-                enableBorder(event, true);
-            }
-
-            private void enableBorder(CellEditEvent<T> event, boolean enable) {
-                int row = objects.indexOf(event.getObject());
-                int column = columns.indexOf(event.getColumn());
-                Element td = table.getFlexCellFormatter().getElement(row, column);
-                Element tdUnder = null;
-                if (row + 1 < objects.size()) {
-                    tdUnder = table.getFlexCellFormatter().getElement(row + 1, column);
-                }
-                if (enable) {
-                    table.getRowFormatter().getElement(row).addClassName(SynergyComponents.resources.cssComponents().edit());
-                    td.addClassName(SynergyComponents.resources.cssComponents().edit());
-                    if (tdUnder != null) {
-                        tdUnder.addClassName(SynergyComponents.resources.cssComponents().underEdit());
-                    }
-                } else {
-                    table.getRowFormatter().getElement(row).removeClassName(SynergyComponents.resources.cssComponents().edit());
-                    td.removeClassName(SynergyComponents.resources.cssComponents().edit());
-                    if (tdUnder != null) {
-                        tdUnder.removeClassName(SynergyComponents.resources.cssComponents().underEdit());
-                    }
-                }
-
-                if (row == 0) {
-                    if (enable) {
-                        td.getStyle().setHeight(25, Style.Unit.PX);
-                    } else {
-                        td.getStyle().clearHeight();
-                    }
-                }
-
-                if (event.jumpForward()) {
-                    selectNextCell();
-//                    selectionModel.setSelected(selectedObject, getNextEditableColumn(), true);
-                }
-            }
-        });
-
-        bus.addHandler(SelectionChangeEvent.getType(), new SelectionChangeEvent.Handler() {
-            @Override
-            public void onSelectionChange(SelectionChangeEvent event) {
-                select(selectionModel.getSelectedObject(), selectionModel.getSelectedColumn());
-            }
-        });
-
-        sinkEvents(Event.ONCLICK);
-        sinkEvents(Event.ONKEYDOWN);
-        sinkEvents(Event.ONKEYUP);
-        sinkEvents(Event.ONBLUR);
-        sinkEvents(Event.ONFOCUS);
+        root.add(tableCore);
     }
 
     /**
-     * Возвращает только положительный результат модуля в
-     * отличии от %
-     * @param value значение
-     * @param mod модуль
+     * Перерисовывает таблицу
      */
-    private int positiveMod(int value, int mod) {
-        if (value < 0) {
-            value += mod * (-value / mod + 1);
+    public void redraw() {
+        tableCore.redraw();
+
+        if (isHeightSet) {
+            int tableHeight = wholeTableHeight;
+            if (hasHat()) {
+                tableHeight -= 40; //шапка
+            }
+            tableHeight -= 32; //хедеры
+            tableCore.setHeight(tableHeight);
         }
-        return value % mod;
+        redrawDividers();
     }
 
     /**
-     * Возвращает соседний видимый объект.
-     * @param startObject объект, начиная с которого (не включая) начинается поиск
-     * @param forward true - следующий, false - предыдущий
-     * @return соседний видимый объект
+     * Изменяет количество и положение разделителей в соответствии со столбцами
      */
-    private T getNextVisibleObject(T startObject, boolean forward) {
-        if (startObject == null) {
-            return objects.get(start);
+    public void redrawDividers() {
+        if (dividers.size() != tableCore.getColumns().size() - 1) {
+            while (dividers.size() > tableCore.getColumns().size() - 1) {
+                ArtaFlowPanel divider = dividers.get(tableCore.getColumns().size());
+                divider.removeFromParent();
+                dividers.remove(divider);
+            }
+            while (dividers.size() < tableCore.getColumns().size() - 1) {
+                ArtaFlowPanel divider = createDivider();
+                dividers.add(divider);
+                root.add(divider);
+            }
         }
-        int row = objects.indexOf(startObject);
-        if (forward) {
-            row++;
-        } else {
-            row--;
-        }
-        int visibleSize = Math.min(pageSize, objects.size() - start);
-        row -= start;
-        row = positiveMod(row, visibleSize);
-        row += start;
-        return objects.get(row);
-    }
 
-    /**
-     * Выделяет/снимает выделение ячейки или ряда в таблице.
-     * @param row номер ряда
-     * @param column номер столбца, если -1, то операция производится для ряда
-     * @param select выделить или снять выделение
-     */
-    private void innerSelect(int row, int column, boolean select) {
-        if (row < 0 || row >= Math.min(pageSize, objects.size() - start)) {
-            return;
-        }
-        Element element;
-        if (column != -1) {
-            element = table.getFlexCellFormatter().getElement(row, column);
-            if (select) {
-                table.getWidget(row, column).getElement().focus();
+        for (int i = 0; i < tableCore.getColumns().size() - 1; i++) {
+            Style dividerStyle = dividers.get(i).getElement().getStyle();
+
+            int left = getHeaderEnd(tableCore.getColumn(i).getHeader());
+            left -= root.getAbsoluteLeft();
+            left -= Constants.TABLE_DIVIDER_WIDTH / 2 + 1;
+
+            dividerStyle.setLeft(left, Style.Unit.PX);
+            if (hasHat()) {
+                dividerStyle.setTop(40, Style.Unit.PX);
             } else {
-                table.getWidget(row, column).getElement().blur();
+                dividerStyle.setTop(0, Style.Unit.PX);
             }
-        } else {
-            element = table.getRowFormatter().getElement(row);
-            table.getElement().focus();
-        }
-        if (select) {
-            element.addClassName(SynergyComponents.resources.cssComponents().selected());
-            element.scrollIntoView();
-        } else {
-            element.removeClassName(SynergyComponents.resources.cssComponents().selected());
         }
     }
 
     /**
-     * Выделяет ячейку или ряд соответствующую объекту и столбцу.
-     * @param object объект
-     * @param column столбец
+     * При загрузке инициализируется ширина всех столбцов, кроме последнего
      */
-    public void select(T object, ArtaColumn<T, ?> column) {
-        innerSelect(selectedRow, selectedColumn, false);
-
-        if (object != null && objects.contains(object)) {
-            selectedRow = objects.indexOf(object) - start;
-            if (column != null) {
-                selectedColumn = columns.indexOf(column);
-            } else {
-                selectedColumn = -1;
-            }
-        } else {
-            selectedRow = -1;
-            selectedColumn = -1;
-        }
-        innerSelect(selectedRow, selectedColumn, true);
-    }
-
     @Override
-    public void onBrowserEvent(com.google.gwt.user.client.Event event) {
-        super.onBrowserEvent(event);
-        int type = event.getTypeInt();
-        int keyCode = event.getKeyCode();
-
-        if (type == Event.ONKEYDOWN) {
-            switch (keyCode) {
-                case KeyCodes.KEY_DOWN:
-                    event.preventDefault();
-                    selectionModel.setSelected(getNextVisibleObject(selectionModel.getSelectedObject(), true),
-                            selectionModel.getSelectedColumn(), true);
-                    break;
-                case KeyCodes.KEY_UP:
-                    event.preventDefault();
-                    selectionModel.setSelected(getNextVisibleObject(selectionModel.getSelectedObject(), false),
-                            selectionModel.getSelectedColumn(), true);
-                    break;
-                case KeyCodes.KEY_RIGHT:
-                case KeyCodes.KEY_TAB:
-                    event.preventDefault();
-                    selectNextCell();
-                    break;
-                case KeyCodes.KEY_LEFT:
-                    event.preventDefault();
-                    selectPreviousCell();
-                    break;
+    protected void onLoad() {
+        super.onLoad();
+        Scheduler.get().scheduleDeferred(new Command() {
+            @Override
+            public void execute() {
+                tableCore.initWidths();
+                for (int i = 0; i < tableCore.getColumns().size(); i++) {
+                    updateHeaderWidth(i);
+                }
+                redraw();
             }
-        }
+        });
     }
 
     /**
-     * Выделяет следующую ячейку, возможен переход на следующий ряд
-     * Выделяются только ячейки из изменяемых столбцов.
+     * Обновляет ширину заголовка на заданной позиции
+     * Ширина полностью зависит от соответствующего столбца внутренней таблицы.
+     *
+     * Ширина виджета заголовка задается вне зависимости от того задана ли ширина столбца.
+     * Это необходимо для правильного отображения градиента.
+     * @param index позиция заголовка
      */
-    private void selectNextCell() {
-        if (selectionModel.getSelectedColumn() == null) {
-            return;
-        }
-        int columnNum = columns.indexOf(selectionModel.getSelectedColumn());
-        int nextColumn = getNextEditableColumn(columnNum);
-        if (nextColumn == -1) {
-            nextColumn = getNextEditableColumn(0);
-            if (nextColumn != -1) {
-                selectionModel.setSelected(getNextVisibleObject(selectionModel.getSelectedObject(), true), columns.get(nextColumn), true);
-            }
+    private void updateHeaderWidth(int index) {
+        Style tdstyle = headersTable.getFlexCellFormatter().getElement(0, index).getStyle();
+        //ширина элемента td
+        if (tableCore.columnHasWidth(index)) {
+            tdstyle.setWidth(tableCore.getColumnWidth(index), Style.Unit.PX);
         } else {
-            selectionModel.setSelected(selectionModel.getSelectedObject(), columns.get(nextColumn), true);
+            tdstyle.clearWidth();
+        }
+
+        //ширина виджета Header
+        tableCore.getColumns().get(index).getHeader().
+                setWidth(headersTable.getFlexCellFormatter().getElement(0, index).getOffsetWidth());
+    }
+
+    /**
+     * Изменяет ширину столбца на заданной позиции
+     * @param index позиция
+     * @param width ширина, если -1, то свойство width убирается и столбец растягивается
+     */
+    private void setColumnWidth(int index, int width) {
+        tableCore.setColumnWidth(index, width);
+
+        //при обновлении ширины столбца необходимо обновить ширину у всех виджетов заголовка,
+        //у которых ширина не указана явна, потому что она изменится
+        for (int i = 0; i < tableCore.getColumns().size(); i++) {
+            if (!tableCore.columnHasWidth(i) || index == i) {
+                updateHeaderWidth(i);
+            }
         }
     }
 
     /**
-     * Выделяет предыдущую ячейку, возможен переход на предыдущий ряд.
-     * Выделяются только ячейки из изменяемых столбцов.
+     * Начало drag'а разделителя
+     * @param divider разделитель
      */
-    private void selectPreviousCell() {
-        if (selectionModel.getSelectedColumn() == null) {
-            return;
-        }
-        int columnNum = columns.indexOf(selectionModel.getSelectedColumn());
-        int previousColumn = getPreviousEditableColumn(columnNum);
-        if (previousColumn == -1) {
-            previousColumn = getPreviousEditableColumn(columns.size());
-            if (previousColumn != -1) {
-                selectionModel.setSelected(getNextVisibleObject(selectionModel.getSelectedObject(), false), columns.get(previousColumn), true);
-            }
+    private void startResizing(ArtaFlowPanel divider) {
+        resizing = true;
+        divider.addStyleName(SynergyComponents.resources.cssComponents().drag());
+        RootPanel.get().getElement().getStyle().setCursor(Style.Cursor.COL_RESIZE);
+
+        int index = dividers.indexOf(divider);
+
+        oldDividerPosition = divider.getAbsoluteLeft();
+
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            ArtaColumn<T, ?> leftColumn = tableCore.getColumns().get(index + 1);
+            ArtaColumn<T, ?> rightColumn = tableCore.getColumns().get(index);
+            leftDividerLimit = getHeaderEnd(leftColumn.getHeader()) + leftColumn.getMinWidth();
+            rightDividerLimit = getHeaderStart(rightColumn.getHeader()) - rightColumn.getMinWidth();
         } else {
-            selectionModel.setSelected(selectionModel.getSelectedObject(), columns.get(previousColumn), true);
+            ArtaColumn<T, ?> leftColumn = tableCore.getColumns().get(index);
+            ArtaColumn<T, ?> rightColumn = tableCore.getColumns().get(index + 1);
+            leftDividerLimit = getHeaderStart(leftColumn.getHeader()) + leftColumn.getMinWidth();
+            rightDividerLimit = getHeaderEnd(rightColumn.getHeader()) - rightColumn.getMinWidth();
         }
     }
 
     /**
-     * Возвращает предыдущий столбец, который можно изменять
-     * @param startColumn столбец с которого начинается поиск (не включая)
-     * @return столбец
+     * Перемещение разделителя
+     * @param divider разделитель
+     * @param x абсолютная x-координата
      */
-    private int getPreviousEditableColumn(int startColumn) {
-        for (int i = startColumn - 1; i >= 0; i--) {
-            ArtaColumn<T, ?> column = columns.get(i);
-            if (column.isEditable()) {
-                return i;
-            }
+    private void resizingDrag(ArtaFlowPanel divider, int x) {
+        if (resizing) {
+            x = Math.max(x, leftDividerLimit);
+            x = Math.min(x, rightDividerLimit);
+            divider.getElement().getStyle().setLeft(x - root.getAbsoluteLeft(), Style.Unit.PX);
         }
-        return -1;
     }
 
     /**
-     * Возвращает следующий столбец, который можно изменять.
-     * @param startColumn столбец с которого начинается поиск (не включая)
-     * @return изменяемый столбец
+     * Drop разделителя, завершение изменения ширины.
+     * @param divider разделитель
      */
-    public int getNextEditableColumn(int startColumn) {
-        for (int i = startColumn + 1; i < columns.size(); i++) {
-            ArtaColumn<T, ?> column = columns.get(i);
-            if (column.isEditable()) {
-                return i;
-            }
+    private void stopResizing(ArtaFlowPanel divider) {
+        resizing = false;
+        divider.removeStyleName(SynergyComponents.resources.cssComponents().drag());
+        RootPanel.get().getElement().getStyle().clearCursor();
+
+        int index = dividers.indexOf(divider);
+
+        int delta = divider.getAbsoluteLeft() - oldDividerPosition;
+        oldDividerPosition = divider.getAbsoluteLeft();
+
+        int leftIndex = index;
+        int rightIndex = index;
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            leftIndex++;
+        } else {
+            rightIndex++;
         }
-        return -1;
+
+        setColumnWidth(leftIndex, tableCore.getElement(0, leftIndex).getOffsetWidth() + delta);
+        setColumnWidth(rightIndex, tableCore.getElement(0, rightIndex).getOffsetWidth() - delta);
     }
 
     /**
-     * Действия при начале перетаскивания стоблца
+     * Создает разделитель с необходимыми событиями
+     */
+    private ArtaFlowPanel createDivider() {
+        final ArtaFlowPanel divider = new ArtaFlowPanel();
+        divider.setStyleName(SynergyComponents.resources.cssComponents().tableDivider());
+
+        divider.addMouseDownHandler(new MouseDownHandler() {
+            @Override
+            public void onMouseDown(MouseDownEvent event) {
+                event.stopPropagation();
+                event.preventDefault();
+                Event.setCapture(divider.getElement());
+                startResizing(divider);
+            }
+        });
+        divider.addMouseMoveHandler(new MouseMoveHandler() {
+            @Override
+            public void onMouseMove(MouseMoveEvent event) {
+                resizingDrag(divider, event.getClientX());
+            }
+        });
+        divider.addMouseUpHandler(new MouseUpHandler() {
+            @Override
+            public void onMouseUp(MouseUpEvent event) {
+                Event.releaseCapture(divider.getElement());
+                stopResizing(divider);
+            }
+        });
+
+        return divider;
+    }
+
+    /**
+     * Действия при начале перетаскивания столбца
      */
     private void startDragging(int x, int y) {
         Event.setCapture(headerProxy.getElement());
         headerProxy.getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
         isDragging = true;
 
-        borderLocations.clear();
-        int i = 0;
-        while (i < columns.size()) {
-            Header header = headersMap.get(columns.get(i));
-            if (header == headerToMove) {
-                i += 2;
-                continue;
-            }
-            if (LocaleInfo.getCurrentLocale().isRTL()) {
-                borderLocations.add(header.getAbsoluteLeft() + header.getOffsetWidth());
-            } else {
-                borderLocations.add(header.getAbsoluteLeft());
-            }
-            i++;
-        }
-        Header lastHeader = headersMap.get(columns.get(columns.size() - 1));
-        if (lastHeader != headerToMove) {
-            if (LocaleInfo.getCurrentLocale().isRTL()) {
-                borderLocations.add(lastHeader.getAbsoluteLeft());
-            } else {
-                borderLocations.add(lastHeader.getAbsoluteLeft() + lastHeader.getOffsetWidth());
+        for (int i = 0; i < tableCore.getColumns().size(); i++) {
+            ArtaColumn<T, ?> column = tableCore.getColumn(i);
+            if (isOverHeader(x, column)) {
+                movingColumn = column;
+                break;
             }
         }
-        oldX = x;
+
+        targetPosition = -1;
 
         drag(x, y);
     }
@@ -735,22 +380,39 @@ public class Table<T> extends Composite implements HasData<T> {
         if (headerDivider == null) {
             headerDivider = new FlowPanel();
             headerDivider.addStyleName(SynergyComponents.resources.cssComponents().headerDivider());
+            headerDivider.getElement().getStyle().setWidth(HEADER_DIVIDER_WIDTH, Style.Unit.PX);
             root.add(headerDivider);
         }
         return headerDivider;
     }
 
     /**
-     * Показывает указатель нового положения столбца
-     * @param left расстояние от левого края экрана
-     * @param top расстояние от верхнего края экрана
-     * @param width ширина
+     * Показывает индикатор позиции куда будет перемещен столбец
+     * @param position позиция; позиция 0 - между первым и вторым столбцами и т.д.
      */
-    private void showHeaderDivider(int left, int top, int width) {
+    private void showHeaderDivider(int position) {
+        int left;
+
+        if (position == tableCore.getColumns().size()) {
+            Header lastHeader = tableCore.getLastColumn().getHeader();
+            left = getHeaderEnd(lastHeader);
+            if (!LocaleInfo.getCurrentLocale().isRTL()) {
+                left -= HEADER_DIVIDER_WIDTH;
+            }
+        } else if (position == 0) {
+            left = getHeaderStart(tableCore.getColumn(0).getHeader());
+            if (LocaleInfo.getCurrentLocale().isRTL()) {
+                left -= HEADER_DIVIDER_WIDTH;
+            }
+        } else {
+            left = getHeaderStart(tableCore.getColumn(position).getHeader());
+            left -= HEADER_DIVIDER_WIDTH / 2 + 1;
+        }
         getHeaderDivider().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
         getHeaderDivider().getElement().getStyle().setLeft(left, Style.Unit.PX);
-        getHeaderDivider().getElement().getStyle().setTop(top, Style.Unit.PX);
-        getHeaderDivider().getElement().getStyle().setWidth(width, Style.Unit.PX);
+        getHeaderDivider().getElement().getStyle().setTop(headersTable.getAbsoluteTop(), Style.Unit.PX);
+
+        targetPosition = position;
     }
 
     /**
@@ -758,7 +420,79 @@ public class Table<T> extends Composite implements HasData<T> {
      */
     private void hideHeaderDivider() {
         getHeaderDivider().getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
-        selectedHeadersBorder = -1;
+        targetPosition = -1;
+    }
+
+    private boolean isOverHeader(int x, ArtaColumn<?, ?> column) {
+        Header header = column.getHeader();
+        return x >= header.getAbsoluteLeft() &&
+                x <= (header.getAbsoluteLeft() + header.getOffsetWidth());
+    }
+
+    /**
+     * Находится ли x "около" borderX.
+     * Около определяется как внутри "следующего" и "предыдущего" отступа.
+     * "Следующий" это правый для LTR, левый для RTL.
+     * @param borderX граница
+     * @param previousD предыдущий отступ
+     * @param nextD следущий отступ
+     */
+    private boolean inside(double borderX, double previousD,
+                           double nextD, double x) {
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            return x >= borderX - nextD && x <= borderX + previousD;
+        } else {
+            return x >= borderX - previousD && x <= borderX + nextD;
+        }
+    }
+
+    /**
+     * Абсолютная x-координата начала заголовка
+     * @param header заголовок
+     */
+    private int getHeaderStart(Header header) {
+        int start = header.getAbsoluteLeft();
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            start += header.getOffsetWidth();
+        }
+        return start;
+    }
+
+    /**
+     * Абсолютная x-координата конца заголовка
+     * @param header заголовок
+     */
+    private int getHeaderEnd(Header header) {
+        int start = header.getAbsoluteLeft();
+        if (!LocaleInfo.getCurrentLocale().isRTL()) {
+            start += header.getOffsetWidth();
+        }
+        return start;
+    }
+
+    /**
+     * Если мышь на позиции x, можно ли переместить заголовок на позицию i.
+     */
+    private boolean canBeDraggedTo(int i, int x) {
+        double borderX;
+        double previousD;
+        double nextD;
+
+        if (i == 0) {
+            previousD = 0;
+        } else {
+            previousD = tableCore.getColumn(i - 1).getHeader().getOffsetWidth() * HEADER_DROP_SIZE;
+        }
+
+        if (i == tableCore.getColumns().size()) {
+            borderX = getHeaderEnd(tableCore.getLastColumn().getHeader());
+            nextD = 0;
+        } else {
+            borderX = getHeaderStart(tableCore.getColumn(i).getHeader());
+            nextD = tableCore.getColumn(i).getHeader().getOffsetWidth() * HEADER_DROP_SIZE;
+        }
+
+        return inside(borderX, previousD, nextD, x);
     }
 
     /**
@@ -767,102 +501,33 @@ public class Table<T> extends Composite implements HasData<T> {
      * @param y y координата мыши
      */
     private void drag(int x, int y) {
+        //прокси заголовок начинается в правом нижнем угла мыши
         headerProxy.getElement().getStyle().setLeft(x + 10, Style.Unit.PX);
         headerProxy.getElement().getStyle().setTop(y + 10, Style.Unit.PX);
 
-        int borderToSelect;
-
-        if (x > headerToMove.getAbsoluteLeft() && x < headerToMove.getAbsoluteLeft() + headerToMove.getOffsetWidth()) {
+        if (isOverHeader(x, movingColumn)) {
             hideHeaderDivider();
             return;
         }
-        if (oldX >= x) {
-            SortedSet<Integer> headSet = borderLocations.headSet(x);
-            if (headSet.isEmpty()) {
-                borderToSelect = borderLocations.first();
-            } else {
-                borderToSelect = headSet.last();
-            }
-        } else {
-            SortedSet<Integer> tailSet = borderLocations.tailSet(x);
-            if (tailSet.isEmpty()) {
-                borderToSelect = borderLocations.last();
-            } else {
-                borderToSelect = tailSet.first();
-            }
-        }
-        oldX = x;
 
-        Header firstHeader = headersMap.get(columns.get(0));
-        Header lastHeader = headersMap.get(columns.get(columns.size() - 1));
+        hideHeaderDivider();
 
-        selectedHeadersBorder = borderToSelect;
-
-        if (LocaleInfo.getCurrentLocale().isRTL()) {
-            if (borderToSelect != lastHeader.getAbsoluteLeft()) {
-                if (borderToSelect == firstHeader.getAbsoluteLeft() + firstHeader.getOffsetWidth()) {
-                    borderToSelect -= HEADER_DIVIDER_WIDTH;
-                } else {
-                    borderToSelect -= HEADER_DIVIDER_WIDTH / 2 + 1;
-                }
+        int movingHeaderPosition = tableCore.getColumns().indexOf(movingColumn);
+        for (int i = 0; i <= tableCore.getColumns().size(); i++) {
+            if (i == movingHeaderPosition || i == movingHeaderPosition + 1) {
+                continue;
             }
-        } else {
-            if (borderToSelect != firstHeader.getAbsoluteLeft()) {
-                if (borderToSelect == lastHeader.getAbsoluteLeft() + lastHeader.getOffsetWidth()) {
-                    //последняя граница
-                    borderToSelect -= HEADER_DIVIDER_WIDTH;
-                } else {
-                    //обычная граница
-                    borderToSelect -= HEADER_DIVIDER_WIDTH / 2 + 1;
-                }
+
+            if (canBeDraggedTo(i, x)) {
+                showHeaderDivider(i);
+                break;
             }
         }
-
-        showHeaderDivider(borderToSelect, headerToMove.getAbsoluteTop(), HEADER_DIVIDER_WIDTH);
-    }
-
-    /**
-     * Переместить виджеты из одного стоблца в другой
-     * @param table таблица
-     * @param dest куда поместить виджеты
-     * @param source откуда взять виджеты
-     */
-    private static void setColumnWidgets(FlexTable table, int dest, int source) {
-        for (int row = 0; row < table.getRowCount(); row++) {
-            table.setWidget(row, dest, table.getWidget(row, source));
+        if (movingColumn != tableCore.getLastColumn() &&
+                canBeDraggedTo(tableCore.getColumns().size(), x)) {
+            showHeaderDivider(tableCore.getColumns().size());
         }
-    }
 
-    /**
-     * Заменить виджеты столбца на указанной позиции
-     * @param table таблица
-     * @param index позиция столбца
-     * @param widgets виджеты
-     */
-    private void setColumnWidgets(FlexTable table, int index, List<Widget> widgets) {
-        for (int row = 0; row < table.getRowCount(); row++) {
-            table.setWidget(row, index, widgets.get(row));
-        }
-    }
-
-    /**
-     * Замена Collections.rotate
-     * @param list лист
-     */
-    private static <V> void rotate(List<V> list, boolean forward) {
-        if (!forward) {
-            V first = list.get(0);
-            for (int i = 1; i < list.size(); i++) {
-                list.set(i - 1, list.get(i));
-            }
-            list.set(list.size() - 1, first);
-        } else {
-            V last = list.get(list.size() - 1);
-            for (int i = list.size() - 2; i >= 0; i--) {
-                list.set(i + 1, list.get(i));
-            }
-            list.set(0, last);
-        }
     }
 
     /**
@@ -870,106 +535,38 @@ public class Table<T> extends Composite implements HasData<T> {
      * На самом деле здесь происходит перемещение виджетов и перемещение свойства ширина
      * у первого ряда таблиц заголовков и главной таблицы.
      * Столбец перемещается на новую позицию, остальные смещаются в нужную сторону.
-     * Очень похоже на Collections.rotate
      *
      * @param columnIndex позиция на которой находится столбец
      * @param targetPosition позиция на которую надо переместить столбец
+     * @see {@link kz.arta.synergy.components.client.table.TableCore#changeColumnPosition(com.google.gwt.user.client.ui.FlexTable, int, int)}
      */
     private void changeColumnPosition(int columnIndex, int targetPosition) {
-        ArrayList<Widget> columnWidgets = new ArrayList<Widget>();
-        Widget headerWidget = headersTable.getWidget(0, columnIndex);
-
-        for (int i = 0; i < table.getRowCount(); i++) {
-            columnWidgets.add(table.getWidget(i, columnIndex));
+        if (columnIndex < targetPosition) {
+            targetPosition--;
         }
-        if (targetPosition < columnIndex) {
-            for (int col = columnIndex; col > targetPosition; col--) {
-                setColumnWidgets(table, col, col - 1);
-                headersTable.setWidget(0, col, headersTable.getWidget(0, col - 1));
-            }
-            setColumnWidgets(table, targetPosition, columnWidgets);
-            headersTable.setWidget(0, targetPosition, headerWidget);
-        } else if (targetPosition > columnIndex) {
-            for (int col = columnIndex; col < targetPosition; col++) {
-                setColumnWidgets(table, col, col + 1);
-                headersTable.setWidget(0, col, headersTable.getWidget(0, col + 1));
-            }
-            setColumnWidgets(table, targetPosition, columnWidgets);
-            headersTable.setWidget(0, targetPosition, headerWidget);
-        }
+        tableCore.changeColumnPosition(headersTable, columnIndex, targetPosition);
+        tableCore.changeColumnPosition(columnIndex, targetPosition);
+        redrawDividers();
     }
 
     /**
-     * Действия при завершении перетаскивания столбца.
+     * Действия при завершении перемещения столбца.
      */
     private void stopDragging() {
         isDragging = false;
         headerProxy.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
         Event.releaseCapture(headerProxy.getElement());
 
-        if (selectedHeadersBorder == -1) {
-            //случай, когда заголовок никуда не перенесли
-            return;
-        }
-        int targetColumn = -1;
-        int srcColumn = -1;
 
-        for (ArtaColumn<T, ?> column : columns) {
-            if (headersMap.get(column) == headerToMove) {
-                srcColumn = columns.indexOf(column);
-                break;
-            }
+        if (targetPosition != -1) {
+            changeColumnPosition(tableCore.getColumns().indexOf(movingColumn), targetPosition);
         }
-
-        for (int i = 0; i < columns.size(); i++) {
-            Header header = headersMap.get(columns.get(i));
-            if (LocaleInfo.getCurrentLocale().isRTL() && header.getAbsoluteLeft() + header.getOffsetWidth() == selectedHeadersBorder
-                    || !LocaleInfo.getCurrentLocale().isRTL() && header.getAbsoluteLeft() == selectedHeadersBorder) {
-                targetColumn = i;
-                if (i > srcColumn) {
-                    targetColumn--;
-                }
-                break;
-            }
-        }
-
-        if (targetColumn == -1) {
-            targetColumn = columns.size() - 1;
-        }
-        changeColumnPosition(srcColumn, targetColumn);
-
-        if (targetColumn < srcColumn) {
-            rotate(columns.subList(targetColumn, srcColumn + 1), true);
-        } else {
-            rotate(columns.subList(srcColumn, targetColumn + 1), false);
-        }
-        updateTableWidths();
-
         hideHeaderDivider();
-        redrawDividers();
-    }
-
-    /**
-     * Обновляет таблицу в соответствии с логическими значениями ширины столбцов
-     */
-    private void updateTableWidths() {
-        for (int i = 0; i < columns.size(); i++) {
-            ArtaColumn<T, ?> column = columns.get(i);
-            Style tdStyle = table.getFlexCellFormatter().getElement(0, i).getStyle();
-            Style headerTdStyle = headersTable.getFlexCellFormatter().getElement(0, i).getStyle();
-            if (widths.get(column) != -1) {
-                tdStyle.setWidth(widths.get(column), Style.Unit.PX);
-                headerTdStyle.setWidth(widths.get(column), Style.Unit.PX);
-            } else {
-                tdStyle.clearWidth();
-                headerTdStyle.clearWidth();
-            }
-        }
     }
 
     /**
      * Инициализирует заголовок, который появляется при начале перемещения.
-     * @param header заголовок, который надо перетаскиваться
+     * @param header заголовок, который надо перемещать
      */
     private void initMovableHeader(final Header header) {
         if (headerProxy == null) {
@@ -1008,17 +605,11 @@ public class Table<T> extends Composite implements HasData<T> {
     /**
      * Добавляет столбец
      * @param column столбец
-     * @param headerText текст соответствующего заголовка
      */
-    public void addColumn(final ArtaColumn<T, ?> column, String headerText) {
-        columns.add(column);
-        for (int i = 0; i < Math.min(table.getRowCount(), objects.size()); i++) {
-            table.addCell(i);
-            int cellColumn = table.getCellCount(i) - 1;
-            table.setWidget(i, cellColumn, column.createWidget(objects.get(cellColumn), bus));
-        }
+    public void addColumn(final ArtaColumn<T, ?> column) {
+        tableCore.addColumn(column);
 
-        final Header header = new Header(headerText);
+        final Header header = column.getHeader();
         header.addMouseDownHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
@@ -1035,179 +626,26 @@ public class Table<T> extends Composite implements HasData<T> {
                     event.preventDefault();
                     event.stopPropagation();
 
-                    headerToMove = header;
                     initMovableHeader(header);
                     startDragging(event.getClientX(), event.getClientY());
                     headerMouseDown = false;
                 }
             }
         });
-        headersTable.setWidget(0, columns.size() - 1, header);
-        headersMap.put(column, header);
-        if (column.isSortable()) {
-            header.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    if (!headerMouseDown) {
-                        return;
-                    }
-                    headerMouseDown = false;
-                    if (sortedColumn != column) {
-                        if (sortedColumn != null) {
-                            headersMap.get(sortedColumn).setSorted(false);
-                        }
-                    }
-                    header.setSorted(true);
-                    sortedColumn = column;
+        headersTable.setWidget(0, tableCore.getColumns().size() - 1, header);
+        header.addMouseUpHandler(new MouseUpHandler() {
+            @Override
+            public void onMouseUp(MouseUpEvent event) {
+                headerMouseDown = false;
+                if (isDragging) {
+                    return;
+                }
+                if (column.isSortable()) {
+                    tableCore.sort(column);
                     bus.fireEventFromSource(new TableSortEvent<T>(column, header.isAscending()), Table.this);
                 }
-            });
-        } else {
-            header.addMouseUpHandler(new MouseUpHandler() {
-                @Override
-                public void onMouseUp(MouseUpEvent event) {
-                    headerMouseDown = false;
-                }
-            });
-        }
-    }
-
-    @Override
-    public SelectionModel<? super T> getSelectionModel() {
-        return selectionModel;
-    }
-
-    @Override
-    public T getVisibleItem(int indexOnPage) {
-        return objects.get(getVisibleRange().getStart() + indexOnPage);
-    }
-
-    @Override
-    public int getVisibleItemCount() {
-        return getVisibleRange().getLength();
-    }
-
-    @Override
-    public Iterable<T> getVisibleItems() {
-        Range visibleRange = getVisibleRange();
-        return objects.subList(visibleRange.getStart(),
-                visibleRange.getStart() + visibleRange.getLength() - 1);
-    }
-
-    public void setRow(int row, T value) {
-
-        for (int i = 0; i < columns.size(); i++) {
-            ArtaColumn<T, ?> column = columns.get(i);
-            if (!table.isCellPresent(row, i) || table.getWidget(row, i) == null) {
-                Widget widget = column.createWidget(value, bus);
-                table.setWidget(row, i, widget);
-            } else {
-                column.updateWidget(table.getWidget(row, i), value);
             }
-        }
-    }
-
-    @Override
-    public void setRowData(int start, List<? extends T> values) {
-        for (T value : values) {
-            objects.set(start++, value);
-        }
-        redraw();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void setSelectionModel(SelectionModel<? super T> selectionModel) {
-        if (!(selectionModel instanceof TableSelectionModel)) {
-            throw new IllegalArgumentException();
-        }
-        this.selectionModel = (TableSelectionModel) selectionModel;
-    }
-
-    @Override
-    public void setVisibleRangeAndClearData(final Range range, boolean forceRangeChangeEvent) {
-        boolean changed = false;
-        if (start != range.getStart()) {
-            start = range.getStart();
-            changed = true;
-        }
-        if (pageSize != range.getLength()) {
-            pageSize = range.getLength();
-            changed = true;
-        }
-
-        if (changed || forceRangeChangeEvent) {
-            RangeChangeEvent.fire(this, range);
-        }
-    }
-
-    @Override
-    public HandlerRegistration addCellPreviewHandler(CellPreviewEvent.Handler<T> handler) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public HandlerRegistration addRangeChangeHandler(RangeChangeEvent.Handler handler) {
-        return bus.addHandlerToSource(RangeChangeEvent.getType(), this, handler);
-    }
-
-    @Override
-    public HandlerRegistration addRowCountChangeHandler(RowCountChangeEvent.Handler handler) {
-        return bus.addHandlerToSource(RowCountChangeEvent.getType(), this, handler);
-    }
-
-    private boolean isRowCountExact;
-
-    @Override
-    public int getRowCount() {
-        return objects.size();
-    }
-
-    @Override
-    public Range getVisibleRange() {
-        return new Range(start, pageSize);
-    }
-
-    @Override
-    public boolean isRowCountExact() {
-        return isRowCountExact;
-    }
-
-    @Override
-    public void setRowCount(int count) {
-        if (objects.size() < count) {
-            objects.ensureCapacity(count);
-            for (int i = objects.size(); i < count; i++) {
-                objects.add(null);
-            }
-        } else if (objects.size() > count) {
-            objects.subList(count - 1, objects.size()).clear();
-        }
-    }
-
-    @Override
-    public void setRowCount(int count, boolean isExact) {
-        setRowCount(count);
-        isRowCountExact = isExact;
-    }
-
-    @Override
-    public void setVisibleRange(int start, int length) {
-        setVisibleRange(new Range(start, length));
-    }
-
-    @Override
-    public void setVisibleRange(Range range) {
-        setVisibleRangeAndClearData(range, false);
-    }
-
-    @Override
-    public void fireEvent(GwtEvent<?> event) {
-        bus.fireEventFromSource(event, this);
-    }
-
-    public void addSortHandler(TableSortEvent.Handler<T> handler) {
-        bus.addHandlerToSource(TableSortEvent.TYPE, this, handler);
+        });
     }
 
     /**
@@ -1218,51 +656,47 @@ public class Table<T> extends Composite implements HasData<T> {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Обновляет высоту в соответствии с заданной или незаданной высотой
+     */
+    private void updateHeight() {
+        if (isHeightSet) {
+            int tableHeight = wholeTableHeight;
+            if (hasHat()) {
+                tableHeight -= 40; //шапка
+            }
+            tableHeight -= 32; //хедеры
+            tableCore.setHeight(tableHeight);
+        } else {
+            tableCore.clearHeight();
+        }
+    }
+
+    /**
+     * Задает высоту
+     * @param height высота
+     */
     public void setHeight(int height) {
         isHeightSet = true;
         this.wholeTableHeight = height;
         root.getElement().getStyle().setHeight(height, Style.Unit.PX);
-        if (isAttached()) {
-            redraw();
-        }
+        updateHeight();
     }
 
-    public void clearHeight(int height) {
+    /**
+     * Снять заданную высоту
+     */
+    public void clearHeight() {
         isHeightSet = false;
-        this.wholeTableHeight = height;
         root.getElement().getStyle().clearHeight();
-        if (isAttached()) {
-            redraw();
-        }
+        updateHeight();
     }
 
     /**
-     * Изменяет режим выбора в таблице
-     * @param onlyRows true - можно выбирать ряды, false - можно выбирать ячейки
+     * Возвращает внутреннюю таблицу
      */
-    public void setOnlyRows(boolean onlyRows) {
-        if (onlyRows) {
-            table.addStyleName(SynergyComponents.resources.cssComponents().onlyRows());
-        } else {
-            table.removeStyleName(SynergyComponents.resources.cssComponents().onlyRows());
-        }
-        this.onlyRows = onlyRows;
-        selectionModel.clear();
-    }
-
-    /**
-     * Возвращает номер ряда в котором расположен объект с
-     * заданным ключем.
-     * @param key ключ
-     * @return номер ряда с объектом
-     */
-    public int getRowById(Object key) {
-        for (int i = start; i < Math.min(objects.size() - start, pageSize); i++) {
-            if (keyProvider.getKey(objects.get(i)).equals(key)) {
-                return i;
-            }
-        }
-        return -1;
+    public TableCore<T> getCore() {
+        return tableCore;
     }
 
     public TableHat getHat() {
@@ -1273,10 +707,13 @@ public class Table<T> extends Composite implements HasData<T> {
         return hat != null && hat.isAttached();
     }
 
+    /**
+     * Добавляет/удаляет шапку
+     */
     public void enableHat(boolean enabled) {
         if (enabled) {
             if (hat == null) {
-                hat = new TableHat(this);
+                hat = new TableHat(tableCore);
             }
             root.insert(hat, 0);
         } else {

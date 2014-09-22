@@ -5,6 +5,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.view.client.HasData;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.SimpleButton;
 import kz.arta.synergy.components.client.resources.ImageResources;
@@ -52,11 +53,11 @@ public class TableHat extends Composite {
     private Pager pager;
 
     /**
-     * Таблица
+     * Таблица. Нужна только для ини
      */
-    private Table table;
+    private HasData<?> table;
 
-    public TableHat(Table table) {
+    public TableHat(HasData<?> table) {
         root = new FlowPanel();
         initWidget(root);
         root.setStyleName(SynergyComponents.resources.cssComponents().hat());
@@ -66,6 +67,10 @@ public class TableHat extends Composite {
         nameLabel = new InlineLabel("");
         nameLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
         root.add(nameLabel);
+    }
+
+    public TableHat() {
+        this(null);
     }
 
     /**
@@ -129,7 +134,9 @@ public class TableHat extends Composite {
         if (enabled) {
             if (pager == null) {
                 pager = new Pager(true);
-                pager.setDisplay(table);
+                if (table != null) {
+                    pager.setDisplay(table);
+                }
             }
             if (!pager.isAttached()) {
                 root.add(pager);

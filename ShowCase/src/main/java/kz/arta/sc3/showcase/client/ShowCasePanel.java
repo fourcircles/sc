@@ -73,8 +73,8 @@ import java.util.*;
  * Time: 12:43
  */
 public class ShowCasePanel extends FlowPanel {
-    public static final String THEME = "theme";
-    public static final int LOCAL_TREE_SIZE = 400;
+    private static final String THEME = "theme";
+    private static final int LOCAL_TREE_SIZE = 400;
 
     private Theme currentTheme;
 
@@ -384,6 +384,7 @@ public class ShowCasePanel extends FlowPanel {
                         break;
                     case 3:
                         combo.setEnabled(false);
+                        break;
                     default:
                 }
             }
@@ -635,21 +636,21 @@ public class ShowCasePanel extends FlowPanel {
         table.getHat().enablePagerAlways(true);
         table.getHat().enablePager(true);
 
-        table.setOnlyRows(onlyRows);
+        table.getCore().setOnlyRows(onlyRows);
         if (onlyRows) {
             table.setHeight(600);
         }
 
-        final ArtaTextColumn<User> idColumn = new ArtaTextColumn<User>() {
+        final ArtaTextColumn<User> idColumn = new ArtaTextColumn<User>("#") {
             @Override
             public String getValue(User object) {
                 return "" + object.getKey();
             }
         };
         idColumn.setSortable(true);
-        table.addColumn(idColumn, "#");
+        table.addColumn(idColumn);
 
-        final ArtaEditableTextColumn<User> firstNameColumn = new ArtaEditableTextColumn<User>() {
+        final ArtaEditableTextColumn<User> firstNameColumn = new ArtaEditableTextColumn<User>(SCMessages.i18n.tr("Имя")) {
             @Override
             public String getValue(User value) {
                 return value.getFirstName();
@@ -661,9 +662,9 @@ public class ShowCasePanel extends FlowPanel {
             }
         };
         firstNameColumn.setSortable(true);
-        table.addColumn(firstNameColumn, SCMessages.i18n.tr("Имя"));
+        table.addColumn(firstNameColumn);
 
-        final ArtaEditableTextColumn<User> lastNameColumn = new ArtaEditableTextColumn<User>() {
+        final ArtaEditableTextColumn<User> lastNameColumn = new ArtaEditableTextColumn<User>(SCMessages.i18n.tr("Фамилия")) {
             @Override
             public String getValue(User value) {
                 return value.getLastName();
@@ -675,9 +676,9 @@ public class ShowCasePanel extends FlowPanel {
             }
         };
         lastNameColumn.setSortable(true);
-        table.addColumn(lastNameColumn, "Фамилия");
+        table.addColumn(lastNameColumn);
 
-        ArtaEditableTextColumn<User> addressColumn = new ArtaEditableTextColumn<User>() {
+        ArtaEditableTextColumn<User> addressColumn = new ArtaEditableTextColumn<User>(SCMessages.i18n.tr("Почтовый индекс")) {
             @Override
             public String getValue(User value) {
                 return value.getAddress();
@@ -689,10 +690,10 @@ public class ShowCasePanel extends FlowPanel {
             }
         };
         addressColumn.setSortable(true);
-        table.addColumn(addressColumn, "Почтовый индекс");
+        table.addColumn(addressColumn);
 
         final ListDataProvider<User> provider = new ListDataProvider<User>();
-        provider.addDataDisplay(table);
+        provider.addDataDisplay(table.getCore());
 
         final List<User> list = provider.getList();
         for (int i = 0; i < 190; i++) {
@@ -728,10 +729,10 @@ public class ShowCasePanel extends FlowPanel {
                 return user.getAddress().compareTo(user2.getAddress());
             }
         });
-        table.addSortHandler(listHandler);
+        table.getCore().addSortHandler(listHandler);
 
         Pager simplePager = new Pager(false);
-        simplePager.setDisplay(table);
+        simplePager.setDisplay(table.getCore());
         simplePager.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
 
         panel.add(simplePager);

@@ -287,9 +287,9 @@ public class Table<T> extends Composite {
      */
     private void resizingDrag(ArtaFlowPanel divider, int x) {
         if (resizing) {
-            x = Math.max(x, leftDividerLimit);
-            x = Math.min(x, rightDividerLimit);
-            divider.getElement().getStyle().setLeft(x - root.getAbsoluteLeft(), Style.Unit.PX);
+            int left = Math.max(x, leftDividerLimit);
+            left = Math.min(left, rightDividerLimit);
+            divider.getElement().getStyle().setLeft(left - root.getAbsoluteLeft(), Style.Unit.PX);
         }
     }
 
@@ -514,11 +514,8 @@ public class Table<T> extends Composite {
 
         int movingHeaderPosition = tableCore.getColumns().indexOf(movingColumn);
         for (int i = 0; i <= tableCore.getColumns().size(); i++) {
-            if (i == movingHeaderPosition || i == movingHeaderPosition + 1) {
-                continue;
-            }
-
-            if (canBeDraggedTo(i, x)) {
+            if (i != movingHeaderPosition && i != movingHeaderPosition + 1
+                    && canBeDraggedTo(i, x)) {
                 showHeaderDivider(i);
                 break;
             }
@@ -541,11 +538,12 @@ public class Table<T> extends Composite {
      * @see {@link kz.arta.synergy.components.client.table.TableCore#changeColumnPosition(com.google.gwt.user.client.ui.FlexTable, int, int)}
      */
     private void changeColumnPosition(int columnIndex, int targetPosition) {
-        if (columnIndex < targetPosition) {
-            targetPosition--;
+        int target = targetPosition;
+        if (columnIndex < target) {
+            target--;
         }
-        tableCore.changeColumnPosition(headersTable, columnIndex, targetPosition);
-        tableCore.changeColumnPosition(columnIndex, targetPosition);
+        tableCore.changeColumnPosition(headersTable, columnIndex, target);
+        tableCore.changeColumnPosition(columnIndex, target);
         redrawDividers();
     }
 

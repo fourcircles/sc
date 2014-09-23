@@ -14,6 +14,7 @@ import kz.arta.synergy.components.client.tree.events.TreeOpenEvent;
 import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: vsl
@@ -38,7 +39,7 @@ public class Tree extends Composite implements HasContextMenuHandlers {
     /**
      * Внутренние пункты дерева
      */
-    ArrayList<TreeItem> items;
+    List<TreeItem> items;
 
     public Tree() {
         ArtaScrollPanel scroll = new ArtaScrollPanel();
@@ -70,7 +71,7 @@ public class Tree extends Composite implements HasContextMenuHandlers {
     /**
      * Возвращает все добавленные корневые узлы дерева
      */
-    public ArrayList<TreeItem> getItems() {
+    public List<TreeItem> getItems() {
         return items;
     }
 

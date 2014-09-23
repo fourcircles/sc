@@ -42,7 +42,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
     /**
      * Таблица
      */
-    private FlexTable table;
+    FlexTable table;
 
     /**
      * Предоставляет ключи
@@ -62,7 +62,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
     /**
      * Объекты добавленные в таблицу
      */
-    private List<T> objects;
+    List<T> objects;
 
     /**
      * Список столбцов. Порядок соответствует порядку отображения.
@@ -99,10 +99,12 @@ public class TableCore<T> extends Composite implements HasData<T> {
     /**
      * Ширина заголовков
      */
-    private Map<ArtaColumn<T, ?>, Integer> widths = new HashMap<ArtaColumn<T, ?>, Integer>();
+    Map<ArtaColumn<T, ?>, Integer> widths = new HashMap<ArtaColumn<T, ?>, Integer>();
 
     /**
-     * Задана ли высота. Если не задана, то таблица растягивается
+     * Задана ли высота. Если не задана, то таблица растягивается.
+     * Растяжение таблицы реализовано, как периодическое изменение параметра height.
+     * Явно заданный параметр height необходим для корректной работы скролла.
      */
     private boolean isHeightSet;
 
@@ -180,7 +182,8 @@ public class TableCore<T> extends Composite implements HasData<T> {
     }
 
     /**
-     * Вызывается при начале или завершении изменения ячейки
+     * Вызывается при начале или завершении изменения ячейки.
+     * Правильно рисует границы ячейки, которую изменяют.
      * @param event событие
      * @param start true - начало изменения, false - завершение изменения
      */
@@ -249,6 +252,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
                     event.preventDefault();
                     selectPreviousCell();
                     break;
+                default:
             }
         }
     }
@@ -291,11 +295,12 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param value значение
      * @param mod модуль
      */
-    private int positiveMod(int value, int mod) {
+    static int positiveMod(int value, int mod) {
+        int res = value;
         if (value < 0) {
-            value += mod * (-value / mod + 1);
+            res += mod * (-value / mod + 1);
         }
-        return value % mod;
+        return res % mod;
     }
 
     /**
@@ -304,7 +309,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param forward true - следующий, false - предыдущий
      * @return соседний видимый объект
      */
-    private T getNextVisibleObject(T startObject, boolean forward) {
+    T getNextVisibleObject(T startObject, boolean forward) {
         if (startObject == null) {
             return objects.get(start);
         }
@@ -327,7 +332,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param column номер столбца, если -1, то операция производится для ряда
      * @param select выделить или снять выделение
      */
-    private void innerSelect(int row, int column, boolean select) {
+    void innerSelect(int row, int column, boolean select) {
         if (row < 0 || row >= Math.min(pageSize, objects.size() - start)) {
             return;
         }
@@ -357,7 +362,9 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param column столбец
      */
     public void select(T object, ArtaColumn<T, ?> column) {
-        innerSelect(selectedRow, selectedColumn, false);
+        if (selectedRow != -1) {
+            innerSelect(selectedRow, selectedColumn, false);
+        }
 
         if (object != null && objects.contains(object)) {
             selectedRow = objects.indexOf(object) - start;
@@ -370,7 +377,9 @@ public class TableCore<T> extends Composite implements HasData<T> {
             selectedRow = -1;
             selectedColumn = -1;
         }
-        innerSelect(selectedRow, selectedColumn, true);
+        if (selectedRow != -1) {
+            innerSelect(selectedRow, selectedColumn, true);
+        }
     }
 
     /**
@@ -413,21 +422,15 @@ public class TableCore<T> extends Composite implements HasData<T> {
         }
     }
 
-    public ArtaColumn<T, ?> getPreviousColumn(ArtaColumn<T, ?> column) {
-        int index = columns.indexOf(column);
-        if (index > 0) {
-            return columns.get(index - 1);
-        } else {
-            return null;
-        }
-    }
-
     /**
      * Возвращает предыдущий столбец, который можно изменять
      * @param startColumn столбец с которого начинается поиск (не включая)
      * @return столбец
      */
-    private int getPreviousEditableColumn(int startColumn) {
+    int getPreviousEditableColumn(int startColumn) {
+        if (startColumn < 0 || startColumn > columns.size()) {
+            return -1;
+        }
         for (int i = startColumn - 1; i >= 0; i--) {
             ArtaColumn<T, ?> column = columns.get(i);
             if (column.isEditable()) {
@@ -437,21 +440,15 @@ public class TableCore<T> extends Composite implements HasData<T> {
         return -1;
     }
 
-    public ArtaColumn<T, ?> getNextColumn(ArtaColumn<T, ?> column) {
-        int index = columns.indexOf(column);
-        if (index < columns.size()) {
-            return columns.get(index + 1);
-        } else {
-            return null;
-        }
-    }
-
     /**
      * Возвращает следующий столбец, который можно изменять.
      * @param startColumn столбец с которого начинается поиск (не включая)
      * @return изменяемый столбец
      */
     public int getNextEditableColumn(int startColumn) {
+        if (startColumn < 0 || startColumn >= columns.size()) {
+            return -1;
+        }
         for (int i = startColumn + 1; i < columns.size(); i++) {
             ArtaColumn<T, ?> column = columns.get(i);
             if (column.isEditable()) {
@@ -467,7 +464,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param dest куда поместить виджеты
      * @param source откуда взять виджеты
      */
-    private void setColumnWidgets(FlexTable table, int dest, int source) {
+    void setColumnWidgets(FlexTable table, int dest, int source) {
         for (int row = 0; row < table.getRowCount(); row++) {
             table.setWidget(row, dest, table.getWidget(row, source));
         }
@@ -486,7 +483,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param widgets виджеты
      * @param width ширина
      */
-    private static void setColumnWidgets(FlexTable table, int index, List<Widget> widgets, int width) {
+    static void setColumnWidgets(FlexTable table, int index, List<Widget> widgets, int width) {
         for (int row = 0; row < table.getRowCount(); row++) {
             table.setWidget(row, index, widgets.get(row));
 
@@ -503,7 +500,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param list лист
      * @see {@link java.util.Collections#rotate(java.util.List, int)}
      */
-    private static <V> void rotate(List<V> list, boolean forward) {
+    static <V> void rotate(List<V> list, boolean forward) {
         if (!forward) {
             V first = list.get(0);
             for (int i = 1; i < list.size(); i++) {
@@ -558,10 +555,6 @@ public class TableCore<T> extends Composite implements HasData<T> {
         changeColumnPosition(table, srcColumnIndex, targetPosition);
         rotate(columns.subList(Math.min(srcColumnIndex, targetPosition),
                 Math.max(srcColumnIndex, targetPosition) + 1), srcColumnIndex > targetPosition);
-    }
-
-    public int getColumnIndex(ArtaColumn<T, ?> column) {
-        return columns.indexOf(column);
     }
 
     /**
@@ -623,9 +616,15 @@ public class TableCore<T> extends Composite implements HasData<T> {
             return;
         }
         sortedColumn = column;
+        boolean isAscending = Header.DEFAULT_IS_ASCENDING;
+
         Header header = column.getHeader();
-        header.setSorted(true);
-        bus.fireEventFromSource(new TableSortEvent<T>(column, header.isAscending()), this);
+        if (header != null) {
+            header.setSorted(true);
+            isAscending = header.isAscending();
+        }
+
+        bus.fireEventFromSource(new TableSortEvent<T>(column, isAscending), this);
     }
 
     public ArtaColumn<T, ?> getSortedColumn() {
@@ -633,12 +632,18 @@ public class TableCore<T> extends Composite implements HasData<T> {
     }
 
     /**
-     * Добавляет столбец
+     * Добавляет столбец.
+     *
+     * Повторное добавление одинаковых объектов {@link kz.arta.synergy.components.client.table.column.ArtaColumn}
+     * запрещено. Одинаковые (по виду) столбцы возможны, но они должны быть разными объектами.
      * @param column столбец
      */
     public void addColumn(final ArtaColumn<T, ?> column) {
+        if (columns.contains(column)) {
+            return;
+        }
         columns.add(column);
-        for (int i = 0; i < Math.min(table.getRowCount(), objects.size()); i++) {
+        for (int i = 0; i < Math.min(table.getRowCount(), objects.size() - start); i++) {
             table.addCell(i);
             int cellColumn = table.getCellCount(i) - 1;
             table.setWidget(i, cellColumn, column.createWidget(objects.get(cellColumn), bus));
@@ -646,7 +651,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
     }
 
     @Override
-    public TableSelectionModel<? super T> getSelectionModel() {
+    public TableSelectionModel<T> getSelectionModel() {
         return selectionModel;
     }
 
@@ -664,17 +669,12 @@ public class TableCore<T> extends Composite implements HasData<T> {
     public Iterable<T> getVisibleItems() {
         Range visibleRange = getVisibleRange();
         return objects.subList(visibleRange.getStart(),
-                visibleRange.getStart() + visibleRange.getLength() - 1);
-    }
-
-    public ArtaColumn<T, ?> getFirstColumn() {
-        return getColumn(0);
+                visibleRange.getStart() + visibleRange.getLength());
     }
 
     public ArtaColumn<T, ?> getLastColumn() {
-        return getColumn(columns.size() - 1);
+        return columns.get(columns.size() - 1);
     }
-
     public ArtaColumn<T, ?> getColumn(int index) {
         return columns.get(index);
     }
@@ -687,8 +687,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
         return table.getFlexCellFormatter().getElement(row, column);
     }
 
-    public void setRow(int row, T value) {
-
+    void setRow(int row, T value) {
         for (int i = 0; i < columns.size(); i++) {
             ArtaColumn<T, ?> column = columns.get(i);
             if (!table.isCellPresent(row, i) || table.getWidget(row, i) == null) {
@@ -702,20 +701,16 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     public void redraw() {
         selectionModel.clear();
-        for (int i = 0; i < Math.min(pageSize, objects.size() - start); i++) {
-            setRow(i, objects.get(start + i));
-        }
         if (pageSize > objects.size() - start) {
             table.addStyleName(SynergyComponents.resources.cssComponents().notFull());
         } else {
             table.removeStyleName(SynergyComponents.resources.cssComponents().notFull());
         }
 
-        if (table.getRowCount() > pageSize) {
-            for (int i = pageSize; i < table.getRowCount(); i++) {
-                table.getRowFormatter().getElement(objects.size()).removeFromParent();
-            }
+        while (table.getRowCount() > pageSize) {
+            table.getRowFormatter().getElement(table.getRowCount() - 1).removeFromParent();
         }
+
         table.getRowFormatter().getElement(pageSize - 1).addClassName(SynergyComponents.resources.cssComponents().last());
 
         if (!isHeightSet) {
@@ -741,12 +736,30 @@ public class TableCore<T> extends Composite implements HasData<T> {
         scroll.getElement().getStyle().clearHeight();
     }
 
+    /**
+     * Изменяет значения объектов, нужные изменения сразу отображаются на текущей странице.
+     * Здесь предполагается правильное количество объектов, которое задается через {@link #setRowCount(int)}
+     * @param start начальная позиция в объектах
+     * @param values новые значения
+     */
     @Override
     public void setRowData(int start, List<? extends T> values) {
-        for (T value : values) {
-            objects.set(start++, value);
+        if (values == null || values.isEmpty()) {
+            return;
         }
-        redraw();
+
+        if (start < 0 || start + values.size() > objects.size()) {
+            throw new IllegalArgumentException();
+        }
+
+        for (int i = 0; i < values.size(); i++) {
+            objects.set(i + start, values.get(i));
+
+            int rowNum = start - this.start + i;
+            if (rowNum >= 0 && rowNum < pageSize) {
+                setRow(rowNum, values.get(i));
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -761,10 +774,12 @@ public class TableCore<T> extends Composite implements HasData<T> {
     /**
      * Управляет отображаемым интервалом.
      * Вызывается, например, при листании страниц.
+     * При изменении интервала создается событие
      * @param range новый интервал
+     * @param forceEvents если true, событие создается даже когда интервал не был изменен
+     * @param clearData очищает данные
      */
-    @Override
-    public void setVisibleRangeAndClearData(final Range range, boolean forceRangeChangeEvent) {
+    private void setVisibleRange(Range range, boolean clearData, boolean forceEvents) {
         boolean changed = false;
         if (start != range.getStart()) {
             start = range.getStart();
@@ -775,9 +790,18 @@ public class TableCore<T> extends Composite implements HasData<T> {
             changed = true;
         }
 
-        if (changed || forceRangeChangeEvent) {
+        if (clearData) {
+            objects.clear();
+        }
+
+        if (changed || forceEvents) {
             RangeChangeEvent.fire(this, range);
         }
+    }
+
+    @Override
+    public void setVisibleRangeAndClearData(final Range range, boolean forceRangeChangeEvent) {
+        setVisibleRange(range, true, forceRangeChangeEvent);
     }
 
     @Override
@@ -810,14 +834,28 @@ public class TableCore<T> extends Composite implements HasData<T> {
         return isRowCountExact;
     }
 
+    /**
+     * Переменная отображает количество добавленных объектов.
+     *
+     * При уменьшении количества добавленных объектов размер objects не уменьшится.
+     * Это пример случая, когда objects.size() не равен rowCount.
+     */
+    private int rowCount;
+
     @Override
     public void setRowCount(int count) {
+        boolean rowCountChange = false;
         if (objects.size() < count) {
             for (int i = objects.size(); i < count; i++) {
                 objects.add(null);
             }
+            rowCountChange = true;
         } else if (objects.size() > count) {
-            objects.subList(count - 1, objects.size()).clear();
+            objects.subList(count, objects.size()).clear();
+            rowCountChange = true;
+        }
+        if (rowCountChange) {
+            RowCountChangeEvent.fire(this, getRowCount(), isRowCountExact);
         }
     }
 
@@ -834,7 +872,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     @Override
     public void setVisibleRange(Range range) {
-        setVisibleRangeAndClearData(range, false);
+        setVisibleRange(range, false, true);
     }
 
     @Override
@@ -861,14 +899,19 @@ public class TableCore<T> extends Composite implements HasData<T> {
     }
 
     /**
-     * Возвращает номер ряда в котором расположен объект с
-     * заданным ключем.
+     * Возвращает номер ряда в котором расположен объект с заданным ключем.
+     * Если объект расположен не на текущей странице или такого объекта
+     * просто нет - возвращает -1.
      * @param key ключ
      * @return номер ряда с объектом
      */
     public int getRowById(Object key) {
-        for (int i = start; i < Math.min(objects.size() - start, pageSize); i++) {
-            if (keyProvider.getKey(objects.get(i)).equals(key)) {
+        if (keyProvider == null) {
+            return -1;
+        }
+
+        for (int i = 0; i < Math.min(objects.size() - start, pageSize); i++) {
+            if (keyProvider.getKey(objects.get(i + start)).equals(key)) {
                 return i;
             }
         }

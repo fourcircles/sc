@@ -47,13 +47,8 @@ public class TableSelectionModel<T> implements SelectionModel<T> {
         return selectedObject == object;
     }
 
-    /**
-     * Выбирает или снимает выделение ячейки или ряда
-     * @param object объект
-     * @param column столбец; если null то предполагается, что работаем с рядом
-     * @param selected выделить или снять выделение
-     */
-    public void setSelected(T object, ArtaColumn<T, ?> column, boolean selected) {
+    public void setSelected(T object, ArtaColumn<T, ?> column,
+                            boolean selected, boolean fireEvents) {
         T newObject;
         ArtaColumn<T, ?> newColumn;
         if (selected) {
@@ -72,9 +67,20 @@ public class TableSelectionModel<T> implements SelectionModel<T> {
         if (newObject != selectedObject || newColumn != selectedColumn) {
             selectedObject = newObject;
             selectedColumn = newColumn;
-            SelectionChangeEvent.fire(this);
+            if (fireEvents) {
+                SelectionChangeEvent.fire(this);
+            }
         }
+    }
 
+    /**
+     * Выбирает или снимает выделение ячейки или ряда
+     * @param object объект
+     * @param column столбец; если null то предполагается, что работаем с рядом
+     * @param selected выделить или снять выделение
+     */
+    public void setSelected(T object, ArtaColumn<T, ?> column, boolean selected) {
+        setSelected(object, column, selected, true);
     }
 
     /**

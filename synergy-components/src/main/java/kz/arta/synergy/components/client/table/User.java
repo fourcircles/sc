@@ -49,4 +49,13 @@ public class User {
     public int getKey() {
         return id;
     }
+
+    public static void resetIdCount() {
+        idCount = 0;
+    }
+
+    @Override
+    public String toString() {
+        return id + " " + firstName + " " + lastName;
+    }
 }

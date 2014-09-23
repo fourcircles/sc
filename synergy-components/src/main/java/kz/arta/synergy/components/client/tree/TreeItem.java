@@ -22,8 +22,8 @@ import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 
 import java.util.ArrayList;
+import java.util.List;
 
-//todo контекстное меню
 /**
  * User: vsl
  * Date: 12.09.14
@@ -45,7 +45,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     /**
      * Узлы внутри данного узла
      */
-    private ArrayList<TreeItem> items;
+    private List<TreeItem> items;
 
     /**
      * Текст узла
@@ -295,7 +295,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
         return items != null && items.contains(item);
     }
 
-    public ArrayList<TreeItem> getItems() {
+    public List<TreeItem> getItems() {
         return items;
     }
 

@@ -186,4 +186,7 @@ public interface CssComponents extends CssResource {
     String content();
 
     String pager();
+
+    String weekChooser();
+    String day();
 }

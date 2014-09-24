@@ -1836,3 +1836,28 @@ p {
     color: textColor2;
     text-align: center;
 }
+
+.weekChooser {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    height: 32px;
+
+    border: 1px solid buttonPressed;
+    background-color: white;
+}
+
+@eval weekdayChooserPadding kz.arta.synergy.components.style.client.Constants.weekdayChooserPadding();
+.day {
+    display: inline-block;
+    /*width: 32px;*/
+    height: 30px;
+    line-height: 30px;
+    color: stackPanelText2;
+    text-align: center;
+    cursor: default;
+    padding-left: weekdayChooserPadding;
+    padding-right: weekdayChooserPadding;
+}
+.day.selected {
+    background-color: selectColor;
+}

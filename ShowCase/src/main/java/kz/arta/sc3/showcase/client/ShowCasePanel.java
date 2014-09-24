@@ -33,6 +33,7 @@ import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
 import kz.arta.synergy.components.client.input.SearchResultInput;
 import kz.arta.synergy.components.client.input.TextInput;
+import kz.arta.synergy.components.client.input.WeekDayChooser;
 import kz.arta.synergy.components.client.input.date.ArtaDatePicker;
 import kz.arta.synergy.components.client.input.date.DateInput;
 import kz.arta.synergy.components.client.input.date.DateTimeInput;
@@ -73,8 +74,10 @@ import java.util.*;
  * Time: 12:43
  */
 public class ShowCasePanel extends FlowPanel {
-    private static final String THEME = "theme";
+    private static final String THEME_COOKIE = "theme";
     private static final int LOCAL_TREE_SIZE = 400;
+    public static final String DEFAULT_LOCALE = "default";
+    public static final String DIRECTION_PROPERTY = "direction";
 
     private Theme currentTheme;
 
@@ -90,10 +93,10 @@ public class ShowCasePanel extends FlowPanel {
     private static ShowCasePanelUiBinder binder = GWT.create(ShowCasePanelUiBinder.class);
 
     public ShowCasePanel() {
-        if (Cookies.getCookie(THEME) == null) {
+        if (Cookies.getCookie(THEME_COOKIE) == null) {
             currentTheme = Theme.standard;
         } else {
-            currentTheme = Theme.getTheme(Cookies.getCookie("theme"));
+            currentTheme = Theme.getTheme(Cookies.getCookie(THEME_COOKIE));
         }
 
         binder.createAndBindUi(this);
@@ -180,25 +183,24 @@ public class ShowCasePanel extends FlowPanel {
         final ComboBox<String> localesCombo = new ComboBox<String>();
         localesCombo.setReadOnly(true);
         for (String locale: LocaleInfo.getAvailableLocaleNames()) {
-            localesCombo.addItem(locale, locale);
+            if (!DEFAULT_LOCALE.equals(locale)) {
+                localesCombo.addItem(locale, locale);
+            }
         }
         localesCombo.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 UrlBuilder newUrl = Window.Location.createUrlBuilder();
-                newUrl.setParameter("locale", event.getValue());
+                newUrl.setParameter(LocaleInfo.getLocaleQueryParam(), event.getValue());
                 Window.Location.assign(newUrl.buildString());
             }
         });
-        String chosenLocale = Window.Location.getParameter("locale");
-        if (chosenLocale == null) {
-            chosenLocale = LocaleInfo.getCurrentLocale().getLocaleName();
-        }
+        String chosenLocale = LocaleInfo.getCurrentLocale().getLocaleName();
         localesCombo.selectValue(chosenLocale, false);
 
         titlePanel.add(localesCombo);
         if (LocaleInfo.getCurrentLocale().isRTL()) {
-            RootPanel.getBodyElement().getStyle().setProperty("direction", HasDirection.Direction.RTL.name());
+            RootPanel.getBodyElement().getStyle().setProperty(DIRECTION_PROPERTY, HasDirection.Direction.RTL.name());
         }
 
         if (LocaleInfo.getCurrentLocale().isRTL()) {
@@ -1787,7 +1789,7 @@ public class ShowCasePanel extends FlowPanel {
     private void setTheme(Theme theme) {
         if (currentTheme != theme) {
             currentTheme = theme;
-            Cookies.setCookie("theme", theme.name());
+            Cookies.setCookie(THEME_COOKIE, theme.name());
             Window.Location.reload();
         }
     }

@@ -88,6 +88,8 @@ public class Constants {
     public static final int PAGER_TEXT_PADDING = 5;
     public static final int PAGER_HEIGHT = 32;
 
+    public static final int WEEKDAY_CHOOSER_PADDING = 8;
+
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
     }
@@ -223,5 +225,9 @@ public class Constants {
     }
     public static String pagerHeight() {
         return PAGER_HEIGHT + "px";
+    }
+
+    public static String weekdayChooserPadding() {
+        return WEEKDAY_CHOOSER_PADDING + "px";
     }
 }

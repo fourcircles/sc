@@ -31,6 +31,7 @@ import kz.arta.synergy.components.client.collapsing.CollapsingPanel;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
+import kz.arta.synergy.components.client.input.NumberInput;
 import kz.arta.synergy.components.client.input.SearchResultInput;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.input.date.*;
@@ -1389,6 +1390,11 @@ public class ShowCasePanel extends FlowPanel {
 
         panel.add(searchResultPanel);
 
+        FlowPanel numberPanel = new FlowPanel();
+        numberPanel.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        NumberInput numberInput = new NumberInput();
+        numberPanel.add(numberInput);
+        panel.add(numberPanel);
 
         Panel textAreaPanel = new FlowPanel();
         textAreaPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);

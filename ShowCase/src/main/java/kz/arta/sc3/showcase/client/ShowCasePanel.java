@@ -739,11 +739,34 @@ public class ShowCasePanel extends FlowPanel {
         });
         table.getCore().addSortHandler(listHandler);
 
-        Pager simplePager = new Pager(false);
+        final Pager simplePager = new Pager(false);
+        simplePager.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         simplePager.setDisplay(table.getCore());
-        simplePager.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
 
-        panel.add(simplePager);
+        FlowPanel firstRow = new FlowPanel();
+        firstRow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        firstRow.getElement().getStyle().setPosition(Style.Position.RELATIVE);
+
+        ArtaCheckBox checkBox = new ArtaCheckBox();
+        checkBox.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
+        checkBox.getElement().getStyle().setTop(8, Style.Unit.PX);
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            checkBox.getElement().getStyle().setMarginRight(10, Style.Unit.PX);
+        } else {
+            checkBox.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        }
+        checkBox.setValue(true, false);
+        checkBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                simplePager.setEnabled(event.getValue());
+            }
+        });
+
+        firstRow.add(simplePager);
+        firstRow.add(checkBox);
+
+        panel.add(firstRow);
         panel.add(table);
 
         ArtaScrollPanel scroll = new ArtaScrollPanel(panel);

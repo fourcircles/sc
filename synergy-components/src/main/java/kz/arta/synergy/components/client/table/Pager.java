@@ -1,11 +1,13 @@
 package kz.arta.synergy.components.client.table;
 
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.cellview.client.AbstractPager;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.view.client.Range;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -21,7 +23,7 @@ import kz.arta.synergy.components.style.client.Constants;
  *
  * Пагинатор
  */
-public class Pager extends AbstractPager {
+public class Pager extends AbstractPager implements HasEnabled {
     /**
      * корневая панель
      */
@@ -48,6 +50,21 @@ public class Pager extends AbstractPager {
     private boolean hasText;
 
     /**
+     * Включен ли пагинатор
+     */
+    private boolean enabled = true;
+
+    /**
+     * Статус кнопки "назад", если бы пагинатор был включен.
+     */
+    private boolean previousEnabled;
+
+    /**
+     * Статус кнопки "вперед", если бы пагинатор был включен.
+     */
+    private boolean nextEnabled;
+
+    /**
      * @param hasText true - дополнительный текст отображается, false - просто две кнопки
      */
     public Pager(boolean hasText) {
@@ -72,12 +89,18 @@ public class Pager extends AbstractPager {
         previousButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+                    return;
+                }
                 previousPage();
             }
         });
         nextButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+                    return;
+                }
                 nextPage();
             }
         });
@@ -140,6 +163,7 @@ public class Pager extends AbstractPager {
     protected void onLoad() {
         super.onLoad();
         updateTextPosition();
+        updateButtons();
     }
 
     /**
@@ -180,14 +204,19 @@ public class Pager extends AbstractPager {
      */
     private void updateButtons() {
         if (hasNextPage()) {
-            nextButton.setEnabled(true);
+            nextEnabled = true;
         } else {
-            nextButton.setEnabled(false);
+            nextEnabled = false;
         }
         if (hasPreviousPage()) {
-            previousButton.setEnabled(true);
+            previousEnabled = true;
         } else {
-            previousButton.setEnabled(false);
+            previousEnabled = false;
+        }
+
+        if (isEnabled()) {
+            nextButton.setEnabled(nextEnabled);
+            previousButton.setEnabled(previousEnabled);
         }
     }
 
@@ -197,4 +226,22 @@ public class Pager extends AbstractPager {
         updateButtons();
     }
 
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        if (this.enabled != enabled) {
+            if (enabled) {
+                nextButton.setEnabled(nextEnabled);
+                previousButton.setEnabled(previousEnabled);
+            } else {
+                nextButton.setEnabled(false);
+                previousButton.setEnabled(false);
+            }
+            this.enabled = enabled;
+        }
+    }
 }

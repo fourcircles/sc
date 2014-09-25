@@ -1035,24 +1035,35 @@ p {
 }
 
 .datePicker {
-    width: 295px;
-    display: inline-block;
-    padding-left: 17px;
-    padding-right: 17px;
-    padding-top: 15px;
-    padding-bottom: 15px;
+    width: 293px; /* -2 для границ */
     border-color: buttonBorder;
     border-width: 1px;
     border-style: solid;
     text-align: center;
 }
 
-.datePickerTop, .datePickerBottom, .datePickerCalendar {
-    display: block;
+.datePickerCalendar {
+    margin-bottom: 20px;
 }
 
 .datePickerTop {
     line-height: 16px;
+    margin: 0 15px;
+}
+.datePickerTop:first-child {
+    margin-top: 15px;
+}
+.datePickerTop:last-child {
+    margin-bottom: 15px;
+}
+.datePickerTop img {
+    cursor: pointer;
+}
+.datePickerTop img:first-child {
+    float: left;
+}
+.datePickerTop img:last-child {
+    float: right;
 }
 
 .datePickerTop span {
@@ -1094,7 +1105,7 @@ p {
 }
 
 .daysPanel:last-child {
-    padding-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .month, .thisMonth, .outMonth {
@@ -1849,7 +1860,6 @@ p {
 @eval weekdayChooserPadding kz.arta.synergy.components.style.client.Constants.weekdayChooserPadding();
 .day {
     display: inline-block;
-    /*width: 32px;*/
     height: 30px;
     line-height: 30px;
     color: stackPanelText2;
@@ -1857,7 +1867,16 @@ p {
     cursor: default;
     padding-left: weekdayChooserPadding;
     padding-right: weekdayChooserPadding;
+    cursor: pointer;
 }
 .day.selected {
     background-color: selectColor;
 }
+
+.repeatChooser .buttonSimple {
+    background-color: buttonBG;
+}
+.repeatChooser .buttonSimple:active {
+    background-color: buttonPressed;
+}
+

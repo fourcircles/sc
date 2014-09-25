@@ -114,11 +114,24 @@ public class TagsPanel<V> extends Composite implements HasEnabled {
         rebuild();
     }
 
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        if (!tags.isEmpty()) {
+            //добавляем тэги, которые были добавлены ранее
+            rebuild();
+        }
+    }
+
     /**
      * Добавляет все теги в панель, если не влезают - убирает в индикатор количества тегов
      * или сдвигает влево
      */
     private void rebuild() {
+        if (!isAttached()) {
+            return;
+        }
+
         int i = 0;
         //теги [i..i-1] скрываем в индикатор, остальные пытаемся разместить
         while (i <= tags.size()) {

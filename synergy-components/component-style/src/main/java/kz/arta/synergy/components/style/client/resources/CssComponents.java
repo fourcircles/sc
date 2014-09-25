@@ -38,8 +38,6 @@ public interface CssComponents extends CssResource {
 
     String datePicker();
 
-    String datePickerBottom();
-
     String datePickerCalendar();
 
     String datePickerTop();
@@ -189,4 +187,6 @@ public interface CssComponents extends CssResource {
 
     String weekChooser();
     String day();
+
+    String repeatChooser();
 }

@@ -33,11 +33,10 @@ import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
 import kz.arta.synergy.components.client.input.SearchResultInput;
 import kz.arta.synergy.components.client.input.TextInput;
-import kz.arta.synergy.components.client.input.WeekDayChooser;
-import kz.arta.synergy.components.client.input.date.ArtaDatePicker;
-import kz.arta.synergy.components.client.input.date.DateInput;
-import kz.arta.synergy.components.client.input.date.DateTimeInput;
-import kz.arta.synergy.components.client.input.date.TimeInput;
+import kz.arta.synergy.components.client.input.date.*;
+import kz.arta.synergy.components.client.input.date.repeat.FullRepeatChooser;
+import kz.arta.synergy.components.client.input.date.repeat.RepeatChooser;
+import kz.arta.synergy.components.client.input.date.repeat.RepeatDate;
 import kz.arta.synergy.components.client.input.tags.MultiComboBox;
 import kz.arta.synergy.components.client.input.tags.ObjectChooser;
 import kz.arta.synergy.components.client.input.tags.TagInput;
@@ -503,6 +502,12 @@ public class ShowCasePanel extends FlowPanel {
             @Override
             public Widget getContentWidget() {
                 return getComboboxPanel();
+            }
+        });
+        addTreeItem(fields, new LoadPanel(SCMessages.i18n.tr("Компонент повторения")) {
+            @Override
+            public Widget getContentWidget() {
+                return getPeriodInputs();
             }
         });
 
@@ -1180,6 +1185,20 @@ public class ShowCasePanel extends FlowPanel {
         label.getElement().getStyle().setLineHeight(32, Style.Unit.PX);
         label.setWidth(width + "px");
         return label;
+    }
+
+    private Widget getPeriodInputs() {
+        FlowPanel root = new FlowPanel();
+
+        FullRepeatChooser chooser = new FullRepeatChooser();
+        chooser.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        chooser.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        root.add(chooser);
+
+        chooser.setMode(RepeatChooser.MODE.YEAR);
+        chooser.getChooser().addSelected(new RepeatDate(22, 2, RepeatChooser.MODE.YEAR));
+
+        return root;
     }
 
     /**

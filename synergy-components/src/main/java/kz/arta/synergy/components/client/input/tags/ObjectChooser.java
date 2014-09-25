@@ -1,17 +1,19 @@
 package kz.arta.synergy.components.client.input.tags;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
-import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.style.client.Constants;
+
+import java.util.List;
 
 /**
  * User: vsl
@@ -20,12 +22,13 @@ import kz.arta.synergy.components.style.client.Constants;
  *
  * Компонент выбора объекта
  */
-public class ObjectChooser extends Composite implements HasEnabled{
+public class ObjectChooser<T> extends TagsContainer<T> implements HasEnabled{
 
+    public static final ImageResource DEFAULT_ICON = ImageResources.IMPL.zoom();
     /**
      * Панель с тегами
      */
-    private TagsPanel tagsPanel;
+    private TagsPanel<T> tagsPanel;
 
     /**
      * Длина компонента без margins
@@ -37,7 +40,8 @@ public class ObjectChooser extends Composite implements HasEnabled{
      */
     private final ImageButton button;
 
-    public ObjectChooser(final EventBus bus) {
+    public ObjectChooser(final EventBus bus, ImageResource icon) {
+        super(bus);
         //корневая панель
         FlowPanel root = new FlowPanel();
         initWidget(root);
@@ -50,21 +54,30 @@ public class ObjectChooser extends Composite implements HasEnabled{
         super.setWidth(offsetWidth - 2 * Constants.BORDER_WIDTH + "px");
 
         //кнопка
-        button = new ImageButton(ImageResources.IMPL.zoom());
+        button = new ImageButton(icon);
         button.getElement().getStyle().setFloat(Style.Float.RIGHT);
-        button.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                Tag tag = new Tag("t");
-                tag.setBus(bus);
-                bus.fireEvent(new TagAddEvent(tag));
-            }
-        });
 
-        tagsPanel = new TagsPanel(bus, getAvailableWidth());
+        tagsPanel = new TagsPanel<T>(bus, getAvailableWidth());
 
         root.add(tagsPanel);
         root.add(button);
+    }
+
+    @Override
+    public List<Tag<T>> getTags() {
+        return tagsPanel.getTags();
+    }
+
+    public ObjectChooser(EventBus bus) {
+        this(bus, DEFAULT_ICON);
+    }
+
+    public void setIcon(ImageResource icon) {
+        button.setIcon(icon);
+    }
+
+    public HandlerRegistration addButtonClickHandler(ClickHandler handler) {
+        return button.addClickHandler(handler);
     }
 
     /**

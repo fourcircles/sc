@@ -2,12 +2,13 @@ package kz.arta.synergy.components.client.input.tags;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasEnabled;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.SimplePanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.input.InputWithEvents;
@@ -34,7 +35,7 @@ import java.util.List;
  * Добавление и удаление тегов происходит через соответствующие методы и
  * выбором элементов из списка (при отсутствии списка через поле ввода и enter).
  */
-public class TagInput<V> extends Composite implements HasText,
+public class TagInput<V> extends TagsContainer<V> implements HasText,
         TagAddEvent.HasHandler<V>, TagRemoveEvent.HasHandler<V>, HasEnabled {
     /**
      * Корневая панель
@@ -78,8 +79,6 @@ public class TagInput<V> extends Composite implements HasText,
 
     private ListTextFilter filter = ListTextFilter.createPrefixFilter();
 
-    EventBus innerBus;
-
     /**
      * Имеет ли поле кнопку
      */
@@ -93,10 +92,10 @@ public class TagInput<V> extends Composite implements HasText,
      * @param hasButton имеет ли кнопку
      */
     public TagInput(boolean hasButton) {
+        super();
+
         root = new FlowPanel();
         initWidget(root);
-
-        innerBus = new SimpleEventBus();
 
         this.hasButton = hasButton;
 
@@ -161,6 +160,7 @@ public class TagInput<V> extends Composite implements HasText,
                         if (dropDownList != null && !dropDownList.isShowing()) {
                             dropDownList.show();
                         }
+                    default:
                 }
             }
         });
@@ -303,26 +303,8 @@ public class TagInput<V> extends Composite implements HasText,
         inputBox.setWidth(inputWidth + "px");
     }
 
-    public void removeTag(Tag<V> tag) {
-        innerBus.fireEventFromSource(new TagRemoveEvent<V>(tag), this);
-    }
-
-    public void addTag(Tag<V> tag) {
-        innerBus.fireEventFromSource(new TagAddEvent<V>(tag), this);
-    }
-
     public List<Tag<V>> getTags() {
         return tagsPanel.getTags();
-    }
-
-    public Tag<V> getTag(V value) {
-        for (Tag<V> tag : tagsPanel.getTags()) {
-            //noinspection NonJREEmulationClassesInClientCode
-            if (tag.getValue().equals(value)) {
-                return tag;
-            }
-        }
-        return null;
     }
 
     /**

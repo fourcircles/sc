@@ -393,7 +393,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
         int columnNum = columns.indexOf(selectionModel.getSelectedColumn());
         int nextColumn = getNextEditableColumn(columnNum);
         if (nextColumn == -1) {
-            nextColumn = getNextEditableColumn(0);
+            nextColumn = getNextEditableColumn(-1);
             if (nextColumn != -1) {
                 selectionModel.setSelected(getNextVisibleObject(selectionModel.getSelectedObject(), true), columns.get(nextColumn), true);
             }
@@ -446,7 +446,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @return изменяемый столбец
      */
     public int getNextEditableColumn(int startColumn) {
-        if (startColumn < 0 || startColumn >= columns.size()) {
+        if (startColumn < -1 || startColumn >= columns.size()) {
             return -1;
         }
         for (int i = startColumn + 1; i < columns.size(); i++) {

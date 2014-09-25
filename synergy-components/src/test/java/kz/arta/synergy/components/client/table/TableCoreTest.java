@@ -295,7 +295,8 @@ public class TableCoreTest {
         assertEquals(3, table.getNextEditableColumn(1));
         assertEquals(-1, table.getNextEditableColumn(3));
         assertEquals(1, table.getNextEditableColumn(0));
-        assertEquals(-1, table.getNextEditableColumn(-1));
+        assertEquals(1, table.getNextEditableColumn(-1));
+        assertEquals(-1, table.getNextEditableColumn(-2));
         assertEquals(-1, table.getNextEditableColumn(100));
     }
 

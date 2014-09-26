@@ -729,4 +729,11 @@ public class Table<T> extends Composite {
             }
         }
     }
+
+    /**
+     * Включить-выключить перенос на следующую строку
+     */
+    public void setMultiLine(boolean multiLine) {
+        tableCore.setMultiLine(multiLine);
+    }
 }

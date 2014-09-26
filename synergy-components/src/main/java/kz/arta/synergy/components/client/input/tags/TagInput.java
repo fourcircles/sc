@@ -160,6 +160,7 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
                         if (dropDownList != null && !dropDownList.isShowing()) {
                             dropDownList.show();
                         }
+                        break;
                     default:
                 }
             }

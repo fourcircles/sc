@@ -1583,9 +1583,10 @@ p {
     table-layout: fixed;
     width: 100%;
 }
-.table.notFull{
+.table.notFull {
     border-bottom: 1px solid buttonBG;
 }
+
 .table td {
     border: 1px dotted buttonBG;
 
@@ -1597,14 +1598,14 @@ p {
     -moz-box-sizing: border-box;
 
     padding: 0px;
-    height: 26px;
     text-align: left;
     color: textColor1;
     border-bottom-style: none;
     border-left-style: none;
     overflow: hidden;
     white-space: nowrap;
-    /*min-width: 80px;*/
+
+    background-clip: padding-box;
 
     /*Шрифт должен наследоваться откуда-нибудь сверху, но standard.css переписывает шрифт
     * для всех td. Потом надо поменять.
@@ -1612,10 +1613,16 @@ p {
     font-family: DroidSans;
     font-size:14px;
 }
-.table td div {
-    height: 26px;
+
+.table.multipleLines td {
+    white-space: normal;
+    word-break: break-all;
+}
+
+.table td > div {
     line-height: 26px;
 }
+
 .table tr:nth-child\(even\) {
     background-color: tableString2;
 }

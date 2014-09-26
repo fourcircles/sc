@@ -643,6 +643,7 @@ public class ShowCasePanel extends FlowPanel {
         table.getHat().enableButton(true);
         table.getHat().enablePagerAlways(true);
         table.getHat().enablePager(true);
+        table.setMultiLine(!onlyRows);
 
         table.getCore().setOnlyRows(onlyRows);
         if (onlyRows) {

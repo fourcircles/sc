@@ -921,4 +921,15 @@ public class TableCore<T> extends Composite implements HasData<T> {
     public int getPageSize() {
         return pageSize;
     }
+
+    /**
+     * Включить-выключить перенос на следующую строку
+     */
+    public void setMultiLine(boolean multiLine) {
+        if (multiLine) {
+            table.addStyleName(SynergyComponents.resources.cssComponents().multipleLines());
+        } else {
+            table.removeStyleName(SynergyComponents.resources.cssComponents().multipleLines());
+        }
+    }
 }

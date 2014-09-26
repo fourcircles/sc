@@ -178,6 +178,7 @@ public interface CssComponents extends CssResource {
     String notFull();
     String onlyRows();
     String hat();
+    String multipleLines();
 
     String tree();
     String treeItem();

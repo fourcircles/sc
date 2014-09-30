@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.menu;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.resources.client.ImageResource;
@@ -60,6 +61,9 @@ abstract public class MenuItem extends Composite {
         root.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+                    return;
+                }
                 select();
             }
         });

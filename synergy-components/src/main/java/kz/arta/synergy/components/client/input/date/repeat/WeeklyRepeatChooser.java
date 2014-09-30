@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.input.date.repeat;
 
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -119,6 +120,9 @@ public class WeeklyRepeatChooser extends BaseRepeatChooser {
         dayLabel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+                    return;
+                }
                 changeSelection(date);
             }
         });

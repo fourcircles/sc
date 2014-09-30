@@ -1887,3 +1887,91 @@ p {
     background-color: buttonPressed;
 }
 
+.comment {
+    position: relative;
+    padding: 16px;
+    border-bottom: 1px solid buttonBorder;
+    white-space: pre-wrap;
+}
+.comment > img {
+    position:  absolute;
+    top: 16px;
+    right: 16px;
+    cursor: pointer;
+    opacity: 0.5;
+}
+.comment > img:hover {
+    opacity: 1;
+}
+.comment.accept > img, .comment.decline > img {
+    cursor: default;
+}
+
+.comment .name, .comment .date {
+    color: border1;
+    display: inline-block;
+}
+.comment.accept .name, .comment.accept .date {
+    color: approveButtonBG5;
+}
+.comment.decline .name, .comment.decline .date {
+    color: declineButtonBG4;
+}
+
+.comment .content {
+    color: textColor1;
+    margin-top: 16px;
+    height: auto;
+}
+
+@eval commentInputCommentLineHeight kz.arta.synergy.components.style.client.Constants.commentInputCommentLineHeight();
+
+.commentInput {
+    position: relative;
+    font-size: 0;
+    width: 100%;
+}
+.commentInput > textarea {
+    height: commentInputCommentLineHeight;
+    line-height: commentInputCommentLineHeight;
+
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+
+    resize: none;
+    border: 0;
+    margin: 0;
+    padding: commonInputPadding;
+    padding-right: 32px;
+
+    color: textColor2;
+
+    width: 100%;
+
+    overflow: hidden;
+}
+
+.commentInputAccept {
+    padding: 8px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    opacity: 0.5;
+}
+
+.commentInputAccept:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.commentsPanel {
+    position: relative;
+    border: 1px solid buttonBorder;
+}
+.commentsPanel > div:first-child {
+    position: absolute;
+    top: 0;
+}
+.commentsPanel > div:last-child {
+    bottom: 0;
+}

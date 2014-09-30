@@ -190,4 +190,13 @@ public interface CssComponents extends CssResource {
     String day();
 
     String repeatChooser();
+
+    String commentsPanel();
+    String comment();
+    String decline();
+    String accept();
+    String name();
+    String date();
+    String commentInput();
+    String commentInputAccept();
 }

@@ -111,4 +111,7 @@ public interface ImageResources extends ClientBundle {
     @Source("images/tree/node-open.png")
     @ImageResource.ImageOptions(flipRtl = true)
     ImageResource nodeOpen();
+
+    @Source("images/post.png")
+    ImageResource post();
 }

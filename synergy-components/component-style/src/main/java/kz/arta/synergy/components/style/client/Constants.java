@@ -90,6 +90,8 @@ public class Constants {
 
     public static final int WEEKDAY_CHOOSER_PADDING = 8;
 
+    public static final int COMMENT_INPUT_LINE_HEIGHT = 16;
+
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
     }
@@ -229,5 +231,9 @@ public class Constants {
 
     public static String weekdayChooserPadding() {
         return WEEKDAY_CHOOSER_PADDING + "px";
+    }
+
+    public static String commentInputCommentLineHeight() {
+        return COMMENT_INPUT_LINE_HEIGHT + "px";
     }
 }

@@ -28,6 +28,7 @@ import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.checkbox.ArtaCheckBox;
 import kz.arta.synergy.components.client.checkbox.ArtaRadioButton;
 import kz.arta.synergy.components.client.collapsing.CollapsingPanel;
+import kz.arta.synergy.components.client.comments.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
@@ -236,6 +237,17 @@ public class ShowCasePanel extends FlowPanel {
             }
         });
     }
+
+//    @Override
+//    protected void onLoad() {
+//        super.onLoad();
+//        //открывает первую вкладку
+//        TreeItem item = tree.getItems().get(0);
+//        while (item.hasItems()) {
+//            item = item.getItems().get(0);
+//        }
+//        item.setSelected(true, true);
+//    }
 
     private void setTreeIcons(TreeItem item, ImageResource icon) {
         item.setIcon(icon);
@@ -555,6 +567,12 @@ public class ShowCasePanel extends FlowPanel {
             @Override
             public Widget getContentWidget() {
                 return getDateInputs();
+            }
+        });
+        addTreeItem(complexComponents, new LoadPanel(SCMessages.i18n.tr("Панель комментариев")) {
+            @Override
+            public Widget getContentWidget() {
+                return getCommentsPanel();
             }
         });
 
@@ -1483,7 +1501,6 @@ public class ShowCasePanel extends FlowPanel {
         scroll.setHeight("100%");
 
         return scroll;
-
     }
 
 
@@ -1533,6 +1550,31 @@ public class ShowCasePanel extends FlowPanel {
         simpleButton4.setContextMenu(menuForSimple);
 
         return simpleButtonPanel;
+    }
+
+    private Widget getCommentsPanel() {
+        FlowPanel root = new FlowPanel();
+
+
+        CommentsPanel commentsPanel = new CommentsPanel();
+        Style style = commentsPanel.getElement().getStyle();
+        style.setPosition(Style.Position.ABSOLUTE);
+        style.setTop(20, Style.Unit.PX);
+        style.setBottom(20, Style.Unit.PX);
+        style.setLeft(20, Style.Unit.PX);
+        commentsPanel.setWidth("400px");
+        root.add(commentsPanel);
+
+        Comment comment1 = new SimpleComment("Поле ввода текста комментария «растягивается» вниз при увеличении количества строк, но не более чем на 10 строк. После ввода 11-й строки появляется полоса прокрутки в поле ввода.",
+                "John Doe", new Date(), CommentType.GENERAL);
+        Comment comment2 = new SimpleComment("Все хорошо.", "John Doe", new Date(), CommentType.ACCEPT);
+        Comment comment3 = new SimpleComment("Все плохо.", "Jane Doe", new Date(), CommentType.DECLINE);
+
+        commentsPanel.getComments().addComment(comment1);
+        commentsPanel.getComments().addComment(comment2);
+        commentsPanel.getComments().addComment(comment3);
+
+        return root;
     }
 
     /**

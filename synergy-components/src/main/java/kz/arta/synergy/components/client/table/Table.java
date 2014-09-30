@@ -1,9 +1,11 @@
 package kz.arta.synergy.components.client.table;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Command;
@@ -16,6 +18,7 @@ import com.google.gwt.view.client.ProvidesKey;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.table.column.ArtaColumn;
+import kz.arta.synergy.components.client.table.events.TableHeaderMenu;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -611,6 +614,9 @@ public class Table<T> extends Composite {
         header.addMouseDownHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
+                if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+                    return;
+                }
                 event.preventDefault();
                 event.stopPropagation();
 
@@ -634,6 +640,9 @@ public class Table<T> extends Composite {
         header.addMouseUpHandler(new MouseUpHandler() {
             @Override
             public void onMouseUp(MouseUpEvent event) {
+                if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+                    return;
+                }
                 headerMouseDown = false;
                 if (isDragging) {
                     return;
@@ -644,6 +653,15 @@ public class Table<T> extends Composite {
                 }
             }
         });
+
+        header.addDomHandler(new ContextMenuHandler() {
+            @Override
+            public void onContextMenu(ContextMenuEvent event) {
+                event.preventDefault();
+                bus.fireEventFromSource(new TableHeaderMenu<T>(column,
+                        event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), Table.this);
+            }
+        }, ContextMenuEvent.getType());
     }
 
     /**
@@ -735,5 +753,9 @@ public class Table<T> extends Composite {
      */
     public void setMultiLine(boolean multiLine) {
         tableCore.setMultiLine(multiLine);
+    }
+
+    public HandlerRegistration addHeaderMenuHandler(TableHeaderMenu.Handler<T> handler) {
+        return bus.addHandlerToSource(TableHeaderMenu.TYPE, this, handler);
     }
 }

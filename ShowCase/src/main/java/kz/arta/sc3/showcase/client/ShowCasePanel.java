@@ -56,6 +56,9 @@ import kz.arta.synergy.components.client.table.Table;
 import kz.arta.synergy.components.client.table.User;
 import kz.arta.synergy.components.client.table.column.ArtaEditableTextColumn;
 import kz.arta.synergy.components.client.table.column.ArtaTextColumn;
+import kz.arta.synergy.components.client.table.events.TableCellMenu;
+import kz.arta.synergy.components.client.table.events.TableHeaderMenu;
+import kz.arta.synergy.components.client.table.events.TableRowMenu;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.client.tabs.TabPanel;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
@@ -655,7 +658,7 @@ public class ShowCasePanel extends FlowPanel {
             panel.getElement().getStyle().setPaddingRight(20, Style.Unit.PX);
         }
 
-        Table<User> table = new Table<User>(29);
+        final Table<User> table = new Table<User>(29);
         table.enableHat(true);
         table.getHat().setName(SCMessages.i18n.tr("Таблица"));
         table.getHat().enableButton(true);
@@ -790,6 +793,51 @@ public class ShowCasePanel extends FlowPanel {
 
         ArtaScrollPanel scroll = new ArtaScrollPanel(panel);
         scroll.setHeight("100%");
+
+        final ContextMenu cellMenu = new ContextMenu();
+        final ContextMenu.ContextMenuItem item = cellMenu.addItem(SCMessages.i18n.tr("Меню для ячейки"), null);
+
+        table.getCore().addCellMenuHandler(new TableCellMenu.Handler<User>() {
+            @Override
+            public void onTableCellMenu(TableCellMenu<User> event) {
+                int row = provider.getList().indexOf(event.getObject()) - table.getCore().getVisibleRange().getStart();
+                int column = table.getCore().getColumns().indexOf(event.getColumn());
+                item.setText(SCMessages.i18n.tr("Меню для ячейки") + " " + row + " " + column);
+                cellMenu.show(event.getX(), event.getY());
+            }
+        });
+
+        final ContextMenu rowMenu = new ContextMenu();
+        table.getCore().addRowMenuHandler(new TableRowMenu.Handler<User>() {
+            @Override
+            public void onTableRowMenu(final TableRowMenu<User> event) {
+                rowMenu.clear();
+                rowMenu.addItem(SCMessages.i18n.tr("Удалить ряд"), new Command() {
+                    @Override
+                    public void execute() {
+                        provider.getList().remove(event.getObject());
+                        provider.flush();
+                    }
+                });
+                rowMenu.show(event.getX(), event.getY());
+            }
+        });
+
+        final ContextMenu headerMenu = new ContextMenu();
+        table.addHeaderMenuHandler(new TableHeaderMenu.Handler<User>() {
+            @Override
+            public void onTableHeaderMenu(final TableHeaderMenu<User> event) {
+                headerMenu.clear();
+                headerMenu.addItem(SCMessages.i18n.tr("Отсортировать"), new Command() {
+                    @Override
+                    public void execute() {
+                        table.getCore().sort(event.getColumn());
+                    }
+                });
+                headerMenu.show(event.getX(), event.getY());
+            }
+        });
+
         return scroll;
     }
 

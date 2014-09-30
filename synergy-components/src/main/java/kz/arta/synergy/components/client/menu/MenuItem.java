@@ -82,7 +82,7 @@ abstract public class MenuItem extends Composite {
         return label.getText();
     }
 
-    protected void setText(String text) {
+    public void setText(String text) {
         label.setText(text);
     }
 

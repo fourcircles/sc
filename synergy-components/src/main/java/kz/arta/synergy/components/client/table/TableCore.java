@@ -2,12 +2,13 @@ package kz.arta.synergy.components.client.table;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.dom.client.TableCellElement;
+import com.google.gwt.dom.client.TableRowElement;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -18,6 +19,8 @@ import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.table.column.ArtaColumn;
 import kz.arta.synergy.components.client.table.events.CellEditEvent;
+import kz.arta.synergy.components.client.table.events.TableCellMenu;
+import kz.arta.synergy.components.client.table.events.TableRowMenu;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
 
 import java.util.ArrayList;
@@ -113,7 +116,17 @@ public class TableCore<T> extends Composite implements HasData<T> {
      */
     private boolean isRowCountExact;
 
-    public TableCore(int pageSize, ProvidesKey<T> keyProvider, EventBus bus) {
+    private Element getCellForEvent(Event event) {
+        Element td = DOM.eventGetTarget(event);
+        for (; td != null; td = DOM.getParent(td)) {
+            if (td.getPropertyString("tagName").equalsIgnoreCase("td")) {
+                return td;
+            }
+        }
+        return null;
+    }
+
+    public TableCore(int pageSize, ProvidesKey<T> keyProvider, final EventBus bus) {
         scroll = new ArtaScrollPanel();
         initWidget(scroll);
         this.bus = bus;
@@ -123,6 +136,8 @@ public class TableCore<T> extends Composite implements HasData<T> {
         selectionModel = new TableSelectionModel<T>(bus, keyProvider);
 
         table = new FlexTable();
+        table.sinkEvents(Event.ONCONTEXTMENU);
+
         table.addStyleName(SynergyComponents.resources.cssComponents().table());
         for (int i = 0; i < pageSize; i++) {
             table.insertRow(0);
@@ -173,6 +188,27 @@ public class TableCore<T> extends Composite implements HasData<T> {
                 select(selectionModel.getSelectedObject(), selectionModel.getSelectedColumn());
             }
         });
+
+        table.addDomHandler(new ContextMenuHandler() {
+            @Override
+            public void onContextMenu(ContextMenuEvent event) {
+                event.preventDefault();
+
+                Element td = getCellForEvent(Event.as(event.getNativeEvent()));
+
+                int row = TableRowElement.as(td.getParentElement()).getRowIndex();
+                int column = TableCellElement.as(td).getCellIndex();
+
+                T object = objects.get(start + row);
+                if (onlyRows) {
+                    bus.fireEventFromSource(new TableRowMenu<T>(object,
+                            event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), TableCore.this);
+                } else {
+                    bus.fireEventFromSource(new TableCellMenu<T>(object, columns.get(column),
+                            event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), TableCore.this);
+                }
+            }
+        }, ContextMenuEvent.getType());
 
         sinkEvents(Event.ONCLICK);
         sinkEvents(Event.ONKEYDOWN);
@@ -931,5 +967,13 @@ public class TableCore<T> extends Composite implements HasData<T> {
         } else {
             table.removeStyleName(SynergyComponents.resources.cssComponents().multipleLines());
         }
+    }
+
+    public HandlerRegistration addCellMenuHandler(TableCellMenu.Handler<T> handler) {
+        return bus.addHandlerToSource(TableCellMenu.TYPE, this, handler);
+    }
+
+    public HandlerRegistration addRowMenuHandler(TableRowMenu.Handler<T> handler) {
+        return bus.addHandlerToSource(TableRowMenu.TYPE, this, handler);
     }
 }

@@ -1904,6 +1904,7 @@ p {
     opacity: 1;
 }
 .comment.accept > img, .comment.decline > img {
+    opacity: 1;
     cursor: default;
 }
 

@@ -96,14 +96,14 @@ public class CommentUI extends Composite {
         switch (comment.getType()) {
             case ACCEPT:
                 root.addStyleName(SynergyComponents.resources.cssComponents().accept());
-                icon.setResource(ImageResources.IMPL.calendarIcon());
+                icon.setResource(ImageResources.IMPL.positiveComment());
                 break;
             case DECLINE:
                 root.addStyleName(SynergyComponents.resources.cssComponents().decline());
-                icon.setResource(ImageResources.IMPL.zoom());
+                icon.setResource(ImageResources.IMPL.negativeComment());
                 break;
             default:
-                icon.setResource(ImageResources.IMPL.dialogCloseButton());
+                icon.setResource(ImageResources.IMPL.deleteComment());
         }
 
     }

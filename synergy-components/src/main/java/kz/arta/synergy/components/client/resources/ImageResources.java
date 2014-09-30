@@ -122,4 +122,10 @@ public interface ImageResources extends ClientBundle {
     @ImageResource.ImageOptions(flipRtl = true)
     ImageResource pagerRight();
 
+    @Source("images/comments/delete_comment.png")
+    ImageResource deleteComment();
+    @Source("images/comments/negative_comment.png")
+    ImageResource negativeComment();
+    @Source("images/comments/positive_comment.png")
+    ImageResource positiveComment();
 }

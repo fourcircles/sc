@@ -114,4 +114,12 @@ public interface ImageResources extends ClientBundle {
 
     @Source("images/post.png")
     ImageResource post();
+
+    @Source("images/pager/left-enabled.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource pagerLeft();
+    @Source("images/pager/right-enabled.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource pagerRight();
+
 }

@@ -74,8 +74,8 @@ public class Pager extends AbstractPager implements HasEnabled {
 
         this.hasText = hasText;
 
-        previousButton = new ImageButton(ImageResources.IMPL.navigationLeft());
-        nextButton = new ImageButton(ImageResources.IMPL.navigationRight());
+        previousButton = new ImageButton(ImageResources.IMPL.pagerLeft());
+        nextButton = new ImageButton(ImageResources.IMPL.pagerRight());
 
         root.add(previousButton);
         if (hasText) {

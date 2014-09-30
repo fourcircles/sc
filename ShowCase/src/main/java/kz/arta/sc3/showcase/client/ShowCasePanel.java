@@ -1233,7 +1233,13 @@ public class ShowCasePanel extends FlowPanel {
     private Widget getPeriodInputs() {
         FlowPanel root = new FlowPanel();
 
-        FullRepeatChooser chooser = new FullRepeatChooser();
+        ArtaCheckBox box = new ArtaCheckBox();
+        box.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        box.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        box.setValue(true, false);
+        root.add(box);
+
+        final FullRepeatChooser chooser = new FullRepeatChooser();
         chooser.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         chooser.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         root.add(chooser);
@@ -1241,6 +1247,12 @@ public class ShowCasePanel extends FlowPanel {
         chooser.setMode(RepeatChooser.MODE.YEAR);
         chooser.getChooser().addSelected(new RepeatDate(22, 2, RepeatChooser.MODE.YEAR));
 
+        box.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                chooser.setEnabled(event.getValue());
+            }
+        });
         return root;
     }
 

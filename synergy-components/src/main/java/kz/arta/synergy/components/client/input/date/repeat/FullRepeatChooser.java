@@ -6,6 +6,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasEnabled;
 import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.resources.Messages;
 
@@ -16,7 +17,7 @@ import kz.arta.synergy.components.client.resources.Messages;
  *
  * Компонент выбора периода
  */
-public class FullRepeatChooser extends Composite {
+public class FullRepeatChooser extends Composite implements HasEnabled {
 
     private final RepeatChooser chooser;
 
@@ -96,5 +97,16 @@ public class FullRepeatChooser extends Composite {
 
     public void showChooser() {
         chooser.asWidget().getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return modeCombo.isEnabled();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        modeCombo.setEnabled(enabled);
+        chooser.setEnabled(enabled);
     }
 }

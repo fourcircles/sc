@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.input.tags;
 
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -117,6 +118,9 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
             button.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
+                    if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+                        return;
+                    }
                     if (dropDownList != null) {
                         if (dropDownList.isShowing()) {
                             dropDownList.hide();

@@ -381,7 +381,6 @@
     }
 }
 
-
 .buttonSimple.pressed {
     background-color: buttonBG;
     border-color: border1;
@@ -783,7 +782,7 @@
     background-color: buttonPressed;
 }
 
-.comboBox .buttonSimple:active, .dateInput .buttonSimple:active{
+.comboBox .buttonSimple.pressed, .dateInput .buttonSimple.pressed{
     border-color: border1;
     background-color: buttonPressed;
 }
@@ -1883,7 +1882,8 @@ p {
 .repeatChooser .buttonSimple {
     background-color: buttonBG;
 }
-.repeatChooser .buttonSimple:active {
+
+.repeatChooser .buttonSimple.pressed {
     background-color: buttonPressed;
 }
 

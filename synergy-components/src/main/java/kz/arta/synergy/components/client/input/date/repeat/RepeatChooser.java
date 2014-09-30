@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.input.date.repeat;
 
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -65,6 +66,9 @@ public class RepeatChooser implements IsWidget, HasEnabled {
         tags.addButtonClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+                    return;
+                }
                 if (chooser.isShowing()) {
                     chooser.hide();
                 } else {

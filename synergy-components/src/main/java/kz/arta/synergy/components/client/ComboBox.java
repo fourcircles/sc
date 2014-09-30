@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client;
 
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -66,6 +67,9 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
         root.addMouseDownHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
+                if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+                    return;
+                }
                 if (isEnabled && isReadOnly) {
                     root.addStyleName(SynergyComponents.resources.cssComponents().pressed());
                 }
@@ -74,6 +78,9 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
         root.addMouseUpHandler(new MouseUpHandler() {
             @Override
             public void onMouseUp(MouseUpEvent event) {
+                if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+                    return;
+                }
                 if (isEnabled) {
                     root.removeStyleName(SynergyComponents.resources.cssComponents().pressed());
                     if (!list.isShowing()) {

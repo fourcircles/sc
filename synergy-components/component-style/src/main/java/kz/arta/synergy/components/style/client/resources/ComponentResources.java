@@ -42,7 +42,4 @@ public interface ComponentResources extends ClientBundle {
 
     @ClientBundle.Source("images/radio-button/radiobutton_on_disabled.png")
     ImageResource radioOnDisabled();
-
-    @ClientBundle.Source("images/comments/post-icon-mouseover.png")
-    ImageResource post();
 }

@@ -11,6 +11,7 @@ import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.events.SelectionEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: vsl
@@ -24,7 +25,7 @@ public class ContextMenu extends MenuBase {
     /**
      * Список элементов меню
      */
-    private ArrayList<ContextMenuItem> items;
+    private List<ContextMenuItem> items;
 
     private EventBus bus;
 
@@ -62,13 +63,14 @@ public class ContextMenu extends MenuBase {
 
             @Override
             public void onDeselection(SelectionEvent<ContextMenuItem> event) {
+                //не имеет смысла в контекстном меню
             }
         };
         setBus(new SimpleEventBus());
     }
 
     @Override
-    ArrayList<ContextMenuItem> getItems() {
+    List<ContextMenuItem> getItems() {
         return items;
     }
 
@@ -125,14 +127,17 @@ public class ContextMenu extends MenuBase {
         int lenX = popup.getOffsetWidth();
         int lenY = popup.getOffsetHeight();
 
-        if (posX + lenX > Window.getClientWidth()) {
-            posX -= lenX;
+        int x = posX;
+        int y = posY;
+
+        if (x + lenX > Window.getClientWidth()) {
+            x -= lenX;
         }
-        if (posY + lenY > Window.getClientHeight()) {
-            posY -= lenY;
+        if (y + lenY > Window.getClientHeight()) {
+            y -= lenY;
         }
 
-        popup.setPopupPosition(posX, posY);
+        popup.setPopupPosition(x, y);
     }
 
     public void show() {

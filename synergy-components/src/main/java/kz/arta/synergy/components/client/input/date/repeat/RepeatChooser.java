@@ -85,7 +85,7 @@ public class RepeatChooser implements IsWidget, HasEnabled {
         this.mode = mode;
         chooser = createChooser();
 
-        bus.addHandler(TagRemoveEvent.TYPE, new TagRemoveEvent.Handler<RepeatDate>() {
+        bus.addHandler(TagRemoveEvent.getType(), new TagRemoveEvent.Handler<RepeatDate>() {
             @Override
             public void onTagRemove(TagRemoveEvent<RepeatDate> event) {
                 RepeatDate date = event.getTag().getValue();

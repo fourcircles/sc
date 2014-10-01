@@ -61,7 +61,7 @@ public class TreeItemTest {
     public void testSelect() {
         TreeSelectionEvent.Handler handler = mock(TreeSelectionEvent.Handler.class);
 
-        bus.addHandler(TreeSelectionEvent.TYPE, handler);
+        bus.addHandler(TreeSelectionEvent.getType(), handler);
 
         treeItem.setSelected(true, false);
         assertTrue(treeItem.isSelected());
@@ -118,7 +118,7 @@ public class TreeItemTest {
     @Test
     public void testSetOpenEvents() {
         TreeOpenEvent.Handler handler = mock(TreeOpenEvent.Handler.class);
-        bus.addHandler(TreeOpenEvent.TYPE, handler);
+        bus.addHandler(TreeOpenEvent.getType(), handler);
 
         treeItem.setOpen(true);
 
@@ -132,7 +132,7 @@ public class TreeItemTest {
     @Test
     public void testSetCloseEvents() {
         TreeOpenEvent.Handler handler = mock(TreeOpenEvent.Handler.class);
-        bus.addHandler(TreeOpenEvent.TYPE, handler);
+        bus.addHandler(TreeOpenEvent.getType(), handler);
 
         treeItem.setOpen(true, false);
         treeItem.setOpen(false);

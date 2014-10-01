@@ -48,7 +48,7 @@ import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
-import kz.arta.synergy.components.client.stack.Stack;
+import kz.arta.synergy.components.client.stack.SingleStack;
 import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
 import kz.arta.synergy.components.client.table.Pager;
@@ -56,9 +56,9 @@ import kz.arta.synergy.components.client.table.Table;
 import kz.arta.synergy.components.client.table.User;
 import kz.arta.synergy.components.client.table.column.ArtaEditableTextColumn;
 import kz.arta.synergy.components.client.table.column.ArtaTextColumn;
-import kz.arta.synergy.components.client.table.events.TableCellMenu;
-import kz.arta.synergy.components.client.table.events.TableHeaderMenu;
-import kz.arta.synergy.components.client.table.events.TableRowMenu;
+import kz.arta.synergy.components.client.table.events.TableCellMenuEvent;
+import kz.arta.synergy.components.client.table.events.TableHeaderMenuEvent;
+import kz.arta.synergy.components.client.table.events.TableRowMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.client.tabs.TabPanel;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
@@ -797,9 +797,9 @@ public class ShowCasePanel extends FlowPanel {
         final ContextMenu cellMenu = new ContextMenu();
         final ContextMenu.ContextMenuItem item = cellMenu.addItem(SCMessages.i18n.tr("Меню для ячейки"), null);
 
-        table.getCore().addCellMenuHandler(new TableCellMenu.Handler<User>() {
+        table.getCore().addCellMenuHandler(new TableCellMenuEvent.Handler<User>() {
             @Override
-            public void onTableCellMenu(TableCellMenu<User> event) {
+            public void onTableCellMenu(TableCellMenuEvent<User> event) {
                 int row = provider.getList().indexOf(event.getObject()) - table.getCore().getVisibleRange().getStart();
                 int column = table.getCore().getColumns().indexOf(event.getColumn());
                 item.setText(SCMessages.i18n.tr("Меню для ячейки") + " " + row + " " + column);
@@ -808,9 +808,9 @@ public class ShowCasePanel extends FlowPanel {
         });
 
         final ContextMenu rowMenu = new ContextMenu();
-        table.getCore().addRowMenuHandler(new TableRowMenu.Handler<User>() {
+        table.getCore().addRowMenuHandler(new TableRowMenuEvent.Handler<User>() {
             @Override
-            public void onTableRowMenu(final TableRowMenu<User> event) {
+            public void onTableRowMenu(final TableRowMenuEvent<User> event) {
                 rowMenu.clear();
                 rowMenu.addItem(SCMessages.i18n.tr("Удалить ряд"), new Command() {
                     @Override
@@ -824,9 +824,9 @@ public class ShowCasePanel extends FlowPanel {
         });
 
         final ContextMenu headerMenu = new ContextMenu();
-        table.addHeaderMenuHandler(new TableHeaderMenu.Handler<User>() {
+        table.addHeaderMenuHandler(new TableHeaderMenuEvent.Handler<User>() {
             @Override
-            public void onTableHeaderMenu(final TableHeaderMenu<User> event) {
+            public void onTableHeaderMenu(final TableHeaderMenuEvent<User> event) {
                 headerMenu.clear();
                 headerMenu.addItem(SCMessages.i18n.tr("Отсортировать"), new Command() {
                     @Override
@@ -1018,10 +1018,10 @@ public class ShowCasePanel extends FlowPanel {
         collapsingPanels.add(classifier);
         root.add(collapsingPanels);
 
-        final StackPanel stacks = new StackPanel(Arrays.asList(new Stack(SCMessages.i18n.tr("Первая")),
-                new Stack(SCMessages.i18n.tr("Вторая")),
-                new Stack(SCMessages.i18n.tr("Третья")),
-                new Stack(SCMessages.i18n.tr("Четвертая"))), 500);
+        final StackPanel stacks = new StackPanel(Arrays.asList(new SingleStack(SCMessages.i18n.tr("Первая")),
+                new SingleStack(SCMessages.i18n.tr("Вторая")),
+                new SingleStack(SCMessages.i18n.tr("Третья")),
+                new SingleStack(SCMessages.i18n.tr("Четвертая"))), 500);
         stacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             stacks.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
@@ -1031,10 +1031,10 @@ public class ShowCasePanel extends FlowPanel {
         stacks.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         stacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
 
-        final StackPanel whiteStacks = new StackPanel(Arrays.asList(new Stack(SCMessages.i18n.tr("Первая")),
-                new Stack(SCMessages.i18n.tr("Вторая")),
-                new Stack(SCMessages.i18n.tr("Третья")),
-                new Stack(SCMessages.i18n.tr("Четвертая"))), 500, StackPanel.Type.WHITE);
+        final StackPanel whiteStacks = new StackPanel(Arrays.asList(new SingleStack(SCMessages.i18n.tr("Первая")),
+                new SingleStack(SCMessages.i18n.tr("Вторая")),
+                new SingleStack(SCMessages.i18n.tr("Третья")),
+                new SingleStack(SCMessages.i18n.tr("Четвертая"))), 500, StackPanel.Type.WHITE);
         whiteStacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         whiteStacks.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         whiteStacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);

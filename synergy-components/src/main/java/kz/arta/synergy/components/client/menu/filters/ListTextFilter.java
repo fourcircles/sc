@@ -87,6 +87,6 @@ abstract public class ListTextFilter implements ListFilter {
 
     @Override
     public HandlerRegistration addFilterUpdateHandler(FilterUpdateEvent.Handler handler) {
-        return bus.addHandlerToSource(FilterUpdateEvent.TYPE, this, handler);
+        return bus.addHandlerToSource(FilterUpdateEvent.getType(), this, handler);
     }
 }

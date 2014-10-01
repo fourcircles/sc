@@ -105,7 +105,7 @@ public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnable
             }
         });
 
-        if (Navigator.isChrome && LocaleInfo.getCurrentLocale().isRTL()) {
+        if (Navigator.isChrome() && LocaleInfo.getCurrentLocale().isRTL()) {
             popupRootPanel.getElement().getStyle().setLeft(15, Style.Unit.PX);
             popupRootPanel.getElement().getStyle().setPosition(Style.Position.RELATIVE);
         }

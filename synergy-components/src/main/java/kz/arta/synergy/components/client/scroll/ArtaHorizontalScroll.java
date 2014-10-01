@@ -234,7 +234,7 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
      * @return  скорректированная позиция скролла
      */
     private int checkPosIE11(int pos) {
-        if (Navigator.isIE11 && LocaleInfo.getCurrentLocale().isRTL()) {
+        if (Navigator.isIE11() && LocaleInfo.getCurrentLocale().isRTL()) {
             pos = -pos;
         }
         return pos;
@@ -253,7 +253,6 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
 
     /**
      * Возвращает высоту контролируемого контента
-     * @return
      */
     @Override
     public int getScrollWidth() {

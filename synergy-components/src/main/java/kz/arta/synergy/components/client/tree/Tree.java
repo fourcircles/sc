@@ -53,7 +53,7 @@ public class Tree extends Composite implements HasContextMenuHandlers {
         bus = new SimpleEventBus();
         items = new ArrayList<TreeItem>();
 
-        bus.addHandler(TreeSelectionEvent.TYPE, new TreeSelectionEvent.Handler() {
+        bus.addHandler(TreeSelectionEvent.getType(), new TreeSelectionEvent.Handler() {
             @Override
             public void onTreeSelection(TreeSelectionEvent event) {
                 if (event.getTreeItem() == selectedItem) {
@@ -102,11 +102,11 @@ public class Tree extends Composite implements HasContextMenuHandlers {
     }
 
     public HandlerRegistration addTreeOpenHandler(TreeOpenEvent.Handler handler) {
-        return bus.addHandler(TreeOpenEvent.TYPE, handler);
+        return bus.addHandler(TreeOpenEvent.getType(), handler);
     }
 
     public HandlerRegistration addTreeSelectionEvent(TreeSelectionEvent.Handler handler) {
-        return bus.addHandler(TreeSelectionEvent.TYPE, handler);
+        return bus.addHandler(TreeSelectionEvent.getType(), handler);
     }
 
     @Override

@@ -14,26 +14,7 @@ import kz.arta.synergy.components.client.menu.DropDownList;
  * Событие выбора элемента списка
  */
 public class ListSelectionEvent<V> extends GwtEvent<ListSelectionEvent.Handler<V>> {
-    public static Type<Handler<?>> TYPE = new Type<Handler<?>>();
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    @Override
-    public Type<Handler<V>> getAssociatedType() {
-        return (Type) TYPE;
-    }
-
-    protected void dispatch(Handler<V> handler) {
-        if (actionType == ActionType.SELECT) {
-            handler.onSelection(this);
-        } else {
-            handler.onDeselection(this);
-        }
-    }
-
-    public static abstract class Handler<T> implements EventHandler {
-        public abstract void onSelection(ListSelectionEvent<T> event);
-        public void onDeselection(ListSelectionEvent<T> event) {}
-    }
+    private static Type<Handler<?>> TYPE;
 
     /**
      * Выбор или снятие выбора для списков предусматривающих выбор нескольких элементов
@@ -61,12 +42,39 @@ public class ListSelectionEvent<V> extends GwtEvent<ListSelectionEvent.Handler<V
         this(item, ActionType.SELECT);
     }
 
+    public static Type<Handler<?>> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler<?>>();
+        }
+        return TYPE;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public Type<Handler<V>> getAssociatedType() {
+        return (Type) getType();
+    }
+
+    protected void dispatch(Handler<V> handler) {
+        if (actionType == ActionType.SELECT) {
+            handler.onSelection(this);
+        } else {
+            handler.onDeselection(this);
+        }
+    }
+
+    public static abstract class Handler<T> implements EventHandler {
+        public abstract void onSelection(ListSelectionEvent<T> event);
+        public void onDeselection(ListSelectionEvent<T> event) {
+        }
+    }
+
     public DropDownList<V>.Item getItem() {
         return item;
     }
 
     public static HandlerRegistration register(EventBus bus, Handler<?> handler) {
-        return bus.addHandler(TYPE, handler);
+        return bus.addHandler(getType(), handler);
     }
 
 }

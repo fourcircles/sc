@@ -18,7 +18,7 @@ import com.google.gwt.view.client.ProvidesKey;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.table.column.ArtaColumn;
-import kz.arta.synergy.components.client.table.events.TableHeaderMenu;
+import kz.arta.synergy.components.client.table.events.TableHeaderMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -658,7 +658,7 @@ public class Table<T> extends Composite {
             @Override
             public void onContextMenu(ContextMenuEvent event) {
                 event.preventDefault();
-                bus.fireEventFromSource(new TableHeaderMenu<T>(column,
+                bus.fireEventFromSource(new TableHeaderMenuEvent<T>(column,
                         event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), Table.this);
             }
         }, ContextMenuEvent.getType());
@@ -755,7 +755,7 @@ public class Table<T> extends Composite {
         tableCore.setMultiLine(multiLine);
     }
 
-    public HandlerRegistration addHeaderMenuHandler(TableHeaderMenu.Handler<T> handler) {
-        return bus.addHandlerToSource(TableHeaderMenu.TYPE, this, handler);
+    public HandlerRegistration addHeaderMenuHandler(TableHeaderMenuEvent.Handler<T> handler) {
+        return bus.addHandlerToSource(TableHeaderMenuEvent.getType(), this, handler);
     }
 }

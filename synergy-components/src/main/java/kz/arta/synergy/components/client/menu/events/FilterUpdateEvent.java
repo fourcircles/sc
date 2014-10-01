@@ -9,10 +9,17 @@ import com.google.gwt.event.shared.GwtEvent;
  * Time: 13:50
  */
 public class FilterUpdateEvent extends GwtEvent<FilterUpdateEvent.Handler> {
-    public static Type<Handler> TYPE = new Type<Handler>();
+    private static Type<Handler> TYPE;
+
+    public static Type<Handler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler>();
+        }
+        return TYPE;
+    }
 
     public Type<Handler> getAssociatedType() {
-        return TYPE;
+        return getType();
     }
 
     protected void dispatch(Handler handler) {

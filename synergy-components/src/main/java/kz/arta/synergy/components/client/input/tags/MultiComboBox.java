@@ -19,7 +19,7 @@ public class MultiComboBox<V> extends TagInput<V> {
     }
 
     @Override
-    protected void listItemSelected(DropDownList<V>.Item item) {
+    protected void newListSelection() {
         input.setText("");
     }
 

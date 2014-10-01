@@ -12,10 +12,23 @@ import kz.arta.synergy.components.client.comments.Comment;
  * Событие удаления комментария
  */
 public class DeleteCommentEvent extends GwtEvent<DeleteCommentEvent.Handler> {
-    public static Type<Handler> TYPE = new Type<Handler>();
+    private static Type<Handler> TYPE;
+
+    private Comment comment;
+
+    public DeleteCommentEvent(Comment comment) {
+        this.comment = comment;
+    }
+
+    public static Type<Handler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler>();
+        }
+        return TYPE;
+    }
 
     public Type<Handler> getAssociatedType() {
-        return TYPE;
+        return getType();
     }
 
     protected void dispatch(Handler handler) {
@@ -24,12 +37,6 @@ public class DeleteCommentEvent extends GwtEvent<DeleteCommentEvent.Handler> {
 
     public static interface Handler extends EventHandler {
         void onDeleteComment(DeleteCommentEvent event);
-    }
-
-    private Comment comment;
-
-    public DeleteCommentEvent(Comment comment) {
-        this.comment = comment;
     }
 
     public Comment getComment() {

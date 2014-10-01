@@ -14,19 +14,7 @@ import kz.arta.synergy.components.client.tabs.Tab;
  * Событие закрытия вкладки
  */
 public class TabCloseEvent extends GwtEvent<TabCloseEvent.Handler> {
-    public static Type<Handler> TYPE = new Type<Handler>();
-
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    protected void dispatch(Handler handler) {
-        handler.onTabClose(this);
-    }
-
-    public static interface Handler extends EventHandler {
-        void onTabClose(TabCloseEvent event);
-    }
+    private static Type<Handler> TYPE;
 
     /**
      * Вкладка
@@ -35,6 +23,25 @@ public class TabCloseEvent extends GwtEvent<TabCloseEvent.Handler> {
 
     public TabCloseEvent(Tab tab) {
         this.tab = tab;
+    }
+
+    public static Type<Handler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler>();
+        }
+        return TYPE;
+    }
+
+    public Type<Handler> getAssociatedType() {
+        return getType();
+    }
+
+    protected void dispatch(Handler handler) {
+        handler.onTabClose(this);
+    }
+
+    public static interface Handler extends EventHandler {
+        void onTabClose(TabCloseEvent event);
     }
 
     public Tab getTab() {
@@ -46,6 +53,6 @@ public class TabCloseEvent extends GwtEvent<TabCloseEvent.Handler> {
     }
 
     public static HandlerRegistration register(EventBus bus, Handler handler) {
-        return bus.addHandler(TYPE, handler);
+        return bus.addHandler(getType(), handler);
     }
 }

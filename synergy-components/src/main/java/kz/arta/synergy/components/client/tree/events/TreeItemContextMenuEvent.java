@@ -9,12 +9,44 @@ import kz.arta.synergy.components.client.tree.TreeItem;
  * User: vsl
  * Date: 17.09.14
  * Time: 18:01
+ *
+ * Событие для контекстного меню дерева
  */
 public class TreeItemContextMenuEvent extends GwtEvent<TreeItemContextMenuEvent.Handler> {
-    public static Type<Handler> TYPE = new Type<Handler>();
+    private static Type<Handler> TYPE;
+
+    /**
+     * Событие gwt
+     */
+    private ContextMenuEvent event;
+
+    /**
+     * Элемент дерева, для которого надо отобразить контекстное меню
+     */
+    private TreeItem item;
+
+    /**
+     * Координаты клика мыши
+     */
+    private int x;
+    private int y;
+
+    public TreeItemContextMenuEvent(TreeItem item, ContextMenuEvent event) {
+        this.item = item;
+        x = event.getNativeEvent().getClientX();
+        y = event.getNativeEvent().getClientY();
+        this.event = event;
+    }
+
+    public static Type<Handler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler>();
+        }
+        return TYPE;
+    }
 
     public Type<Handler> getAssociatedType() {
-        return TYPE;
+        return getType();
     }
 
     protected void dispatch(Handler handler) {
@@ -23,18 +55,6 @@ public class TreeItemContextMenuEvent extends GwtEvent<TreeItemContextMenuEvent.
 
     public static interface Handler extends EventHandler {
         void onTreeContextMenu(TreeItemContextMenuEvent event);
-    }
-
-    private ContextMenuEvent event;
-    private TreeItem item;
-    private int x;
-    private int y;
-
-    public TreeItemContextMenuEvent(TreeItem item, int x, int y, ContextMenuEvent event) {
-        this.item = item;
-        this.x = x;
-        this.y = y;
-        this.event = event;
     }
 
     public TreeItem getItem() {

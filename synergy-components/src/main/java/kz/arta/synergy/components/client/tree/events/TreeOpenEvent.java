@@ -12,10 +12,25 @@ import kz.arta.synergy.components.client.tree.TreeItem;
  * Событие открытия узла дерева
  */
 public class TreeOpenEvent extends GwtEvent<TreeOpenEvent.Handler> {
-    public static Type<Handler> TYPE = new Type<Handler>();
+    private static Type<Handler> TYPE;
+
+    private TreeItem item;
+    private boolean open;
+
+    public TreeOpenEvent(TreeItem item, boolean open) {
+        this.item = item;
+        this.open = open;
+    }
+
+    public static Type<Handler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler>();
+        }
+        return TYPE;
+    }
 
     public Type<Handler> getAssociatedType() {
-        return TYPE;
+        return getType();
     }
 
     protected void dispatch(Handler handler) {
@@ -24,14 +39,6 @@ public class TreeOpenEvent extends GwtEvent<TreeOpenEvent.Handler> {
 
     public static interface Handler extends EventHandler {
         void onTreeOpen(TreeOpenEvent event);
-    }
-
-    private TreeItem item;
-    private boolean open;
-
-    public TreeOpenEvent(TreeItem item, boolean open) {
-        this.item = item;
-        this.open = open;
     }
 
     public TreeItem getItem() {

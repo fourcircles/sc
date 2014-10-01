@@ -8,13 +8,33 @@ import kz.arta.synergy.components.client.table.column.ArtaColumn;
  * User: vsl
  * Date: 30.09.14
  * Time: 15:30
+ *
+ * Событие контекстного меню для хедера
  */
-public class TableHeaderMenu<T> extends GwtEvent<TableHeaderMenu.Handler<T>> {
-    public static Type<Handler<?>> TYPE = new Type<Handler<?>>();
+public class TableHeaderMenuEvent<T> extends GwtEvent<TableHeaderMenuEvent.Handler<T>> {
+    private static Type<Handler<?>> TYPE;
+
+    private ArtaColumn<T, ?> column;
+
+    private int x;
+    private int y;
+
+    public TableHeaderMenuEvent(ArtaColumn<T, ?> column, int x, int y) {
+        this.column = column;
+        this.x = x;
+        this.y = y;
+    }
+
+    public static Type<Handler<?>> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler<?>>();
+        }
+        return TYPE;
+    }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Type<Handler<T>> getAssociatedType() {
-        return (Type) TYPE;
+        return (Type) getType();
     }
 
     protected void dispatch(Handler<T> handler) {
@@ -22,18 +42,7 @@ public class TableHeaderMenu<T> extends GwtEvent<TableHeaderMenu.Handler<T>> {
     }
 
     public static interface Handler<V> extends EventHandler {
-        void onTableHeaderMenu(TableHeaderMenu<V> event);
-    }
-
-    private ArtaColumn<T, ?> column;
-
-    private int x;
-    private int y;
-
-    public TableHeaderMenu(ArtaColumn<T, ?> column, int x, int y) {
-        this.column = column;
-        this.x = x;
-        this.y = y;
+        void onTableHeaderMenu(TableHeaderMenuEvent<V> event);
     }
 
     public int getX() {

@@ -8,12 +8,30 @@ import com.google.gwt.event.shared.GwtEvent;
  * Date: 30.09.14
  * Time: 15:28
  */
-public class TableRowMenu<T> extends GwtEvent<TableRowMenu.Handler<T>> {
-    public static Type<Handler<?>> TYPE = new Type<Handler<?>>();
+public class TableRowMenuEvent<T> extends GwtEvent<TableRowMenuEvent.Handler<T>> {
+    private static Type<Handler<?>> TYPE;
+
+    private T object;
+
+    private int x;
+    private int y;
+
+    public TableRowMenuEvent(T object, int x, int y) {
+        this.object = object;
+        this.x = x;
+        this.y = y;
+    }
+
+    public static Type<Handler<?>> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler<?>>();
+        }
+        return TYPE;
+    }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Type<Handler<T>> getAssociatedType() {
-        return (Type) TYPE;
+        return (Type) getType();
     }
 
     protected void dispatch(Handler<T> handler) {
@@ -21,18 +39,7 @@ public class TableRowMenu<T> extends GwtEvent<TableRowMenu.Handler<T>> {
     }
 
     public static interface Handler<V> extends EventHandler {
-        void onTableRowMenu(TableRowMenu<V> event);
-    }
-
-    private T object;
-
-    private int x;
-    private int y;
-
-    public TableRowMenu(T object, int x, int y) {
-        this.object = object;
-        this.x = x;
-        this.y = y;
+        void onTableRowMenu(TableRowMenuEvent<V> event);
     }
 
     public int getX() {

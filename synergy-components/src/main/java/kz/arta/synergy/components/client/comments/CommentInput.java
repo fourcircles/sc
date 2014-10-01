@@ -313,6 +313,6 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
     }
 
     public HandlerRegistration addNewCommentHandler(NewCommentEvent.Handler handler) {
-        return addHandler(handler, NewCommentEvent.TYPE);
+        return addHandler(handler, NewCommentEvent.getType());
     }
 }

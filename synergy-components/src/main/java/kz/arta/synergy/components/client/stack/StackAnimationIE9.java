@@ -21,12 +21,12 @@ public class StackAnimationIE9 extends Animation {
     /**
      * Закрывающаяся панель
      */
-    private Stack closingStack;
+    private SingleStack closingStack;
 
     /**
      * Открывающаяся панель
      */
-    private Stack openingStack;
+    private SingleStack openingStack;
 
     /**
      * Высота контента
@@ -89,11 +89,11 @@ public class StackAnimationIE9 extends Animation {
         cleanUp();
     }
 
-    public void setClosingStack(Stack closingStack) {
+    public void setClosingStack(SingleStack closingStack) {
         this.closingStack = closingStack;
     }
 
-    public void setOpeningStack(Stack openingStack) {
+    public void setOpeningStack(SingleStack openingStack) {
         this.openingStack = openingStack;
     }
 
@@ -106,7 +106,7 @@ public class StackAnimationIE9 extends Animation {
      * @param closingStack панель, которую надо закрыть
      * @param openingStack панель, которую надо открыть
      */
-    public void openStack(Stack closingStack, Stack openingStack) {
+    public void openStack(SingleStack closingStack, SingleStack openingStack) {
         this.closingStack = closingStack;
         this.openingStack = openingStack;
         run(DURATION);

@@ -9,10 +9,10 @@ import com.google.gwt.user.client.Window;
  */
 public class Navigator {
 
-    public static boolean isIE = false;
-    public static boolean isIE11 = false;
-    public static boolean isChrome = false;
-    public static boolean isFirefox = false;
+    private static boolean isIE = false;
+    private static boolean isIE11 = false;
+    private static boolean isChrome = false;
+    private static boolean isFirefox = false;
 
     static {
         if ((Window.Navigator.getUserAgent()).toLowerCase().contains("msie")){
@@ -27,5 +27,21 @@ public class Navigator {
         if ((Window.Navigator.getAppName() + " " + Window.Navigator.getUserAgent()).toLowerCase().contains("firefox")){
             isFirefox = true;
         }
+    }
+
+    public static boolean isIE() {
+        return isIE;
+    }
+
+    public static boolean isIE11() {
+        return isIE11;
+    }
+
+    public static boolean isChrome() {
+        return isChrome;
+    }
+
+    public static boolean isFirefox() {
+        return isFirefox;
     }
 }

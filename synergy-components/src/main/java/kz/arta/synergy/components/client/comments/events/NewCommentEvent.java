@@ -11,10 +11,23 @@ import com.google.gwt.event.shared.GwtEvent;
  * Событие добавления нового комментария
  */
 public class NewCommentEvent extends GwtEvent<NewCommentEvent.Handler> {
-    public static Type<Handler> TYPE = new Type<Handler>();
+    private static Type<Handler> TYPE;
+
+    private String comment;
+
+    public NewCommentEvent(String comment) {
+        this.comment = comment;
+    }
+
+    public static Type<Handler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler>();
+        }
+        return TYPE;
+    }
 
     public Type<Handler> getAssociatedType() {
-        return TYPE;
+        return getType();
     }
 
     protected void dispatch(Handler handler) {
@@ -23,12 +36,6 @@ public class NewCommentEvent extends GwtEvent<NewCommentEvent.Handler> {
 
     public static interface Handler extends EventHandler {
         void onNewComment(NewCommentEvent event);
-    }
-
-    private String comment;
-
-    public NewCommentEvent(String comment) {
-        this.comment = comment;
     }
 
     public String getComment() {

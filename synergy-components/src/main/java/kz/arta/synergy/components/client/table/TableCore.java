@@ -19,8 +19,8 @@ import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.table.column.ArtaColumn;
 import kz.arta.synergy.components.client.table.events.CellEditEvent;
-import kz.arta.synergy.components.client.table.events.TableCellMenu;
-import kz.arta.synergy.components.client.table.events.TableRowMenu;
+import kz.arta.synergy.components.client.table.events.TableCellMenuEvent;
+import kz.arta.synergy.components.client.table.events.TableRowMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
 
 import java.util.ArrayList;
@@ -116,15 +116,13 @@ public class TableCore<T> extends Composite implements HasData<T> {
      */
     private boolean isRowCountExact;
 
-    private Element getCellForEvent(Event event) {
-        Element td = DOM.eventGetTarget(event);
-        for (; td != null; td = DOM.getParent(td)) {
-            if (td.getPropertyString("tagName").equalsIgnoreCase("td")) {
-                return td;
-            }
-        }
-        return null;
-    }
+    /**
+     * Переменная отображает количество добавленных объектов.
+     *
+     * При уменьшении количества добавленных объектов размер objects не уменьшится.
+     * Это пример случая, когда objects.size() не равен rowCount.
+     */
+    private int rowCount;
 
     public TableCore(int pageSize, ProvidesKey<T> keyProvider, final EventBus bus) {
         scroll = new ArtaScrollPanel();
@@ -165,7 +163,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
                 }
             }
         });
-        bus.addHandler(CellEditEvent.TYPE, new CellEditEvent.Handler<T>() {
+        bus.addHandler(CellEditEvent.getType(), new CellEditEvent.Handler<T>() {
             @Override
             public void onCommit(CellEditEvent<T> event) {
                 edit(event, false);
@@ -192,21 +190,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
         table.addDomHandler(new ContextMenuHandler() {
             @Override
             public void onContextMenu(ContextMenuEvent event) {
-                event.preventDefault();
-
-                Element td = getCellForEvent(Event.as(event.getNativeEvent()));
-
-                int row = TableRowElement.as(td.getParentElement()).getRowIndex();
-                int column = TableCellElement.as(td).getCellIndex();
-
-                T object = objects.get(start + row);
-                if (onlyRows) {
-                    bus.fireEventFromSource(new TableRowMenu<T>(object,
-                            event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), TableCore.this);
-                } else {
-                    bus.fireEventFromSource(new TableCellMenu<T>(object, columns.get(column),
-                            event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), TableCore.this);
-                }
+                contextMenuEvent(event);
             }
         }, ContextMenuEvent.getType());
 
@@ -215,6 +199,39 @@ public class TableCore<T> extends Composite implements HasData<T> {
         sinkEvents(Event.ONKEYUP);
         sinkEvents(Event.ONBLUR);
         sinkEvents(Event.ONFOCUS);
+    }
+
+    /**
+     * Обработка вызова контекстного меню
+     * @param event событие
+     */
+    private void contextMenuEvent(ContextMenuEvent event) {
+        event.preventDefault();
+
+        Element td = getCellForEvent(Event.as(event.getNativeEvent()));
+
+        int row = TableRowElement.as(td.getParentElement()).getRowIndex();
+        int column = TableCellElement.as(td).getCellIndex();
+
+        T object = objects.get(start + row);
+        if (onlyRows) {
+            bus.fireEventFromSource(new TableRowMenuEvent<T>(object,
+                    event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), this);
+        } else {
+            bus.fireEventFromSource(new TableCellMenuEvent<T>(object, columns.get(column),
+                    event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), this);
+        }
+    }
+
+    private Element getCellForEvent(Event event) {
+        Element td = DOM.eventGetTarget(event);
+        for (; td != null; td = DOM.getParent(td)) {
+            //noinspection NonJREEmulationClassesInClientCode
+            if ("td".equalsIgnoreCase(td.getPropertyString("tagName"))) {
+                return td;
+            }
+        }
+        return null;
     }
 
     /**
@@ -870,14 +887,6 @@ public class TableCore<T> extends Composite implements HasData<T> {
         return isRowCountExact;
     }
 
-    /**
-     * Переменная отображает количество добавленных объектов.
-     *
-     * При уменьшении количества добавленных объектов размер objects не уменьшится.
-     * Это пример случая, когда objects.size() не равен rowCount.
-     */
-    private int rowCount;
-
     @Override
     public void setRowCount(int count) {
         boolean rowCountChange = false;
@@ -917,7 +926,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
     }
 
     public HandlerRegistration addSortHandler(TableSortEvent.Handler<T> handler) {
-        return bus.addHandlerToSource(TableSortEvent.TYPE, this, handler);
+        return bus.addHandlerToSource(TableSortEvent.getType(), this, handler);
     }
 
     /**
@@ -969,11 +978,11 @@ public class TableCore<T> extends Composite implements HasData<T> {
         }
     }
 
-    public HandlerRegistration addCellMenuHandler(TableCellMenu.Handler<T> handler) {
-        return bus.addHandlerToSource(TableCellMenu.TYPE, this, handler);
+    public HandlerRegistration addCellMenuHandler(TableCellMenuEvent.Handler<T> handler) {
+        return bus.addHandlerToSource(TableCellMenuEvent.getType(), this, handler);
     }
 
-    public HandlerRegistration addRowMenuHandler(TableRowMenu.Handler<T> handler) {
-        return bus.addHandlerToSource(TableRowMenu.TYPE, this, handler);
+    public HandlerRegistration addRowMenuHandler(TableRowMenuEvent.Handler<T> handler) {
+        return bus.addHandlerToSource(TableRowMenuEvent.getType(), this, handler);
     }
 }

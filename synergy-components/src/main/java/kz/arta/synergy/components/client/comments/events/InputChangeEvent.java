@@ -14,10 +14,22 @@ import com.google.gwt.event.shared.SimpleEventBus;
  * Событие "input"
  */
 public class InputChangeEvent extends GwtEvent<InputChangeEvent.Handler> {
-    public static Type<Handler> TYPE = new Type<Handler>();
+    private static Type<Handler> TYPE;
+
+    /**
+     * Общий EventBus для всех таких событий
+     */
+    private static EventBus inputBus = new SimpleEventBus();
+
+    public static Type<Handler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler>();
+        }
+        return TYPE;
+    }
 
     public Type<Handler> getAssociatedType() {
-        return TYPE;
+        return getType();
     }
 
     protected void dispatch(Handler handler) {
@@ -27,8 +39,6 @@ public class InputChangeEvent extends GwtEvent<InputChangeEvent.Handler> {
     public static interface Handler extends EventHandler {
         void onInputChange(InputChangeEvent event);
     }
-
-    private static EventBus inputBus = new SimpleEventBus();
 
     /**
      * Добавляет хэндлер на событие "input" элемента. Средствами GWT этого сделать нельзя.

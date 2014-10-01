@@ -132,6 +132,6 @@ public class CommentUI extends Composite {
      * Добавляет хэндлер на удаление коммента
      */
     public HandlerRegistration addDeleteHandler(DeleteCommentEvent.Handler handler) {
-        return addHandler(handler, DeleteCommentEvent.TYPE);
+        return addHandler(handler, DeleteCommentEvent.getType());
     }
 }

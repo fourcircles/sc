@@ -145,8 +145,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
             public void onContextMenu(ContextMenuEvent event) {
                 if (bus != null) {
                     //при вызове контекстного меню создаем кастомное событие о контекстном меню узла
-                    bus.fireEventFromSource(new TreeItemContextMenuEvent(TreeItem.this,
-                            event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY(), event),
+                    bus.fireEventFromSource(new TreeItemContextMenuEvent(TreeItem.this, event),
                             TreeItem.this);
                 }
             }
@@ -391,6 +390,6 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
      * события вызова контекстного меню для элемента дерева надо предотвращать bubbling.
      */
     public HandlerRegistration addTreeContextMenuHandler(TreeItemContextMenuEvent.Handler handler) {
-        return bus.addHandlerToSource(TreeItemContextMenuEvent.TYPE, this, handler);
+        return bus.addHandlerToSource(TreeItemContextMenuEvent.getType(), this, handler);
     }
 }

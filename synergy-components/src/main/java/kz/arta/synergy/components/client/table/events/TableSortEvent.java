@@ -17,11 +17,26 @@ import java.util.*;
  * {@link com.google.gwt.user.cellview.client.ColumnSortList}
  */
 public class TableSortEvent<T> extends GwtEvent<TableSortEvent.Handler<T>> {
-    public static Type<Handler<?>> TYPE = new Type<Handler<?>>();
+    private static Type<Handler<?>> TYPE;
+
+    private ArtaColumn<T, ?> column;
+    private boolean isAscending;
+
+    public TableSortEvent(ArtaColumn<T, ?> column, boolean isAscending) {
+        this.column = column;
+        this.isAscending = isAscending;
+    }
+
+    public static Type<Handler<?>> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler<?>>();
+        }
+        return TYPE;
+    }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Type<Handler<T>> getAssociatedType() {
-        return (Type) TYPE;
+        return (Type) getType();
     }
 
     protected void dispatch(Handler<T> handler) {
@@ -71,14 +86,6 @@ public class TableSortEvent<T> extends GwtEvent<TableSortEvent.Handler<T>> {
             assert list != null;
             this.list = list;
         }
-    }
-
-    private ArtaColumn<T, ?> column;
-    private boolean isAscending;
-
-    public TableSortEvent(ArtaColumn<T, ?> column, boolean isAscending) {
-        this.column = column;
-        this.isAscending = isAscending;
     }
 
     public ArtaColumn<T, ?> getColumn() {

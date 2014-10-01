@@ -17,7 +17,7 @@ import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * User: vsl
@@ -39,7 +39,7 @@ public class DropDownList<V> extends MenuBase{
     /**
      * Список добавленных элементов меню
      */
-    protected ArrayList<Item> items;
+    protected List<Item> items;
 
     /**
      * Панель с вертикальным скроллом
@@ -80,7 +80,7 @@ public class DropDownList<V> extends MenuBase{
             // вроде как не происходит сдвига для стандартного скрываемого скролла
             if (!Window.Navigator.getAppVersion().contains("MSIE") &&
                     !Window.Navigator.getAppVersion().contains("Trident") &&
-                    !Navigator.isFirefox) {
+                    !Navigator.isFirefox()) {
                 root.getElement().getStyle().setRight(-15, Style.Unit.PX);
             }
         }
@@ -151,7 +151,7 @@ public class DropDownList<V> extends MenuBase{
      * Возвращает список добавленных элементов
      * @return список
      */
-    public ArrayList<Item> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
@@ -167,14 +167,14 @@ public class DropDownList<V> extends MenuBase{
      * @param value значение
      * @return элемент
      */
+    @SuppressWarnings("NonJREEmulationClassesInClientCode")
     public Item get(V value) {
         for (Item item : items) {
             if (item.getValue() == null) {
                 if (value == null) {
                     return item;
                 }
-            } else //noinspection NonJREEmulationClassesInClientCode
-                if (item.getValue().equals(value)) {
+            } else if (item.getValue().equals(value)) {
                 return item;
             }
         }
@@ -202,14 +202,15 @@ public class DropDownList<V> extends MenuBase{
         items.remove(index);
     }
 
+
+    @SuppressWarnings("NonJREEmulationClassesInClientCode")
     public boolean contains(V value) {
         for (Item item : items) {
             if (item.getValue() == null) {
                 if (value == null) {
                     return true;
                 }
-            } else //noinspection NonJREEmulationClassesInClientCode
-                if (item.getValue().equals(value)) {
+            } else if (item.getValue().equals(value)) {
                 return true;
             }
         }
@@ -358,8 +359,7 @@ public class DropDownList<V> extends MenuBase{
      * @param selectedIndex позиция уже выбранного элемента
      */
     public void show(int selectedIndex) {
-        Item selectedItem = items.get(selectedIndex);
-        show(selectedItem);
+        show(items.get(selectedIndex));
     }
 
     /**
@@ -482,7 +482,7 @@ public class DropDownList<V> extends MenuBase{
      */
     protected int getHeight() {
         int cnt = root.getWidgetCount();
-        return Math.min(cnt * 32 + Math.max((cnt - 1), 0) * 2, Constants.LIST_MAX_HEIGHT);
+        return Math.min(cnt * 32 + Math.max(cnt - 1, 0) * 2, Constants.LIST_MAX_HEIGHT);
     }
 
     public EventBus getBus() {

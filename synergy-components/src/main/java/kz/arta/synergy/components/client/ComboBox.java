@@ -145,13 +145,11 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
         input.addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
-                switch (event.getNativeKeyCode()) {
-                    case KeyCodes.KEY_DOWN:
-                        if (!list.isShowing()) {
-                            filter.setText("");
-                            list.show(selectedItem);
-                        }
-                        break;
+                if (event.getNativeKeyCode() == KeyCodes.KEY_DOWN) {
+                    if (!list.isShowing()) {
+                        filter.setText("");
+                        list.show(selectedItem);
+                    }
                 }
             }
         });
@@ -325,8 +323,8 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
      * Ширина должна задаваться в пикселях через этот метод.
      * Изменяется только ширина textbox.
      */
-    public void setWidth(int width) {
-        width = Math.max(Constants.FIELD_WITH_BUTTON_MIN_WIDTH, width);
+    public void setWidth(int newWidth) {
+        int width = Math.max(Constants.FIELD_WITH_BUTTON_MIN_WIDTH, newWidth);
         // -1 потому что правая граница кнопки перекрывает границу комбобокса
         input.setWidth(width - Constants.BUTTON_MIN_WIDTH -
                 Constants.COMMON_INPUT_PADDING * 2 - 1 + "px");

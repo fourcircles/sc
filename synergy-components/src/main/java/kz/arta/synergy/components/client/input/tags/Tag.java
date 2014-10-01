@@ -200,7 +200,7 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
 
     @Override
     public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler<V> handler) {
-        return bus.addHandlerToSource(TagRemoveEvent.TYPE, this, handler);
+        return bus.addHandlerToSource(TagRemoveEvent.getType(), this, handler);
     }
 
     @Override

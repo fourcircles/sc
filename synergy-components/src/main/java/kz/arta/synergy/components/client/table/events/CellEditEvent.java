@@ -12,32 +12,7 @@ import kz.arta.synergy.components.client.table.column.ArtaColumn;
  * Событие изменения значения в таблице
  */
 public class CellEditEvent<T> extends GwtEvent<CellEditEvent.Handler<T>> {
-    public static Type<Handler<?>> TYPE = new Type<Handler<?>>();
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public Type<Handler<T>> getAssociatedType() {
-        return (Type) TYPE;
-    }
-
-    protected void dispatch(Handler<T> handler) {
-        switch (editType) {
-            case EDIT_START:
-                handler.onEdit(this);
-                break;
-            case COMMIT:
-                handler.onCommit(this);
-                break;
-            case CANCEL:
-                handler.onCancel(this);
-                break;
-        }
-    }
-
-    public static interface Handler<V> extends EventHandler {
-        void onCommit(CellEditEvent<V> event);
-        void onCancel(CellEditEvent<V> event);
-        void onEdit(CellEditEvent<V> event);
-    }
+    private static Type<Handler<?>> TYPE;
 
     /**
      * Объект
@@ -69,6 +44,39 @@ public class CellEditEvent<T> extends GwtEvent<CellEditEvent.Handler<T>> {
 
     public CellEditEvent(T object, ArtaColumn<T, ?> column, EditType type) {
         this(object, column, type, false);
+    }
+
+    public static Type<Handler<?>> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler<?>>();
+        }
+        return TYPE;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Type<Handler<T>> getAssociatedType() {
+        return (Type) getType();
+    }
+
+    protected void dispatch(Handler<T> handler) {
+        switch (editType) {
+            case EDIT_START:
+                handler.onEdit(this);
+                break;
+            case COMMIT:
+                handler.onCommit(this);
+                break;
+            case CANCEL:
+                handler.onCancel(this);
+                break;
+            default:
+        }
+    }
+
+    public static interface Handler<V> extends EventHandler {
+        void onCommit(CellEditEvent<V> event);
+        void onCancel(CellEditEvent<V> event);
+        void onEdit(CellEditEvent<V> event);
     }
 
     public T getObject() {

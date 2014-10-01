@@ -1042,6 +1042,7 @@ p {
 }
 
 .datePickerCalendar {
+    margin-top: 26px;
     margin-bottom: 20px;
 }
 
@@ -1070,9 +1071,8 @@ p {
 }
 
 .dayWeekPanel {
-    padding-top: 26px;
-    padding-bottom: 12px;
     line-height: 17px;
+    margin-bottom: 12px;
 }
 
 .dayWeekPanel span {
@@ -1088,6 +1088,10 @@ p {
 
 .daysPanel {
     line-height: 14px;
+}
+
+.daysPanel:first-child {
+    margin-top: 12px;
 }
 
 .daysPanel span {

@@ -3,7 +3,6 @@ package kz.arta.synergy.components.client.input.date.repeat;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -63,20 +62,18 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
         FlowPanel weekDaysPanel = new FlowPanel();
         weekDaysPanel.setStyleName(SynergyComponents.resources.cssComponents().dayWeekPanel());
 
-        for (int i = 0; i < DateUtil.WEEKDAYS; i++) {
-            InlineLabel weekDay = new InlineLabel();
-            weekDay.setText(DateUtil.weekDays[(LocaleInfo.getCurrentLocale().getDateTimeFormatInfo().firstDayOfTheWeek() + i) % DateUtil.WEEKDAYS]);
-            weekDaysPanel.add(weekDay);
-        }
-        root.add(weekDaysPanel);
+        FlowPanel datePicker = new FlowPanel();
+        datePicker.setStyleName(SynergyComponents.resources.cssComponents().datePickerCalendar());
 
         List<FlowPanel> weeks = new ArrayList<FlowPanel>();
         for (int i = 0; i < WEEKS; i++) {
             FlowPanel week = new FlowPanel();
             week.setStyleName(SynergyComponents.resources.cssComponents().daysPanel());
             weeks.add(week);
-            root.add(week);
+            datePicker.add(week);
         }
+
+        root.add(datePicker);
 
         days = new ArrayList<InlineLabel>();
         for (int i = 0; i < WEEKS * DateUtil.WEEKDAYS; i++) {

@@ -22,6 +22,10 @@ import kz.arta.synergy.components.client.table.events.CellEditEvent;
  */
 public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T, String> {
 
+    protected ArtaEditableTextColumn(String headerText) {
+        super(headerText);
+    }
+
     public abstract String getValue(T object);
 
     /**
@@ -46,7 +50,7 @@ public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T, St
 
     @Override
     public int getMinWidth() {
-        return 40;
+        return 60;
     }
 
     @Override
@@ -157,13 +161,18 @@ public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T, St
             int keyCode = event.getKeyCode();
 
             if (BrowserEvents.KEYDOWN.equals(type)) {
-                if (keyCode == KeyCodes.KEY_ENTER) {
-                    commit();
-                } else if (keyCode == KeyCodes.KEY_ESCAPE) {
-                    cancel();
-                } else {
-                    event.stopPropagation();
+                switch(keyCode) {
+                    case KeyCodes.KEY_ENTER :
+                        commit();
+                        break;
+                    case KeyCodes.KEY_ESCAPE :
+                        commit();
+                        break;
+                    case KeyCodes.KEY_TAB :
+                        commit(true);
+                        break;
                 }
+                event.stopPropagation();
             }
         }
 
@@ -201,8 +210,9 @@ public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T, St
             if (input == null) {
                 input = createInput();
             }
-            input.setValue(text);
+            input.setValue(getValue(object));
             root.setWidget(input);
+            input.setSelectionRange(0, text.length());
             input.getElement().focus();
 
             getElement().getStyle().clearPaddingLeft();
@@ -226,15 +236,19 @@ public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T, St
         /**
          * Изменяет текст в ячейке
          */
-        private void commit() {
+        private void commit(boolean jumpForward) {
             text = input.getText();
             unEdit();
             label.setText(text);
 
             setValue(object, text);
 
-            bus.fireEvent(new CellEditEvent<T>(object, ArtaEditableTextColumn.this, CellEditEvent.EditType.COMMIT));
+            bus.fireEvent(new CellEditEvent<T>(object, ArtaEditableTextColumn.this, CellEditEvent.EditType.COMMIT, jumpForward));
             root.setFocus(true);
+        }
+
+        private void commit() {
+            commit(false);
         }
 
         /**
@@ -248,6 +262,7 @@ public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T, St
             } else {
                 getElement().getStyle().setPaddingLeft(14, Style.Unit.PX);
             }
+            root.setFocus(true);
         }
 
         /**

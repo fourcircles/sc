@@ -1,0 +1,38 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:arta="urn:import:kz.arta.synergy.components.client"
+             xmlns:artaTree="urn:import:kz.arta.synergy.components.client.tree"
+             xmlns:artaTabs="urn:import:kz.arta.synergy.components.client.tabs"
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <ui:with type="kz.arta.synergy.components.client.resources.ImageResources" field="images"/>
+    <ui:style>
+        .titlePanel{
+            position: absolute;
+            top: 0px;
+            height: 54px;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            width: 100%;
+        }
+        .tree {
+            position: absolute;
+            top: 59px;
+            bottom: 5px;
+            left: 5px;
+            width: 280px;
+        }
+        .tabs {
+            position: absolute;
+            top: 59px;
+            bottom: 5px;
+            right: 5px;
+            left: 290px;
+        }
+    </ui:style>
+    <g:FlowPanel>
+        <g:FlowPanel addStyleNames="{style.titlePanel}" ui:field="titlePanel">
+            <g:InlineLabel text="ShowCase" ui:field="showCaseLabel" />
+        </g:FlowPanel>
+        <artaTree:Tree addStyleNames="{style.tree}" ui:field="tree"/>
+        <artaTabs:TabPanel addStyleNames="{style.tabs}" ui:field="tabPanel"/>
+    </g:FlowPanel>
+</ui:UiBinder>

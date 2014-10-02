@@ -16,9 +16,7 @@ import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * User: vsl
@@ -49,16 +47,11 @@ public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnable
     private PopupPanel popupPanel;
 
     /**
-     * Ширина самого широкого тега
-     */
-    private int maxTagWidth;
-
-    /**
      * Включен/выключен
      */
     private boolean isEnabled = true;
 
-    private PriorityQueue<Tag<V>> tags;
+    private List<Tag<V>> tags;
 
     public TagIndicator(EventBus bus) {
         label = GWT.create(Label.class);
@@ -81,12 +74,7 @@ public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnable
             }
         });
 
-        tags = new PriorityQueue<Tag<V>>(10, new Comparator<Tag<?>>() {
-            @Override
-            public int compare(Tag<?> tag1, Tag<?> tag2) {
-                return -tag1.getOffsetWidth() + tag2.getOffsetWidth();
-            }
-        });
+        tags = new ArrayList<Tag<V>>();
 
         popupPanel = GWT.create(PopupPanel.class);
         popupPanel.setAutoHideEnabled(true);
@@ -117,7 +105,7 @@ public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnable
             }
         });
 
-        if (Navigator.isChrome && LocaleInfo.getCurrentLocale().isRTL()) {
+        if (Navigator.isChrome() && LocaleInfo.getCurrentLocale().isRTL()) {
             popupRootPanel.getElement().getStyle().setLeft(15, Style.Unit.PX);
             popupRootPanel.getElement().getStyle().setPosition(Style.Position.RELATIVE);
         }
@@ -141,13 +129,22 @@ public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnable
         }
 
         popupPanel.setHeight(getPopupHeight() + "px");
-        popupPanel.setWidth(tags.peek().getOffsetWidth() +
-                Constants.TAG_INDICATOR_PADDING * 2 + (tags.size() > MAX_TAG ? Constants.STD_SCROLL_WIDTH : 0) + "px");
+
+        //самый широкий тег надо находить именно перед появлением попапа
+        // т. к. ширина тегов может меняться, то решения типа PriorityQueue не подходят
+        Tag<V> widestTag = Collections.max(tags, new Comparator<Tag<V>>() {
+            @Override
+            public int compare(Tag<V> tag1, Tag<V> tag2) {
+                return tag1.getWidth() - tag2.getWidth();
+            }
+        });
+        int width = widestTag.getWidth();
+        width += Constants.TAG_INDICATOR_PADDING * 2 + (tags.size() > MAX_TAG ? Constants.STD_SCROLL_WIDTH : 0);
+        popupPanel.setWidth(width + "px");
 
         int labelWidth = Utils.getTextWidth(label.getText(), getFontStyle()) + Constants.COMMON_INPUT_PADDING;
 
         popupPanel.showRelativeTo(label);
-        int width = popupPanel.getOffsetWidth();
 
         if (popupPanel.getAbsoluteLeft() + (double) labelWidth / 2 - width / 2 < 0) {
             //треугольник слева
@@ -185,8 +182,8 @@ public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnable
      * @param tag тег
      */
     public void add(final Tag<V> tag) {
-        maxTagWidth = Math.max(maxTagWidth, tag.getOffsetWidth());
         tags.add(tag);
+        tag.setMaxWidth(Constants.INDICATOR_TAG_MAX_WIDTH);
         popupRootPanel.add(tag);
     }
 
@@ -204,7 +201,6 @@ public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnable
      * Удаляет все теги
      */
     public void clear() {
-        maxTagWidth = 0;
         tags.clear();
         popupRootPanel.clear();
     }

@@ -31,13 +31,15 @@ public interface ComponentResources extends ClientBundle {
     @ClientBundle.Source("images/checkbox/checkbox_group_disabled.png")
     ImageResource checkboxGroupDisabled();
 
-    @ClientBundle.Source("images/radio_button/radiobutton_on.png")
+    @ClientBundle.Source("images/radio-button/radiobutton_on.png")
     ImageResource radioOn();
 
-    @ClientBundle.Source("images/radio_button/radiobutton_off.png")
+    @ClientBundle.Source("images/radio-button/radiobutton_off.png")
     ImageResource radioOff();
 
-    @ClientBundle.Source("images/radio_button/radiobutton_disabled.png")
+    @ClientBundle.Source("images/radio-button/radiobutton_disabled.png")
     ImageResource radioDisabled();
 
+    @ClientBundle.Source("images/radio-button/radiobutton_on_disabled.png")
+    ImageResource radioOnDisabled();
 }

@@ -137,6 +137,7 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
                         break;
                     case MONTH:
                         month.setMonth(currentDate.getMonth() - 1);
+                        break;
                     default:
                         month.setDate(currentDate.getDate() - 1);
                 }
@@ -153,6 +154,7 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
                         break;
                     case MONTH:
                         month.setMonth(currentDate.getMonth() + 1);
+                        break;
                     default:
                         month.setDate(currentDate.getDate() + 1);
                 }

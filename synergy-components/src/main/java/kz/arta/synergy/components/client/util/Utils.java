@@ -1,9 +1,7 @@
 package kz.arta.synergy.components.client.util;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.useragent.client.UserAgent;
+import com.google.gwt.dom.client.Element;
 
 /**
  * User: vsl
@@ -32,16 +30,45 @@ public class Utils {
         return ruler.getTextWidth(textWidget);
     }
 
-    public static void setRotate(Element element, int degrees) {
-
-        String degreesStr = "rotate(" + degrees + ")";
-        System.out.println(degreesStr);
-        if (Window.Navigator.getUserAgent().toLowerCase().contains("msie")) {
-            element.getStyle().setProperty("MsTransform", degreesStr);
-        } else if (Navigator.isChrome) {
-            element.getStyle().setProperty("WebkitTransform", degreesStr);
-        } else {
-            element.getStyle().setProperty("transform", degreesStr);
-        }
+    public static double getPreciseTextWidth(String text, String style) {
+        return ruler.getPresiceTextWidth(text, style);
     }
+
+    public static double getPreciseTextWidth(ArtaHasText textWidget) {
+        return ruler.getPreciseTextWidth(textWidget);
+    }
+
+    /**
+     * Предотвращает клик всеми кнопками мыши кроме левой.
+     * Причина использования - некорректная работа метода getButton для {@link com.google.gwt.user.client.ui.RadioButton}
+     * @param element элемент
+     */
+    public static native void cancelNonLeftButtons(com.google.gwt.dom.client.Element element) /*-{
+        element.addEventListener('click', function(e) {
+            var cancel = false;
+            if (e.which != null) {
+                if (e.which > 1) {
+                    cancel = true;
+                }
+            } else {
+                if (e.button > 0) {
+                    cancel = true;
+                }
+            }
+            if (cancel) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+    }-*/;
+
+
+    /**
+     * Возвращает точную ширину (double) для элемента
+     * @param element элемент
+     * @return ширина
+     */
+    public static native double getPreciseWidth(Element element) /*-{
+        return element.getBoundingClientRect().width;
+    }-*/;
 }

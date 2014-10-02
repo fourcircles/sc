@@ -17,7 +17,6 @@ import java.util.HashMap;
  * Утилита для работы с датой
  */
 public class DateUtil {
-
     /**
      * Смещение года в Date
      */
@@ -45,6 +44,9 @@ public class DateUtil {
             Messages.i18n.tr("Пт"),
             Messages.i18n.tr("Сб")
             };
+
+    public static final int MONTHS = months.length;
+    public static final int WEEKDAYS = weekDays.length;
 
     /**
      * Соответствие порядка дней недели

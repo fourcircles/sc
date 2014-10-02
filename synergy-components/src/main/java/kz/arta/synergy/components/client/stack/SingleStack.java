@@ -20,7 +20,7 @@ import kz.arta.synergy.components.client.util.ArtaHasText;
  * Никаких событий не генерирует, вся обработка действий пользователя
  * в StackPanel. Управляется через open, close.
  */
-public class Stack extends Composite implements HasEnabled, ArtaHasText, HasClickHandlers {
+public class SingleStack extends Composite implements HasEnabled, ArtaHasText, HasClickHandlers {
     /**
      * Корневая панель
      */
@@ -51,7 +51,7 @@ public class Stack extends Composite implements HasEnabled, ArtaHasText, HasClic
     /**
      * @param text текст панели
      */
-    public Stack(String text) {
+    public SingleStack(String text) {
         root = new ArtaFlowPanel();
         initWidget(root);
 

@@ -20,6 +20,8 @@ public class Colors {
     public static final Color tabBG2 = new Color("#f9f9f9");
     public static final Color mainBG = new Color("#373d49");
     public static final Color border1 = new Color("#afafaf");
+    public static final Color buttonBorder = new Color("#e2e2e2");
+
 
     public static Color whiteBG() {
         return whiteBG;

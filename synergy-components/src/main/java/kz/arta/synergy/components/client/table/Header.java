@@ -2,6 +2,7 @@ package kz.arta.synergy.components.client.table;
 
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
@@ -57,6 +58,8 @@ public class Header extends Composite implements ArtaHasText,
         image = new Image();
 
         root.add(label);
+
+        root.sinkEvents(Event.ONCONTEXTMENU);
     }
 
     @Override

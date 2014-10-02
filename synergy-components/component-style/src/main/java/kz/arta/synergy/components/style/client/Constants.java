@@ -65,6 +65,10 @@ public class Constants {
     public static final int TAG_PADDING = 8;
     public static final int TAG_HEIGHT = 26;
     public static final int TAG_MAX_WIDTH = 100;
+    /**
+     * Максимальная ширина тега в индикаторе
+     */
+    public static final int INDICATOR_TAG_MAX_WIDTH = 200;
     public static final int TAG_INPUT_NO_BUTTON_MIN_WIDTH = 104;
     public static final int TAG_INDICATOR_PADDING = 6;
 
@@ -78,6 +82,15 @@ public class Constants {
     public static final int STACK_HEIGHT = 48;
 
     public static final int TABLE_DIVIDER_WIDTH = 7;
+
+    public static final int PAGER_BUTTON_WIDTH = 34;
+    public static final int PAGER_TEXT_WIDTH = 91;
+    public static final int PAGER_TEXT_PADDING = 5;
+    public static final int PAGER_HEIGHT = 32;
+
+    public static final int WEEKDAY_CHOOSER_PADDING = 8;
+
+    public static final int COMMENT_INPUT_LINE_HEIGHT = 16;
 
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
@@ -201,5 +214,26 @@ public class Constants {
 
     public static String tableDividerWidth() {
         return TABLE_DIVIDER_WIDTH + "px";
+    }
+
+    public static String pagerButtonWidth() {
+        return PAGER_BUTTON_WIDTH + "px";
+    }
+    public static String pagerTextWidth() {
+        return PAGER_TEXT_WIDTH + "px";
+    }
+    public static String pagerTextPadding() {
+        return PAGER_TEXT_PADDING + "px";
+    }
+    public static String pagerHeight() {
+        return PAGER_HEIGHT + "px";
+    }
+
+    public static String weekdayChooserPadding() {
+        return WEEKDAY_CHOOSER_PADDING + "px";
+    }
+
+    public static String commentInputCommentLineHeight() {
+        return COMMENT_INPUT_LINE_HEIGHT + "px";
     }
 }

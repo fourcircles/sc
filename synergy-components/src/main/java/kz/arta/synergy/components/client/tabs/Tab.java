@@ -224,11 +224,11 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
 
     @Override
     public HandlerRegistration addTabSelectionHandler(TabSelectionEvent.Handler handler) {
-        return bus.addHandlerToSource(TabSelectionEvent.TYPE, this, handler);
+        return bus.addHandlerToSource(TabSelectionEvent.getType(), this, handler);
     }
 
     @Override
     public HandlerRegistration addTabCloseHandler(TabCloseEvent.Handler handler) {
-        return bus.addHandlerToSource(TabCloseEvent.TYPE, this, handler);
+        return bus.addHandlerToSource(TabCloseEvent.getType(), this, handler);
     }
 }

@@ -15,6 +15,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class ArtaTextColumn<T> extends AbstractArtaColumn<T, String> {
 
+    protected ArtaTextColumn(String headerText) {
+        super(headerText);
+    }
+
     public abstract String getValue(T object);
 
     @Override
@@ -41,6 +45,6 @@ public abstract class ArtaTextColumn<T> extends AbstractArtaColumn<T, String> {
 
     @Override
     public int getMinWidth() {
-        return 40;
+        return 60;
     }
 }

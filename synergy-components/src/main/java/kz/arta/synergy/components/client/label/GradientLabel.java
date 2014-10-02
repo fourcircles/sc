@@ -129,12 +129,17 @@ public class GradientLabel extends Composite implements ArtaHasText {
         adjustGradient();
     }
 
+
+
     /**
      * Снимает заданную ширину, виджет растягивается на длину текста.
      */
     public void clearWidth() {
         widthSet = false;
+        getElement().getStyle().clearWidth();
+        panel.remove(gradient);
     }
+
     /**
      * Ширину задавать надо в пикселях
      */

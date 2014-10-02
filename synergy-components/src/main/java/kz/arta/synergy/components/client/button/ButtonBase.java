@@ -2,6 +2,7 @@ package kz.arta.synergy.components.client.button;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -19,8 +20,6 @@ import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.MouseStyle;
 import kz.arta.synergy.components.client.util.Selection;
 import kz.arta.synergy.components.style.client.Constants;
-
-//todo исправить прыгающие кнопки
 
 /**
  * User: user
@@ -273,6 +272,9 @@ public class ButtonBase extends FlowPanel implements
         }
         switch (DOM.eventGetType(event)) {
             case Event.ONMOUSEDOWN:
+                if (event.getButton() != NativeEvent.BUTTON_LEFT) {
+                    return;
+                }
                 MouseStyle.setPressed(this);
                 break;
             case Event.ONMOUSEUP:

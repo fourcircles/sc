@@ -11,19 +11,7 @@ import com.google.gwt.event.shared.GwtEvent;
  * Событие выбора объекта в таблице
  */
 public class TableSelectionEvent extends GwtEvent<TableSelectionEvent.Handler> {
-    public static Type<Handler> TYPE = new Type<Handler>();
-
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    protected void dispatch(Handler handler) {
-        handler.onTableSelection(this);
-    }
-
-    public static interface Handler extends EventHandler {
-        void onTableSelection(TableSelectionEvent event);
-    }
+    private static Type<Handler> TYPE;
 
     private int row;
     private int column;
@@ -36,6 +24,25 @@ public class TableSelectionEvent extends GwtEvent<TableSelectionEvent.Handler> {
     public TableSelectionEvent(int row, int column) {
         this.row = row;
         this.column = column;
+    }
+
+    public static Type<Handler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler>();
+        }
+        return TYPE;
+    }
+
+    public Type<Handler> getAssociatedType() {
+        return getType();
+    }
+
+    protected void dispatch(Handler handler) {
+        handler.onTableSelection(this);
+    }
+
+    public static interface Handler extends EventHandler {
+        void onTableSelection(TableSelectionEvent event);
     }
 
     public int getRow() {

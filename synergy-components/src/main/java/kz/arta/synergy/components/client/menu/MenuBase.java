@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: vsl
@@ -72,7 +72,6 @@ public abstract class MenuBase {
             }
             @Override
             public void hide(boolean auto) {
-//                noFocused();
                 if (resizeRegistration != null) {
                     resizeRegistration.removeHandler();
                     resizeRegistration = null;
@@ -150,24 +149,31 @@ public abstract class MenuBase {
         return getNext(focusedIndex);
     }
 
-    private int getNext(int start) {
-        ArrayList<? extends MenuItem> items = getItems();
+    private int getNext(int start, int end) {
+        List<? extends MenuItem> items = getItems();
 
-        int i = start + 1;
+        int i = start;
         if (i < 0) {
             return -1;
         }
-        while (i < items.size() && items.get(i).shouldBeSkipped()) {
+        while (i < items.size() && i < end &&
+                items.get(i).shouldBeSkipped()) {
             i++;
         }
-        if (i == items.size()) {
-            i = 0;
-            while (i < start && items.get(i).shouldBeSkipped()) {
-                i++;
-            }
-            return i >= start ? -1 : i;
-        } else {
+        if (i >= start && i < end) {
             return i;
+        } else {
+            return -1;
+        }
+    }
+
+    private int getNext(int start) {
+        List<? extends MenuItem> items = getItems();
+        int beforeEnd = getNext(start + 1, items.size());
+        if (beforeEnd == -1) {
+            return getNext(0, start + 1);
+        } else {
+            return beforeEnd;
         }
     }
 
@@ -180,27 +186,29 @@ public abstract class MenuBase {
         return getPrevious(focusedIndex);
     }
 
-    private int getPrevious(int start) {
-        ArrayList<? extends MenuItem> items = getItems();
-        if (start == -1) {
-            return getLast();
-        }
-        int i = start - 1;
+    private int getPrevious(int start, int end) {
+        List<? extends MenuItem> items = getItems();
+
+        int i = start;
         if (i >= items.size()) {
             return -1;
         }
-        while (i >= 0 && items.get(i).shouldBeSkipped()) {
+        while (i >= 0 && i > end && items.get(i).shouldBeSkipped()) {
             i--;
         }
-        if (i == -1) {
-            i = items.size() - 1;
-            while (i > start && items.get(i).shouldBeSkipped()) {
-                i--;
-            }
-            return i <= start ? -1 : i;
-
-        } else {
+        if (i <= start && i > end) {
             return i;
+        } else {
+            return -1;
+        }
+    }
+
+    private int getPrevious(int start) {
+        int beforeStart = getPrevious(start - 1, -1);
+        if (beforeStart == -1) {
+            return getPrevious(getItems().size() - 1, start - 1);
+        } else {
+            return beforeStart;
         }
     }
 
@@ -250,9 +258,9 @@ public abstract class MenuBase {
         relativeWidget = widget;
         if (widget != null) {
             popup.addAutoHidePartner(widget.getElement());
-            popup.getElement().getStyle().setProperty("borderTop", "0px");
+            popup.getElement().getStyle().setProperty("borderTopStyle", "none");
         } else {
-            popup.getElement().getStyle().setProperty("borderTop", "1px");
+            popup.getElement().getStyle().setProperty("borderTopStyle", "solid");
         }
     }
 
@@ -264,6 +272,9 @@ public abstract class MenuBase {
         popup.removeAutoHidePartner(e);
     }
 
+    public boolean hasRelativeWidget() {
+        return relativeWidget != null && relativeWidget.isAttached();
+    }
     public Widget getRelativeWidget() {
         return relativeWidget;
     }
@@ -281,7 +292,7 @@ public abstract class MenuBase {
      * Показывает меню под родителем.
      */
     protected void showUnderParent() {
-        if (relativeWidget != null && relativeWidget.isAttached()) {
+        if (hasRelativeWidget()) {
             beforeShow();
             popup.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2 + "px");
             root.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2 + "px");
@@ -350,6 +361,7 @@ public abstract class MenuBase {
                 case KeyCodes.KEY_ENTER:
                     keyEnter(event);
                     break;
+                default:
             }
         }
     }
@@ -365,7 +377,7 @@ public abstract class MenuBase {
     /**
      * Возвращает логическое представление списка
      */
-    abstract ArrayList<? extends MenuItem> getItems();
+    abstract List<? extends MenuItem> getItems();
 
     protected abstract void keyDown(Event.NativePreviewEvent event);
     protected abstract void keyUp(Event.NativePreviewEvent event);

@@ -14,19 +14,7 @@ import kz.arta.synergy.components.client.tabs.Tab;
  * Событие выбора вкладки
  */
 public class TabSelectionEvent extends GwtEvent<TabSelectionEvent.Handler> {
-    public static Type<Handler> TYPE = new Type<Handler>();
-
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    protected void dispatch(Handler handler) {
-        handler.onTabSelection(this);
-    }
-
-    public static interface Handler extends EventHandler {
-        void onTabSelection(TabSelectionEvent event);
-    }
+    private static Type<Handler> TYPE;
 
     /**
      * Вкладка
@@ -47,6 +35,25 @@ public class TabSelectionEvent extends GwtEvent<TabSelectionEvent.Handler> {
         this.openAfter = openAfter;
     }
 
+    public static Type<Handler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler>();
+        }
+        return TYPE;
+    }
+
+    public Type<Handler> getAssociatedType() {
+        return getType();
+    }
+
+    protected void dispatch(Handler handler) {
+        handler.onTabSelection(this);
+    }
+
+    public static interface Handler extends EventHandler {
+        void onTabSelection(TabSelectionEvent event);
+    }
+
     public Tab getTab() {
         return tab;
     }
@@ -56,6 +63,6 @@ public class TabSelectionEvent extends GwtEvent<TabSelectionEvent.Handler> {
     }
 
     public static HandlerRegistration register(EventBus bus, Handler handler) {
-        return bus.addHandler(TYPE, handler);
+        return bus.addHandler(getType(), handler);
     }
 }

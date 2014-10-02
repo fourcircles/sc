@@ -45,8 +45,7 @@ public class ArtaScrollPanel extends CustomScrollPanel {
         Window.addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {
-                vScroll.setScrollHeight(event.getHeight());
-                hScroll.setScrollWidth(event.getWidth());
+                ArtaScrollPanel.this.onResize();
             }
         });
     }

@@ -2,13 +2,14 @@ package kz.arta.synergy.components.client.table.column;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
+import kz.arta.synergy.components.client.table.Header;
 
 /**
  * User: vsl
  * Date: 02.09.14
  * Time: 11:57
  *
- * Столбец. "Заимствован" из {@link com.google.gwt.user.cellview.client.Column}
+ * Столбец. "Заимствован" из {@link com.google.gwt.user.cellview.client.Column}.
  */
 public interface ArtaColumn<T, C> {
     /**
@@ -58,4 +59,9 @@ public interface ArtaColumn<T, C> {
      * Минимальная ширина столбца
      */
     int getMinWidth();
+
+    /**
+     * Возвращает заголовок столбца
+     */
+    Header getHeader();
 }

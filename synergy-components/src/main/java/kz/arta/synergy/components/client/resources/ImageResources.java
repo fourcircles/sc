@@ -103,4 +103,29 @@ public interface ImageResources extends ClientBundle {
     @Source("images/tabs/tabs-button-right-over.png")
     ImageResource tabsRightOver();
 
+    @Source("images/tree/folder.png")
+    ImageResource folder();
+    @Source("images/tree/node-closed.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource nodeClosed();
+    @Source("images/tree/node-open.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource nodeOpen();
+
+    @Source("images/post.png")
+    ImageResource post();
+
+    @Source("images/pager/left-enabled.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource pagerLeft();
+    @Source("images/pager/right-enabled.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource pagerRight();
+
+    @Source("images/comments/delete_comment.png")
+    ImageResource deleteComment();
+    @Source("images/comments/negative_comment.png")
+    ImageResource negativeComment();
+    @Source("images/comments/positive_comment.png")
+    ImageResource positiveComment();
 }

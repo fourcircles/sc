@@ -38,8 +38,6 @@ public interface CssComponents extends CssResource {
 
     String datePicker();
 
-    String datePickerBottom();
-
     String datePickerCalendar();
 
     String datePickerTop();
@@ -168,8 +166,6 @@ public interface CssComponents extends CssResource {
     String group();
 
     String table();
-    String tableContainer();
-    String tableInput();
     String edit();
     String last();
     String underEdit();
@@ -179,4 +175,28 @@ public interface CssComponents extends CssResource {
     String headersTable();
     String headerDivider();
     String drag();
+    String notFull();
+    String onlyRows();
+    String hat();
+    String multipleLines();
+
+    String tree();
+    String treeItem();
+    String content();
+
+    String pager();
+
+    String weekChooser();
+    String day();
+
+    String repeatChooser();
+
+    String commentsPanel();
+    String comment();
+    String decline();
+    String accept();
+    String name();
+    String date();
+    String commentInput();
+    String commentInputAccept();
 }

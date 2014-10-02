@@ -505,12 +505,12 @@ public class Tabs extends Composite implements HasTabHandlers {
 
     @Override
     public HandlerRegistration addTabSelectionHandler(TabSelectionEvent.Handler handler) {
-        return innerBus.addHandlerToSource(TabSelectionEvent.TYPE, this, handler);
+        return innerBus.addHandlerToSource(TabSelectionEvent.getType(), this, handler);
     }
 
     @Override
     public HandlerRegistration addTabCloseHandler(TabCloseEvent.Handler handler) {
-        return innerBus.addHandlerToSource(TabCloseEvent.TYPE, this, handler);
+        return innerBus.addHandlerToSource(TabCloseEvent.getType(), this, handler);
     }
 
     /**

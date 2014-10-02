@@ -2,6 +2,7 @@ package kz.arta.synergy.components.client.table.column;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
+import kz.arta.synergy.components.client.table.Header;
 
 /**
  * User: vsl
@@ -12,12 +13,27 @@ public abstract class AbstractArtaColumn<T, C> implements ArtaColumn<T, C> {
     private boolean isSortable;
     private String dataStoreName;
 
+    private Header header;
+
+    protected AbstractArtaColumn(String headerText) {
+        header = new Header(headerText);
+    }
+
     public boolean isSortable() {
         return isSortable;
     }
 
     public void setSortable(boolean isSorted) {
         this.isSortable = isSorted;
+    }
+
+    @Override
+    public Header getHeader() {
+        return header;
+    }
+
+    public void setHeaderText(String text) {
+        header.setText(text);
     }
 
     @Override
@@ -28,6 +44,11 @@ public abstract class AbstractArtaColumn<T, C> implements ArtaColumn<T, C> {
     @Override
     public String getDataStoreName() {
         return dataStoreName;
+    }
+
+    @Override
+    public String toString() {
+        return getHeader().getText();
     }
 
     public abstract C getValue(T object);

@@ -39,12 +39,12 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
     /**
      * Открытая панель
      */
-    private Stack openedStack;
+    private SingleStack openedStack;
 
     /**
      * Список стек-панелей
      */
-    private List<Stack> stacks;
+    private List<SingleStack> stacks;
 
     /**
      * Высота контента
@@ -61,8 +61,8 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
      * @param offsetHeight общая высота панели
      * @param initialOpened номер стек-панели открытой в начале
      */
-    public StackPanel(List<Stack> stacks, int offsetHeight, int initialOpened) {
-        if (stacks.size() == 0) {
+    public StackPanel(List<SingleStack> stacks, int offsetHeight, int initialOpened) {
+        if (stacks.isEmpty()) {
             throw new UnsupportedOperationException("стек панель не может быть пустой");
         }
 
@@ -72,11 +72,11 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
 
         root.setStyleName(SynergyComponents.resources.cssComponents().stackPanel());
 
-        this.stacks = new ArrayList<Stack>();
+        this.stacks = new ArrayList<SingleStack>();
 
         contentHeight = offsetHeight - (stacks.size() * (Constants.STACK_HEIGHT + 1)) - Constants.BORDER_WIDTH * 2;
 
-        for (final Stack stack : stacks) {
+        for (final SingleStack stack : stacks) {
             stack.setContentHeight(contentHeight);
             stack.addClickHandler(new ClickHandler() {
                 @Override
@@ -90,14 +90,14 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
         openStack(initialOpened, false);
     }
 
-    public StackPanel(List<Stack> stacks, int offsetHeight) {
+    public StackPanel(List<SingleStack> stacks, int offsetHeight) {
         this(stacks, offsetHeight, 0);
     }
 
     /**
      * @param type тип панели (белая или черная)
      */
-    public StackPanel(List<Stack> stacks, int offsetHeight, Type type) {
+    public StackPanel(List<SingleStack> stacks, int offsetHeight, Type type) {
         this(stacks, offsetHeight);
         if (type == Type.WHITE) {
             root.addStyleName(SynergyComponents.resources.cssComponents().white());
@@ -111,7 +111,7 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
      * @param newStack стек
      * @param beforeIndex позиция
      */
-    public void insertStack(final Stack newStack, int beforeIndex) {
+    public void insertStack(final SingleStack newStack, int beforeIndex) {
         if (beforeIndex < 0 || beforeIndex > stacks.size() - 1) {
             return;
         }
@@ -125,7 +125,7 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
         root.insert(newStack, beforeIndex);
         contentHeight -= Constants.STACK_HEIGHT;
 
-        for (Stack stack : stacks) {
+        for (SingleStack stack : stacks) {
             stack.setContentHeight(contentHeight);
         }
     }
@@ -134,16 +134,16 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
      * Удаляет стек из стекпанели
      * @param oldStack стек, который надо убрать
      */
-    public void removeStack(Stack oldStack) {
+    public void removeStack(SingleStack oldStack) {
         //не разрешаем удалять последний стек
-        if (!stacks.contains(oldStack) || stacks.size() < 1) {
+        if (!stacks.contains(oldStack) || stacks.isEmpty()) {
             return;
         }
         stacks.remove(oldStack);
         root.remove(oldStack);
         contentHeight += Constants.STACK_HEIGHT;
 
-        for (Stack stack : stacks) {
+        for (SingleStack stack : stacks) {
             stack.setContentHeight(contentHeight);
         }
     }
@@ -162,7 +162,7 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
      * @param stack панель
      * @param fireEvents создавать ли события
      */
-    public void openStack(Stack stack, boolean fireEvents) {
+    public void openStack(SingleStack stack, boolean fireEvents) {
         if (openedStack == stack || !stack.isEnabled()) {
             return;
         }
@@ -174,8 +174,6 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
                     ie9Animation.cancel();
                 }
             }
-            ie9Animation.setClosingStack(openedStack);
-            ie9Animation.setOpeningStack(stack);
 
             ie9Animation.openStack(openedStack, stack);
             openedStack = stack;
@@ -194,17 +192,17 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
         }
     }
 
-    public List<Stack> getStacks() {
+    public List<SingleStack> getStacks() {
         return stacks;
     }
 
-    public Stack getOpenedStack() {
+    public SingleStack getOpenedStack() {
         return openedStack;
     }
 
     @Override
     public HandlerRegistration addStackOpenHandler(StackOpenEvent.Handler handler) {
-        return bus.addHandlerToSource(StackOpenEvent.TYPE, this, handler);
+        return bus.addHandlerToSource(StackOpenEvent.getType(), this, handler);
     }
 
     /**

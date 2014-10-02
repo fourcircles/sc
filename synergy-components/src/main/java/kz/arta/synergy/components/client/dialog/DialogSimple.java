@@ -1,8 +1,9 @@
 package kz.arta.synergy.components.client.dialog;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -11,6 +12,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.dialog.events.DialogEvent;
 import kz.arta.synergy.components.client.label.GradientLabel;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.style.client.Constants;
@@ -47,8 +49,6 @@ public class DialogSimple extends PopupPanel {
      */
     protected FlowPanel contentPanel;
 
-    private boolean modal = true;
-
     protected Widget content;
 
     /**
@@ -66,6 +66,10 @@ public class DialogSimple extends PopupPanel {
      */
     private GradientLabel titleLabel;
 
+    /**
+     * EventBus для реагирования на сворачивание, закрытие и т. д.
+     */
+    private EventBus bus;
     /**
      * Производит кнопки для верхнего правого угла диалога, присваивая хэндлеры для событий мыши.
      * Также предотвращает перетаскивание картинки кнопки (например в адресную строку браузера).
@@ -103,10 +107,9 @@ public class DialogSimple extends PopupPanel {
 
     public DialogSimple(boolean modal) {
 
-        this.modal = modal;
-        setModal(this.modal);
+        setModal(modal);
 
-        if (this.modal) {
+        if (modal) {
             setGlassEnabled(true);
         }
         panel = GWT.create(FlowPanel.class);
@@ -115,7 +118,7 @@ public class DialogSimple extends PopupPanel {
         closeButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                hide();
+                close();
             }
         });
 
@@ -158,6 +161,20 @@ public class DialogSimple extends PopupPanel {
 
         getGlassElement().getStyle().setZIndex(1000);
         getElement().getStyle().setZIndex(2000);
+    }
+
+    protected void collapse() {
+        hide();
+        if (bus != null) {
+            bus.fireEvent(new DialogEvent(this, DialogEvent.EventType.COLLAPSE));
+        }
+    }
+
+    private void close() {
+        hide();
+        if (bus != null) {
+            bus.fireEvent(new DialogEvent(this, DialogEvent.EventType.CLOSE));
+        }
     }
 
     public DialogSimple(String title, Widget content) {
@@ -232,9 +249,6 @@ public class DialogSimple extends PopupPanel {
         titlePanel.addDomHandler(move, MouseMoveEvent.getType());
     }
 
-    protected void collapse() {
-    }
-
     @Override
     public void show() {
         super.show();
@@ -242,6 +256,10 @@ public class DialogSimple extends PopupPanel {
         collapseButton.setResource(ImageResources.IMPL.dialogCollapseButton());
         closeButton.setResource(ImageResources.IMPL.dialogCloseButton());
         adjustTitleLabelWidth();
+
+        if (bus != null) {
+            bus.fireEvent(new DialogEvent(this, DialogEvent.EventType.SHOW));
+        }
     }
 
     public int getWidth() {
@@ -254,6 +272,9 @@ public class DialogSimple extends PopupPanel {
 
     public void setText(String text) {
         titleLabel.setText(text);
+        if (bus != null) {
+            bus.fireEvent(new DialogEvent(this, DialogEvent.EventType.TEXT_CHANGE));
+        }
     }
 
     public void setContent(Widget content) {
@@ -262,5 +283,17 @@ public class DialogSimple extends PopupPanel {
         adjustTitleLabelWidth();
     }
 
+    public HandlerRegistration addCloseButtonHandler(ClickHandler handler) {
+        return closeButton.addClickHandler(handler);
+    }
 
+    public HandlerRegistration addCollapseButtonHandler(ClickHandler handler) {
+        return collapseButton.addClickHandler(handler);
+    }
+
+    public void setBus(EventBus bus) {
+        if (this.bus == null || this.bus != bus) {
+            this.bus = bus;
+        }
+    }
 }

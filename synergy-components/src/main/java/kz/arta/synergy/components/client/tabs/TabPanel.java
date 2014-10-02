@@ -1,10 +1,8 @@
 package kz.arta.synergy.components.client.tabs;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -118,5 +116,9 @@ public class TabPanel extends Composite implements HasTabHandlers {
     @Override
     public HandlerRegistration addTabCloseHandler(TabCloseEvent.Handler handler) {
         return innerBus.addHandlerToSource(TabCloseEvent.getType(), this, handler);
+    }
+
+    public FlowPanel getContentPanel() {
+        return contentPanel;
     }
 }

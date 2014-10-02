@@ -92,6 +92,9 @@ public class Constants {
 
     public static final int COMMENT_INPUT_LINE_HEIGHT = 16;
 
+    public static final int TASKBAR_ITEM_PADDING = 5;
+    public static final int TASKBAR_IMAGE_MARGIN = 10;
+
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
     }
@@ -235,5 +238,12 @@ public class Constants {
 
     public static String commentInputCommentLineHeight() {
         return COMMENT_INPUT_LINE_HEIGHT + "px";
+    }
+
+    public static String taskbarItemPadding() {
+        return TASKBAR_ITEM_PADDING + "px";
+    }
+    public static String taskbarImageMargin() {
+        return TASKBAR_IMAGE_MARGIN + "px";
     }
 }

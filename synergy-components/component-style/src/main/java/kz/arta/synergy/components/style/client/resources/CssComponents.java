@@ -199,4 +199,8 @@ public interface CssComponents extends CssResource {
     String date();
     String commentInput();
     String commentInputAccept();
+
+    String item();
+    String taskBar();
+    String taskBarIndicator();
 }

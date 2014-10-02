@@ -277,13 +277,15 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
             scrollPanel.getWidget().getElement().getStyle().clearMarginLeft();
             scrollPanel.getWidget().getElement().getStyle().clearMarginRight();
         }
-        panel.setWidth(this.width + "px");
-        barWidth = (int) Math.ceil (((this.width) / (double) width) * (this.width - Constants.SCROLL_BAR_WIDTH * 2));
-        freeTrackSpace = this.width - barWidth - (Constants.SCROLL_BAR_WIDTH + 1) * 2;
-        bar.setWidth(barWidth + "px");
+        if (this.width > 0) {
+            panel.setWidth(this.width + "px");
+            barWidth = (int) Math.ceil(((this.width) / (double) width) * (this.width - Constants.SCROLL_BAR_WIDTH * 2));
+            freeTrackSpace = this.width - barWidth - (Constants.SCROLL_BAR_WIDTH + 1) * 2;
+            bar.setWidth(barWidth + "px");
 
-        if (getHorizontalScrollPosition() == 0) {
-            setHorizontalScrollPosition(0);
+            if (getHorizontalScrollPosition() == 0) {
+                setHorizontalScrollPosition(0);
+            }
         }
     }
 

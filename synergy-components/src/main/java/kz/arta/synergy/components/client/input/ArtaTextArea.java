@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.input;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
@@ -15,16 +16,6 @@ import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
  * Поле ввода для многострочного текста
  */
 public class ArtaTextArea extends Composite {
-
-    /**
-     * высота
-     */
-    private int height = 59;
-
-    /**
-     * ширина
-     */
-    private int width = 200;
 
     /**
      * Сам компонент для ввода текста
@@ -72,7 +63,7 @@ public class ArtaTextArea extends Composite {
         textArea.setMinVisibleLines(3);
         verticalScroll = new ArtaScrollPanel();
         verticalScroll.setWidget(textArea);
-        setPixelSize(width, height);
+        setPixelSize(200, 59);
         initWidget(verticalScroll);
 
         textArea.sinkEvents(Event.KEYEVENTS);
@@ -102,6 +93,12 @@ public class ArtaTextArea extends Composite {
             }
         });
 
+    }
+
+    public void onLoad() {
+        try {
+            textArea.getElement().getParentElement().getStyle().setWidth(100, Style.Unit.PCT);
+        } catch (Exception ignore) {}
     }
 
     public boolean isAllowEmpty() {
@@ -183,7 +180,6 @@ public class ArtaTextArea extends Composite {
 
     public void setPixelSize(int width, int height) {
         verticalScroll.setPixelSize(width, height);
-        textArea.setHeight(height + "px");
     }
 
     public void setSize(String width, String height) {

@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.util;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 
 /**
  * User: vsl
@@ -29,6 +30,14 @@ public class Utils {
         return ruler.getTextWidth(textWidget);
     }
 
+    public static double getPreciseTextWidth(String text, String style) {
+        return ruler.getPresiceTextWidth(text, style);
+    }
+
+    public static double getPreciseTextWidth(ArtaHasText textWidget) {
+        return ruler.getPreciseTextWidth(textWidget);
+    }
+
     /**
      * Предотвращает клик всеми кнопками мыши кроме левой.
      * Причина использования - некорректная работа метода getButton для {@link com.google.gwt.user.client.ui.RadioButton}
@@ -51,5 +60,15 @@ public class Utils {
                 e.stopPropagation();
             }
         });
+    }-*/;
+
+
+    /**
+     * Возвращает точную ширину (double) для элемента
+     * @param element элемент
+     * @return ширина
+     */
+    public static native double getPreciseWidth(Element element) /*-{
+        return element.getBoundingClientRect().width;
     }-*/;
 }

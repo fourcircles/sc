@@ -47,7 +47,7 @@ public class InputChangeEvent extends GwtEvent<InputChangeEvent.Handler> {
      */
     public static void addInputHandler(Element element, Handler handler) {
         addInputEvent(element);
-        inputBus.addHandlerToSource(InputChangeEvent.TYPE, element, handler);
+        inputBus.addHandlerToSource(InputChangeEvent.getType(), element, handler);
     }
 
     private static void fireInputEvent(Element element) {

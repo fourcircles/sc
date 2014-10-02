@@ -27,13 +27,26 @@ public class RulerLabel extends Label {
         RootPanel.get().add(this);
     }
 
+    private void updateLabel(String text, String fontStyle) {
+        setText(text);
+        setStyleName(fontStyle);
+    }
+
     public int getTextWidth(ArtaHasText textElement) {
         return getTextWidth(textElement.getText(), textElement.getFontStyle());
     }
 
     public int getTextWidth(String text, String fontStyle) {
-        setText(text);
-        setStyleName(fontStyle);
+        updateLabel(text, fontStyle);
         return getOffsetWidth();
+    }
+
+    public double getPresiceTextWidth(String text, String fontStyle) {
+        updateLabel(text, fontStyle);
+        return Utils.getPreciseWidth(getElement());
+    }
+
+    public double getPreciseTextWidth(ArtaHasText textElement) {
+        return getPresiceTextWidth(textElement.getText(), textElement.getFontStyle());
     }
 }

@@ -1,6 +1,5 @@
 package kz.arta.synergy.components.client.comments;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
@@ -18,6 +17,7 @@ import kz.arta.synergy.components.client.comments.events.NewCommentEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.util.ArtaHasText;
+import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
 /**
@@ -204,15 +204,6 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
     }
 
     /**
-     * Возвращает точную ширину (double) для элемента
-     * @param element элемент
-     * @return ширина
-     */
-    private static native double getPreciseWidth(Element element) /*-{
-        return element.getBoundingClientRect().width;
-    }-*/;
-
-    /**
      * Изменяет отступы при появлении скролла
      * @param hasScroll отображен ли скролл
      */
@@ -241,7 +232,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
      */
     private void textChanged() {
         //здесь нужна точная ширина
-        double width = getPreciseWidth(textArea.getElement());
+        double width = Utils.getPreciseWidth(textArea.getElement());
         width -= textPadding;
 
         //левый или правый padding не имеет значения, главное сумма горизонтальных отступов текста

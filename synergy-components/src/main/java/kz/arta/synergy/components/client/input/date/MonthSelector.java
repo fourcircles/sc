@@ -12,9 +12,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.FixedWidthList;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.util.DateUtil;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -60,6 +62,10 @@ public class MonthSelector extends Composite {
      */
     FixedWidthList<Integer> monthList;
 
+    private DropDownList<Integer>.Item yearItem;
+
+    private DropDownList<Integer>.Item monthItem;
+
     ArtaDatePicker picker;
 
     public MonthSelector(ArtaDatePicker datePicker) {
@@ -71,6 +77,9 @@ public class MonthSelector extends Composite {
         panel = GWT.create(FlowPanel.class);
         initWidget(panel);
         setStyleName(SynergyComponents.resources.cssComponents().datePickerTop());
+        if (picker.colorType == ColorType.BLACK) {
+            addStyleName(SynergyComponents.resources.cssComponents().dark());
+        }
 
         /*кнопка назад*/
         panel.add(topBack);
@@ -94,6 +103,7 @@ public class MonthSelector extends Composite {
         ListSelectionEvent.register(monthBus, new ListSelectionEvent.Handler<Integer>() {
             @Override
             public void onSelection(ListSelectionEvent<Integer> event) {
+                monthItem = event.getItem();
                 Date month = new Date(picker.currentDate.getTime());
                 month.setMonth(event.getItem().getValue());
                 picker.setCurrentDate(month, false);
@@ -102,7 +112,10 @@ public class MonthSelector extends Composite {
             }
         });
         for (int i = 0; i < 12; i++) {
-            monthList.addItem(DateUtil.getMonth(i), i);
+            DropDownList.Item item = monthList.addItem(DateUtil.getMonth(i), i);
+            if ((Integer)item.getValue() == DateUtil.currentDate.getMonth()) {
+                monthItem = item;
+            }
         }
 
         monthLabel.addClickHandler(new ClickHandler() {
@@ -113,7 +126,7 @@ public class MonthSelector extends Composite {
                 if (monthList.isShowing()) {
                     monthList.hide();
                 } else {
-                    monthList.show();
+                    monthList.show(monthItem);
                 }
             }
         });
@@ -129,6 +142,7 @@ public class MonthSelector extends Composite {
         ListSelectionEvent.register(bus, new ListSelectionEvent.Handler<Integer>() {
             @Override
             public void onSelection(ListSelectionEvent<Integer> event) {
+                yearItem = event.getItem();
                 yearLabel.setText(event.getItem().getValue() + "");
                 yearsList.hide();
                 Date year = new Date(picker.currentDate.getTime());
@@ -137,7 +151,10 @@ public class MonthSelector extends Composite {
             }
         });
         for (int i = DateUtil.currentDate.getYear() - 90; i < DateUtil.currentDate.getYear() + 10; i++) {
-            yearsList.addItem((i + DateUtil.YEAR_OFFSET) + "", (i + DateUtil.YEAR_OFFSET));
+            DropDownList.Item item = yearsList.addItem((i + DateUtil.YEAR_OFFSET) + "", (i + DateUtil.YEAR_OFFSET));
+            if ((Integer)item.getValue() == DateUtil.currentDate.getYear() + DateUtil.YEAR_OFFSET) {
+                yearItem = item;
+            }
         }
 
         yearLabel.addClickHandler(new ClickHandler() {
@@ -148,7 +165,7 @@ public class MonthSelector extends Composite {
                 if (yearsList.isShowing()) {
                     yearsList.hide();
                 } else {
-                    yearsList.show();
+                    yearsList.show(yearItem);
                 }
             }
         });

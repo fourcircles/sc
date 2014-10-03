@@ -5,7 +5,6 @@ import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.TextArea;
-import kz.arta.synergy.components.client.util.WidthUtil;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ import java.util.List;
  */
 public class StretchyTextArea extends TextArea {
 
-    // What GWT calls "visible lines" is the value of the textarea's
+    // What GWT calls "visible lines" is the value of the text area's
     // row attribute. If row == 0, the browser renders 2 lines. Except
     // Firefox, which renders one more row than other browsers in all
     // cases: http://code.google.com/p/google-web-toolkit/issues/detail?id=3916
@@ -37,19 +36,9 @@ public class StretchyTextArea extends TextArea {
     private final double PX_PER_CHAR = 7.9;
 
     /**
-     * Ширина компонента
+     * События, на которые реагирует компонент для растягивания
      */
-    private int width = 200;
-
-    /**
-     * Высота компонента
-     */
-    private int height = 59;
-
-    /**
-     * События, на которые реагирует компонент для расстягивания
-     */
-    private static final int TEXTBOX_VALUECHANGE_EVENTS = Event.ONKEYUP | Event.ONCHANGE | Event.ONPASTE;
+    private static final int TEXT_BOX_VALUE_CHANGE_EVENTS = Event.ONKEYUP | Event.ONCHANGE | Event.ONPASTE;
 
     private int minVisibleLines;
     private int maxVisibleLines;
@@ -75,16 +64,17 @@ public class StretchyTextArea extends TextArea {
         this.maxVisibleLines = maxVisibleLines;
 
         getElement().getStyle().setProperty("direction", LocaleInfo.getCurrentLocale().isRTL() ? Direction.RTL.name() : Direction.LTR.name());
-        sinkEvents(TEXTBOX_VALUECHANGE_EVENTS);
+        sinkEvents(TEXT_BOX_VALUE_CHANGE_EVENTS);
     }
 
     private boolean changed = false;
+
     @Override
-    public void onBrowserEvent(Event evt){
+    public void onBrowserEvent(Event evt) {
         super.onBrowserEvent(evt);
-        if ((DOM.eventGetType(evt) & TEXTBOX_VALUECHANGE_EVENTS) != 0) {
+        if ((DOM.eventGetType(evt) & TEXT_BOX_VALUE_CHANGE_EVENTS) != 0) {
             getElement().getStyle().clearProperty("height");
-            if (isStretchingEnabled()){
+            if (isStretchingEnabled()) {
                 maybeChangeVisibleLines(evt.getKeyCode());
                 if (getVisibleLines() > minVisibleLines) {
                     if (!changed) {
@@ -93,7 +83,7 @@ public class StretchyTextArea extends TextArea {
                     changed = true;
                 } else {
                     setWidth("100%");
-                    setHeight(height + "px");
+                    setHeight("100%");
                     changed = false;
                 }
             }
@@ -109,22 +99,22 @@ public class StretchyTextArea extends TextArea {
         super.setVisibleLines(lines);
     }
 
-    public void setMinVisibleLines(int min){
-        if(min < THRESHOLD){
+    public void setMinVisibleLines(int min) {
+        if (min < THRESHOLD) {
             min = THRESHOLD;
         }
-        if(min != minVisibleLines){
+        if (min != minVisibleLines) {
             minVisibleLines = min;
             setText(getText());
         }
     }
 
-    public void setMaxVisibleLines(int max){
+    public void setMaxVisibleLines(int max) {
         // a maxVisibleLines of THRESHOLD means 'no max'
-        if(max < THRESHOLD){
+        if (max < THRESHOLD) {
             max = THRESHOLD;
         }
-        if(max != maxVisibleLines){
+        if (max != maxVisibleLines) {
             maxVisibleLines = max;
             setText(getText());
         }
@@ -160,25 +150,24 @@ public class StretchyTextArea extends TextArea {
      * to be on the order of the number of chars entered/deleted per stroke: if the user types
      * normally, it will execute in roughly O(1) time. It is only when pasting/deleting large
      * amounts of text with one keystroke that it executes in O(n) time.
-     *
-     * <b>Important:</b> If the textarea's CSS <code>height</code> attribute is set this will
+     * <p/>
+     * <b>Important:</b> If the text area's CSS <code>height</code> attribute is set this will
      * not work.
      */
     private void maybeChangeVisibleLines(int keyCode) {
         int charSize = totalChars();
-        int lineLength = (int) (getOffsetWidth()/PX_PER_CHAR);
+        int lineLength = (int) (getOffsetWidth() / PX_PER_CHAR);
         int textLength = getText().length();
 
         if (textLength > charSize) {
-            if (lineArray.isEmpty()){
+            if (lineArray.isEmpty()) {
                 lineArray.add(new Line(true));
             }
-            for (int i=charSize; i<textLength; i++) {
-                char c = getText().charAt(i);
+            for (int i = charSize; i < textLength; i++) {
                 if (lineLength == getLastLine().inc() || (keyCode == KeyCodes.KEY_ENTER)) {
-                    if (canAddNewVisibleLine()){
+                    if (canAddNewVisibleLine()) {
                         lineArray.add(new Line(true));
-                        setVisibleLines(getVisibleLines()+1);
+                        setVisibleLines(getVisibleLines() + 1);
                     } else {
                         lineArray.add(new Line(false));
                     }
@@ -192,13 +181,13 @@ public class StretchyTextArea extends TextArea {
                 }
                 int count = getLastLine().getCount();
                 if (count >= diff) {
-                    getLastLine().setCount(count-diff);
+                    getLastLine().setCount(count - diff);
                     break;
                 } else {
                     if (getLastLine().isVisible()) {
-                        setVisibleLines(getVisibleLines()-1);
+                        setVisibleLines(getVisibleLines() - 1);
                     }
-                    lineArray.remove(lineArray.size()-1);
+                    lineArray.remove(lineArray.size() - 1);
                     diff -= count;
                 }
             }
@@ -206,19 +195,15 @@ public class StretchyTextArea extends TextArea {
     }
 
     private boolean canAddNewVisibleLine() {
-        if (lineArray.size() < minVisibleLines)
-            return false;
-        if (maxVisibleLines == THRESHOLD)
-            return true;
-        return lineArray.size() < maxVisibleLines;
+        return lineArray.size() >= minVisibleLines && (maxVisibleLines == THRESHOLD || lineArray.size() < maxVisibleLines);
     }
 
     private int totalChars() {
-        if (lineArray.isEmpty()){
+        if (lineArray.isEmpty()) {
             return 0;
         }
         int count = 0;
-        for (Line l : lineArray){
+        for (Line l : lineArray) {
             count += l.getCount();
         }
         return count;
@@ -228,7 +213,7 @@ public class StretchyTextArea extends TextArea {
         if (lineArray.isEmpty()) {
             return null;
         }
-        return lineArray.get(lineArray.size()-1);
+        return lineArray.get(lineArray.size() - 1);
     }
 
     /**
@@ -238,27 +223,30 @@ public class StretchyTextArea extends TextArea {
     private class Line {
         private int count = 0;
         private final boolean visible;
+
         public Line(boolean visible) {
             this.visible = visible;
         }
+
         public int inc() {
             return ++count;
         }
+
         public void setCount(int count) {
             this.count = count;
         }
-        public int getCount(){
+
+        public int getCount() {
             return count;
         }
+
         public boolean isVisible() {
             return visible;
         }
     }
 
     public void setPixelSize(int width, int height) {
-        this.width = width;
-        this.height = height;
-        super.setPixelSize(this.width, this.height);
+        super.setPixelSize(width, height);
     }
 
     public void setSize(String width, String height) {
@@ -270,7 +258,6 @@ public class StretchyTextArea extends TextArea {
     }
 
     public void setHeight(String height) {
-        this.height = WidthUtil.getPXValue(height);
         super.setHeight(height);
     }
 

@@ -103,6 +103,22 @@
 @def panelBG #f8f8f8;
 
 @def tableString2 #fbfbfb;
+/*Цвет фона — #555d6f
+
+Цвет бегунка в состоянии Active – #434958
+
+Цвет бегунка в состоянии Pressed – #2c313a
+
+Цвет стрелок — #2c313a
+
+Цвет кнопок скролл-бара в состоянии Active — #555d6f
+
+Цвет кнопок скролл-бара в состоянии Pressed — #434958
+
+Цвет области состыковки двух скролл-баров (квадрат размеров 17х17px) — #434958*/
+@def scrollDark #555d6f;
+@def scrollDarkBar #434958;
+@def scrollDarkBarPressed #2c313a;
 
 #titlePanel {
     line-height: 54px;
@@ -816,6 +832,10 @@
     background-color: buttonBG;
 }
 
+.vscroll.dark {
+    background-color: scrollDark;
+}
+
 .vscroll img {
     width: 17px;
     height: 18px;
@@ -830,8 +850,16 @@
     cursor: default;
 }
 
+.vscroll.dark .scrollbar {
+    background-color: scrollDarkBar;
+}
+
 .vscroll .scrollbar.pressed {
     background-color: buttonPressed;
+}
+
+.vscroll.dark .scrollbar.pressed {
+    background-color: scrollDarkBarPressed;
 }
 
 .hscroll {
@@ -839,6 +867,10 @@
     height: 17px;
     background-color: buttonBG;
     display: inline-block;
+}
+
+.hscroll.dark {
+    background-color: scrollDark;
 }
 
 .hscroll img {
@@ -855,9 +887,19 @@
     cursor: default;
 }
 
+.hscroll.dark .scrollbar {
+    background-color: scrollDarkBar;
+}
+
 .hscroll .scrollbar.pressed {
     background-color: buttonPressed;
 }
+
+.hscroll.dark .scrollbar.pressed {
+    background-color: scrollDarkBarPressed;
+}
+
+
 
 .groupButtonPanel {
     display: inline-block;
@@ -1039,6 +1081,12 @@ p {
     border-width: 1px;
     border-style: solid;
     text-align: center;
+    display: inline-block;
+}
+
+.datePicker.dark {
+    background-color: navigatorBG;
+    border-color: navigatorBG;
 }
 
 .datePickerCalendar {
@@ -1068,6 +1116,10 @@ p {
 
 .datePickerTop span {
     color: textColor2;
+}
+
+.datePickerTop.dark span {
+    color: buttonPressed;
 }
 
 .dayWeekPanel {
@@ -1127,6 +1179,18 @@ p {
     color: buttonPressed;
 }
 
+.month.dark {
+    color: border1;
+}
+
+.thisMonth.dark {
+    color: whiteBG;
+}
+
+.outMonth.dark {
+    color: textColor1;
+}
+
 .month.over,  .thisMonth.over, .outMonth.over{
     background-color: calendarOver;
 }
@@ -1135,11 +1199,19 @@ p {
     background-color: selectColor;
 }
 
+.month.pressed.dark,  .thisMonth.pressed.dark, .outMonth.pressed.dark {
+    background-color: declineButtonBG4;
+}
+
 .calendarPopup {
     padding: 0;
     border-width: 0;
     z-index: 10000;
     background-color: whiteBG;
+}
+
+.calendarPopup.dark {
+    background-color: navigatorBG;
 }
 
 .dateTimeInput {

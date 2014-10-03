@@ -136,4 +136,35 @@ public interface ImageResources extends ClientBundle {
     ImageResource negativeComment();
     @Source("images/comments/positive_comment.png")
     ImageResource positiveComment();
+
+    @Source("images/scroll/dark/scrollbar_dark_down.png")
+    ImageResource scrollBarDarkDown();
+
+    @Source("images/scroll/dark/scrollbar_dark_up.png")
+    ImageResource scrollBarDarkUp();
+
+    @Source("images/scroll/dark/scrollbar_dark_left.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource scrollBarDarkLeft();
+
+    @Source("images/scroll/dark/scrollbar_dark_right.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource scrollBarDarkRight();
+
+    @Source("images/scroll/dark/scrollbar_dark_down_pressed.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource scrollBarDarkDownPressed();
+
+    @Source("images/scroll/dark/scrollbar_dark_up_pressed.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource scrollBarDarkUpPressed();
+
+    @Source("images/scroll/dark/scrollbar_dark_left_pressed.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource scrollBarDarkLeftPressed();
+
+    @Source("images/scroll/dark/scrollbar_dark_right_pressed.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource scrollBarDarkRightPressed();
+
 }

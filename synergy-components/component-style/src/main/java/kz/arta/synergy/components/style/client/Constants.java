@@ -95,6 +95,8 @@ public class Constants {
     public static final int TASKBAR_ITEM_PADDING = 5;
     public static final int TASKBAR_IMAGE_MARGIN = 10;
 
+    public static final int LINE_HEIGHT = 19;
+
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
     }

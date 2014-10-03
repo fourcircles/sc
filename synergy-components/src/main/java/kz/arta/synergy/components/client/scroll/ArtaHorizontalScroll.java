@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Image;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
@@ -95,6 +96,8 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
      */
     private int freeTrackSpace;
 
+    private ColorType type = ColorType.WHITE;
+
     public ArtaHorizontalScroll(final ArtaScrollPanel scrollPanel) {
         images = ImageResources.IMPL;
         resources = SynergyComponents.resources;
@@ -105,9 +108,9 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
         this.scrollPanel = scrollPanel;
         right.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
         if (LocaleInfo.getCurrentLocale().isRTL()) {
-            right.getElement().getStyle().setLeft(1, Style.Unit.PX);
+            right.getElement().getStyle().setLeft(0, Style.Unit.PX);
         } else {
-            right.getElement().getStyle().setRight(1, Style.Unit.PX);
+            right.getElement().getStyle().setRight(0, Style.Unit.PX);
         }
     }
 
@@ -133,22 +136,38 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
 
     @UiHandler("left")
     void onPress(MouseDownEvent event) {
-        left.setResource(ImageResources.IMPL.scrollBarLeftPressed());
+        if (type == ColorType.BLACK) {
+            left.setResource(ImageResources.IMPL.scrollBarDarkLeftPressed());
+        } else {
+            left.setResource(ImageResources.IMPL.scrollBarLeftPressed());
+        }
     }
 
     @UiHandler("left")
     void onUp(MouseUpEvent event) {
-        left.setResource(ImageResources.IMPL.scrollBarLeft());
+        if (type == ColorType.BLACK) {
+            left.setResource(ImageResources.IMPL.scrollBarDarkLeft());
+        } else {
+            left.setResource(ImageResources.IMPL.scrollBarLeft());
+        }
     }
 
     @UiHandler("right")
     void onDownPress(MouseDownEvent event) {
-        right.setResource(ImageResources.IMPL.scrollBarRightPressed());
+        if (type == ColorType.BLACK) {
+            right.setResource(ImageResources.IMPL.scrollBarDarkRightPressed());
+        } else {
+            right.setResource(ImageResources.IMPL.scrollBarRightPressed());
+        }
     }
 
     @UiHandler("right")
     void onDownUp(MouseUpEvent event) {
-        right.setResource(ImageResources.IMPL.scrollBarRight());
+        if (type == ColorType.BLACK) {
+            right.setResource(ImageResources.IMPL.scrollBarDarkRight());
+        } else {
+            right.setResource(ImageResources.IMPL.scrollBarRight());
+        }
     }
 
 
@@ -276,13 +295,15 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
             scrollPanel.getWidget().getElement().getStyle().clearMarginLeft();
             scrollPanel.getWidget().getElement().getStyle().clearMarginRight();
         }
-        panel.setWidth(this.width + "px");
-        barWidth = (int) Math.ceil (((this.width) / (double) width) * (this.width - Constants.SCROLL_BAR_WIDTH * 2));
-        freeTrackSpace = this.width - barWidth - (Constants.SCROLL_BAR_WIDTH + 1) * 2;
-        bar.setWidth(barWidth + "px");
+        if (this.width > 0) {
+            panel.setWidth(this.width + "px");
+            barWidth = (int) Math.ceil(((this.width) / (double) width) * (this.width - Constants.SCROLL_BAR_WIDTH * 2));
+            freeTrackSpace = this.width - barWidth - (Constants.SCROLL_BAR_WIDTH + 1) * 2;
+            bar.setWidth(barWidth + "px");
 
-        if (getHorizontalScrollPosition() == 0) {
-            setHorizontalScrollPosition(0);
+            if (getHorizontalScrollPosition() == 0) {
+                setHorizontalScrollPosition(0);
+            }
         }
     }
 
@@ -328,5 +349,13 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
     public void onLoad() {
         super.onLoad();
         setHorizontalScrollPosition(0);
+    }
+
+    public void setType(ColorType type) {
+        this.type = type;
+        if (type == ColorType.BLACK) {
+            left.setResource(images.scrollBarDarkLeft());
+            right.setResource(images.scrollBarDarkRight());
+        }
     }
 }

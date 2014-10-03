@@ -203,4 +203,7 @@ public interface CssComponents extends CssResource {
     String item();
     String taskBar();
     String taskBarIndicator();
+
+
+    String dark();
 }

@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.stack.events.HasStackOpenHandlers;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
+import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
@@ -97,9 +98,9 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
     /**
      * @param type тип панели (белая или черная)
      */
-    public StackPanel(List<SingleStack> stacks, int offsetHeight, Type type) {
+    public StackPanel(List<SingleStack> stacks, int offsetHeight, ColorType type) {
         this(stacks, offsetHeight);
-        if (type == Type.WHITE) {
+        if (type == ColorType.WHITE) {
             root.addStyleName(SynergyComponents.resources.cssComponents().white());
         }
     }
@@ -205,10 +206,4 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
         return bus.addHandlerToSource(StackOpenEvent.getType(), this, handler);
     }
 
-    /**
-     * Тип панели. Черная или белая.
-     */
-    public static enum Type {
-        WHITE, BLACK
-    }
 }

@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.VerticalScrollbar;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.style.client.Constants;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
 
@@ -88,6 +89,8 @@ public class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
      */
     private int freeTrackSpace;
 
+    private ColorType type = ColorType.WHITE;
+
     public ArtaVerticalScroll(final ArtaScrollPanel scrollPanel) {
         images = ImageResources.IMPL;
         resources = SynergyComponents.resources;
@@ -97,7 +100,7 @@ public class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
 
         this.scrollPanel = scrollPanel;
         down.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
-        down.getElement().getStyle().setBottom(1, Style.Unit.PX);
+        down.getElement().getStyle().setBottom(0, Style.Unit.PX);
     }
 
     @UiHandler("up")
@@ -148,22 +151,38 @@ public class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
 
     @UiHandler("up")
     void onPress(MouseDownEvent event) {
-        up.setResource(ImageResources.IMPL.scrollBarUpPressed());
+        if (type == ColorType.BLACK) {
+            up.setResource(ImageResources.IMPL.scrollBarDarkUpPressed());
+        } else {
+            up.setResource(ImageResources.IMPL.scrollBarUpPressed());
+        }
     }
 
     @UiHandler("up")
     void onUp(MouseUpEvent event) {
-        up.setResource(ImageResources.IMPL.scrollBarUp());
+        if (type == ColorType.BLACK) {
+            up.setResource(ImageResources.IMPL.scrollBarDarkUp());
+        } else {
+            up.setResource(ImageResources.IMPL.scrollBarUp());
+        }
     }
 
     @UiHandler("down")
     void onDownPress(MouseDownEvent event) {
-        down.setResource(ImageResources.IMPL.scrollBarDownPressed());
+        if (type == ColorType.BLACK) {
+            down.setResource(ImageResources.IMPL.scrollBarDarkDownPressed());
+        } else {
+            down.setResource(ImageResources.IMPL.scrollBarDownPressed());
+        }
     }
 
     @UiHandler("down")
     void onDownUp(MouseUpEvent event) {
-        down.setResource(ImageResources.IMPL.scrollBarDown());
+        if (type == ColorType.BLACK) {
+            down.setResource(ImageResources.IMPL.scrollBarDarkDown());
+        } else {
+            down.setResource(ImageResources.IMPL.scrollBarDown());
+        }
     }
 
     /**
@@ -312,5 +331,13 @@ public class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
     public void onLoad() {
         super.onLoad();
         setVerticalScrollPosition(0);
+    }
+
+    public void setType(ColorType type) {
+        this.type = type;
+        if (type == ColorType.BLACK) {
+            up.setResource(images.scrollBarDarkUp());
+            down.setResource(images.scrollBarDarkDown());
+        }
     }
 }

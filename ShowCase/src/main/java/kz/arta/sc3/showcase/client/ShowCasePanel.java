@@ -56,6 +56,7 @@ import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.stack.SingleStack;
 import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
@@ -981,16 +982,25 @@ public class ShowCasePanel extends FlowPanel {
 
         FlowPanel datePickerPanel = new FlowPanel();
         datePickerPanel.add(new ArtaDatePicker());
+        datePickerPanel.add(new ArtaDatePicker(ColorType.BLACK));
+        datePickerPanel.getWidget(0).getElement().getStyle().setMargin(5, Style.Unit.PX);
+        datePickerPanel.getWidget(1).getElement().getStyle().setMargin(5, Style.Unit.PX);
         panel.add(datePickerPanel);
         datePickerPanel.getElement().getStyle().setPadding(5, Style.Unit.PX);
 
         FlowPanel datePickerPanel1 = new FlowPanel();
         datePickerPanel1.add(new ArtaDatePicker(ArtaDatePicker.CalendarMode.WEEK));
+        datePickerPanel1.add(new ArtaDatePicker(ArtaDatePicker.CalendarMode.WEEK, ColorType.BLACK));
+        datePickerPanel1.getWidget(0).getElement().getStyle().setMargin(5, Style.Unit.PX);
+        datePickerPanel1.getWidget(1).getElement().getStyle().setMargin(5, Style.Unit.PX);
         panel.add(datePickerPanel1);
         datePickerPanel1.getElement().getStyle().setPadding(5, Style.Unit.PX);
 
         FlowPanel datePickerPanel2 = new FlowPanel();
         datePickerPanel2.add(new ArtaDatePicker(ArtaDatePicker.CalendarMode.MONTH));
+        datePickerPanel2.add(new ArtaDatePicker(ArtaDatePicker.CalendarMode.MONTH, ColorType.BLACK));
+        datePickerPanel2.getWidget(0).getElement().getStyle().setMargin(5, Style.Unit.PX);
+        datePickerPanel2.getWidget(1).getElement().getStyle().setMargin(5, Style.Unit.PX);
         panel.add(datePickerPanel2);
         datePickerPanel2.getElement().getStyle().setPadding(5, Style.Unit.PX);
 
@@ -1064,7 +1074,15 @@ public class ShowCasePanel extends FlowPanel {
         collapsingPanels.add(classifier);
         root.add(collapsingPanels);
 
-        final StackPanel stacks = new StackPanel(Arrays.asList(new SingleStack(SCMessages.i18n.tr("Первая")),
+        SingleStack stack = new SingleStack(SCMessages.i18n.tr("Первая"));
+        ArtaScrollPanel scroll1 = new ArtaScrollPanel(ColorType.BLACK);
+        FlowPanel colorButtonPanel = new FlowPanel();
+        colorButtonPanel.setPixelSize(500, 1000);
+        scroll1.setWidget(colorButtonPanel);
+        scroll1.setHeight("100%");
+        stack.getPanel().add(scroll1);
+
+        final StackPanel stacks = new StackPanel(Arrays.asList(stack,
                 new SingleStack(SCMessages.i18n.tr("Вторая")),
                 new SingleStack(SCMessages.i18n.tr("Третья")),
                 new SingleStack(SCMessages.i18n.tr("Четвертая"))), 500);
@@ -1077,10 +1095,18 @@ public class ShowCasePanel extends FlowPanel {
         stacks.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         stacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
 
-        final StackPanel whiteStacks = new StackPanel(Arrays.asList(new SingleStack(SCMessages.i18n.tr("Первая")),
+
+        SingleStack stackWhite = new SingleStack(SCMessages.i18n.tr("Первая"));
+        ArtaScrollPanel scroll2 = new ArtaScrollPanel();
+        FlowPanel colorButtonPanel2 = new FlowPanel();
+        colorButtonPanel2.setPixelSize(500, 1000);
+        scroll2.setWidget(colorButtonPanel2);
+        scroll2.setHeight("100%");
+        stackWhite.getPanel().add(scroll2);
+        final StackPanel whiteStacks = new StackPanel(Arrays.asList(stackWhite,
                 new SingleStack(SCMessages.i18n.tr("Вторая")),
                 new SingleStack(SCMessages.i18n.tr("Третья")),
-                new SingleStack(SCMessages.i18n.tr("Четвертая"))), 500, StackPanel.Type.WHITE);
+                new SingleStack(SCMessages.i18n.tr("Четвертая"))), 500, ColorType.WHITE);
         whiteStacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         whiteStacks.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         whiteStacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);

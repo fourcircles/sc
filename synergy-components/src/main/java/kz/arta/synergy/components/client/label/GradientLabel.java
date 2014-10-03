@@ -45,16 +45,6 @@ public class GradientLabel extends Composite implements ArtaHasText {
      */
     private String textStyle;
 
-    /**
-     * Заданная ширина
-     */
-    private double width;
-
-    /**
-     * Задана ли ширина.
-     */
-    private boolean widthSet;
-
     public GradientLabel(String textStyle) {
         this();
         this.textStyle = textStyle;

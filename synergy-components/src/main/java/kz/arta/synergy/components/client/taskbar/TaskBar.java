@@ -1,22 +1,27 @@
 package kz.arta.synergy.components.client.taskbar;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.taskbar.events.TaskBarEvent;
+import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.client.taskbar.events.ModelChangeEvent;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: vsl
@@ -39,7 +44,7 @@ public class TaskBar extends Composite {
     /**
      * Добавленные элементы
      */
-    List<TaskBarItem> items;
+    List<TaskBarItem> items = new ArrayList<TaskBarItem>();
 
     /**
      * Ширина (без границ)
@@ -49,7 +54,11 @@ public class TaskBar extends Composite {
     /**
      * Индикатор скрытых элементов
      */
-    private TaskBarItem indicator;
+    private FlowPanel indicator;
+    /**
+     * Текст индикатора
+     */
+    private final Label indicatorLabel;
 
     private PopupPanel popup;
     /**
@@ -57,15 +66,18 @@ public class TaskBar extends Composite {
      */
     private FlowPanel indicatorRoot;
 
+    /**
+     * Соответствие между добавленными элементами и их видами
+     */
+    private Map<TaskBarItem, TaskBarItemUI> uiMap = new HashMap<TaskBarItem, TaskBarItemUI>();
+
     public TaskBar() {
         root = new FlowPanel();
         initWidget(root);
         root.setStyleName(SynergyComponents.resources.cssComponents().taskBar());
 
-        items = new ArrayList<TaskBarItem>();
-
-        indicator = new TaskBarItem();
-        indicator.addStyleName(SynergyComponents.resources.cssComponents().indicator());
+        indicatorLabel = new Label();
+        indicator = createIndicator(indicatorLabel);
 
         popup = new PopupPanel(true);
         popup.setStyleName(SynergyComponents.resources.cssComponents().taskBarIndicator());
@@ -74,29 +86,6 @@ public class TaskBar extends Composite {
         popup.setWidget(indicatorRoot);
         popup.addAutoHidePartner(indicator.getElement());
 
-        indicator.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                if (popup.isShowing()) {
-                    popup.hide();
-                } else {
-                    popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
-                        @Override
-                        public void setPosition(int offsetWidth, int offsetHeight) {
-                            int popupHeight = popup.getOffsetHeight();
-                            int left;
-                            if (LocaleInfo.getCurrentLocale().isRTL()) {
-                                left = indicator.getAbsoluteLeft();
-                            } else {
-                                left = indicator.getAbsoluteLeft() + indicator.getOffsetWidth() - popup.getOffsetWidth();
-                            }
-                            popup.setPopupPosition(left, indicator.getAbsoluteTop() - popupHeight - Constants.TASKBAR_IMAGE_MARGIN);
-                        }
-                    });
-                }
-            }
-        });
-
         Window.addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {
@@ -104,6 +93,52 @@ public class TaskBar extends Composite {
                 updateWidths();
             }
         });
+    }
+
+    /**
+     * Создает индикатор
+     */
+    private FlowPanel createIndicator(Label label) {
+        FlowPanel indicator = new FlowPanel();
+        indicator.sinkEvents(Event.ONCLICK);
+        indicator.setStyleName(SynergyComponents.resources.cssComponents().item());
+        indicator.addStyleName(SynergyComponents.resources.cssComponents().indicator());
+        Image indicatorImage = new Image(ImageResources.IMPL.calendarIcon());
+
+        indicator.add(indicatorImage);
+        indicator.add(label);
+
+        indicator.addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                indicatorClick();
+            }
+        }, ClickEvent.getType());
+
+        return indicator;
+    }
+
+    /**
+     * Клик по индикатору
+     */
+    private void indicatorClick() {
+        if (popup.isShowing()) {
+            popup.hide();
+        } else {
+            popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+                @Override
+                public void setPosition(int offsetWidth, int offsetHeight) {
+                    int popupHeight = popup.getOffsetHeight();
+                    int left;
+                    if (LocaleInfo.getCurrentLocale().isRTL()) {
+                        left = indicator.getAbsoluteLeft();
+                    } else {
+                        left = indicator.getAbsoluteLeft() + indicator.getOffsetWidth() - popup.getOffsetWidth();
+                    }
+                    popup.setPopupPosition(left, indicator.getAbsoluteTop() - popupHeight - Constants.TASKBAR_IMAGE_MARGIN);
+                }
+            });
+        }
     }
 
     @Override
@@ -119,19 +154,70 @@ public class TaskBar extends Composite {
     }
 
     /**
-     * Добавляет новый элемент с заданным текстом
-     * @param text текст для элемента
-     * @return новый элемент панели задач
+     * Создает новый вид для элемента панели задач
+     * @param item элемент панели задач
+     * @return его вид
      */
-    public TaskBarItem addItem(String text) {
-        TaskBarItem item = new TaskBarItem();
-        item.setText(text);
+    private TaskBarItemUI createItemUI(final TaskBarItem item) {
+        final TaskBarItemUI itemUI = new TaskBarItemUI(item);
+        itemUI.addModelChangeHandler(new ModelChangeEvent.Handler() {
+            @Override
+            public void onModelChange(ModelChangeEvent event) {
+                updateWidths();
+            }
+        });
+        itemUI.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                item.open();
+            }
+        });
+        return itemUI;
+    }
 
-        items.add(item);
-        root.add(item);
+    /**
+     * Добавляет элемент
+     */
+    public void addItem(final TaskBarItem item) {
+        item.addTaskBarHandler(new TaskBarEvent.AbstractHandler() {
+            @Override
+            public void onClose(TaskBarEvent event) {
+                removeItem(item);
+            }
 
-        updateWidths();
-        return item;
+            @Override
+            public void onCollapse(TaskBarEvent event) {
+                uiMap.get(item).removeStyleName(SynergyComponents.resources.cssComponents().open());
+            }
+
+            @Override
+            public void onShow(TaskBarEvent event) {
+                TaskBarItemUI ui;
+                if (!items.contains(item)) {
+                    ui = createItemUI(item);
+                    items.add(item);
+                    uiMap.put(item, ui);
+                    root.add(ui);
+                    updateWidths();
+                } else {
+                    ui = uiMap.get(item);
+                }
+                ui.addStyleName(SynergyComponents.resources.cssComponents().open());
+            }
+        });
+    }
+
+    /**
+     * Удаляет элемент
+     */
+    public void removeItem(TaskBarItem item) {
+        if (items.contains(item)) {
+            items.remove(item);
+            root.remove(uiMap.get(item));
+            uiMap.remove(item);
+
+            updateWidths();
+        }
     }
 
     /**
@@ -142,19 +228,7 @@ public class TaskBar extends Composite {
         if (index < 0 && index >= items.size()) {
             return;
         }
-        TaskBarItem item = items.get(index);
-        items.remove(index);
-        root.remove(item);
-        updateWidths();
-    }
-
-    /**
-     * {@link #removeItem(int)}
-     */
-    public void removeItem(TaskBarItem item) {
-        if (items.contains(item)) {
-            removeItem(items.indexOf(item));
-        }
+        removeItem(items.get(index));
     }
 
     public int size() {
@@ -168,11 +242,12 @@ public class TaskBar extends Composite {
     private boolean fitNormally() {
         double totalWidth = 0;
         for (TaskBarItem item : items) {
-            totalWidth += item.getNormalWidth() + Constants.BORDER_WIDTH * 2;
+            totalWidth += uiMap.get(item).getNormalWidth() + Constants.BORDER_WIDTH * 2;
         }
         if (width - (items.size() - 1) * Constants.TASKBAR_ITEM_PADDING >= totalWidth) {
             for (TaskBarItem item : items) {
-                item.setWidth(item.getNormalWidth());
+                TaskBarItemUI ui = uiMap.get(item);
+                ui.setWidth(ui.getNormalWidth());
             }
             return true;
         } else {
@@ -186,8 +261,9 @@ public class TaskBar extends Composite {
      * @return ширина индикатора
      */
     private double getIndicatorWidth(int num) {
-        indicator.setText("+" + num);
-        return indicator.getNormalWidth() + Constants.BORDER_WIDTH * 2 - Constants.TASKBAR_ITEM_PADDING;
+        double textWidth = Utils.getPreciseTextWidth("+" + num, SynergyComponents.resources.cssComponents().mainText());
+        return textWidth + Constants.STD_ICON_WIDTH + Constants.TASKBAR_IMAGE_MARGIN
+                + Constants.TASKBAR_ITEM_PADDING * 2 + Constants.BORDER_WIDTH * 2;
     }
 
     private boolean fitReduced() {
@@ -221,28 +297,30 @@ public class TaskBar extends Composite {
 
         double reduce = (totalItemWidth - widthNoMargins) / delta;
         for (int i = 0; i < visibleItems; i++) {
-            TaskBarItem item = items.get(i);
+            TaskBarItemUI item = uiMap.get(items.get(i));
             double itemWidth = item.getNormalWidth() + Constants.BORDER_WIDTH * 2;
             item.setWidth(itemWidth - (itemWidth - MIN_ITEM_WIDTH) * reduce - Constants.BORDER_WIDTH * 2);
         }
 
         if (hasIndicator) {
-            for (int i = visibleItems; i < items.size(); i++) {
-                root.remove(items.get(i));
+            for (int i = 0; i < visibleItems; i++) {
+                root.add(uiMap.get(items.get(i)));
             }
-            if (!indicator.isAttached()) {
-                root.add(indicator);
-            }
-            int hidden = items.size() - visibleItems;
-            indicator.setText(hidden + "+");
-            indicator.setWidth(getIndicatorWidth(hidden));
-
             for (int i = visibleItems; i < items.size(); i++) {
-                TaskBarItem item = items.get(i);
+                TaskBarItemUI item = uiMap.get(items.get(i));
                 item.setWidth(item.getNormalWidth() + Constants.BORDER_WIDTH * 2);
 
                 indicatorRoot.add(item);
             }
+
+            if (!indicator.isAttached()) {
+                root.add(indicator);
+            }
+            int hidden = items.size() - visibleItems;
+
+            indicatorLabel.setText(hidden + "+");
+            indicator.getElement().getStyle().setWidth(getIndicatorWidth(hidden) - Constants.BORDER_WIDTH * 2, Style.Unit.PX);
+
         } else {
             root.remove(indicator);
         }
@@ -254,7 +332,7 @@ public class TaskBar extends Composite {
     private double getItemsWidth(int visibleItems) {
         double totalItemWidth = 0;
         for (int i = 0; i < visibleItems; i++) {
-            double itemWidth = items.get(i).getNormalWidth() + Constants.BORDER_WIDTH * 2;
+            double itemWidth = uiMap.get(items.get(i)).getNormalWidth() + Constants.BORDER_WIDTH * 2;
             totalItemWidth += itemWidth;
         }
         return totalItemWidth;

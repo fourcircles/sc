@@ -312,10 +312,8 @@ public class TaskBar extends Composite {
 
                 indicatorRoot.add(item);
             }
+            root.add(indicator);
 
-            if (!indicator.isAttached()) {
-                root.add(indicator);
-            }
             int hidden = items.size() - visibleItems;
 
             indicatorLabel.setText(hidden + "+");

@@ -14,8 +14,10 @@ import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.*;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Random;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import com.google.gwt.view.client.ListDataProvider;
@@ -28,14 +30,21 @@ import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.checkbox.ArtaCheckBox;
 import kz.arta.synergy.components.client.checkbox.ArtaRadioButton;
 import kz.arta.synergy.components.client.collapsing.CollapsingPanel;
-import kz.arta.synergy.components.client.comments.*;
+import kz.arta.synergy.components.client.comments.Comment;
+import kz.arta.synergy.components.client.comments.CommentType;
+import kz.arta.synergy.components.client.comments.CommentsPanel;
+import kz.arta.synergy.components.client.comments.SimpleComment;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
+import kz.arta.synergy.components.client.dialog.SimpleDialogsManager;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
 import kz.arta.synergy.components.client.input.NumberInput;
 import kz.arta.synergy.components.client.input.SearchResultInput;
 import kz.arta.synergy.components.client.input.TextInput;
-import kz.arta.synergy.components.client.input.date.*;
+import kz.arta.synergy.components.client.input.date.ArtaDatePicker;
+import kz.arta.synergy.components.client.input.date.DateInput;
+import kz.arta.synergy.components.client.input.date.DateTimeInput;
+import kz.arta.synergy.components.client.input.date.TimeInput;
 import kz.arta.synergy.components.client.input.date.repeat.FullRepeatChooser;
 import kz.arta.synergy.components.client.input.date.repeat.RepeatChooser;
 import kz.arta.synergy.components.client.input.date.repeat.RepeatDate;
@@ -63,6 +72,7 @@ import kz.arta.synergy.components.client.table.events.TableRowMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.client.tabs.TabPanel;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
+import kz.arta.synergy.components.client.taskbar.TaskBar;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.client.tree.Tree;
 import kz.arta.synergy.components.client.tree.TreeItem;
@@ -92,6 +102,10 @@ public class ShowCasePanel extends FlowPanel {
     @UiField InlineLabel showCaseLabel;
 
     private Set<Widget> openTabs;
+
+    @UiField TaskBar taskBar;
+
+    private SimpleDialogsManager dialogsManager;
 
     interface ShowCasePanelUiBinder extends UiBinder<FlowPanel, ShowCasePanel> {
     }
@@ -218,9 +232,15 @@ public class ShowCasePanel extends FlowPanel {
             about.getElement().getStyle().setFloat(Style.Float.RIGHT);
         }
 
+        Style tabsContentStyle = tabPanel.getContentPanel().getElement().getStyle();
+        tabsContentStyle.setProperty("borderBottomStyle", "none");
+        tabsContentStyle.setProperty("borderBottomLeftRadius", "0px");
+        tabsContentStyle.setProperty("borderBottomRightRadius", "0px");
+
         add(titlePanel);
         add(tree);
         add(tabPanel);
+        add(taskBar);
 
         openTabs = new HashSet<Widget>();
 
@@ -240,6 +260,8 @@ public class ShowCasePanel extends FlowPanel {
                 openTabs.remove(event.getTab().getContent().asWidget());
             }
         });
+
+        dialogsManager = new SimpleDialogsManager(taskBar);
     }
 
 //    @Override
@@ -252,7 +274,7 @@ public class ShowCasePanel extends FlowPanel {
 //        }
 //        item.setSelected(true, true);
 //    }
-
+//
     private void setTreeIcons(TreeItem item, ImageResource icon) {
         item.setIcon(icon);
 
@@ -269,12 +291,18 @@ public class ShowCasePanel extends FlowPanel {
         }
     }
 
-    private SimpleButton setUpDialog(String title, final DialogSimple dialog) {
-        dialog.setText(title);
+    private SimpleButton setUpDialog(final int width,
+                                     final int height,
+                                     final boolean buttons,
+                                     final boolean backButton,
+                                     final boolean moreButton) {
+        final String title = SCMessages.i18n.tr("Размер") + ": " + width + "x" + height;
+
         SimpleButton button = new SimpleButton(title);
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                DialogSimple dialog = createDialog(width, height, buttons, backButton, moreButton, title);
                 dialog.center();
                 dialog.show();
             }
@@ -282,64 +310,67 @@ public class ShowCasePanel extends FlowPanel {
         return button;
     }
 
-    private SimpleButton setUpDialog(int width, int height, boolean buttons, boolean backButton, boolean moreButton) {
-        String title = SCMessages.i18n.tr("Размер") + ": " + width + "x" + height;
-        SimpleButton button = new SimpleButton(title);
-
-        Label contentLabel = new Label(SCMessages.i18n.tr("Содержимое"));
-        contentLabel.setSize("100%", "100%");
-        SimplePanel sPanel = new SimplePanel(contentLabel);
-        sPanel.setSize(width + "px", height + "px");
-        sPanel.getElement().getStyle().setBackgroundColor("pink");
-
+    private DialogSimple createDialog(int width, int height, boolean buttons, boolean backButton, boolean moreButton, String title) {
         final DialogSimple dialog;
         if (buttons) {
-            Dialog withButtons = new Dialog(title, sPanel);
+            Dialog withButtons = new Dialog();
             withButtons.setLeftButtonVisible(backButton);
             withButtons.setRightButtonVisible(moreButton);
 
             dialog = withButtons;
         } else {
             dialog = new DialogSimple();
-            dialog.setText(title);
-            dialog.setContent(sPanel);
         }
-        button.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                dialog.center();
-                dialog.show();
-            }
-        });
-        return button;
+        dialogsManager.initDialog(dialog);
+        dialog.setText(title);
+
+        FlowPanel content = new FlowPanel();
+        content.getElement().getStyle().setWidth(width, Style.Unit.PX);
+        content.getElement().getStyle().setHeight(height, Style.Unit.PX);
+        dialog.setContent(content);
+
+        return dialog;
     }
 
-    private Panel setUpDialogs(boolean buttons) {
+    private Panel createDialogsPanel(boolean hasButtons) {
         FlowPanel panel = new FlowPanel();
         panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
-        if (!buttons) {
-            SimpleButton empty = setUpDialog(SCMessages.i18n.tr("Пустой"), new DialogSimple());
-            panel.add(empty);
-        }
+        SimpleButton tiny = setUpDialog(116, 84, hasButtons, true, true);
+        tiny.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
-        SimpleButton tiny = setUpDialog(116, 84, buttons, true, true);
-        if (panel.getWidgetCount() > 0) {
-            tiny.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        }
-
-        SimpleButton small = setUpDialog(300, 300, buttons, true, true);
+        SimpleButton small = setUpDialog(300, 300, hasButtons, true, true);
         small.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        SimpleButton middle = setUpDialog(400, 400, buttons, true, true);
+
+        SimpleButton middle = setUpDialog(400, 400, hasButtons, true, true);
         middle.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        SimpleButton big = setUpDialog(800, 500, buttons, true, true);
+
+        SimpleButton big = setUpDialog(800, 500, hasButtons, true, true);
         big.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         panel.add(tiny);
         panel.add(small);
         panel.add(middle);
         panel.add(big);
+
+        if (!hasButtons) {
+            SimpleButton createButton = new SimpleButton(SCMessages.i18n.tr("Создать новый диалог"));
+            createButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+            createButton.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    DialogSimple dialog = createDialog(400, 400, false, false, false, SCMessages.i18n.tr("Диалог"));
+                    dialogsManager.initDialog(dialog);
+                }
+            });
+
+            panel.add(createButton);
+        }
+
+
         panel.add(new HTML("<p/>"));
-        if (buttons) {
+
+        if (hasButtons) {
             SimpleButton noLeft = setUpDialog(400, 400, true, false, true);
             noLeft.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
             SimpleButton noRight = setUpDialog(400, 400, true, true, false);
@@ -367,6 +398,7 @@ public class ShowCasePanel extends FlowPanel {
             combobox.addItem(SCMessages.i18n.tr("Пункт меню ") + i, SCMessages.i18n.tr("Пункт меню ") + i);
         }
     }
+
     public Widget getComboboxPanel() {
         FlowPanel comboBoxPanel = new FlowPanel();
         comboBoxPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
@@ -584,13 +616,13 @@ public class ShowCasePanel extends FlowPanel {
         addTreeItem(shell, new LoadPanel(SCMessages.i18n.tr("Диалог без кнопок")) {
             @Override
             public Widget getContentWidget() {
-                return setUpDialogs(false);
+                return createDialogsPanel(false);
             }
         });
         addTreeItem(shell, new LoadPanel(SCMessages.i18n.tr("Диалог с кнопками")) {
             @Override
             public Widget getContentWidget() {
-                return setUpDialogs(true);
+                return createDialogsPanel(true);
             }
         });
     }
@@ -1579,8 +1611,6 @@ public class ShowCasePanel extends FlowPanel {
 
         return scroll;
     }
-
-
 
     /**
      * Простые кнопки

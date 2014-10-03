@@ -189,15 +189,15 @@
 
 @eval gradientTopMargin kz.arta.synergy.components.style.client.Constants.gradientTopMargin();
 .gradient {
-    max-width: 20px;
-    width: 20%;
-    height: buttonHeight;
-    float: right;
-    bottom: buttonHeight;
-    position: relative;
+    position: absolute;
+    width:20%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    min-width: 10px;
 }
 
-.buttonSimple .gradient {
+.buttonSimple .gradient, .taskBar .gradient {
     background: -moz-linear-gradient(left, whiteBG_0 0%, whiteBG 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,whiteBG_0), color-stop(100%,whiteBG));
     background: -webkit-linear-gradient(left, whiteBG_0 0%,whiteBG 100%);
@@ -208,7 +208,7 @@
     filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")whiteBG_0_ie literal("endColorstr=")whiteBG literal(",GradientType=1 )");
 }
 
-*[dir="rtl"] .buttonSimple .gradient {
+*[dir="rtl"] .buttonSimple .gradient, *[dir="rtl"] .taskBar .gradient{
     background: -moz-linear-gradient(left, whiteBG 0%, whiteBG_0 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,whiteBG), color-stop(100%,whiteBG_0));
     background: -webkit-linear-gradient(left, whiteBG 0%,whiteBG_0 100%);
@@ -513,6 +513,7 @@
 @eval dialogMinWidth kz.arta.synergy.components.style.client.Constants.dialogMinWidth();
 
 .dialog {
+    position: relative;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
 
@@ -538,7 +539,6 @@
 
 @eval dialogContentPadding kz.arta.synergy.components.style.client.Constants.dialogContentPadding();
 .dialogContent {
-    padding: dialogContentPadding;
 }
 
 .dialogWithButtons .dialogContent {
@@ -1379,7 +1379,7 @@ p {
     top: tabHeight;
     /*эти два пикселя для того, чтобы было видно границы*/
     bottom: 0px;
-    right: 2px;
+    right: 0px;
     left: 0px;
 }
 
@@ -1817,7 +1817,7 @@ p {
 .treeItem {
     cursor: default;
     color: textColor1;
-    line-height: 19px;
+    line-height: 20px;
     white-space: nowrap;
     margin-left: 24px;
 }
@@ -1828,6 +1828,10 @@ p {
 .treeItem img {
     cursor: pointer;
     margin-right: 10px;
+}
+.treeItem img:first-child {
+    position: relative;
+    top: -1px;
 }
 /*иконка*/
 .treeItem img + img {
@@ -2021,4 +2025,105 @@ p {
 }
 .commentsPanel > div:last-child {
     bottom: 0;
+}
+
+@eval taskbarItemPadding kz.arta.synergy.components.style.client.Constants.taskbarItemPadding();
+@eval taskbarImageMargin kz.arta.synergy.components.style.client.Constants.taskbarImageMargin();
+
+.taskBar {
+    position:relative;
+    padding: 5px;
+    border: 1px solid buttonPressed;
+    height: 28px;
+    white-space: nowrap;
+}
+
+.taskBar > .item, .taskBarIndicator .content > .item {
+    display: inline-block;
+    border: 1px solid buttonPressed;
+    position: relative;
+    height: 26px;
+    color: stackPanelText2;
+    cursor: pointer;
+}
+.taskBar > .item + .item {
+    margin-left: taskbarItemPadding;
+}
+.taskBar > .item > div,
+.taskBarIndicator .content > .item > div {
+    display: inline;
+    overflow: hidden;
+    position: absolute;
+    left: 31px;
+    right: 10px;
+    top: 5px;
+}
+.taskBar > .item > img,
+.taskBarIndicator .content > .item > img {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+}
+
+.taskBar > .item.indicator {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    bottom: 5px;
+
+    border: 1px solid buttonPressed;
+}
+
+.taskBar > .item.indicator > div {
+    right: 5px;
+}
+
+.taskBarIndicator {
+    border: 1px solid buttonPressed;
+    background-color: #ffffff;
+}
+
+.taskBarIndicator .content {
+    padding: 5px;
+}
+.taskBarIndicator .content:after {
+    content: " ";
+    display: block;
+    height: 0;
+    clear: both;
+}
+
+.taskBarIndicator .content > .item {
+    float:left;
+    clear: left;
+}
+
+.taskBarIndicator .content > .item + .item {
+    margin-top: 5px;
+}
+.taskBarIndicator:after, .taskBarIndicator:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.taskBarIndicator:after {
+    border-color: rgba(255, 255, 255, 0);
+    border-top-color: #ffffff;
+    border-width: 10px;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    right: 11px;
+}
+.taskBarIndicator:before {
+    border-color: rgba(214, 214, 214, 0);
+    border-top-color: buttonPressed;
+    border-width: 11px;
+    border-left-width: 6px;
+    border-right-width: 6px;
+    right: 10px;
 }

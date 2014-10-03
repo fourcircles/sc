@@ -2,6 +2,7 @@
              xmlns:arta="urn:import:kz.arta.synergy.components.client"
              xmlns:artaTree="urn:import:kz.arta.synergy.components.client.tree"
              xmlns:artaTabs="urn:import:kz.arta.synergy.components.client.tabs"
+             xmlns:taskBar="urn:import:kz.arta.synergy.components.client.taskbar"
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <ui:with type="kz.arta.synergy.components.client.resources.ImageResources" field="images"/>
     <ui:style>
@@ -23,9 +24,18 @@
         .tabs {
             position: absolute;
             top: 59px;
-            bottom: 5px;
+            bottom: 45px;
             right: 5px;
             left: 290px;
+            border-bottom-style: none;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .taskbar {
+            position: absolute;
+            left: 290px;
+            right: 5px;
+            bottom: 5px;
         }
     </ui:style>
     <g:FlowPanel>
@@ -34,5 +44,6 @@
         </g:FlowPanel>
         <artaTree:Tree addStyleNames="{style.tree}" ui:field="tree"/>
         <artaTabs:TabPanel addStyleNames="{style.tabs}" ui:field="tabPanel"/>
+        <taskBar:TaskBar addStyleNames="{style.taskbar}" ui:field="taskBar"/>
     </g:FlowPanel>
 </ui:UiBinder>

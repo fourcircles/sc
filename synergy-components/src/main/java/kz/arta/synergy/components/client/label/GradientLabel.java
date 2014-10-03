@@ -2,7 +2,6 @@ package kz.arta.synergy.components.client.label;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -49,7 +48,7 @@ public class GradientLabel extends Composite implements ArtaHasText {
     /**
      * Заданная ширина
      */
-    private int width;
+    private double width;
 
     /**
      * Задана ли ширина.
@@ -68,6 +67,7 @@ public class GradientLabel extends Composite implements ArtaHasText {
     protected GradientLabel() {
         panel = new FlowPanel();
         initWidget(panel);
+        panel.getElement().getStyle().setPosition(Style.Position.RELATIVE);
 
         getElement().getStyle().setProperty("boxSizing", "border-box");
 
@@ -87,9 +87,12 @@ public class GradientLabel extends Composite implements ArtaHasText {
      * Метод вызывается при изменении текста, стиля текста, ширины виджета и при присоединении к DOM.
      */
     public void adjustGradient() {
-        if (isAttached() && widthSet && Utils.getTextWidth(this) > width) {
-            if (Utils.getTextWidth(this) > width) {
+        getElement().getStyle().setPadding(0, Style.Unit.PX);
+        if (isAttached()) {
+            if (Utils.getPreciseWidth(getElement()) < Utils.getPreciseTextWidth(this)) {
                 panel.add(gradient);
+            } else {
+                panel.remove(gradient);
             }
         }
     }
@@ -97,9 +100,6 @@ public class GradientLabel extends Composite implements ArtaHasText {
     @Override
     public void onLoad() {
         super.onLoad();
-        if (widthSet) {
-            setWidth(width);
-        }
         adjustGradient();
     }
 
@@ -114,45 +114,6 @@ public class GradientLabel extends Composite implements ArtaHasText {
 
     public String getText() {
         return textLabel.getText();
-    }
-
-    /**
-     * Задает ширину включая все кроме margins.
-     * @param width ширина
-     */
-    public void setWidth(int width) {
-        widthSet = true;
-        this.width = width;
-        if (isAttached()) {
-            super.setWidth(width + "px");
-        }
-        adjustGradient();
-    }
-
-
-
-    /**
-     * Снимает заданную ширину, виджет растягивается на длину текста.
-     */
-    public void clearWidth() {
-        widthSet = false;
-        getElement().getStyle().clearWidth();
-        panel.remove(gradient);
-    }
-
-    /**
-     * Ширину задавать надо в пикселях
-     */
-    @Override
-    public void setWidth(String width) {
-        throw new UnsupportedOperationException("ширина текста с градиентом задается используя целое значение в пикселях");
-    }
-
-    @Override
-    public void setHeight(String height) {
-        textLabel.setHeight(height);
-        gradient.setHeight(height);
-        super.setHeight(height);
     }
 
     @Override
@@ -171,6 +132,16 @@ public class GradientLabel extends Composite implements ArtaHasText {
         }
         this.textStyle = textStyle;
         textLabel.addStyleName(textStyle);
+        adjustGradient();
+    }
+
+    public void setWidth(int width) {
+        getElement().getStyle().setWidth(width, Style.Unit.PX);
+        adjustGradient();
+    }
+
+    public void clearWidth() {
+        getElement().getStyle().clearWidth();
         adjustGradient();
     }
 }

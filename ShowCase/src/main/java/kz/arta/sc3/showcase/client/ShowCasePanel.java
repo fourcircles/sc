@@ -36,7 +36,6 @@ import kz.arta.synergy.components.client.comments.CommentsPanel;
 import kz.arta.synergy.components.client.comments.SimpleComment;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
-import kz.arta.synergy.components.client.dialog.SimpleDialogsManager;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
 import kz.arta.synergy.components.client.input.NumberInput;
 import kz.arta.synergy.components.client.input.SearchResultInput;
@@ -104,8 +103,6 @@ public class ShowCasePanel extends FlowPanel {
     private Set<Widget> openTabs;
 
     @UiField TaskBar taskBar;
-
-    private SimpleDialogsManager dialogsManager;
 
     interface ShowCasePanelUiBinder extends UiBinder<FlowPanel, ShowCasePanel> {
     }
@@ -260,8 +257,6 @@ public class ShowCasePanel extends FlowPanel {
                 openTabs.remove(event.getTab().getContent().asWidget());
             }
         });
-
-        dialogsManager = new SimpleDialogsManager(taskBar);
     }
 
 //    @Override
@@ -321,7 +316,8 @@ public class ShowCasePanel extends FlowPanel {
         } else {
             dialog = new DialogSimple();
         }
-        dialogsManager.initDialog(dialog);
+        taskBar.addItem(dialog);
+
         dialog.setText(title);
 
         FlowPanel content = new FlowPanel();
@@ -360,7 +356,9 @@ public class ShowCasePanel extends FlowPanel {
                 @Override
                 public void onClick(ClickEvent event) {
                     DialogSimple dialog = createDialog(400, 400, false, false, false, SCMessages.i18n.tr("Диалог"));
-                    dialogsManager.initDialog(dialog);
+                    dialog.open();
+                    dialog.collapse();
+//                    dialogsManager.initDialog(dialog);
                 }
             });
 

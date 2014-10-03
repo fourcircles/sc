@@ -1,8 +1,7 @@
-package kz.arta.synergy.components.client.dialog.events;
+package kz.arta.synergy.components.client.taskbar.events;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import kz.arta.synergy.components.client.dialog.DialogSimple;
 
 /**
  * User: vsl
@@ -11,26 +10,16 @@ import kz.arta.synergy.components.client.dialog.DialogSimple;
  *
  * Событие диалога
  */
-public class DialogEvent extends GwtEvent<DialogEvent.Handler> {
+public class TaskBarEvent extends GwtEvent<TaskBarEvent.Handler> {
     private static Type<Handler> TYPE;
-
-    /**
-     * Диалог события
-     */
-    private DialogSimple dialog;
 
     /**
      * Тип события
      */
     private EventType type;
 
-    public DialogEvent(DialogSimple dialog, EventType type) {
-        this.dialog = dialog;
+    public TaskBarEvent(EventType type) {
         this.type = type;
-    }
-
-    public DialogSimple getDialog() {
-        return dialog;
     }
 
     public static Type<Handler> getType() {
@@ -55,18 +44,14 @@ public class DialogEvent extends GwtEvent<DialogEvent.Handler> {
             case SHOW:
                 handler.onShow(this);
                 break;
-            case TEXT_CHANGE:
-                handler.onTextChange(this);
-                break;
             default:
         }
     }
 
     public static interface Handler extends EventHandler {
-        void onClose(DialogEvent event);
-        void onCollapse(DialogEvent event);
-        void onTextChange(DialogEvent event);
-        void onShow(DialogEvent event);
+        void onClose(TaskBarEvent event);
+        void onCollapse(TaskBarEvent event);
+        void onShow(TaskBarEvent event);
     }
 
     /**
@@ -74,22 +59,17 @@ public class DialogEvent extends GwtEvent<DialogEvent.Handler> {
      */
     public abstract static class AbstractHandler implements Handler {
         @Override
-        public void onClose(DialogEvent event) {
+        public void onClose(TaskBarEvent event) {
             //extend
         }
 
         @Override
-        public void onCollapse(DialogEvent event) {
+        public void onCollapse(TaskBarEvent event) {
             //extend
         }
 
         @Override
-        public void onTextChange(DialogEvent event) {
-            //extend
-        }
-
-        @Override
-        public void onShow(DialogEvent event) {
+        public void onShow(TaskBarEvent event) {
             //extend
         }
     }
@@ -106,10 +86,6 @@ public class DialogEvent extends GwtEvent<DialogEvent.Handler> {
          * Сворачивание
          */
         COLLAPSE,
-        /**
-         * Изменение текста заголовка
-         */
-        TEXT_CHANGE,
         /**
          * Появление диалога
          */

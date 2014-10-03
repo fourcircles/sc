@@ -2076,6 +2076,9 @@ p {
     color: stackPanelText2;
     cursor: pointer;
 }
+.taskBar > .item.open, .taskBarIndicator .content > .item.open {
+    border-color: border1;
+}
 .taskBar > .item + .item {
     margin-left: taskbarItemPadding;
 }

@@ -103,6 +103,22 @@
 @def panelBG #f8f8f8;
 
 @def tableString2 #fbfbfb;
+/*Цвет фона — #555d6f
+
+Цвет бегунка в состоянии Active – #434958
+
+Цвет бегунка в состоянии Pressed – #2c313a
+
+Цвет стрелок — #2c313a
+
+Цвет кнопок скролл-бара в состоянии Active — #555d6f
+
+Цвет кнопок скролл-бара в состоянии Pressed — #434958
+
+Цвет области состыковки двух скролл-баров (квадрат размеров 17х17px) — #434958*/
+@def scrollDark #555d6f;
+@def scrollDarkBar #434958;
+@def scrollDarkBarPressed #2c313a;
 
 #titlePanel {
     line-height: 54px;
@@ -816,6 +832,10 @@
     background-color: buttonBG;
 }
 
+.vscroll.dark {
+    background-color: scrollDark;
+}
+
 .vscroll img {
     width: 17px;
     height: 18px;
@@ -830,8 +850,16 @@
     cursor: default;
 }
 
+.vscroll.dark .scrollbar {
+    background-color: scrollDarkBar;
+}
+
 .vscroll .scrollbar.pressed {
     background-color: buttonPressed;
+}
+
+.vscroll.dark .scrollbar.pressed {
+    background-color: scrollDarkBarPressed;
 }
 
 .hscroll {
@@ -839,6 +867,10 @@
     height: 17px;
     background-color: buttonBG;
     display: inline-block;
+}
+
+.hscroll.dark {
+    background-color: scrollDark;
 }
 
 .hscroll img {
@@ -855,9 +887,19 @@
     cursor: default;
 }
 
+.hscroll.dark .scrollbar {
+    background-color: scrollDarkBar;
+}
+
 .hscroll .scrollbar.pressed {
     background-color: buttonPressed;
 }
+
+.hscroll.dark .scrollbar.pressed {
+    background-color: scrollDarkBarPressed;
+}
+
+
 
 .groupButtonPanel {
     display: inline-block;

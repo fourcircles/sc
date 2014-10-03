@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.style.client.resources;
 
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.user.client.ui.CustomScrollPanel;
 
 /**
  * User: user
@@ -199,4 +200,7 @@ public interface CssComponents extends CssResource {
     String date();
     String commentInput();
     String commentInputAccept();
+
+
+    String dark();
 }

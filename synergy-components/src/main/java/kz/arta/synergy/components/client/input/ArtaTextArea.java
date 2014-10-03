@@ -8,6 +8,8 @@ import com.google.gwt.user.client.ui.Composite;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.input.handlers.PlaceHolderFocusHandler;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+import kz.arta.synergy.components.client.util.WidthUtil;
+import kz.arta.synergy.components.style.client.Constants;
 
 /**
  * User: user
@@ -180,11 +182,12 @@ public class ArtaTextArea extends Composite {
 
     public void setPixelSize(int width, int height) {
         verticalScroll.setPixelSize(width, height);
+        textArea.setMinVisibleLines(height/ Constants.LINE_HEIGHT);
     }
 
     public void setSize(String width, String height) {
         verticalScroll.setSize(width, height);
-        textArea.setHeight(height);
+        textArea.setMinVisibleLines(WidthUtil.getPXValue(height)/ Constants.LINE_HEIGHT);
     }
 
     public void setWidth(String width) {

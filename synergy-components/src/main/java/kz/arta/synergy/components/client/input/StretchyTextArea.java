@@ -68,12 +68,13 @@ public class StretchyTextArea extends TextArea {
     }
 
     private boolean changed = false;
+
     @Override
-    public void onBrowserEvent(Event evt){
+    public void onBrowserEvent(Event evt) {
         super.onBrowserEvent(evt);
         if ((DOM.eventGetType(evt) & TEXT_BOX_VALUE_CHANGE_EVENTS) != 0) {
             getElement().getStyle().clearProperty("height");
-            if (isStretchingEnabled()){
+            if (isStretchingEnabled()) {
                 maybeChangeVisibleLines(evt.getKeyCode());
                 if (getVisibleLines() > minVisibleLines) {
                     if (!changed) {
@@ -98,22 +99,22 @@ public class StretchyTextArea extends TextArea {
         super.setVisibleLines(lines);
     }
 
-    public void setMinVisibleLines(int min){
-        if(min < THRESHOLD){
+    public void setMinVisibleLines(int min) {
+        if (min < THRESHOLD) {
             min = THRESHOLD;
         }
-        if(min != minVisibleLines){
+        if (min != minVisibleLines) {
             minVisibleLines = min;
             setText(getText());
         }
     }
 
-    public void setMaxVisibleLines(int max){
+    public void setMaxVisibleLines(int max) {
         // a maxVisibleLines of THRESHOLD means 'no max'
-        if(max < THRESHOLD){
+        if (max < THRESHOLD) {
             max = THRESHOLD;
         }
-        if(max != maxVisibleLines){
+        if (max != maxVisibleLines) {
             maxVisibleLines = max;
             setText(getText());
         }
@@ -149,25 +150,24 @@ public class StretchyTextArea extends TextArea {
      * to be on the order of the number of chars entered/deleted per stroke: if the user types
      * normally, it will execute in roughly O(1) time. It is only when pasting/deleting large
      * amounts of text with one keystroke that it executes in O(n) time.
-     *
+     * <p/>
      * <b>Important:</b> If the text area's CSS <code>height</code> attribute is set this will
      * not work.
      */
     private void maybeChangeVisibleLines(int keyCode) {
         int charSize = totalChars();
-        int lineLength = (int) (getOffsetWidth()/PX_PER_CHAR);
+        int lineLength = (int) (getOffsetWidth() / PX_PER_CHAR);
         int textLength = getText().length();
 
         if (textLength > charSize) {
-            if (lineArray.isEmpty()){
+            if (lineArray.isEmpty()) {
                 lineArray.add(new Line(true));
             }
-            for (int i=charSize; i<textLength; i++) {
-                char c = getText().charAt(i);
+            for (int i = charSize; i < textLength; i++) {
                 if (lineLength == getLastLine().inc() || (keyCode == KeyCodes.KEY_ENTER)) {
-                    if (canAddNewVisibleLine()){
+                    if (canAddNewVisibleLine()) {
                         lineArray.add(new Line(true));
-                        setVisibleLines(getVisibleLines()+1);
+                        setVisibleLines(getVisibleLines() + 1);
                     } else {
                         lineArray.add(new Line(false));
                     }
@@ -181,13 +181,13 @@ public class StretchyTextArea extends TextArea {
                 }
                 int count = getLastLine().getCount();
                 if (count >= diff) {
-                    getLastLine().setCount(count-diff);
+                    getLastLine().setCount(count - diff);
                     break;
                 } else {
                     if (getLastLine().isVisible()) {
-                        setVisibleLines(getVisibleLines()-1);
+                        setVisibleLines(getVisibleLines() - 1);
                     }
-                    lineArray.remove(lineArray.size()-1);
+                    lineArray.remove(lineArray.size() - 1);
                     diff -= count;
                 }
             }
@@ -199,11 +199,11 @@ public class StretchyTextArea extends TextArea {
     }
 
     private int totalChars() {
-        if (lineArray.isEmpty()){
+        if (lineArray.isEmpty()) {
             return 0;
         }
         int count = 0;
-        for (Line l : lineArray){
+        for (Line l : lineArray) {
             count += l.getCount();
         }
         return count;
@@ -213,7 +213,7 @@ public class StretchyTextArea extends TextArea {
         if (lineArray.isEmpty()) {
             return null;
         }
-        return lineArray.get(lineArray.size()-1);
+        return lineArray.get(lineArray.size() - 1);
     }
 
     /**
@@ -223,18 +223,23 @@ public class StretchyTextArea extends TextArea {
     private class Line {
         private int count = 0;
         private final boolean visible;
+
         public Line(boolean visible) {
             this.visible = visible;
         }
+
         public int inc() {
             return ++count;
         }
+
         public void setCount(int count) {
             this.count = count;
         }
-        public int getCount(){
+
+        public int getCount() {
             return count;
         }
+
         public boolean isVisible() {
             return visible;
         }

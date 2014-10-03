@@ -92,6 +92,8 @@ public class Constants {
 
     public static final int COMMENT_INPUT_LINE_HEIGHT = 16;
 
+    public static final int LINE_HEIGHT = 19;
+
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
     }

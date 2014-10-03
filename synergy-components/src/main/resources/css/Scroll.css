@@ -1,0 +1,13 @@
+@def scrollDarkBar #434958;
+
+.customScrollPanelCorner {
+    background-color: #e2e2e2;
+}
+
+.customScrollPanel{
+
+}
+
+.customScrollPanel.dark .customScrollPanelCorner {
+    background-color: #434958;
+}

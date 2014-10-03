@@ -133,6 +133,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
 
         content.setStyleName(SynergyComponents.resources.cssComponents().content());
         content.getElement().getStyle().setHeight(0, Style.Unit.PX);
+        content.getElement().getStyle().setDisplay(Style.Display.NONE);
 
         closeTimer = new Timer() {
             @Override
@@ -229,12 +230,12 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
      */
     public void setOpen(boolean isOpen, boolean fireEvents) {
         if (isOpen) {
-            indicator.setResource(ImageResources.IMPL.nodeOpen());
+            indicator.setResource(ImageResources.IMPL.nodeOpen16());
 
             content.getElement().getStyle().setDisplay(Style.Display.BLOCK);
             updateContentHeight(content.getElement().getScrollHeight());
         } else {
-            indicator.setResource(ImageResources.IMPL.nodeClosed());
+            indicator.setResource(ImageResources.IMPL.nodeClosed16());
             updateContentHeight(-getContentHeight());
             closeTimer.schedule(ANIMATION_DURATION);
         }

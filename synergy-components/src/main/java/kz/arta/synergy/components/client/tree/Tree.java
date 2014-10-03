@@ -1,11 +1,13 @@
 package kz.arta.synergy.components.client.tree;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.dom.client.HasContextMenuHandlers;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -40,9 +42,10 @@ public class Tree extends Composite implements HasContextMenuHandlers {
      * Внутренние пункты дерева
      */
     List<TreeItem> items;
+    private final ArtaScrollPanel scroll;
 
     public Tree() {
-        ArtaScrollPanel scroll = new ArtaScrollPanel();
+        scroll = new ArtaScrollPanel();
         initWidget(scroll);
         scroll.addStyleName(SynergyComponents.resources.cssComponents().tree());
 

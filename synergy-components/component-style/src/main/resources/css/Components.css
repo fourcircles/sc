@@ -1777,7 +1777,7 @@ p {
     color: textColor1;
     line-height: 20px;
     white-space: nowrap;
-    margin-left: 24px;
+    margin-left: 19px;
 }
 .treeItem.selected {
     color: textColor2;
@@ -1785,16 +1785,19 @@ p {
 /*индикатор*/
 .treeItem img {
     cursor: pointer;
-    margin-right: 10px;
+
+    position: relative;
 }
 .treeItem img:first-child {
     position: relative;
-    top: -1px;
+    margin-right: 6px;
+    top: 3px;
 }
 /*иконка*/
 .treeItem img + img {
     cursor: default;
-    margin-right: 8px;
+    margin-right: 5px;
+    top: 3px;
 }
 .treeItem span {
     white-space: nowrap;

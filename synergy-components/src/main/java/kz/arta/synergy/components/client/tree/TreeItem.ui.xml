@@ -3,7 +3,7 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <ui:with type="kz.arta.synergy.components.client.resources.ImageResources" field="images"/>
     <arta:ArtaFlowPanel>
-        <g:Image ui:field="indicator" resource="{images.nodeClosed}" />
+        <g:Image ui:field="indicator" resource="{images.nodeClosed16}" />
         <g:Image ui:field="icon"/>
         <g:InlineLabel ui:field="label" />
         <g:FlowPanel ui:field="content"/>

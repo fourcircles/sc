@@ -88,7 +88,8 @@ import java.util.*;
  */
 public class ShowCasePanel extends FlowPanel {
     private static final String THEME_COOKIE = "theme";
-    private static final int LOCAL_TREE_SIZE = 400;
+    private static final int LOCAL_TREE_HEIGHT = 400;
+    private static final int LOCAL_TREE_WIDTH = 300;
     public static final String DEFAULT_LOCALE = "default";
     public static final String DIRECTION_PROPERTY = "direction";
 
@@ -658,21 +659,36 @@ public class ShowCasePanel extends FlowPanel {
         return newTree;
     }
 
+    private TreeItem getFirstDeepest(Tree tree) {
+        TreeItem item = tree.getItems().get(0);
+        while (item.hasItems()) {
+            item = item.getItems().get(0);
+        }
+        return item;
+    }
+
     private Widget getTreePanel() {
         FlowPanel root = new FlowPanel();
 
         kz.arta.synergy.components.client.tree.Tree localTree = copyTree(tree);
 
-        localTree.getElement().getStyle().setHeight(LOCAL_TREE_SIZE, Style.Unit.PX);
-        localTree.getElement().getStyle().setWidth(LOCAL_TREE_SIZE, Style.Unit.PX);
+        localTree.getElement().getStyle().setHeight(LOCAL_TREE_HEIGHT, Style.Unit.PX);
+        localTree.getElement().getStyle().setWidth(LOCAL_TREE_HEIGHT, Style.Unit.PX);
 
         localTree.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
         localTree.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
 
-        setTreeIcons(localTree.getItems().get(0).getItems().get(0), ImageResources.IMPL.folder());
-        setTreeIcons(localTree.getItems().get(0).getItems().get(1), ImageResources.IMPL.calendarIcon());
-        setTreeIcons(localTree.getItems().get(1), ImageResources.IMPL.zoom());
-        setTreeIcons(localTree.getItems().get(2), ImageResources.IMPL.zoom());
+        setTreeIcons(localTree.getItems().get(0).getItems().get(0), ImageResources.IMPL.favourite());
+        setTreeIcons(localTree.getItems().get(0).getItems().get(1), ImageResources.IMPL.project());
+        setTreeIcons(localTree.getItems().get(1), ImageResources.IMPL.portfolio());
+        setTreeIcons(localTree.getItems().get(2), ImageResources.IMPL.portfolio());
+
+        TreeItem deepestItem = getFirstDeepest(localTree);
+        localTree.addItem(getFirstDeepest(localTree), deepestItem.getText() + " " + deepestItem.getText()).setIcon(ImageResources.IMPL.favourite());
+        deepestItem = getFirstDeepest(localTree);
+        localTree.addItem(getFirstDeepest(localTree), deepestItem.getText() + " " + deepestItem.getText()).setIcon(ImageResources.IMPL.favourite());
+        deepestItem = getFirstDeepest(localTree);
+        localTree.addItem(getFirstDeepest(localTree), deepestItem.getText() + " " + deepestItem.getText()).setIcon(ImageResources.IMPL.favourite());
 
         root.add(localTree);
 

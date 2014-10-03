@@ -1081,6 +1081,12 @@ p {
     border-width: 1px;
     border-style: solid;
     text-align: center;
+    display: inline-block;
+}
+
+.datePicker.dark {
+    background-color: navigatorBG;
+    border-color: navigatorBG;
 }
 
 .datePickerCalendar {
@@ -1110,6 +1116,10 @@ p {
 
 .datePickerTop span {
     color: textColor2;
+}
+
+.datePickerTop.dark span {
+    color: buttonPressed;
 }
 
 .dayWeekPanel {
@@ -1169,6 +1179,18 @@ p {
     color: buttonPressed;
 }
 
+.month.dark {
+    color: border1;
+}
+
+.thisMonth.dark {
+    color: whiteBG;
+}
+
+.outMonth.dark {
+    color: textColor1;
+}
+
 .month.over,  .thisMonth.over, .outMonth.over{
     background-color: calendarOver;
 }
@@ -1177,11 +1199,19 @@ p {
     background-color: selectColor;
 }
 
+.month.pressed.dark,  .thisMonth.pressed.dark, .outMonth.pressed.dark {
+    background-color: declineButtonBG4;
+}
+
 .calendarPopup {
     padding: 0;
     border-width: 0;
     z-index: 10000;
     background-color: whiteBG;
+}
+
+.calendarPopup.dark {
+    background-color: navigatorBG;
 }
 
 .dateTimeInput {

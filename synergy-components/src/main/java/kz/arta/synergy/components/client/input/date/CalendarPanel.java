@@ -13,8 +13,10 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.util.DateUtil;
 import kz.arta.synergy.components.client.util.MouseStyle;
+import kz.arta.synergy.components.style.client.resources.CssComponents;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +30,7 @@ import java.util.HashMap;
  */
 public class CalendarPanel extends Composite {
 
+    CssComponents cssComponents = SynergyComponents.resources.cssComponents();
 
     FlowPanel panel;
 
@@ -67,8 +70,11 @@ public class CalendarPanel extends Composite {
         panel.add(dayNamePanel);
         initMonthDays();
 
-        dayNamePanel.setStyleName(SynergyComponents.resources.cssComponents().dayWeekPanel());
-        dayNamePanel.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
+        dayNamePanel.setStyleName(cssComponents.dayWeekPanel());
+        dayNamePanel.addStyleName(cssComponents.mainTextBold());
+        if (datePicker.colorType == ColorType.BLACK) {
+            dayNamePanel.addStyleName(cssComponents.dark());
+        }
     }
 
     /**
@@ -133,7 +139,7 @@ public class CalendarPanel extends Composite {
                 realWeekDay = 0;
                 newRow = true;
             }
-            week.setStyleName(SynergyComponents.resources.cssComponents().daysPanel());
+            week.setStyleName(cssComponents.daysPanel());
             week.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
         }
 
@@ -219,9 +225,9 @@ public class CalendarPanel extends Composite {
 
         private void setStyle() {
             if (date.getMonth() == datePicker.currentDate.getMonth()) {
-                setStyleName(SynergyComponents.resources.cssComponents().month());
+                setStyleName(cssComponents.month());
             } else {
-                setStyleName(SynergyComponents.resources.cssComponents().outMonth());
+                setStyleName(cssComponents.outMonth());
             }
             /*подчеркиваем сегодняшнюю дату*/
             if (CalendarUtil.isSameDate(date, today)) {
@@ -230,18 +236,21 @@ public class CalendarPanel extends Composite {
             switch (datePicker.calendarMode) {
                 case MONTH:
                     if (today.getYear() == date.getYear() && today.getMonth() == date.getMonth()) {
-                        setStyleName(SynergyComponents.resources.cssComponents().thisMonth());
+                        setStyleName(cssComponents.thisMonth());
                     }
                     break;
                 case WEEK:
                     if (CalendarUtil.isSameDate(DateUtil.getWeekFirstDay(date), DateUtil.getWeekFirstDay(today))) {
-                        setStyleName(SynergyComponents.resources.cssComponents().thisMonth());
+                        setStyleName(cssComponents.thisMonth());
                     }
                     break;
             }
             if (lastSelected.contains(format.format(date))) {
                 selected = true;
                 MouseStyle.setPressed(this);
+            }
+            if (datePicker.colorType == ColorType.BLACK) {
+                addStyleName(cssComponents.dark());
             }
         }
 

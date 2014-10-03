@@ -9,6 +9,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.util.DateUtil;
 
 import java.util.Date;
@@ -75,6 +76,11 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
     CalendarPanel calendarPanel;
 
     /**
+     * цветовая схема по умолчанию светлая
+     */
+    ColorType colorType = ColorType.WHITE;
+
+    /**
      * Создает календарь с режимом отображения по умолчанию
      */
     public ArtaDatePicker() {
@@ -87,6 +93,26 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
      */
     public ArtaDatePicker(CalendarMode mode) {
         calendarMode = mode;
+        init();
+    }
+
+    /**
+     * Создает календарь с заданным режимом отображения и цветовой темой
+     * @param type  тема
+     */
+    public ArtaDatePicker(ColorType type) {
+        colorType = type;
+        init();
+    }
+
+    /**
+     * Создает календарь с заданным режимом отображения и цветовой темой
+     * @param mode  режим отображения
+     * @param type  тема
+     */
+    public ArtaDatePicker(CalendarMode mode, ColorType type) {
+        calendarMode = mode;
+        colorType = type;
         init();
     }
 
@@ -163,6 +189,10 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
         });
 
         panel.setStyleName(SynergyComponents.resources.cssComponents().datePicker());
+        if (colorType == ColorType.BLACK) {
+            panel.addStyleName(SynergyComponents.resources.cssComponents().dark());
+            todaySelector.addStyleName(SynergyComponents.resources.cssComponents().dark());
+        }
         calendarPanel.setStyleName(SynergyComponents.resources.cssComponents().datePickerCalendar());
 
     }

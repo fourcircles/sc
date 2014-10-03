@@ -368,7 +368,7 @@ public class DropDownList<V> extends MenuBase{
      */
     public void show(Item item) {
         show();
-        if (item != null && items.contains(item) && filter.include(item)) {
+        if (item != null && items.contains(item) && (filter == null || filter.include(item))) {
             selectedItem = item;
             item.addStyleName(SynergyComponents.resources.cssComponents().selected());
             scroll.ensureVisible(item);

@@ -114,7 +114,7 @@ public class CommentUI extends Composite {
     public void update() {
         updateIcon();
 
-        authorLabel.setText(comment.getAutor());
+        authorLabel.setText(comment.getAuthor());
         dateLabel.setText(" - " + DATE_FORMAT.format(comment.getDate()));
         content.setHTML(comment.getText());
     }

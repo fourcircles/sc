@@ -18,7 +18,7 @@ public interface Comment {
     /**
      * @return автор
      */
-    String getAutor();
+    String getAuthor();
 
     /**
      * @return дата

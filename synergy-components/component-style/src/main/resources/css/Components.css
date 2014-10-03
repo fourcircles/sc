@@ -2010,6 +2010,12 @@ p {
     cursor: pointer;
 }
 
+.comment .content img {
+    position: relative;
+    margin-right: 5px;
+    top: 1px;
+}
+
 @eval commentInputCommentLineHeight kz.arta.synergy.components.style.client.Constants.commentInputCommentLineHeight();
 
 .commentInput {

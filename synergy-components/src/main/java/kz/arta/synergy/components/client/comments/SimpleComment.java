@@ -30,7 +30,7 @@ public class SimpleComment implements Comment {
     }
 
     @Override
-    public String getAutor() {
+    public String getAuthor() {
         return author;
     }
 

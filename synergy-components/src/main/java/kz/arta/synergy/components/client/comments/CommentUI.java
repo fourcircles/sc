@@ -45,7 +45,7 @@ public class CommentUI extends Composite {
     /**
      * Текст комментария
      */
-    private Label content;
+    private HTML content;
 
     /**
      * @param comment комментарий
@@ -65,7 +65,7 @@ public class CommentUI extends Composite {
 
         icon = new Image();
 
-        content = new Label();
+        content = new HTML();
         content.setStyleName(SynergyComponents.resources.cssComponents().content());
 
         root.add(authorLabel);
@@ -116,7 +116,7 @@ public class CommentUI extends Composite {
 
         authorLabel.setText(comment.getAutor());
         dateLabel.setText(" - " + DATE_FORMAT.format(comment.getDate()));
-        content.setText(comment.getText());
+        content.setHTML(comment.getText());
     }
 
     /**

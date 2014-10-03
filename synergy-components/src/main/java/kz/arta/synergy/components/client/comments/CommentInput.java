@@ -282,7 +282,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
 
     @Override
     public void setText(String text) {
-        mirror.setText(text);
+        mirror.setText(Utils.parseComment(text));
     }
 
     public HandlerRegistration addKeyUpHandler(KeyUpHandler handler) {

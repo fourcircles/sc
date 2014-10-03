@@ -1697,7 +1697,7 @@ public class ShowCasePanel extends FlowPanel {
 
         Comment comment1 = new SimpleComment("Поле ввода текста комментария «растягивается» вниз при увеличении количества строк, но не более чем на 10 строк. После ввода 11-й строки появляется полоса прокрутки в поле ввода.",
                 "John Doe", new Date(), CommentType.GENERAL);
-        Comment comment2 = new SimpleComment("Все хорошо.", "John Doe", new Date(), CommentType.ACCEPT);
+        Comment comment2 = new SimpleComment("Все хорошо.\n--\n http://arta.pro", "John Doe", new Date(), CommentType.ACCEPT);
         Comment comment3 = new SimpleComment("Все плохо.", "Jane Doe", new Date(), CommentType.DECLINE);
 
         commentsPanel.getComments().addComment(comment1);

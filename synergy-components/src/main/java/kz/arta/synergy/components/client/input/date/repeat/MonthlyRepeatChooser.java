@@ -25,11 +25,6 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
     private static final int WEEKS = 5;
 
     /**
-     * Максимальное количество дней
-     */
-    private static final int DAYS = 31;
-
-    /**
      * Корневая панель
      */
     protected FlowPanel root;
@@ -44,9 +39,14 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
      */
     protected List<InlineLabel> days;
 
+    /**
+     * Хендлер для элементов дней
+     */
+    private ClickHandler dayClickHandler;
+
 
     public MonthlyRepeatChooser() {
-        this(DAYS);
+        this(RepeatDate.MAX_DAYS);
     }
 
     /**
@@ -75,10 +75,20 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
 
         root.add(datePicker);
 
+        dayClickHandler = new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+                    return;
+                }
+                dayClick((InlineLabel) event.getSource());
+            }
+        };
+
         days = new ArrayList<InlineLabel>();
         for (int i = 0; i < WEEKS * DateUtil.WEEKDAYS; i++) {
             InlineLabel day = createDay();
-            day.setText(Integer.toString(i + 1));
+            day.setText(Integer.toString(i % RepeatDate.MAX_DAYS + 1));
             days.add(day);
             weeks.get(i / DateUtil.WEEKDAYS).add(day);
         }
@@ -87,8 +97,8 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
     }
 
     @Override
-    public void select(RepeatDate date, boolean fireEvents) {
-        super.select(date, fireEvents);
+    public void add(RepeatDate date, boolean fireEvents) {
+        super.add(date, fireEvents);
         InlineLabel day = days.get(date.getDay());
         if (day != null) {
             day.addStyleName(SynergyComponents.resources.cssComponents().pressed());
@@ -96,8 +106,8 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
     }
 
     @Override
-    protected void deselect(RepeatDate date, boolean fireEvents) {
-        super.deselect(date, fireEvents);
+    protected void remove(RepeatDate date, boolean fireEvents) {
+        super.remove(date, fireEvents);
         InlineLabel day = days.get(date.getDay());
         if (day != null) {
             day.removeStyleName(SynergyComponents.resources.cssComponents().pressed());
@@ -113,23 +123,23 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
     }
 
     /**
+     * Метод вызывается при клике по элементу дня
+     * @param day элемент дня
+     */
+    void dayClick(InlineLabel day) {
+        if (days.indexOf(day) < daysCount) {
+            changeSelection(createRepeatDate(day));
+        }
+    }
+
+    /**
      * @return новый элемент для отображения дней
      */
-    private InlineLabel createDay() {
+    InlineLabel createDay() {
         final InlineLabel day = new InlineLabel();
         day.setStyleName(SynergyComponents.resources.cssComponents().month());
 
-        day.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
-                    return;
-                }
-                if (days.indexOf(day) < daysCount) {
-                    changeSelection(createRepeatDate(day));
-                }
-            }
-        });
+        day.addClickHandler(dayClickHandler);
         return day;
     }
 
@@ -137,14 +147,14 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
      * Изменяет количество выбираемых дней
      */
     public void setDaysCount(int daysCount) {
-        for (int i = this.daysCount; i < DateUtil.WEEKDAYS * WEEKS; i++) {
-            days.get(i).removeStyleName(SynergyComponents.resources.cssComponents().outMonth());
-            days.get(i).setText(Integer.toString(i + 1));
-        }
-        int newMonthStart = 1;
-        for (int i = daysCount; i < DateUtil.WEEKDAYS * WEEKS; i++) {
+        int validDaysCount = Math.min(daysCount, days.size());
+        int valueDaysCount = Math.max(daysCount, 0);
+
+        for (int i = validDaysCount; i < this.daysCount; i++) {
             days.get(i).addStyleName(SynergyComponents.resources.cssComponents().outMonth());
-            days.get(i).setText(Integer.toString(newMonthStart++));
+        }
+        for (int i = this.daysCount; i < validDaysCount; i++) {
+            days.get(i).removeStyleName(SynergyComponents.resources.cssComponents().outMonth());
         }
         this.daysCount = daysCount;
     }

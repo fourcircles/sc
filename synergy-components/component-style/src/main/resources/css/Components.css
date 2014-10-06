@@ -1975,7 +1975,7 @@ p {
     padding: 16px;
     border-bottom: 1px solid buttonBorder;
     white-space: pre-wrap;
-    word-break: break-all;
+    word-wrap: break-word;
 }
 .comment > img {
     position:  absolute;

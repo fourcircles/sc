@@ -89,7 +89,7 @@ public class RepeatChooser implements IsWidget, HasEnabled {
             @Override
             public void onTagRemove(TagRemoveEvent<RepeatDate> event) {
                 RepeatDate date = event.getTag().getValue();
-                getChooser().deselect(date, false);
+                getChooser().remove(date, false);
             }
         });
     }
@@ -106,7 +106,7 @@ public class RepeatChooser implements IsWidget, HasEnabled {
      */
     public void addSelected(RepeatDate repeatDate) {
         if (mode == repeatDate.getMode()) {
-            chooser.select(repeatDate, true);
+            chooser.add(repeatDate, true);
         }
     }
 
@@ -124,7 +124,7 @@ public class RepeatChooser implements IsWidget, HasEnabled {
      */
     public void removeSelected(RepeatDate repeatDate) {
         if (mode == repeatDate.getMode()) {
-            chooser.deselect(repeatDate, true);
+            chooser.remove(repeatDate, true);
         }
     }
 
@@ -178,14 +178,16 @@ public class RepeatChooser implements IsWidget, HasEnabled {
                 throw new IllegalStateException();
         }
         chooser.addAutoHidePartner(tags.getElement());
-        chooser.addValueChangeHandler(new ValueChangeHandler<RepeatDate>() {
+        chooser.addValueChangeHandler(new ValueChangeHandler<Collection<RepeatDate>>() {
             @Override
-            public void onValueChange(ValueChangeEvent<RepeatDate> event) {
-                RepeatDate value = event.getValue();
-                if (tags.contains(value)) {
-                    bus.fireEvent(new TagRemoveEvent<RepeatDate>(tags.getTag(value)));
-                } else {
-                    bus.fireEvent(new TagAddEvent<RepeatDate>(createTag(value)));
+            public void onValueChange(ValueChangeEvent<Collection<RepeatDate>> event) {
+                Collection<RepeatDate> values = event.getValue();
+                for (RepeatDate value : event.getValue()) {
+                    if (tags.contains(value)) {
+                        bus.fireEvent(new TagRemoveEvent<RepeatDate>(tags.getTag(value)));
+                    } else {
+                        bus.fireEvent(new TagAddEvent<RepeatDate>(createTag(value)));
+                    }
                 }
             }
         });

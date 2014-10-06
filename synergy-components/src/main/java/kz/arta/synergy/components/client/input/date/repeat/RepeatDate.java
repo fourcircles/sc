@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.input.date.repeat;
 
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.i18n.shared.impl.DateRecord;
 import kz.arta.synergy.components.client.util.DateUtil;
 
 /**
@@ -12,6 +13,11 @@ import kz.arta.synergy.components.client.util.DateUtil;
  * Не относится к конкретному времени или дате.
 */
 public class RepeatDate {
+    /**
+     * Максимальное значение дня
+     */
+    public static final int MAX_DAYS = 31;
+
     /**
      * Номер дня в месяце
      */
@@ -33,6 +39,17 @@ public class RepeatDate {
     private String text;
 
     public RepeatDate(int day, int month, RepeatChooser.MODE mode) {
+
+        int maxDays = mode == RepeatChooser.MODE.WEEK ? DateUtil.WEEKDAYS - 1 : RepeatDate.MAX_DAYS;
+        if (day < 0 || day > maxDays) {
+            throw new IllegalArgumentException();
+        }
+        if (mode == RepeatChooser.MODE.YEAR) {
+            if (month < 0 || month > DateUtil.MONTHS - 1) {
+                throw new IllegalArgumentException();
+            }
+        }
+
         this.day = day;
         this.month = month;
         this.mode = mode;

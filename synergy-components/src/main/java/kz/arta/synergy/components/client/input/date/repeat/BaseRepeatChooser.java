@@ -9,8 +9,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.PopupPanel;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User: vsl
@@ -19,12 +18,12 @@ import java.util.Set;
  *
  * Базовый класс для компонента повторения.
  */
-public class BaseRepeatChooser implements HasValueChangeHandlers<RepeatDate>, HasCloseHandlers<BaseRepeatChooser> {
+public class BaseRepeatChooser implements HasValueChangeHandlers<Collection<RepeatDate>>, HasCloseHandlers<BaseRepeatChooser> {
     /**
      * Добавленные даты
      */
     protected Set<RepeatDate> selectedDates;
-    protected EventBus bus;
+    EventBus bus;
 
     /**
      * Корневой попап
@@ -45,15 +44,46 @@ public class BaseRepeatChooser implements HasValueChangeHandlers<RepeatDate>, Ha
         });
     }
 
+    public int size() {
+        return selectedDates.size();
+    }
+
+    public boolean contains(RepeatDate date) {
+        return selectedDates.contains(date);
+    }
+
+    /**
+     * Добавляет все
+     * @param dates
+     * @param fireEvents
+     */
+    public void addAll(Collection<RepeatDate> dates, boolean fireEvents) {
+        if (dates == null || selectedDates.containsAll(dates)) {
+            return;
+        }
+
+        Set<RepeatDate> diff = new HashSet<RepeatDate>(dates);
+        diff.removeAll(selectedDates);
+
+        selectedDates.addAll(dates);
+        if (fireEvents) {
+            ValueChangeEvent.fire(this, diff);
+        }
+    }
+
     /**
      * Выбрать дату
      * @param date дата
      * @param fireEvents создавать ли события
      */
-    protected void select(RepeatDate date, boolean fireEvents) {
+    public void add(RepeatDate date, boolean fireEvents) {
+        if (date == null || selectedDates.contains(date)) {
+            return;
+        }
+
         selectedDates.add(date);
         if (fireEvents) {
-            ValueChangeEvent.fire(this, date);
+            ValueChangeEvent.fire(this, Arrays.asList(date));
         }
     }
 
@@ -62,10 +92,14 @@ public class BaseRepeatChooser implements HasValueChangeHandlers<RepeatDate>, Ha
      * @param date дата
      * @param fireEvents создавать ли события
      */
-    protected void deselect(RepeatDate date, boolean fireEvents) {
+    protected void remove(RepeatDate date, boolean fireEvents) {
+        if (date == null || !selectedDates.contains(date)) {
+            return;
+        }
+
         selectedDates.remove(date);
         if (fireEvents) {
-            ValueChangeEvent.fire(this, date);
+            ValueChangeEvent.fire(this, Arrays.asList(date));
         }
     }
 
@@ -75,9 +109,9 @@ public class BaseRepeatChooser implements HasValueChangeHandlers<RepeatDate>, Ha
      */
     protected void changeSelection(RepeatDate date) {
         if (selectedDates.contains(date)) {
-            deselect(date, true);
+            remove(date, true);
         } else {
-            select(date, true);
+            add(date, true);
         }
     }
 
@@ -97,7 +131,7 @@ public class BaseRepeatChooser implements HasValueChangeHandlers<RepeatDate>, Ha
     }
 
     @Override
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<RepeatDate> handler) {
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Collection<RepeatDate>> handler) {
         return bus.addHandlerToSource(ValueChangeEvent.getType(), this, handler);
     }
 
@@ -108,7 +142,6 @@ public class BaseRepeatChooser implements HasValueChangeHandlers<RepeatDate>, Ha
 
     /**
      * Скрыть компонент
-     * @param fireEvents
      */
     public void hide(boolean fireEvents) {
         popupPanel.hide();

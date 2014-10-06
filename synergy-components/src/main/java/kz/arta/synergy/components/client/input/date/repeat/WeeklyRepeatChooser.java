@@ -96,15 +96,15 @@ public class WeeklyRepeatChooser extends BaseRepeatChooser {
     }
 
     @Override
-    public void select(RepeatDate date, boolean fireEvents) {
-        super.select(date, true);
+    public void add(RepeatDate date, boolean fireEvents) {
+        super.add(date, true);
         Label dayLabel = labels.get(days.indexOf(date));
         dayLabel.addStyleName(SynergyComponents.resources.cssComponents().selected());
     }
 
     @Override
-    protected void deselect(RepeatDate date, boolean fireEvents) {
-        super.deselect(date, fireEvents);
+    protected void remove(RepeatDate date, boolean fireEvents) {
+        super.remove(date, fireEvents);
         Label dayLabel = labels.get(days.indexOf(date));
         dayLabel.removeStyleName(SynergyComponents.resources.cssComponents().selected());
     }

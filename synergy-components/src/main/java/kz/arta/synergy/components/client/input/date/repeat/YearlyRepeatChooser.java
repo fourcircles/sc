@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.input.date.repeat;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -9,6 +10,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.DateUtil;
+import org.omg.CORBA.IMP_LIMIT;
 
 /**
  * User: vsl
@@ -32,9 +34,12 @@ public class YearlyRepeatChooser extends MonthlyRepeatChooser {
         FlowPanel monthSelector = new FlowPanel();
         monthSelector.setStyleName(SynergyComponents.resources.cssComponents().datePickerTop());
 
-        Image previous = new Image(ImageResources.IMPL.navigationLeft());
-        Image next = new Image(ImageResources.IMPL.navigationRight());
-        monthLabel = new InlineLabel();
+        Image previous = GWT.create(Image.class);
+        previous.setResource(ImageResources.IMPL.navigationLeft());
+        Image next = GWT.create(Image.class);
+        next.setResource(ImageResources.IMPL.navigationRight());
+
+        monthLabel = GWT.create(InlineLabel.class);
         monthLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
 
         monthSelector.add(previous);
@@ -69,7 +74,7 @@ public class YearlyRepeatChooser extends MonthlyRepeatChooser {
      * Изменяет вид в соответствии с текущим месяцем (обычно вызывается после изменения текущего месяца).
      * Изменяет количество выбираемых дней и выбранные даты.
      */
-    private void updateMonth() {
+    void updateMonth() {
         setDaysCount(DateUtil.getMonthDaysCount(currentMonth + 1, 0));
         monthLabel.setText(DateUtil.getMonth(currentMonth));
 
@@ -81,7 +86,7 @@ public class YearlyRepeatChooser extends MonthlyRepeatChooser {
         //выделение добавленых ранее дней в текущем месяце
         for (RepeatDate date : getSelectedDates()) {
             if (date.getMonth() == currentMonth) {
-                select(date, false);
+                days.get(date.getDay()).addStyleName(SynergyComponents.resources.cssComponents().pressed());
             }
         }
     }

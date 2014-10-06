@@ -2,7 +2,6 @@ package kz.arta.synergy.components.client.util;
 
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.i18n.shared.DateTimeFormat;
-import com.google.gwt.user.datepicker.client.CalendarModel;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 import kz.arta.synergy.components.client.resources.Messages;
 
@@ -30,7 +29,20 @@ public class DateUtil {
     /**
      * Список месяцев
      */
-    public static String[] months = LocaleInfo.getCurrentLocale().getDateTimeFormatInfo().monthsFullStandalone();
+    public static String[] fullMonths = new String[] {
+            Messages.januaryFull(),
+            Messages.februaryFull(),
+            Messages.marchFull(),
+            Messages.aprilFull(),
+            Messages.mayFull(),
+            Messages.juneFull(),
+            Messages.julyFull(),
+            Messages.augustFull(),
+            Messages.septemberFull(),
+            Messages.octoberFull(),
+            Messages.novemberFull(),
+            Messages.decemberFull(),
+    };
 
     /**
      * Список дней недели
@@ -45,7 +57,7 @@ public class DateUtil {
             Messages.i18n.tr("Сб")
             };
 
-    public static final int MONTHS = months.length;
+    public static final int MONTHS = fullMonths.length;
     public static final int WEEKDAYS = weekDays.length;
 
     /**
@@ -63,8 +75,8 @@ public class DateUtil {
 
     /*Делаем первый символ заглавным*/
     static {
-        for (int i = 0; i < months.length; i++) {
-            months[i] = Character.toUpperCase(months[i].charAt(0)) + months[i].substring(1);
+        for (int i = 0; i < fullMonths.length; i++) {
+            fullMonths[i] = Character.toUpperCase(fullMonths[i].charAt(0)) + fullMonths[i].substring(1);
         }
     }
 
@@ -115,7 +127,7 @@ public class DateUtil {
      * Название месяца по номеру (0 - январь ... 11 - декабрь)
      */
     public static String getMonth(int month) {
-        return months[month];
+        return fullMonths[month];
     }
 
     /**

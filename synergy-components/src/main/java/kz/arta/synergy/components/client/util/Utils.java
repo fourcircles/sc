@@ -11,6 +11,8 @@ import com.google.gwt.dom.client.Element;
 public class Utils {
     private static final RulerLabel ruler = GWT.create(RulerLabel.class);
 
+    private static final HeightRuler heightRuler = GWT.create(HeightRuler.class);
+
     /**
      * Возвращает ширина текста с заданным стилем
      * @param text текст
@@ -36,6 +38,10 @@ public class Utils {
 
     public static double getPreciseTextWidth(ArtaHasText textWidget) {
         return ruler.getPreciseTextWidth(textWidget);
+    }
+
+    public static int getTextHeight(String text, String style, int width) {
+        return heightRuler.getTextHeight(text, style, width);
     }
 
     /**

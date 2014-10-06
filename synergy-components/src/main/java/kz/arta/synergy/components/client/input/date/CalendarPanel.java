@@ -18,9 +18,7 @@ import kz.arta.synergy.components.client.util.DateUtil;
 import kz.arta.synergy.components.client.util.MouseStyle;
 import kz.arta.synergy.components.style.client.resources.CssComponents;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * User: user
@@ -42,12 +40,12 @@ public class CalendarPanel extends Composite {
     /**
      * Список панелей с неделями
      */
-    ArrayList<FlowPanel> weekPanels = new ArrayList<FlowPanel>();
+    List<FlowPanel> weekPanels = new ArrayList<FlowPanel>();
 
     /**
      * Список дней
      */
-    HashMap<String, DayLabel> dayLabels = new HashMap<String, DayLabel> ();
+    Map<String, DayLabel> dayLabels = new HashMap<String, DayLabel> ();
 
     ArtaDatePicker datePicker;
 
@@ -194,7 +192,7 @@ public class CalendarPanel extends Composite {
     /**
      * Выбранные даты
      */
-    private ArrayList<String> lastSelected = new ArrayList<String>();
+    private List<String> lastSelected = new ArrayList<String>();
 
     /**
      * Ячейка дня

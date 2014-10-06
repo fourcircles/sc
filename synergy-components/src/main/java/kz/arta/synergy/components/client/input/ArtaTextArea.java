@@ -4,10 +4,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.TextArea;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.comments.events.InputChangeEvent;
 import kz.arta.synergy.components.client.input.handlers.PlaceHolderFocusHandler;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.client.util.WidthUtil;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -22,7 +26,7 @@ public class ArtaTextArea extends Composite {
     /**
      * Сам компонент для ввода текста
      */
-    private StretchyTextArea textArea = GWT.create(StretchyTextArea.class);
+    private TextArea textArea = GWT.create(TextArea.class);
 
     /**
      * Скролл
@@ -46,6 +50,13 @@ public class ArtaTextArea extends Composite {
     protected PlaceHolderFocusHandler placeHolderHandler;
 
     /**
+     * количество строк по умолчанию
+     */
+    private int rows = 3;
+
+    private boolean changed = false;
+
+    /**
      * Конструктор по умолчанию
      */
     public ArtaTextArea() {
@@ -62,7 +73,7 @@ public class ArtaTextArea extends Composite {
     }
 
     private void init() {
-        textArea.setMinVisibleLines(3);
+        textArea.setVisibleLines(rows);
         verticalScroll = new ArtaScrollPanel();
         verticalScroll.setWidget(textArea);
         setPixelSize(200, 59);
@@ -95,6 +106,39 @@ public class ArtaTextArea extends Composite {
             }
         });
 
+        InputChangeEvent.addInputHandler(textArea.getElement(), new InputChangeEvent.Handler() {
+            @Override
+            public void onInputChange(InputChangeEvent event) {
+                textChanged();
+            }
+        });
+        //ie9 не создает событие "input" при удалении символов, поэтому
+        //надо слушать KeyUpEvent.
+        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+            textArea.addKeyUpHandler(new KeyUpHandler() {
+                @Override
+                public void onKeyUp(KeyUpEvent event) {
+                    textChanged();
+                }
+            });
+        }
+    }
+
+    private void textChanged() {
+        int height = Utils.getTextHeight(textArea.getText(), textArea.getStyleName(), textArea.getOffsetWidth());
+
+        if (Math.ceil(height * 1.0/ Constants.LINE_HEIGHT) > rows) {
+            if (!changed) {
+                textArea.setWidth(textArea.getOffsetWidth() - 2 * Constants.COMMON_INPUT_PADDING + "px");
+                height = Utils.getTextHeight(textArea.getText(), textArea.getStyleName(), textArea.getOffsetWidth());
+            }
+            changed = true;
+            textArea.setVisibleLines((int) Math.ceil(height * 1.0 / Constants.LINE_HEIGHT));
+        } else {
+            textArea.setVisibleLines(rows);
+            textArea.setWidth("100%");
+            changed = false;
+        }
     }
 
     public void onLoad() {
@@ -182,16 +226,21 @@ public class ArtaTextArea extends Composite {
 
     public void setPixelSize(int width, int height) {
         verticalScroll.setPixelSize(width, height);
-        textArea.setMinVisibleLines(height/ Constants.LINE_HEIGHT);
+        setVisibleLinesByHeight(height);
     }
 
     public void setSize(String width, String height) {
         verticalScroll.setSize(width, height);
-        textArea.setMinVisibleLines(WidthUtil.getPXValue(height)/ Constants.LINE_HEIGHT);
+        setVisibleLinesByHeight(WidthUtil.getPXValue(height));
     }
 
     public void setWidth(String width) {
         verticalScroll.setWidth(width);
+    }
+
+    private void setVisibleLinesByHeight(int height) {
+        textArea.setVisibleLines(height / Constants.LINE_HEIGHT);
+        rows = textArea.getVisibleLines();
     }
 
 }

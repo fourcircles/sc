@@ -62,10 +62,6 @@ public class MonthSelector extends Composite {
      */
     FixedWidthList<Integer> monthList;
 
-    private DropDownList<Integer>.Item yearItem;
-
-    private DropDownList<Integer>.Item monthItem;
-
     ArtaDatePicker picker;
 
     public MonthSelector(ArtaDatePicker datePicker) {
@@ -103,7 +99,7 @@ public class MonthSelector extends Composite {
         ListSelectionEvent.register(monthBus, new ListSelectionEvent.Handler<Integer>() {
             @Override
             public void onSelection(ListSelectionEvent<Integer> event) {
-                monthItem = event.getItem();
+                monthList.setSelectedValue(event.getItem().getValue());
                 Date month = new Date(picker.currentDate.getTime());
                 month.setMonth(event.getItem().getValue());
                 picker.setCurrentDate(month, false);
@@ -114,7 +110,7 @@ public class MonthSelector extends Composite {
         for (int i = 0; i < 12; i++) {
             DropDownList.Item item = monthList.addItem(DateUtil.getMonth(i), i);
             if ((Integer)item.getValue() == DateUtil.currentDate.getMonth()) {
-                monthItem = item;
+                monthList.setSelectedValue((Integer)item.getValue());
             }
         }
 
@@ -126,7 +122,7 @@ public class MonthSelector extends Composite {
                 if (monthList.isShowing()) {
                     monthList.hide();
                 } else {
-                    monthList.show(monthItem);
+                    monthList.show(monthList.getSelectedItem());
                 }
             }
         });
@@ -142,7 +138,7 @@ public class MonthSelector extends Composite {
         ListSelectionEvent.register(bus, new ListSelectionEvent.Handler<Integer>() {
             @Override
             public void onSelection(ListSelectionEvent<Integer> event) {
-                yearItem = event.getItem();
+                yearsList.setSelectedValue(event.getItem().getValue());
                 yearLabel.setText(event.getItem().getValue() + "");
                 yearsList.hide();
                 Date year = new Date(picker.currentDate.getTime());
@@ -153,7 +149,7 @@ public class MonthSelector extends Composite {
         for (int i = DateUtil.currentDate.getYear() - 90; i < DateUtil.currentDate.getYear() + 10; i++) {
             DropDownList.Item item = yearsList.addItem((i + DateUtil.YEAR_OFFSET) + "", (i + DateUtil.YEAR_OFFSET));
             if ((Integer)item.getValue() == DateUtil.currentDate.getYear() + DateUtil.YEAR_OFFSET) {
-                yearItem = item;
+                yearsList.setSelectedValue((Integer)item.getValue());
             }
         }
 
@@ -165,7 +161,7 @@ public class MonthSelector extends Composite {
                 if (yearsList.isShowing()) {
                     yearsList.hide();
                 } else {
-                    yearsList.show(yearItem);
+                    yearsList.show(yearsList.getSelectedItem());
                 }
             }
         });

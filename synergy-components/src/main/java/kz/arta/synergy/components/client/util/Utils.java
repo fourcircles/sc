@@ -77,4 +77,19 @@ public class Utils {
     public static native double getPreciseWidth(Element element) /*-{
         return element.getBoundingClientRect().width;
     }-*/;
+
+    /**
+     * Заменяет все ссылки в тексте на элемент a.
+     * @param text текст
+     * @return html с добавленными элементами ссылок
+     */
+    public static native String parseComment(String text) /*-{
+        var _link = document.createElement('a');
+        return text.replace(/((http|https|ftp|ftps|smb|webdav|dav|notes):\/\/|#)[\w\/\.\?\:\=&]+/gim, function (match) {
+            _link.href = match;
+            _link.innerHTML = match;
+            _link.target = "_blank";
+            return _link.outerHTML;
+        });
+    }-*/;
 }

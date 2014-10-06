@@ -1976,6 +1976,7 @@ p {
     padding: 16px;
     border-bottom: 1px solid buttonBorder;
     white-space: pre-wrap;
+    word-break: break-all;
 }
 .comment > img {
     position:  absolute;
@@ -2007,6 +2008,13 @@ p {
     color: textColor1;
     margin-top: 16px;
     height: auto;
+    cursor: pointer;
+}
+
+.comment .content img {
+    position: relative;
+    margin-right: 5px;
+    top: 1px;
 }
 
 @eval commentInputCommentLineHeight kz.arta.synergy.components.style.client.Constants.commentInputCommentLineHeight();

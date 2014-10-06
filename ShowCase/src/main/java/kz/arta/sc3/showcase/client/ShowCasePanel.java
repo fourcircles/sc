@@ -30,10 +30,7 @@ import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.checkbox.ArtaCheckBox;
 import kz.arta.synergy.components.client.checkbox.ArtaRadioButton;
 import kz.arta.synergy.components.client.collapsing.CollapsingPanel;
-import kz.arta.synergy.components.client.comments.Comment;
-import kz.arta.synergy.components.client.comments.CommentType;
-import kz.arta.synergy.components.client.comments.CommentsPanel;
-import kz.arta.synergy.components.client.comments.SimpleComment;
+import kz.arta.synergy.components.client.comments.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
@@ -1697,12 +1694,15 @@ public class ShowCasePanel extends FlowPanel {
 
         Comment comment1 = new SimpleComment("Поле ввода текста комментария «растягивается» вниз при увеличении количества строк, но не более чем на 10 строк. После ввода 11-й строки появляется полоса прокрутки в поле ввода.",
                 "John Doe", new Date(), CommentType.GENERAL);
-        Comment comment2 = new SimpleComment("Все хорошо.", "John Doe", new Date(), CommentType.ACCEPT);
+        Comment comment2 = new SimpleComment("Все хорошо.\n--\n http://arta.pro", "John Doe", new Date(), CommentType.ACCEPT);
         Comment comment3 = new SimpleComment("Все плохо.", "Jane Doe", new Date(), CommentType.DECLINE);
 
         commentsPanel.getComments().addComment(comment1);
         commentsPanel.getComments().addComment(comment2);
         commentsPanel.getComments().addComment(comment3);
+
+        Comment fileComment = new FileComment(ImageResources.IMPL.calendarIcon(), "calendar.png", "John Doe", new Date(), CommentType.ACCEPT);
+        commentsPanel.getComments().addComment(fileComment);
 
         return root;
     }

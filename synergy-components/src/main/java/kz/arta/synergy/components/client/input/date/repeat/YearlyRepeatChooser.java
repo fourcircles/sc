@@ -10,7 +10,6 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.DateUtil;
-import org.omg.CORBA.IMP_LIMIT;
 
 /**
  * User: vsl

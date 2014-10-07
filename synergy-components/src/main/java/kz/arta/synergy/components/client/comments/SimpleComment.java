@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.comments;
 
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import kz.arta.synergy.components.client.util.Utils;
 
 import java.util.Date;
@@ -18,7 +19,7 @@ public class SimpleComment implements Comment {
     private CommentType type;
 
     public SimpleComment(String text, String author, Date date, CommentType type) {
-        this.text = Utils.parseComment(text);
+        this.text = Utils.parseComment(SafeHtmlUtils.htmlEscape(text));
         this.author = author;
         this.date = date;
         this.type = type;

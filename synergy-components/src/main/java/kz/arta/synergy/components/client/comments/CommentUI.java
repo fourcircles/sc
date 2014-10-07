@@ -43,7 +43,7 @@ public class CommentUI extends Composite {
      */
     private Image icon;
     /**
-     * Текст комментария
+     * Текст комментария.
      */
     private HTML content;
 

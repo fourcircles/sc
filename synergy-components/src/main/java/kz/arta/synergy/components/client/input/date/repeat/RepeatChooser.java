@@ -160,7 +160,6 @@ public class RepeatChooser implements IsWidget, HasEnabled {
 
     /**
      * Создает компонент выбора для текущего режима
-     * @return
      */
     private BaseRepeatChooser createChooser() {
         BaseRepeatChooser chooser;
@@ -181,7 +180,6 @@ public class RepeatChooser implements IsWidget, HasEnabled {
         chooser.addValueChangeHandler(new ValueChangeHandler<Collection<RepeatDate>>() {
             @Override
             public void onValueChange(ValueChangeEvent<Collection<RepeatDate>> event) {
-                Collection<RepeatDate> values = event.getValue();
                 for (RepeatDate value : event.getValue()) {
                     if (tags.contains(value)) {
                         bus.fireEvent(new TagRemoveEvent<RepeatDate>(tags.getTag(value)));

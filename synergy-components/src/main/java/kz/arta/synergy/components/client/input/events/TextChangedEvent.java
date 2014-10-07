@@ -13,7 +13,22 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * Событие изменения текста
  */
 public class TextChangedEvent extends GwtEvent<TextChangedEvent.Handler> {
-    public static Type<Handler> TYPE = new Type<Handler>();
+    private static Type<Handler> TYPE = new Type<Handler>();
+
+    private String oldText;
+    private String newText;
+
+    public TextChangedEvent(String oldText, String newText) {
+        this.oldText = oldText;
+        this.newText = newText;
+    }
+
+    public static Type<Handler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<Handler>();
+        }
+        return TYPE;
+    }
 
     public Type<Handler> getAssociatedType() {
         return TYPE;
@@ -25,14 +40,6 @@ public class TextChangedEvent extends GwtEvent<TextChangedEvent.Handler> {
 
     public static interface Handler extends EventHandler {
         void onTextChanged(TextChangedEvent event);
-    }
-
-    private String oldText;
-    private String newText;
-
-    public TextChangedEvent(String oldText, String newText) {
-        this.oldText = oldText;
-        this.newText = newText;
     }
 
     public String getOldText() {

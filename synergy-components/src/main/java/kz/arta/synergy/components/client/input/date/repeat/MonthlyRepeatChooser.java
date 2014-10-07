@@ -93,6 +93,7 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
             weeks.get(i / DateUtil.WEEKDAYS).add(day);
         }
 
+        this.daysCount = days.size();
         setDaysCount(daysCount);
     }
 
@@ -148,7 +149,7 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
      */
     public void setDaysCount(int daysCount) {
         int validDaysCount = Math.min(daysCount, days.size());
-        int valueDaysCount = Math.max(daysCount, 0);
+        int valueDaysCount = Math.max(validDaysCount, 0);
 
         for (int i = validDaysCount; i < this.daysCount; i++) {
             days.get(i).addStyleName(SynergyComponents.resources.cssComponents().outMonth());

@@ -87,7 +87,7 @@ public class Comments extends Composite {
         });
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             //CustomScrollPanel выставляет свои отступы при этом действии
-            //без него при RTL будет неправильное смещение
+            //без него - при RTL будет неправильное смещение
             root.getElement().getStyle().setLeft(-0.1, Style.Unit.PX);
         }
     }

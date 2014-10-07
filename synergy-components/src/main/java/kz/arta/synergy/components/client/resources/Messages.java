@@ -13,54 +13,54 @@ public class Messages {
 
     public static I18n i18n = I18nFactory.getI18n();
 
-    private static final String januaryFull = "Январь";
-    private static final String februaryFull = "Февраль";
-    private static final String marchFull = "Март";
-    private static final String aprilFull = "Апрель";
-    private static final String mayFull = "Май";
-    private static final String juneFull = "Июль";
-    private static final String julyFull = "Июнь";
-    private static final String augustFull = "Август";
-    private static final String septemberFull = "Сентябрь";
-    private static final String octoberFull = "Октябрь";
-    private static final String novemberFull = "Ноябрь";
-    private static final String decemberFull = "Декабрь";
+    private static final String JANUARY_FULL = "Январь";
+    private static final String FEBRUARY_FULL = "Февраль";
+    private static final String MARCH_FULL = "Март";
+    private static final String APRIL_FULL = "Апрель";
+    private static final String MAY_FULL = "Май";
+    private static final String JUNE_FULL = "Июль";
+    private static final String JULY_FULL = "Июнь";
+    private static final String AUGUST_FULL = "Август";
+    private static final String SEPTEMBER_FULL = "Сентябрь";
+    private static final String OCTOBER_FULL = "Октябрь";
+    private static final String NOVEMBER_FULL = "Ноябрь";
+    private static final String DECEMBER_FULL = "Декабрь";
 
     public static String januaryFull() {
-        return i18n.tr(januaryFull);
+        return i18n.tr(JANUARY_FULL);
     }
     public static String februaryFull() {
-        return i18n.tr(februaryFull);
+        return i18n.tr(FEBRUARY_FULL);
     }
     public static String marchFull() {
-        return i18n.tr(marchFull);
+        return i18n.tr(MARCH_FULL);
     }
     public static String aprilFull() {
-        return i18n.tr(aprilFull);
+        return i18n.tr(APRIL_FULL);
     }
     public static String mayFull() {
-        return i18n.tr(mayFull);
+        return i18n.tr(MAY_FULL);
     }
     public static String juneFull() {
-        return i18n.tr(juneFull);
+        return i18n.tr(JUNE_FULL);
     }
     public static String julyFull() {
-        return i18n.tr(julyFull);
+        return i18n.tr(JULY_FULL);
     }
     public static String augustFull() {
-        return i18n.tr(augustFull);
+        return i18n.tr(AUGUST_FULL);
     }
     public static String septemberFull() {
-        return i18n.tr(septemberFull);
+        return i18n.tr(SEPTEMBER_FULL);
     }
     public static String octoberFull() {
-        return i18n.tr(octoberFull);
+        return i18n.tr(OCTOBER_FULL);
     }
     public static String novemberFull() {
-        return i18n.tr(novemberFull);
+        return i18n.tr(NOVEMBER_FULL);
     }
     public static String decemberFull() {
-        return i18n.tr(decemberFull);
+        return i18n.tr(DECEMBER_FULL);
     }
 
 }

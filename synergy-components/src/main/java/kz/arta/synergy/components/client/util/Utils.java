@@ -9,10 +9,12 @@ import com.google.gwt.dom.client.Element;
  * Time: 17:59
  */
 public class Utils {
-    private static final RulerLabel ruler = GWT.create(RulerLabel.class);
+    private static final RulerLabel RULER = GWT.create(RulerLabel.class);
 
-    private static final HeightRuler heightRuler = GWT.create(HeightRuler.class);
+    private static final HeightRuler HEIGHT_RULER = GWT.create(HeightRuler.class);
 
+    private Utils(){
+    }
     /**
      * Возвращает ширина текста с заданным стилем
      * @param text текст
@@ -20,7 +22,7 @@ public class Utils {
      * @return ширина
      */
     public static int getTextWidth(String text, String style) {
-        return ruler.getTextWidth(text, style);
+        return RULER.getTextWidth(text, style);
     }
 
     /**
@@ -29,19 +31,19 @@ public class Utils {
      * @return ширина текста
      */
     public static int getTextWidth(ArtaHasText textWidget) {
-        return ruler.getTextWidth(textWidget);
+        return RULER.getTextWidth(textWidget);
     }
 
     public static double getPreciseTextWidth(String text, String style) {
-        return ruler.getPresiceTextWidth(text, style);
+        return RULER.getPresiceTextWidth(text, style);
     }
 
     public static double getPreciseTextWidth(ArtaHasText textWidget) {
-        return ruler.getPreciseTextWidth(textWidget);
+        return RULER.getPreciseTextWidth(textWidget);
     }
 
     public static int getTextHeight(String text, String style, int width) {
-        return heightRuler.getTextHeight(text, style, width);
+        return HEIGHT_RULER.getTextHeight(text, style, width);
     }
 
     /**
@@ -49,7 +51,8 @@ public class Utils {
      * Причина использования - некорректная работа метода getButton для {@link com.google.gwt.user.client.ui.RadioButton}
      * @param element элемент
      */
-    public static native void cancelNonLeftButtons(com.google.gwt.dom.client.Element element) /*-{
+    public static native void cancelNonLeftButtons(com.google.gwt.dom.client.Element element)
+    /*-{
         element.addEventListener('click', function(e) {
             var cancel = false;
             if (e.which != null) {
@@ -74,7 +77,8 @@ public class Utils {
      * @param element элемент
      * @return ширина
      */
-    public static native double getPreciseWidth(Element element) /*-{
+    public static native double getPreciseWidth(Element element)
+    /*-{
         return element.getBoundingClientRect().width;
     }-*/;
 
@@ -83,9 +87,10 @@ public class Utils {
      * @param text текст
      * @return html с добавленными элементами ссылок
      */
-    public static native String parseComment(String text) /*-{
+    public static native String parseComment(String text)
+    /*-{
         var _link = document.createElement('a');
-        return text.replace(/((http|https|ftp|ftps|smb|webdav|dav|notes):\/\/|#)[\w\/\.\?\:\=&]+/gim, function (match) {
+        return text.replace(/((http|https|ftp|ftps|smb|webdav|dav|notes):\/\/|#)[\w\/\.\?\:\=&-]+/gim, function (match) {
             _link.href = match;
             _link.innerHTML = match;
             _link.target = "_blank";

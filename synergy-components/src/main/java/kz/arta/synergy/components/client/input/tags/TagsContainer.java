@@ -1,14 +1,12 @@
 package kz.arta.synergy.components.client.input.tags;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.ResettableEventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,7 +15,6 @@ import java.util.List;
  * Time: 14:45
  */
 public abstract class TagsContainer<V> extends Composite {
-    public abstract List<Tag<V>> getTags();
     protected EventBus innerBus;
 
     protected TagsContainer() {
@@ -27,6 +24,8 @@ public abstract class TagsContainer<V> extends Composite {
     protected TagsContainer(EventBus bus) {
         innerBus = bus;
     }
+
+    public abstract List<Tag<V>> getTags();
 
     public Tag<V> getTag(V value) {
         for (Tag<V> tag : getTags()) {

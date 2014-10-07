@@ -55,7 +55,24 @@ public class MonthlyRepeatChooserTest {
             }
         };
         reset(days.toArray());
+    }
 
+    @Test
+    public void testInit() {
+        final List<InlineLabel> daysLabels = new ArrayList<InlineLabel>();
+
+        MonthlyRepeatChooser chooser = new MonthlyRepeatChooser(10) {
+            @Override
+            InlineLabel createDay() {
+                InlineLabel newDay = mock(InlineLabel.class);
+                daysLabels.add(newDay);
+                return newDay;
+            }
+        };
+
+        for (int i = 10; i < days.size(); i++) {
+            verify(daysLabels.get(i), times(1)).addStyleName(same(OUT_MONTH));
+        }
     }
 
     @Test

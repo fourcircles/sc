@@ -1,7 +1,5 @@
 package kz.arta.synergy.components.client.input.date.repeat;
 
-import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.i18n.shared.impl.DateRecord;
 import kz.arta.synergy.components.client.util.DateUtil;
 
 /**
@@ -39,35 +37,78 @@ public class RepeatDate {
     private String text;
 
     public RepeatDate(int day, int month, RepeatChooser.MODE mode) {
-
-        int maxDays = mode == RepeatChooser.MODE.WEEK ? DateUtil.WEEKDAYS - 1 : RepeatDate.MAX_DAYS;
-        if (day < 0 || day > maxDays) {
-            throw new IllegalArgumentException();
-        }
-        if (mode == RepeatChooser.MODE.YEAR) {
-            if (month < 0 || month > DateUtil.MONTHS - 1) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        this.day = day;
-        this.month = month;
         this.mode = mode;
-
         switch (mode) {
             case WEEK:
-                int first = LocaleInfo.getCurrentLocale().getDateTimeFormatInfo().firstDayOfTheWeek();
-                text = DateUtil.weekDays[day];
-                break;
-            case YEAR:
-                text = "" + (day < 9 ? "0" : "") + (day + 1) + "." + (month + 1);
+                initWeekDate(day);
                 break;
             case MONTH:
-                text = Integer.toString(day + 1);
+                initMonthDate(day);
                 break;
-            default:
-                throw new IllegalArgumentException();
+            case YEAR:
+                initYearDate(day, month);
+                break;
         }
+
+//        int maxDays = mode == RepeatChooser.MODE.WEEK ? DateUtil.WEEKDAYS - 1 : RepeatDate.MAX_DAYS;
+//        if (day < 0 || day > maxDays) {
+//            throw new IllegalArgumentException();
+//        }
+//        if (mode == RepeatChooser.MODE.YEAR) {
+//            if (month < 0 || month > DateUtil.MONTHS - 1) {
+//                throw new IllegalArgumentException();
+//            }
+//        }
+//
+//        this.day = day;
+//        this.month = month;
+//        this.mode = mode;
+//
+//        switch (mode) {
+//            case WEEK:
+//                int first = LocaleInfo.getCurrentLocale().getDateTimeFormatInfo().firstDayOfTheWeek();
+//                text = DateUtil.weekDays[day];
+//                break;
+//            case YEAR:
+//                text = "" + (day < 9 ? "0" : "") + (day + 1) + "." + (month + 1);
+//                break;
+//            case MONTH:
+//                text = Integer.toString(day + 1);
+//                break;
+//            default:
+//                throw new IllegalArgumentException();
+//        }
+    }
+
+    private void initWeekDate(int day) {
+        if (day < 0 || day >= DateUtil.WEEKDAYS) {
+            throw new IllegalArgumentException();
+        }
+        this.day = day;
+        month = -1;
+        text = DateUtil.weekDays[day];
+    }
+
+    public void initMonthDate(int day) {
+        if (day < 0 || day >= RepeatDate.MAX_DAYS) {
+            throw new IllegalArgumentException();
+        }
+        this.day = day;
+        month = -1;
+        text = Integer.toString(day + 1);
+    }
+
+    public void initYearDate(int day, int month) {
+        if (day < 0 || day >= RepeatDate.MAX_DAYS) {
+            throw new IllegalArgumentException();
+        }
+        if (month < 0 || month >= DateUtil.MONTHS) {
+            throw new IllegalArgumentException();
+        }
+        this.day = day;
+        this.month = month;
+
+        text = (day < 9 ? "0" : "") + (day + 1) + '.' + (month + 1);
     }
 
     public RepeatDate(int day, RepeatChooser.MODE mode) {

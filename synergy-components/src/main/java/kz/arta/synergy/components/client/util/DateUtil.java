@@ -1,6 +1,5 @@
 package kz.arta.synergy.components.client.util;
 
-import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 import kz.arta.synergy.components.client.resources.Messages;
@@ -22,7 +21,7 @@ public class DateUtil {
     public static final int YEAR_OFFSET = 1900;
 
     /**
-     * Текущая дата //todo в будущем  брать дату сервера
+     * Текущая дата. В будущем  брать дату сервера
      */
     public static Date currentDate = new Date();
 

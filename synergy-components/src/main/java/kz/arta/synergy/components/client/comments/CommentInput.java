@@ -231,7 +231,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
      * Вызывается при изменении текста
      */
     private void textChanged() {
-        //здесь нужна точная ширина
+        //здесь нужна точная ширина, поэтому double
         double width = Utils.getPreciseWidth(textArea.getElement());
         width -= textPadding;
 
@@ -248,6 +248,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
 
         if (lines <= MAX_LINES) {
             if (this.hasScroll) {
+                //случай, когда скролл надо убрать
                 hasScroll = false;
                 updateOffsetForScroll(false);
                 textChanged();
@@ -256,6 +257,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
             scroll.getElement().getStyle().setHeight(height + Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
         } else {
             if (!this.hasScroll) {
+                //случай, когда скролл надо добавить
                 hasScroll = true;
                 updateOffsetForScroll(true);
                 textChanged();

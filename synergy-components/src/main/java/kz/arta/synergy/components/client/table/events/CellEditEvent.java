@@ -12,7 +12,7 @@ import kz.arta.synergy.components.client.table.column.ArtaColumn;
  * Событие изменения значения в таблице
  */
 public class CellEditEvent<T> extends GwtEvent<CellEditEvent.Handler<T>> {
-    private static Type<Handler<?>> TYPE;
+    public final static Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     /**
      * Объект
@@ -22,7 +22,7 @@ public class CellEditEvent<T> extends GwtEvent<CellEditEvent.Handler<T>> {
     /**
      * Столбец
      */
-    private ArtaColumn<T, ?> column;
+    private ArtaColumn<T> column;
 
     /**
      * Тип события
@@ -35,27 +35,20 @@ public class CellEditEvent<T> extends GwtEvent<CellEditEvent.Handler<T>> {
      */
     private boolean jumpForward;
 
-    public CellEditEvent(T object, ArtaColumn<T, ?> column, EditType type, boolean jumpForward) {
+    public CellEditEvent(T object, ArtaColumn<T> column, EditType type, boolean jumpForward) {
         this.object = object;
         this.column = column;
         this.editType = type;
         this.jumpForward = jumpForward;
     }
 
-    public CellEditEvent(T object, ArtaColumn<T, ?> column, EditType type) {
+    public CellEditEvent(T object, ArtaColumn<T> column, EditType type) {
         this(object, column, type, false);
-    }
-
-    public static Type<Handler<?>> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<Handler<?>>();
-        }
-        return TYPE;
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Type<Handler<T>> getAssociatedType() {
-        return (Type) getType();
+        return (Type) TYPE;
     }
 
     protected void dispatch(Handler<T> handler) {
@@ -83,7 +76,7 @@ public class CellEditEvent<T> extends GwtEvent<CellEditEvent.Handler<T>> {
         return object;
     }
 
-    public ArtaColumn<T, ?> getColumn() {
+    public ArtaColumn<T> getColumn() {
         return column;
     }
 

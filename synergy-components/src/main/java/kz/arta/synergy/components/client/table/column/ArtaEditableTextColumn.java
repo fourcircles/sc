@@ -20,7 +20,7 @@ import kz.arta.synergy.components.client.table.events.CellEditEvent;
  *
  * Столбец, в котором можно изменять значения
  */
-public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T, String> {
+public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T> {
 
     protected ArtaEditableTextColumn(String headerText) {
         super(headerText);

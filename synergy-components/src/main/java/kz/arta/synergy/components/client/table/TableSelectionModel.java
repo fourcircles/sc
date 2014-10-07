@@ -25,7 +25,7 @@ public class TableSelectionModel<T> implements SelectionModel<T> {
     /**
      * Выбранный столбец
      */
-    private ArtaColumn<T, ?> selectedColumn;
+    private ArtaColumn<T> selectedColumn;
 
     /**
      * Предоставляет ключи для объектов
@@ -47,10 +47,10 @@ public class TableSelectionModel<T> implements SelectionModel<T> {
         return selectedObject == object;
     }
 
-    public void setSelected(T object, ArtaColumn<T, ?> column,
+    public void setSelected(T object, ArtaColumn<T> column,
                             boolean selected, boolean fireEvents) {
         T newObject;
-        ArtaColumn<T, ?> newColumn;
+        ArtaColumn<T> newColumn;
         if (selected) {
             newObject = object;
             newColumn = column;
@@ -79,7 +79,7 @@ public class TableSelectionModel<T> implements SelectionModel<T> {
      * @param column столбец; если null то предполагается, что работаем с рядом
      * @param selected выделить или снять выделение
      */
-    public void setSelected(T object, ArtaColumn<T, ?> column, boolean selected) {
+    public void setSelected(T object, ArtaColumn<T> column, boolean selected) {
         setSelected(object, column, selected, true);
     }
 
@@ -115,7 +115,7 @@ public class TableSelectionModel<T> implements SelectionModel<T> {
         return selectedObject;
     }
 
-    public ArtaColumn<T, ?> getSelectedColumn() {
+    public ArtaColumn<T> getSelectedColumn() {
         return selectedColumn;
     }
 }

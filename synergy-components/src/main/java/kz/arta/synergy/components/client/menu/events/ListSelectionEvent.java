@@ -14,7 +14,7 @@ import kz.arta.synergy.components.client.menu.DropDownList;
  * Событие выбора элемента списка
  */
 public class ListSelectionEvent<V> extends GwtEvent<ListSelectionEvent.Handler<V>> {
-    private static Type<Handler<?>> TYPE;
+    public final static Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     /**
      * Выбор или снятие выбора для списков предусматривающих выбор нескольких элементов
@@ -42,17 +42,10 @@ public class ListSelectionEvent<V> extends GwtEvent<ListSelectionEvent.Handler<V
         this(item, ActionType.SELECT);
     }
 
-    public static Type<Handler<?>> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<Handler<?>>();
-        }
-        return TYPE;
-    }
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public Type<Handler<V>> getAssociatedType() {
-        return (Type) getType();
+        return (Type) TYPE;
     }
 
     protected void dispatch(Handler<V> handler) {
@@ -74,7 +67,7 @@ public class ListSelectionEvent<V> extends GwtEvent<ListSelectionEvent.Handler<V
     }
 
     public static HandlerRegistration register(EventBus bus, Handler<?> handler) {
-        return bus.addHandler(getType(), handler);
+        return bus.addHandler(TYPE, handler);
     }
 
 }

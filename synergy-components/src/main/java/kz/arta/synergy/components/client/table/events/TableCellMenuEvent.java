@@ -10,31 +10,24 @@ import kz.arta.synergy.components.client.table.column.ArtaColumn;
  * Time: 15:10
  */
 public class TableCellMenuEvent<T> extends GwtEvent<TableCellMenuEvent.Handler<T>> {
-    private static Type<Handler<?>> TYPE;
+    public final static Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     private T object;
-    private ArtaColumn<T, ?> column;
+    private ArtaColumn<T> column;
 
     private int x;
     private int y;
 
-    public TableCellMenuEvent(T object, ArtaColumn<T, ?> column, int x, int y) {
+    public TableCellMenuEvent(T object, ArtaColumn<T> column, int x, int y) {
         this.object = object;
         this.column = column;
         this.x = x;
         this.y = y;
     }
 
-    public static Type<Handler<?>> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<Handler<?>>();
-        }
-        return TYPE;
-    }
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Type<Handler<T>> getAssociatedType() {
-        return (Type) getType();
+        return (Type) TYPE;
     }
 
     protected void dispatch(Handler<T> handler) {
@@ -45,7 +38,7 @@ public class TableCellMenuEvent<T> extends GwtEvent<TableCellMenuEvent.Handler<T
         void onTableCellMenu(TableCellMenuEvent<V> event);
     }
 
-    public ArtaColumn<T, ?> getColumn() {
+    public ArtaColumn<T> getColumn() {
         return column;
     }
 

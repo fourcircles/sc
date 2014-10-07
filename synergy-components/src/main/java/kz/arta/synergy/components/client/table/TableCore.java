@@ -70,7 +70,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
     /**
      * Список столбцов. Порядок соответствует порядку отображения.
      */
-    private List<ArtaColumn<T, ?>> columns;
+    private List<ArtaColumn<T>> columns;
 
     /**
      * Модель выбора объекта
@@ -97,12 +97,12 @@ public class TableCore<T> extends Composite implements HasData<T> {
     /**
      * Столбец, по которому отсортирована таблица
      */
-    private ArtaColumn<T, ?> sortedColumn;
+    private ArtaColumn<T> sortedColumn;
 
     /**
      * Ширина заголовков
      */
-    Map<ArtaColumn<T, ?>, Integer> widths = new HashMap<ArtaColumn<T, ?>, Integer>();
+    Map<ArtaColumn<T>, Integer> widths = new HashMap<ArtaColumn<T>, Integer>();
 
     /**
      * Задана ли высота. Если не задана, то таблица растягивается.
@@ -143,7 +143,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
         scroll.setWidget(table);
 
-        columns = new ArrayList<ArtaColumn<T, ?>>();
+        columns = new ArrayList<ArtaColumn<T>>();
         objects = new ArrayList<T>(pageSize);
 
         table.addClickHandler(new ClickHandler() {
@@ -156,14 +156,14 @@ public class TableCore<T> extends Composite implements HasData<T> {
                 if (onlyRows) {
                     selectionModel.setSelected(object, null, true);
                 } else {
-                    ArtaColumn<T, ?> column = columns.get(cell.getCellIndex());
+                    ArtaColumn<T> column = columns.get(cell.getCellIndex());
                     if (column.isEditable()) {
                         selectionModel.setSelected(object, column, true);
                     }
                 }
             }
         });
-        bus.addHandler(CellEditEvent.getType(), new CellEditEvent.Handler<T>() {
+        bus.addHandler(CellEditEvent.TYPE, new CellEditEvent.Handler<T>() {
             @Override
             public void onCommit(CellEditEvent<T> event) {
                 edit(event, false);
@@ -315,7 +315,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param column столбец
      * @return ширина; если не задана, то -1
      */
-    public int getColumnWidth(ArtaColumn<T, ?> column) {
+    public int getColumnWidth(ArtaColumn<T> column) {
         if (widths.containsKey(column)) {
             int width = widths.get(column);
             return width >= 0 ? width : -1;
@@ -414,7 +414,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param object объект
      * @param column столбец
      */
-    public void select(T object, ArtaColumn<T, ?> column) {
+    public void select(T object, ArtaColumn<T> column) {
         if (selectedRow != -1) {
             innerSelect(selectedRow, selectedColumn, false);
         }
@@ -485,7 +485,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
             return -1;
         }
         for (int i = startColumn - 1; i >= 0; i--) {
-            ArtaColumn<T, ?> column = columns.get(i);
+            ArtaColumn<T> column = columns.get(i);
             if (column.isEditable()) {
                 return i;
             }
@@ -503,7 +503,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
             return -1;
         }
         for (int i = startColumn + 1; i < columns.size(); i++) {
-            ArtaColumn<T, ?> column = columns.get(i);
+            ArtaColumn<T> column = columns.get(i);
             if (column.isEditable()) {
                 return i;
             }
@@ -614,7 +614,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param column столбец
      * @see {@link #columnHasWidth(int)}
      */
-    public boolean columnHasWidth(ArtaColumn<T, ?> column) {
+    public boolean columnHasWidth(ArtaColumn<T> column) {
         return widths.containsKey(column) && widths.get(column) != -1;
     }
 
@@ -636,7 +636,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param column столбец
      * @param width ширина
      */
-    public void setColumnWidth(ArtaColumn<T, ?> column, int width) {
+    public void setColumnWidth(ArtaColumn<T> column, int width) {
         if (!columns.contains(column)) {
             return;
         }
@@ -664,7 +664,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * Сортирует таблицу по столбцу
      * @param column столбец
      */
-    public void sort(ArtaColumn<T, ?> column) {
+    public void sort(ArtaColumn<T> column) {
         if (column == null || !columns.contains(column)) {
             return;
         }
@@ -680,7 +680,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
         bus.fireEventFromSource(new TableSortEvent<T>(column, isAscending), this);
     }
 
-    public ArtaColumn<T, ?> getSortedColumn() {
+    public ArtaColumn<T> getSortedColumn() {
         return sortedColumn;
     }
 
@@ -691,7 +691,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * запрещено. Одинаковые (по виду) столбцы возможны, но они должны быть разными объектами.
      * @param column столбец
      */
-    public void addColumn(final ArtaColumn<T, ?> column) {
+    public void addColumn(final ArtaColumn<T> column) {
         if (columns.contains(column)) {
             return;
         }
@@ -725,14 +725,14 @@ public class TableCore<T> extends Composite implements HasData<T> {
                 visibleRange.getStart() + visibleRange.getLength());
     }
 
-    public ArtaColumn<T, ?> getLastColumn() {
+    public ArtaColumn<T> getLastColumn() {
         return columns.get(columns.size() - 1);
     }
-    public ArtaColumn<T, ?> getColumn(int index) {
+    public ArtaColumn<T> getColumn(int index) {
         return columns.get(index);
     }
 
-    public List<ArtaColumn<T, ?>> getColumns() {
+    public List<ArtaColumn<T>> getColumns() {
         return columns;
     }
 
@@ -742,7 +742,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     void setRow(int row, T value) {
         for (int i = 0; i < columns.size(); i++) {
-            ArtaColumn<T, ?> column = columns.get(i);
+            ArtaColumn<T> column = columns.get(i);
             if (!table.isCellPresent(row, i) || table.getWidget(row, i) == null) {
                 Widget widget = column.createWidget(value, bus);
                 table.setWidget(row, i, widget);
@@ -926,7 +926,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
     }
 
     public HandlerRegistration addSortHandler(TableSortEvent.Handler<T> handler) {
-        return bus.addHandlerToSource(TableSortEvent.getType(), this, handler);
+        return bus.addHandlerToSource(TableSortEvent.TYPE, this, handler);
     }
 
     /**
@@ -979,10 +979,10 @@ public class TableCore<T> extends Composite implements HasData<T> {
     }
 
     public HandlerRegistration addCellMenuHandler(TableCellMenuEvent.Handler<T> handler) {
-        return bus.addHandlerToSource(TableCellMenuEvent.getType(), this, handler);
+        return bus.addHandlerToSource(TableCellMenuEvent.TYPE, this, handler);
     }
 
     public HandlerRegistration addRowMenuHandler(TableRowMenuEvent.Handler<T> handler) {
-        return bus.addHandlerToSource(TableRowMenuEvent.getType(), this, handler);
+        return bus.addHandlerToSource(TableRowMenuEvent.TYPE, this, handler);
     }
 }

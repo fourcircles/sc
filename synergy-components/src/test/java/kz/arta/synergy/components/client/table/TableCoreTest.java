@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -212,13 +213,13 @@ public class TableCoreTest {
 
     @Test
     public void testSort() {
-        ArtaColumn<User, String> firstName = new ArtaTextColumn<User>("1") {
+        ArtaColumn<User> firstName = new ArtaTextColumn<User>("1") {
             @Override
             public String getValue(User object) {
                 return object.getFirstName();
             }
         };
-        ArtaColumn<User, String> spy = spy(firstName);
+        ArtaColumn<User> spy = spy(firstName);
 
         Header header = mock(Header.class);
         when(header.isAscending()).thenReturn(Header.DEFAULT_IS_ASCENDING);
@@ -240,7 +241,7 @@ public class TableCoreTest {
 
     @Test
     public void testSetColumnWidth() {
-        ArtaColumn<User, String> firstName = new ArtaTextColumn<User>("1") {
+        ArtaColumn<User> firstName = new ArtaTextColumn<User>("1") {
             @Override
             public String getValue(User object) {
                 return object.getFirstName();
@@ -258,7 +259,7 @@ public class TableCoreTest {
 
     @Test
     public void testClearColumnWidth() {
-        ArtaColumn<User, String> firstName = new ArtaTextColumn<User>("1") {
+        ArtaColumn<User> firstName = new ArtaTextColumn<User>("1") {
             @Override
             public String getValue(User object) {
                 return object.getFirstName();
@@ -274,22 +275,22 @@ public class TableCoreTest {
         verify(style, times(1)).clearWidth();
     }
 
-    private ArtaColumn createEditableColumn(boolean isEditable) {
-        ArtaColumn column = mock(ArtaColumn.class);
+    private ArtaColumn<User> createEditableColumn(boolean isEditable) {
+        ArtaColumn<User> column = mock(ArtaColumn.class);
         when(column.isEditable()).thenReturn(isEditable);
         return column;
     }
 
     @Test
     public void testNextEditableColumn() {
-        ArtaColumn[] columns = new ArtaColumn[] {
-                createEditableColumn(false),
-                createEditableColumn(true),
-                createEditableColumn(false),
-                createEditableColumn(true),
-                createEditableColumn(false)
-        };
-        for (ArtaColumn column : columns) {
+        List<ArtaColumn<User>> columns = new ArrayList<ArtaColumn<User>>();
+        columns.add(createEditableColumn(false));
+        columns.add(createEditableColumn(true));
+        columns.add(createEditableColumn(false));
+        columns.add(createEditableColumn(true));
+        columns.add(createEditableColumn(false));
+
+        for (ArtaColumn<User> column : columns) {
             table.addColumn(column);
         }
         assertEquals(3, table.getNextEditableColumn(1));

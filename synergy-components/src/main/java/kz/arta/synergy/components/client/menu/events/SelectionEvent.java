@@ -13,7 +13,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * Событие выбора значения в списке
  */
 public class SelectionEvent<V> extends GwtEvent<SelectionEvent.Handler<V>> {
-    private static Type<Handler<?>> TYPE;
+    public final static Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     /**
      * Значение
@@ -34,17 +34,10 @@ public class SelectionEvent<V> extends GwtEvent<SelectionEvent.Handler<V>> {
         this.actionType = actionType;
     }
 
-    public static Type<Handler<?>> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<Handler<?>>();
-        }
-        return TYPE;
-    }
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public Type<Handler<V>> getAssociatedType() {
-        return (Type) getType();
+        return (Type) TYPE;
     }
 
     protected void dispatch(Handler<V> handler) {
@@ -77,7 +70,7 @@ public class SelectionEvent<V> extends GwtEvent<SelectionEvent.Handler<V>> {
     }
 
     public static HandlerRegistration register(EventBus bus, Handler<?> handler) {
-        return bus.addHandler(getType(), handler);
+        return bus.addHandler(TYPE, handler);
     }
 
     /**

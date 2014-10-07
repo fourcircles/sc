@@ -96,7 +96,7 @@ public class Table<T> extends Composite {
     /**
      * Столбец, который перемещается
      */
-    private ArtaColumn<T, ?> movingColumn;
+    private ArtaColumn<T> movingColumn;
 
     /**
      * Позиция на которую будет перемещен столбец при drop'е
@@ -271,13 +271,13 @@ public class Table<T> extends Composite {
         oldDividerPosition = divider.getAbsoluteLeft();
 
         if (LocaleInfo.getCurrentLocale().isRTL()) {
-            ArtaColumn<T, ?> leftColumn = tableCore.getColumns().get(index + 1);
-            ArtaColumn<T, ?> rightColumn = tableCore.getColumns().get(index);
+            ArtaColumn<T> leftColumn = tableCore.getColumns().get(index + 1);
+            ArtaColumn<T> rightColumn = tableCore.getColumns().get(index);
             leftDividerLimit = getHeaderEnd(leftColumn.getHeader()) + leftColumn.getMinWidth();
             rightDividerLimit = getHeaderStart(rightColumn.getHeader()) - rightColumn.getMinWidth();
         } else {
-            ArtaColumn<T, ?> leftColumn = tableCore.getColumns().get(index);
-            ArtaColumn<T, ?> rightColumn = tableCore.getColumns().get(index + 1);
+            ArtaColumn<T> leftColumn = tableCore.getColumns().get(index);
+            ArtaColumn<T> rightColumn = tableCore.getColumns().get(index + 1);
             leftDividerLimit = getHeaderStart(leftColumn.getHeader()) + leftColumn.getMinWidth();
             rightDividerLimit = getHeaderEnd(rightColumn.getHeader()) - rightColumn.getMinWidth();
         }
@@ -364,7 +364,7 @@ public class Table<T> extends Composite {
         isDragging = true;
 
         for (int i = 0; i < tableCore.getColumns().size(); i++) {
-            ArtaColumn<T, ?> column = tableCore.getColumn(i);
+            ArtaColumn<T> column = tableCore.getColumn(i);
             if (isOverHeader(x, column)) {
                 movingColumn = column;
                 break;
@@ -426,7 +426,7 @@ public class Table<T> extends Composite {
         targetPosition = -1;
     }
 
-    private boolean isOverHeader(int x, ArtaColumn<?, ?> column) {
+    private boolean isOverHeader(int x, ArtaColumn<T> column) {
         Header header = column.getHeader();
         return x >= header.getAbsoluteLeft() &&
                 x <= (header.getAbsoluteLeft() + header.getOffsetWidth());
@@ -607,7 +607,7 @@ public class Table<T> extends Composite {
      * Добавляет столбец
      * @param column столбец
      */
-    public void addColumn(final ArtaColumn<T, ?> column) {
+    public void addColumn(final ArtaColumn<T> column) {
         tableCore.addColumn(column);
 
         final Header header = column.getHeader();
@@ -756,6 +756,6 @@ public class Table<T> extends Composite {
     }
 
     public HandlerRegistration addHeaderMenuHandler(TableHeaderMenuEvent.Handler<T> handler) {
-        return bus.addHandlerToSource(TableHeaderMenuEvent.getType(), this, handler);
+        return bus.addHandlerToSource(TableHeaderMenuEvent.TYPE, this, handler);
     }
 }

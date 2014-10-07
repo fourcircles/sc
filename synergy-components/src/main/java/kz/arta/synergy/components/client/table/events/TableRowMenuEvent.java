@@ -9,7 +9,7 @@ import com.google.gwt.event.shared.GwtEvent;
  * Time: 15:28
  */
 public class TableRowMenuEvent<T> extends GwtEvent<TableRowMenuEvent.Handler<T>> {
-    private static Type<Handler<?>> TYPE;
+    public final static Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     private T object;
 
@@ -22,16 +22,9 @@ public class TableRowMenuEvent<T> extends GwtEvent<TableRowMenuEvent.Handler<T>>
         this.y = y;
     }
 
-    public static Type<Handler<?>> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<Handler<?>>();
-        }
-        return TYPE;
-    }
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Type<Handler<T>> getAssociatedType() {
-        return (Type) getType();
+        return (Type) TYPE;
     }
 
     protected void dispatch(Handler<T> handler) {

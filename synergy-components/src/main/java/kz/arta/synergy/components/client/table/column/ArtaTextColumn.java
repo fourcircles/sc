@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * Столбец, в ячейках находится только текст.
  */
-public abstract class ArtaTextColumn<T> extends AbstractArtaColumn<T, String> {
+public abstract class ArtaTextColumn<T> extends AbstractArtaColumn<T> {
 
     protected ArtaTextColumn(String headerText) {
         super(headerText);

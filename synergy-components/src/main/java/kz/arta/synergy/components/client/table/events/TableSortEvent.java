@@ -17,26 +17,19 @@ import java.util.*;
  * {@link com.google.gwt.user.cellview.client.ColumnSortList}
  */
 public class TableSortEvent<T> extends GwtEvent<TableSortEvent.Handler<T>> {
-    private static Type<Handler<?>> TYPE;
+    public final static Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
-    private ArtaColumn<T, ?> column;
+    private ArtaColumn<T> column;
     private boolean isAscending;
 
-    public TableSortEvent(ArtaColumn<T, ?> column, boolean isAscending) {
+    public TableSortEvent(ArtaColumn<T> column, boolean isAscending) {
         this.column = column;
         this.isAscending = isAscending;
     }
 
-    public static Type<Handler<?>> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<Handler<?>>();
-        }
-        return TYPE;
-    }
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Type<Handler<T>> getAssociatedType() {
-        return (Type) getType();
+        return (Type) TYPE;
     }
 
     protected void dispatch(Handler<T> handler) {
@@ -49,8 +42,8 @@ public class TableSortEvent<T> extends GwtEvent<TableSortEvent.Handler<T>> {
 
     public static class ListHandler<V> implements Handler<V> {
         private List<V> list;
-        private Map<ArtaColumn<V, ?>, Comparator<V>> comparators =
-                new HashMap<ArtaColumn<V, ?>, Comparator<V>>();
+        private Map<ArtaColumn<V>, Comparator<V>> comparators =
+                new HashMap<ArtaColumn<V>, Comparator<V>>();
 
         public ListHandler(List<V> list) {
             this.list = list;
@@ -58,7 +51,7 @@ public class TableSortEvent<T> extends GwtEvent<TableSortEvent.Handler<T>> {
 
         @Override
         public void onSort(TableSortEvent<V> event) {
-            ArtaColumn<V, ?> column = event.getColumn();
+            ArtaColumn<V> column = event.getColumn();
             if (column == null) {
                 return;
             }
@@ -78,7 +71,7 @@ public class TableSortEvent<T> extends GwtEvent<TableSortEvent.Handler<T>> {
             }
         }
 
-        public void setComparator(ArtaColumn<V, ?> column, Comparator<V> comparator) {
+        public void setComparator(ArtaColumn<V> column, Comparator<V> comparator) {
             comparators.put(column, comparator);
         }
 
@@ -88,7 +81,7 @@ public class TableSortEvent<T> extends GwtEvent<TableSortEvent.Handler<T>> {
         }
     }
 
-    public ArtaColumn<T, ?> getColumn() {
+    public ArtaColumn<T> getColumn() {
         return column;
     }
 

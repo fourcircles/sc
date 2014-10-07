@@ -219,7 +219,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
 
     @Override
     public HandlerRegistration addSelectionHandler(SelectionEvent.Handler<V> handler) {
-        return innerBus.addHandlerToSource(SelectionEvent.getType(), this, handler);
+        return innerBus.addHandlerToSource(SelectionEvent.TYPE, this, handler);
     }
 
     @Override

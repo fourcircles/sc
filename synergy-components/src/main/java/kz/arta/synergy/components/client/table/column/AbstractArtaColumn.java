@@ -9,7 +9,7 @@ import kz.arta.synergy.components.client.table.Header;
  * Date: 04.09.14
  * Time: 17:41
  */
-public abstract class AbstractArtaColumn<T, C> implements ArtaColumn<T, C> {
+public abstract class AbstractArtaColumn<T> implements ArtaColumn<T> {
     private boolean isSortable;
     private String dataStoreName;
 
@@ -51,7 +51,6 @@ public abstract class AbstractArtaColumn<T, C> implements ArtaColumn<T, C> {
         return getHeader().getText();
     }
 
-    public abstract C getValue(T object);
     public abstract Widget createWidget(T object, EventBus bus);
     public abstract void updateWidget(Widget widget, T object);
 }

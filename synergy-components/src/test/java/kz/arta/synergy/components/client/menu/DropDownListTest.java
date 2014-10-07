@@ -119,7 +119,7 @@ public class DropDownListTest {
     @Test
     public void testSelect() {
         ListSelectionEvent.Handler<Integer> handler = mock(ListSelectionEvent.Handler.class);
-        bus.addHandlerToSource(ListSelectionEvent.getType(), intList, handler);
+        bus.addHandlerToSource(ListSelectionEvent.TYPE, intList, handler);
 
         intList.selectValue(2);
         intList.selectValue(42);

@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.label;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -34,7 +35,8 @@ public class GradientLabel2 extends Composite implements ArtaHasText{
 
         this.font = font;
 
-        label = new InlineLabel();
+        label = GWT.create(InlineLabel.class);
+        label.setText("");
         label.setStyleName(font);
         root.add(label);
 
@@ -76,5 +78,6 @@ public class GradientLabel2 extends Composite implements ArtaHasText{
     @Override
     public void setText(String text) {
         label.setText(text);
+        adjustGradient();
     }
 }

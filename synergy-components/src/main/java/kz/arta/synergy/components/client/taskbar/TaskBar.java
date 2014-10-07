@@ -166,12 +166,6 @@ public class TaskBar extends Composite {
                 updateWidths();
             }
         });
-        itemUI.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                item.open();
-            }
-        });
         return itemUI;
     }
 
@@ -179,32 +173,25 @@ public class TaskBar extends Composite {
      * Добавляет элемент
      */
     public void addItem(final TaskBarItem item) {
-        item.addTaskBarHandler(new TaskBarEvent.AbstractHandler() {
-            @Override
-            public void onClose(TaskBarEvent event) {
-                removeItem(item);
-            }
+        if (!items.contains(item)) {
+            items.add(item);
 
-            @Override
-            public void onCollapse(TaskBarEvent event) {
-                uiMap.get(item).removeStyleName(SynergyComponents.resources.cssComponents().open());
-            }
+            TaskBarItemUI ui = createItemUI(item);
+            uiMap.put(item, ui);
+            root.add(ui);
+            updateWidths();
 
-            @Override
-            public void onShow(TaskBarEvent event) {
-                TaskBarItemUI ui;
-                if (!items.contains(item)) {
-                    ui = createItemUI(item);
-                    items.add(item);
-                    uiMap.put(item, ui);
-                    root.add(ui);
-                    updateWidths();
-                } else {
-                    ui = uiMap.get(item);
+            item.addTaskBarHandler(new TaskBarEvent.AbstractHandler() {
+                @Override
+                public void onClose(TaskBarEvent event) {
+                    removeItem(item);
                 }
-                ui.addStyleName(SynergyComponents.resources.cssComponents().open());
+            });
+
+            if (item.isOpen()) {
+                item.open();
             }
-        });
+        }
     }
 
     /**

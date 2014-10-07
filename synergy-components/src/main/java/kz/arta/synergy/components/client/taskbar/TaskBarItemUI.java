@@ -1,10 +1,14 @@
 package kz.arta.synergy.components.client.taskbar;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
@@ -14,6 +18,7 @@ import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.label.GradientLabel2;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.taskbar.events.ModelChangeEvent;
+import kz.arta.synergy.components.client.taskbar.events.TaskBarEvent;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -50,22 +55,23 @@ public class TaskBarItemUI extends Composite implements HasClickHandlers {
      */
     private final GradientLabel2 label;
 
+    /**
+     * Внутренний eventbus для событий.
+     */
+    private EventBus bus;
+
     private TaskBarItem model;
 
-    public TaskBarItemUI(TaskBarItem model) {
+    public TaskBarItemUI(final TaskBarItem model) {
+        bus = new SimpleEventBus();
         this.model = model;
 
         FlowPanel root = new FlowPanel();
         initWidget(root);
         root.setStyleName(SynergyComponents.resources.cssComponents().item());
 
-        icon = new Image();
-        if (model.getTaskBarIcon() != null) {
-            iconImage = model.getTaskBarIcon();
-        } else {
-            iconImage = DEFAULT_ICON;
-        }
-        icon.setResource(iconImage);
+        icon = GWT.create(Image.class);
+        updateIcon();
 
         label = new GradientLabel2(FONT);
         label.setText(model.getText() == null ? "" : model.getText());
@@ -81,18 +87,81 @@ public class TaskBarItemUI extends Composite implements HasClickHandlers {
                 modelChanged();
             }
         });
+
+        root.addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                click();
+                bus.fireEventFromSource(event, this);
+            }
+        }, ClickEvent.getType());
+
+        model.addTaskBarHandler(new TaskBarEvent.AbstractHandler() {
+            @Override
+            public void onClose(TaskBarEvent event) {
+                openChanged();
+                TaskBarItemUI.this.removeFromParent();
+            }
+            @Override
+            public void onCollapse(TaskBarEvent event) {
+                openChanged();
+            }
+            @Override
+            public void onShow(TaskBarEvent event) {
+                openChanged();
+            }
+        });
     }
 
-    private void modelChanged() {
-        if (iconImage != model.getTaskBarIcon()) {
-            iconImage = model.getTaskBarIcon();
-            icon.setResource(iconImage);
+    void click() {
+        if (model.isOpen()) {
+            model.close();
+        } else {
+            model.open();
         }
+    }
+
+    /**
+     * Вызывается при поступлении события {@link kz.arta.synergy.components.client.taskbar.events.ModelChangeEvent}
+     * из модели
+     */
+    private void modelChanged() {
+        updateIcon();
+
         String modelText = model.getText();
         if (!label.getText().equals(modelText)) {
             label.setText(modelText);
-            fireEvent(new ModelChangeEvent());
+
+            bus.fireEventFromSource(new ModelChangeEvent(), TaskBarItemUI.this);
         }
+    }
+
+    /**
+     * Обновляет иконку в соответствии с моделью
+     * Размер иконки всегда один, поэтому этот метод не создает {@link kz.arta.synergy.components.client.taskbar.events.ModelChangeEvent}
+     */
+    private void updateIcon() {
+        ImageResource newIcon = model.getTaskBarIcon() == null ? DEFAULT_ICON : model.getTaskBarIcon();
+        if (iconImage != newIcon) {
+            iconImage = newIcon;
+            icon.setResource(iconImage);
+        }
+    }
+
+    /**
+     * Обновляет вид в соответствии с тем, открыта ли модель
+     */
+    private void openChanged() {
+        if (model.isOpen()) {
+            addStyleName(SynergyComponents.resources.cssComponents().open());
+        } else {
+            removeStyleName(SynergyComponents.resources.cssComponents().open());
+        }
+    }
+
+    @Override
+    public void fireEvent(GwtEvent<?> event) {
+        bus.fireEventFromSource(event, this);
     }
 
     /**
@@ -114,7 +183,7 @@ public class TaskBarItemUI extends Composite implements HasClickHandlers {
 
     @Override
     public HandlerRegistration addClickHandler(ClickHandler handler) {
-        return addDomHandler(handler, ClickEvent.getType());
+        return bus.addHandlerToSource(ClickEvent.getType(), this, handler);
     }
 
     /**
@@ -126,6 +195,6 @@ public class TaskBarItemUI extends Composite implements HasClickHandlers {
     }
 
     public HandlerRegistration addModelChangeHandler(ModelChangeEvent.Handler handler) {
-        return addHandler(handler, ModelChangeEvent.getType());
+        return bus.addHandlerToSource(ModelChangeEvent.getType(), this, handler);
     }
 }

@@ -67,37 +67,6 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
      */
     private GradientLabel titleLabel;
 
-    /**
-     * Производит кнопки для верхнего правого угла диалога, присваивая хэндлеры для событий мыши.
-     * Также предотвращает перетаскивание картинки кнопки (например в адресную строку браузера).
-     * @param simple картинка для кнопки
-     * @param over картинка для кнопки при наведении мыши
-     * @return кнопка
-     */
-    protected Image makeTitleButton(final ImageResource simple, final ImageResource over) {
-        final Image button = GWT.create(Image.class);
-        button.setResource(simple);
-        button.addDragStartHandler(new DragStartHandler() {
-            @Override
-            public void onDragStart(DragStartEvent event) {
-                event.preventDefault();
-            }
-        });
-        button.addMouseOverHandler(new MouseOverHandler() {
-            @Override
-            public void onMouseOver(MouseOverEvent event) {
-                button.setResource(over);
-            }
-        });
-        button.addMouseOutHandler(new MouseOutHandler() {
-            @Override
-            public void onMouseOut(MouseOutEvent event) {
-                button.setResource(simple);
-            }
-        });
-        return button;
-    }
-
     public DialogSimple() {
         this(true);
     }
@@ -160,26 +129,51 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
         getElement().getStyle().setZIndex(2000);
     }
 
+    public DialogSimple(String title, Widget content) {
+        this();
+        setText(title);
+        setContent(content);
+    }
+
+    /**
+     * Производит кнопки для верхнего правого угла диалога, присваивая хэндлеры для событий мыши.
+     * Также предотвращает перетаскивание картинки кнопки (например в адресную строку браузера).
+     * @param simple картинка для кнопки
+     * @param over картинка для кнопки при наведении мыши
+     * @return кнопка
+     */
+    protected Image makeTitleButton(final ImageResource simple, final ImageResource over) {
+        final Image button = GWT.create(Image.class);
+        button.setResource(simple);
+        button.addDragStartHandler(new DragStartHandler() {
+            @Override
+            public void onDragStart(DragStartEvent event) {
+                event.preventDefault();
+            }
+        });
+        button.addMouseOverHandler(new MouseOverHandler() {
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                button.setResource(over);
+            }
+        });
+        button.addMouseOutHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                button.setResource(simple);
+            }
+        });
+        return button;
+    }
+
     public void collapse() {
         hide();
         fireEvent(new TaskBarEvent(TaskBarEvent.EventType.COLLAPSE));
-//        if (bus != null) {
-//            bus.fireEvent(new TaskBarEvent(this, TaskBarEvent.EventType.COLLAPSE));
-//        }
     }
 
     public void close() {
         hide();
         fireEvent(new TaskBarEvent(TaskBarEvent.EventType.CLOSE));
-//        if (bus != null) {
-//            bus.fireEvent(new TaskBarEvent(this, TaskBarEvent.EventType.CLOSE));
-//        }
-    }
-
-    public DialogSimple(String title, Widget content) {
-        this();
-        setText(title);
-        setContent(content);
     }
 
     /**
@@ -288,12 +282,8 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
 
     @Override
     public ImageResource getTaskBarIcon() {
-        return null; //иконка по умолчанию
-    }
-
-    @Override
-    public void setTaskBarIcon(ImageResource image) {
-        //иконка по умолчанию для всех диалогов
+        //иконка по умолчанию
+        return null;
     }
 
     @Override
@@ -304,6 +294,11 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
     @Override
     public HandlerRegistration addTaskBarHandler(TaskBarEvent.Handler handler) {
         return addHandler(handler, TaskBarEvent.getType());
+    }
+
+    @Override
+    public boolean isOpen() {
+        return isShowing();
     }
 
     @Override

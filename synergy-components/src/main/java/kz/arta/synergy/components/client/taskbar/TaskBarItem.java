@@ -29,7 +29,6 @@ public interface TaskBarItem extends HasText {
      * Иконка. Если возвращает null - используется стандартная иконка.
      */
     ImageResource getTaskBarIcon();
-    void setTaskBarIcon(ImageResource image);
 
     /**
      * Добавляет хендлер на изменение состояния
@@ -38,6 +37,10 @@ public interface TaskBarItem extends HasText {
 
     HandlerRegistration addTaskBarHandler(TaskBarEvent.Handler handler);
 
+    /**
+     * Открыт ли элемент.
+     */
+    boolean isOpen();
     void close();
     void open();
     void collapse();

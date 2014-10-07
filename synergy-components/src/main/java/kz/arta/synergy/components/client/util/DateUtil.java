@@ -29,18 +29,18 @@ public class DateUtil {
      * Список месяцев
      */
     public static String[] fullMonths = new String[] {
-            Messages.januaryFull(),
-            Messages.februaryFull(),
-            Messages.marchFull(),
-            Messages.aprilFull(),
-            Messages.mayFull(),
-            Messages.juneFull(),
-            Messages.julyFull(),
-            Messages.augustFull(),
-            Messages.septemberFull(),
-            Messages.octoberFull(),
-            Messages.novemberFull(),
-            Messages.decemberFull(),
+            Messages.JANUARY_FULL,
+            Messages.FEBRUARY_FULL,
+            Messages.MARCH_FULL,
+            Messages.APRIL_FULL,
+            Messages.MAY_FULL,
+            Messages.JUNE_FULL,
+            Messages.JULY_FULL,
+            Messages.AUGUST_FULL,
+            Messages.SEPTEMBER_FULL,
+            Messages.OCTOBER_FULL,
+            Messages.NOVEMBER_FULL,
+            Messages.DECEMBER_FULL,
     };
 
     /**

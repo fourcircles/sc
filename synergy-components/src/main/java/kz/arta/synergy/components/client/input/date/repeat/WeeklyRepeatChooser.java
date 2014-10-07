@@ -82,11 +82,11 @@ public class WeeklyRepeatChooser extends BaseRepeatChooser {
         Label maxLabel = Collections.max(labels, new Comparator<Label>() {
             @Override
             public int compare(Label label1, Label label2) {
-                return Utils.getTextWidth(label1.getText(), FONT) -
-                        Utils.getTextWidth(label2.getText(), FONT);
+                return Utils.impl().getTextWidth(label1.getText(), FONT) -
+                        Utils.impl().getTextWidth(label2.getText(), FONT);
             }
         });
-        int maxWidth = Utils.getTextWidth(maxLabel.getText(), FONT);
+        int maxWidth = Utils.impl().getTextWidth(maxLabel.getText(), FONT);
         for (Label day : labels) {
             day.getElement().getStyle().setWidth(maxWidth, Style.Unit.PX);
         }

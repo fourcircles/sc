@@ -65,6 +65,10 @@ class TaskBarItemTest implements TaskBarItem{
         return isOpen;
     }
 
+    public void setOpen(boolean open) {
+        isOpen = open;
+    }
+
     @Override
     public void setText(String text) {
         this.text = text;

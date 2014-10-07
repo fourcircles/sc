@@ -190,8 +190,9 @@ public class TaskBarItemUI extends Composite implements HasClickHandlers {
      * Возвращает ширину (без границ) элемента без сжатия текста
      */
     public double getNormalWidth() {
-        double textWidth = Utils.getPreciseTextWidth(model.getText(), FONT);
-        return Constants.STD_ICON_WIDTH + textWidth + 5 + 10 + 10;
+        double textWidth = Utils.impl().getPreciseTextWidth(model.getText(), FONT);
+        return textWidth + Constants.STD_ICON_WIDTH +
+                Constants.TASKBAR_ITEM_PADDING * 3 + Constants.TASKBAR_IMAGE_MARGIN;
     }
 
     public HandlerRegistration addModelChangeHandler(ModelChangeEvent.Handler handler) {

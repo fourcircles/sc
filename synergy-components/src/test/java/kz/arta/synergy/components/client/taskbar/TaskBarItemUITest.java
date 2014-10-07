@@ -1,11 +1,6 @@
 package kz.arta.synergy.components.client.taskbar;
 
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -19,14 +14,11 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 /**
@@ -107,5 +99,19 @@ public class TaskBarItemUITest {
 
         item.close();
         assertFalse(styles.contains(OPEN));
+    }
+
+    @Test
+    public void testClickOpen() {
+        item.setOpen(false);
+        ui.click();
+        assertTrue(item.isOpen());
+    }
+
+    @Test
+    public void testClickClose() {
+        item.setOpen(true);
+        ui.click();
+        assertFalse(item.isOpen());
     }
 }

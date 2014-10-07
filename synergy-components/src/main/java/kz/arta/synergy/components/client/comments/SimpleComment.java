@@ -19,7 +19,7 @@ public class SimpleComment implements Comment {
     private CommentType type;
 
     public SimpleComment(String text, String author, Date date, CommentType type) {
-        this.text = Utils.parseComment(SafeHtmlUtils.htmlEscape(text));
+        this.text = Utils.impl().parseComment(SafeHtmlUtils.htmlEscape(text));
         this.author = author;
         this.date = date;
         this.type = type;

@@ -232,7 +232,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
      */
     private void textChanged() {
         //здесь нужна точная ширина, поэтому double
-        double width = Utils.getPreciseWidth(textArea.getElement());
+        double width = Utils.impl().getPreciseWidth(textArea.getElement());
         width -= textPadding;
 
         //левый или правый padding не имеет значения, главное сумма горизонтальных отступов текста
@@ -284,7 +284,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
 
     @Override
     public void setText(String text) {
-        mirror.setText(Utils.parseComment(text));
+        mirror.setText(Utils.impl().parseComment(text));
     }
 
     public HandlerRegistration addKeyUpHandler(KeyUpHandler handler) {

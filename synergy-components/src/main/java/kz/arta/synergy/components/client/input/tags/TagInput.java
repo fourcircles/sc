@@ -279,7 +279,7 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
      * Если текст слишком длинный - теги сдвигаются влево и поле ввода увеличивается.
      */
     private void textChanged() {
-        int textWidth = Utils.getTextWidth(input);
+        int textWidth = Utils.impl().getTextWidth(input);
 
         //ширина поля ввода текста
         int startTextWidth = getAvailableSpace() - tagsPanel.getTagsWidth();

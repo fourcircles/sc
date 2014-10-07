@@ -125,12 +125,12 @@ public class ArtaTextArea extends Composite {
     }
 
     private void textChanged() {
-        int height = Utils.getTextHeight(textArea.getText(), textArea.getStyleName(), textArea.getOffsetWidth());
+        int height = Utils.impl().getTextHeight(textArea.getText(), textArea.getStyleName(), textArea.getOffsetWidth());
 
         if (Math.ceil(height * 1.0/ Constants.LINE_HEIGHT) > rows) {
             if (!changed) {
                 textArea.setWidth(textArea.getOffsetWidth() - 2 * Constants.COMMON_INPUT_PADDING + "px");
-                height = Utils.getTextHeight(textArea.getText(), textArea.getStyleName(), textArea.getOffsetWidth());
+                height = Utils.impl().getTextHeight(textArea.getText(), textArea.getStyleName(), textArea.getOffsetWidth());
             }
             changed = true;
             textArea.setVisibleLines((int) Math.ceil(height * 1.0 / Constants.LINE_HEIGHT));

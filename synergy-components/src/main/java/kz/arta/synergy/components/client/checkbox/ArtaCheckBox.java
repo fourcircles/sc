@@ -36,7 +36,7 @@ public class ArtaCheckBox extends com.google.gwt.user.client.ui.CheckBox {
     public ArtaCheckBox() {
         super();
         setStyleName(SynergyComponents.resources.cssComponents().checkbox());
-        Utils.cancelNonLeftButtons(getElement().getFirstChildElement().getNextSiblingElement());
+        Utils.impl().cancelNonLeftButtons(getElement().getFirstChildElement().getNextSiblingElement());
     }
 
     /**

@@ -130,7 +130,7 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
     @Override
     public int getOffsetWidth() {
         return Math.min(getMaxWidth(),
-                Utils.getTextWidth(this) + Constants.TAG_PADDING * 3 + 16);
+                Utils.impl().getTextWidth(this) + Constants.TAG_PADDING * 3 + 16);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
      * @return ширина тега
      */
     public int getWidth() {
-        int totalWidth = Utils.getTextWidth(this);
+        int totalWidth = Utils.impl().getTextWidth(this);
         totalWidth += 3 * Constants.COMMON_INPUT_PADDING;
         totalWidth += Constants.STD_ICON_WIDTH;
 

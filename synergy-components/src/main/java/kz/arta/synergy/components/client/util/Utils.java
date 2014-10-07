@@ -9,19 +9,22 @@ import com.google.gwt.dom.client.Element;
  * Time: 17:59
  */
 public class Utils {
-    private static final RulerLabel RULER = GWT.create(RulerLabel.class);
+    private final RulerLabel RULER = GWT.create(RulerLabel.class);
+    private final HeightRuler HEIGHT_RULER = GWT.create(HeightRuler.class);
 
-    private static final HeightRuler HEIGHT_RULER = GWT.create(HeightRuler.class);
+    private static final Utils UTILS = GWT.create(Utils.class);
 
-    private Utils(){
+    public static Utils impl() {
+        return UTILS;
     }
+
     /**
      * Возвращает ширина текста с заданным стилем
      * @param text текст
      * @param style стиль
      * @return ширина
      */
-    public static int getTextWidth(String text, String style) {
+    public int getTextWidth(String text, String style) {
         return RULER.getTextWidth(text, style);
     }
 
@@ -30,19 +33,19 @@ public class Utils {
      * @param textWidget элемент с текстом и стилем
      * @return ширина текста
      */
-    public static int getTextWidth(ArtaHasText textWidget) {
+    public int getTextWidth(ArtaHasText textWidget) {
         return RULER.getTextWidth(textWidget);
     }
 
-    public static double getPreciseTextWidth(String text, String style) {
+    public double getPreciseTextWidth(String text, String style) {
         return RULER.getPresiceTextWidth(text, style);
     }
 
-    public static double getPreciseTextWidth(ArtaHasText textWidget) {
+    public double getPreciseTextWidth(ArtaHasText textWidget) {
         return RULER.getPreciseTextWidth(textWidget);
     }
 
-    public static int getTextHeight(String text, String style, int width) {
+    public int getTextHeight(String text, String style, int width) {
         return HEIGHT_RULER.getTextHeight(text, style, width);
     }
 
@@ -51,7 +54,7 @@ public class Utils {
      * Причина использования - некорректная работа метода getButton для {@link com.google.gwt.user.client.ui.RadioButton}
      * @param element элемент
      */
-    public static native void cancelNonLeftButtons(com.google.gwt.dom.client.Element element)
+    public native void cancelNonLeftButtons(com.google.gwt.dom.client.Element element)
     /*-{
         element.addEventListener('click', function(e) {
             var cancel = false;
@@ -77,7 +80,7 @@ public class Utils {
      * @param element элемент
      * @return ширина
      */
-    public static native double getPreciseWidth(Element element)
+    public native double getPreciseWidth(Element element)
     /*-{
         return element.getBoundingClientRect().width;
     }-*/;
@@ -87,7 +90,7 @@ public class Utils {
      * @param text текст
      * @return html с добавленными элементами ссылок
      */
-    public static native String parseComment(String text)
+    public native String parseComment(String text)
     /*-{
         var _link = document.createElement('a');
         return text.replace(/((http|https|ftp|ftps|smb|webdav|dav|notes):\/\/|#)[\w\/\.\?\:\=&-;%]+/gim, function (match) {

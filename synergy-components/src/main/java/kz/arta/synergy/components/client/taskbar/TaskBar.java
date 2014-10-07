@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.taskbar;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -89,7 +90,7 @@ public class TaskBar extends Composite {
         Window.addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {
-                width = Utils.getPreciseWidth(TaskBar.this.getElement()) - Constants.BORDER_WIDTH * 2 - Constants.TASKBAR_IMAGE_MARGIN;
+                width = Utils.impl().getPreciseWidth(TaskBar.this.getElement()) - Constants.BORDER_WIDTH * 2 - Constants.TASKBAR_IMAGE_MARGIN;
                 updateWidths();
             }
         });
@@ -103,7 +104,8 @@ public class TaskBar extends Composite {
         indicator.sinkEvents(Event.ONCLICK);
         indicator.setStyleName(SynergyComponents.resources.cssComponents().item());
         indicator.addStyleName(SynergyComponents.resources.cssComponents().indicator());
-        Image indicatorImage = new Image(ImageResources.IMPL.calendarIcon());
+        Image indicatorImage = GWT.create(Image.class);
+        indicatorImage.setResource(ImageResources.IMPL.calendarIcon());
 
         indicator.add(indicatorImage);
         indicator.add(label);
@@ -147,7 +149,7 @@ public class TaskBar extends Composite {
         Scheduler.get().scheduleDeferred(new Command() {
             @Override
             public void execute() {
-                width = Utils.getPreciseWidth(TaskBar.this.getElement()) - Constants.BORDER_WIDTH * 2 - Constants.TASKBAR_IMAGE_MARGIN;
+                width = Utils.impl().getPreciseWidth(TaskBar.this.getElement()) - Constants.BORDER_WIDTH * 2 - Constants.TASKBAR_IMAGE_MARGIN;
                 updateWidths();
             }
         });
@@ -158,7 +160,7 @@ public class TaskBar extends Composite {
      * @param item элемент панели задач
      * @return его вид
      */
-    private TaskBarItemUI createItemUI(final TaskBarItem item) {
+    TaskBarItemUI createItemUI(final TaskBarItem item) {
         final TaskBarItemUI itemUI = new TaskBarItemUI(item);
         itemUI.addModelChangeHandler(new ModelChangeEvent.Handler() {
             @Override
@@ -169,11 +171,15 @@ public class TaskBar extends Composite {
         return itemUI;
     }
 
+    public boolean contains(TaskBarItem item) {
+        return items.contains(item);
+    }
+
     /**
      * Добавляет элемент
      */
     public void addItem(final TaskBarItem item) {
-        if (!items.contains(item)) {
+        if (item != null && !items.contains(item)) {
             items.add(item);
 
             TaskBarItemUI ui = createItemUI(item);
@@ -212,7 +218,7 @@ public class TaskBar extends Composite {
      * @param index позиция
      */
     public void removeItem(int index) {
-        if (index < 0 && index >= items.size()) {
+        if (index < 0 || index >= items.size()) {
             return;
         }
         removeItem(items.get(index));
@@ -226,7 +232,7 @@ public class TaskBar extends Composite {
      * Пробует разместить все элементы без сжатия
      * @return true если получилось
      */
-    private boolean fitNormally() {
+    boolean fitNormally() {
         double totalWidth = 0;
         for (TaskBarItem item : items) {
             totalWidth += uiMap.get(item).getNormalWidth() + Constants.BORDER_WIDTH * 2;
@@ -248,7 +254,7 @@ public class TaskBar extends Composite {
      * @return ширина индикатора
      */
     private double getIndicatorWidth(int num) {
-        double textWidth = Utils.getPreciseTextWidth("+" + num, SynergyComponents.resources.cssComponents().mainText());
+        double textWidth = Utils.impl().getPreciseTextWidth("+" + num, SynergyComponents.resources.cssComponents().mainText());
         return textWidth + Constants.STD_ICON_WIDTH + Constants.TASKBAR_IMAGE_MARGIN
                 + Constants.TASKBAR_ITEM_PADDING * 2 + Constants.BORDER_WIDTH * 2;
     }

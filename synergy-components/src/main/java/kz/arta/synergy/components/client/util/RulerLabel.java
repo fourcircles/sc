@@ -43,7 +43,7 @@ public class RulerLabel extends Label {
 
     public double getPresiceTextWidth(String text, String fontStyle) {
         updateLabel(text, fontStyle);
-        return Utils.getPreciseWidth(getElement());
+        return Utils.impl().getPreciseWidth(getElement());
     }
 
     public double getPreciseTextWidth(ArtaHasText textElement) {

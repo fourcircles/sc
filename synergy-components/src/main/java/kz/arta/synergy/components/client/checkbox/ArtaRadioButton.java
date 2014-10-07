@@ -15,7 +15,7 @@ public class ArtaRadioButton extends com.google.gwt.user.client.ui.RadioButton {
     public ArtaRadioButton(String name) {
         super(name);
         setStyleName(SynergyComponents.resources.cssComponents().radio());
-        Utils.cancelNonLeftButtons(getElement().getFirstChildElement().getNextSiblingElement());
+        Utils.impl().cancelNonLeftButtons(getElement().getFirstChildElement().getNextSiblingElement());
     }
 
     /**

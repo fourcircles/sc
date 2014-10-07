@@ -142,7 +142,7 @@ public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnable
         width += Constants.TAG_INDICATOR_PADDING * 2 + (tags.size() > MAX_TAG ? Constants.STD_SCROLL_WIDTH : 0);
         popupPanel.setWidth(width + "px");
 
-        int labelWidth = Utils.getTextWidth(label.getText(), getFontStyle()) + Constants.COMMON_INPUT_PADDING;
+        int labelWidth = Utils.impl().getTextWidth(label.getText(), getFontStyle()) + Constants.COMMON_INPUT_PADDING;
 
         popupPanel.showRelativeTo(label);
 
@@ -222,7 +222,7 @@ public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnable
 
     @Override
     public int getOffsetWidth() {
-        return Utils.getTextWidth(this) + Constants.TAG_PADDING * 2;
+        return Utils.impl().getTextWidth(this) + Constants.TAG_PADDING * 2;
     }
 
     @Override

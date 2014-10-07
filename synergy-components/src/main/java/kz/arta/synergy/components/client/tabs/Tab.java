@@ -121,7 +121,7 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
      * Задает ширину текста с градиентом для правильного выставления градиента
      */
     private void adjustWidth() {
-        int width = Utils.getTextWidth(getText(), SynergyComponents.resources.cssComponents().mainTextBold());
+        int width = Utils.impl().getTextWidth(getText(), SynergyComponents.resources.cssComponents().mainTextBold());
         width += Constants.COMMON_INPUT_PADDING * 2 + Constants.BORDER_WIDTH * 2;
         if (hasCloseButton) {
             width += Constants.STD_ICON_WIDTH + Constants.DIALOG_CLOSE_BUTTON_RIGHT_MARGIN;

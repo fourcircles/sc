@@ -48,36 +48,17 @@ public class RepeatDate {
             case YEAR:
                 initYearDate(day, month);
                 break;
+            default:
+                throw new IllegalArgumentException();
         }
+    }
 
-//        int maxDays = mode == RepeatChooser.MODE.WEEK ? DateUtil.WEEKDAYS - 1 : RepeatDate.MAX_DAYS;
-//        if (day < 0 || day > maxDays) {
-//            throw new IllegalArgumentException();
-//        }
-//        if (mode == RepeatChooser.MODE.YEAR) {
-//            if (month < 0 || month > DateUtil.MONTHS - 1) {
-//                throw new IllegalArgumentException();
-//            }
-//        }
-//
-//        this.day = day;
-//        this.month = month;
-//        this.mode = mode;
-//
-//        switch (mode) {
-//            case WEEK:
-//                int first = LocaleInfo.getCurrentLocale().getDateTimeFormatInfo().firstDayOfTheWeek();
-//                text = DateUtil.weekDays[day];
-//                break;
-//            case YEAR:
-//                text = "" + (day < 9 ? "0" : "") + (day + 1) + "." + (month + 1);
-//                break;
-//            case MONTH:
-//                text = Integer.toString(day + 1);
-//                break;
-//            default:
-//                throw new IllegalArgumentException();
-//        }
+    public RepeatDate(int day, RepeatChooser.MODE mode) {
+        this(day, -1, mode);
+    }
+
+    public RepeatChooser.MODE getMode() {
+        return mode;
     }
 
     private void initWeekDate(int day) {
@@ -111,14 +92,6 @@ public class RepeatDate {
         text = (day < 9 ? "0" : "") + (day + 1) + '.' + (month + 1);
     }
 
-    public RepeatDate(int day, RepeatChooser.MODE mode) {
-        this(day, -1, mode);
-    }
-
-    public RepeatChooser.MODE getMode() {
-        return mode;
-    }
-
     public int getDay() {
         return day;
     }
@@ -144,15 +117,11 @@ public class RepeatDate {
         if (mode != date.getMode()) {
             return false;
         }
-        switch (mode) {
-            case WEEK:
-            case MONTH:
-                return day == date.getDay();
-            case YEAR:
-                return day == date.getDay() && month == date.getMonth();
-            default:
-                return false;
+        boolean result = day == date.getDay();
+        if (mode == RepeatChooser.MODE.YEAR) {
+            result = result && (month == date.getMonth());
         }
+        return result;
     }
 
     @Override

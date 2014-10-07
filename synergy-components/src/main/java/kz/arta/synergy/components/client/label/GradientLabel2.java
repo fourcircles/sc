@@ -47,7 +47,7 @@ public class GradientLabel2 extends Composite implements ArtaHasText{
     public void adjustGradient() {
         getElement().getStyle().setPadding(0, Style.Unit.PX);
         if (isAttached()) {
-            if (Utils.getPreciseWidth(getElement()) < Utils.getPreciseTextWidth(getText(), font)) {
+            if (Utils.impl().getPreciseWidth(getElement()) < Utils.impl().getPreciseTextWidth(getText(), font)) {
                 root.add(gradient);
             } else {
                 root.remove(gradient);

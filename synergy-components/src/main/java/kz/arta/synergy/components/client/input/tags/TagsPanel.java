@@ -140,7 +140,7 @@ public class TagsPanel<V> extends Composite implements HasEnabled {
 
             if (i > 0) {
                 indicator.setText(i + "+");
-                totalWidth += Utils.getTextWidth(indicator) + Constants.TAG_PADDING * 2 + Constants.TAG_INTERVAL;
+                totalWidth += Utils.impl().getTextWidth(indicator) + Constants.TAG_PADDING * 2 + Constants.TAG_INTERVAL;
             }
 
             for (int j = i; j < tags.size(); j++) {

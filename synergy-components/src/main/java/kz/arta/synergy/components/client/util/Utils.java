@@ -90,7 +90,7 @@ public class Utils {
     public static native String parseComment(String text)
     /*-{
         var _link = document.createElement('a');
-        return text.replace(/((http|https|ftp|ftps|smb|webdav|dav|notes):\/\/|#)[\w\/\.\?\:\=&-]+/gim, function (match) {
+        return text.replace(/((http|https|ftp|ftps|smb|webdav|dav|notes):\/\/|#)[\w\/\.\?\:\=&-;%]+/gim, function (match) {
             _link.href = match;
             _link.innerHTML = match;
             _link.target = "_blank";

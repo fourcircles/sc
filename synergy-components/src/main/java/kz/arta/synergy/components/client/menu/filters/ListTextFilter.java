@@ -21,6 +21,15 @@ abstract public class ListTextFilter implements ListFilter {
     protected String text;
     private EventBus bus;
 
+    public ListTextFilter() {
+        bus = new SimpleEventBus();
+    }
+
+    public ListTextFilter(String text) {
+        this();
+        this.text = text;
+    }
+
     /**
      * Создает фильтр, который проверяет начинается ли текст элемента списка с заданного текста
      */
@@ -36,7 +45,8 @@ abstract public class ListTextFilter implements ListFilter {
                 if (itemText == null || this.text.length() > itemText.length()) {
                     return false;
                 }
-                return itemText.toLowerCase().substring(0, this.text.length()).equals(this.text.toLowerCase());
+                //noinspection NonJREEmulationClassesInClientCode
+                return itemText.substring(0, this.text.length()).equalsIgnoreCase(this.text.toLowerCase());
             }
         };
     }
@@ -60,15 +70,6 @@ abstract public class ListTextFilter implements ListFilter {
         };
     }
     
-    public ListTextFilter() {
-        bus = new SimpleEventBus();
-    }
-
-    public ListTextFilter(String text) {
-        this();
-        this.text = text;
-    }
-
     public String getText() {
         return text;
     }

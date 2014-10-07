@@ -52,6 +52,45 @@ public class CollapsingAnimationIE9 extends Animation {
 
     @Override
     protected void onUpdate(double progress) {
+        updateIcon(progress);
+        if (progress < 0.5) {
+            updateHeight(progress * 2);
+        } else {
+            if (isOpening) {
+                container.getElement().getStyle().setHeight(height, Style.Unit.PX);
+            } else {
+                container.getElement().getStyle().setOpacity(0);
+            }
+            updateOpacity((progress - 0.5) * 2);
+        }
+    }
+
+    /**
+     * Обновление прозрачности
+     */
+    private void updateOpacity(double progress) {
+        if (isOpening) {
+            container.getElement().getStyle().setOpacity(progress);
+        } else {
+            container.getElement().getStyle().setOpacity(1 - progress);
+        }
+    }
+
+    /**
+     * Обновление высоты
+     */
+    private void updateHeight(double progress) {
+        if (isOpening) {
+            container.getElement().getStyle().setHeight(height * progress, Style.Unit.PX);
+        } else {
+            container.getElement().getStyle().setHeight(height * (1 - progress), Style.Unit.PX);
+        }
+    }
+
+    /**
+     * Обновление поворота иконки
+     */
+    private void updateIcon(double progress) {
         //иконка
         int degrees;
         if (isOpening) {
@@ -63,27 +102,6 @@ public class CollapsingAnimationIE9 extends Animation {
             degrees = -degrees;
         }
         icon.getElement().getStyle().setProperty("msTransform", "rotate(" + degrees + "deg)");
-
-        //панель
-        progress *= 2;
-        if (progress <= 1 && isOpening) {
-            container.getElement().getStyle().setHeight(height * progress, Style.Unit.PX);
-        } else if (progress > 1 && !isOpening) {
-            progress -= 1;
-            container.getElement().getStyle().setHeight(height * (1 - progress), Style.Unit.PX);
-        } else if (progress > 1 && isOpening) {
-            progress -= 1;
-            container.getElement().getStyle().setOpacity(progress);
-        } else if (progress <= 1 && !isOpening) {
-            container.getElement().getStyle().setOpacity(1 - progress);
-        }
-        if (progress >= 0.5) {
-            if (isOpening) {
-                container.getElement().getStyle().setHeight(height, Style.Unit.PX);
-            } else {
-                container.getElement().getStyle().setOpacity(0);
-            }
-        }
     }
 
     @Override

@@ -116,14 +116,6 @@ public class TableCore<T> extends Composite implements HasData<T> {
      */
     private boolean isRowCountExact;
 
-    /**
-     * Переменная отображает количество добавленных объектов.
-     *
-     * При уменьшении количества добавленных объектов размер objects не уменьшится.
-     * Это пример случая, когда objects.size() не равен rowCount.
-     */
-    private int rowCount;
-
     public TableCore(int pageSize, ProvidesKey<T> keyProvider, final EventBus bus) {
         scroll = new ArtaScrollPanel();
         initWidget(scroll);

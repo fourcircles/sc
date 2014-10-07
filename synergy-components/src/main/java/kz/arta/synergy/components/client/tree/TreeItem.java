@@ -129,7 +129,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
         this.bus = bus;
         label.setText(text);
 
-        indicator.getElement().getStyle().setDisplay(Style.Display.NONE);
+        indicator.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
 
         content.setStyleName(SynergyComponents.resources.cssComponents().content());
         content.getElement().getStyle().setHeight(0, Style.Unit.PX);
@@ -166,9 +166,9 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
      */
     private void updateIndicator() {
         if (items != null && !items.isEmpty()) {
-            indicator.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+            indicator.getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
         } else {
-            indicator.getElement().getStyle().setDisplay(Style.Display.NONE);
+            indicator.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
         }
     }
 

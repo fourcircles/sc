@@ -102,7 +102,8 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
         acceptImage = new Image(ImageResources.IMPL.post());
         acceptImage.setStyleName(SynergyComponents.resources.cssComponents().commentInputAccept());
 
-        root.add(acceptImage);
+        /* добавляем картилку в элемент скролла, чтобы она была видна всегда */
+        scroll.getElement().appendChild(acceptImage.getElement());
 
         InputChangeEvent.addInputHandler(getElement(), new InputChangeEvent.Handler() {
             @Override

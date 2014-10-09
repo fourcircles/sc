@@ -48,8 +48,7 @@ public abstract class ArtaTextColumn<T> extends AbstractArtaColumn<T> {
         return 60;
     }
 
-    @Override
-    public void setSortable(boolean isSorted) {
-        super.setSortable(isSorted);
+    public void setSortable(boolean isSortable) {
+        this.isSortable = isSortable;
     }
 }

@@ -20,15 +20,12 @@ public class DateUtil {
      */
     public static final int YEAR_OFFSET = 1900;
 
-    /**
-     * Текущая дата. В будущем  брать дату сервера
-     */
-    public static Date currentDate = new Date();
+    private static final Date currentDate = new Date();
 
     /**
      * Список месяцев
      */
-    public static String[] fullMonths = new String[] {
+    public static final String[] FULL_MONTHS = new String[] {
             Messages.JANUARY_FULL,
             Messages.FEBRUARY_FULL,
             Messages.MARCH_FULL,
@@ -46,18 +43,18 @@ public class DateUtil {
     /**
      * Список дней недели
      */
-    public static String[] weekDays = new String[]{
-            Messages.i18n.tr("Вс"),
-            Messages.i18n.tr("Пн"),
-            Messages.i18n.tr("Вт"),
-            Messages.i18n.tr("Ср"),
-            Messages.i18n.tr("Чт"),
-            Messages.i18n.tr("Пт"),
-            Messages.i18n.tr("Сб")
+    public static final String[] WEEK_DAYS = new String[]{
+            Messages.i18n().tr("Вс"),
+            Messages.i18n().tr("Пн"),
+            Messages.i18n().tr("Вт"),
+            Messages.i18n().tr("Ср"),
+            Messages.i18n().tr("Чт"),
+            Messages.i18n().tr("Пт"),
+            Messages.i18n().tr("Сб")
             };
 
-    public static final int MONTHS = fullMonths.length;
-    public static final int WEEKDAYS = weekDays.length;
+    public static final int MONTHS = FULL_MONTHS.length;
+    public static final int WEEKDAYS = WEEK_DAYS.length;
 
     /**
      * Соответствие порядка дней недели
@@ -74,9 +71,13 @@ public class DateUtil {
 
     /*Делаем первый символ заглавным*/
     static {
-        for (int i = 0; i < fullMonths.length; i++) {
-            fullMonths[i] = Character.toUpperCase(fullMonths[i].charAt(0)) + fullMonths[i].substring(1);
+        for (int i = 0; i < FULL_MONTHS.length; i++) {
+            FULL_MONTHS[i] = Character.toUpperCase(FULL_MONTHS[i].charAt(0)) + FULL_MONTHS[i].substring(1);
         }
+    }
+
+    private DateUtil() {
+        /*только статические методы*/
     }
 
     /**
@@ -126,7 +127,7 @@ public class DateUtil {
      * Название месяца по номеру (0 - январь ... 11 - декабрь)
      */
     public static String getMonth(int month) {
-        return fullMonths[month];
+        return FULL_MONTHS[month];
     }
 
     /**
@@ -135,7 +136,7 @@ public class DateUtil {
      * @return название дня недели
      */
     public static String getWeekDay(int day) {
-        return weekDays[day];
+        return WEEK_DAYS[day];
     }
 
     /**
@@ -251,4 +252,10 @@ public class DateUtil {
         return weekday;
     }
 
+    /**
+     * Текущая дата. В будущем  брать дату сервера
+     */
+    public static Date getCurrentDate() {
+        return currentDate;
+    }
 }

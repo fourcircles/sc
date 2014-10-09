@@ -67,7 +67,7 @@ public class RepeatDate {
         }
         this.day = day;
         month = -1;
-        text = DateUtil.weekDays[day];
+        text = DateUtil.WEEK_DAYS[day];
     }
 
     public void initMonthDate(int day) {

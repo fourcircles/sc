@@ -188,11 +188,11 @@ public class Pager extends AbstractPager implements HasEnabled {
         builder.append(range.getStart());
         builder.append('-');
         builder.append(range.getStart() + range.getLength());
-        builder.append(" ").append(Messages.i18n.tr("из")).append(" ");
+        builder.append(" ").append(Messages.i18n().tr("из")).append(" ");
         if (getDisplay().isRowCountExact()) {
             builder.append(getDisplay().getRowCount());
         } else {
-            builder.append(Messages.i18n.tr("множества"));
+            builder.append(Messages.i18n().tr("множества"));
         }
         label.setText(builder.toString());
         updateTextPosition();

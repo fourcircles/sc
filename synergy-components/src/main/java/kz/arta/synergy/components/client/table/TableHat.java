@@ -105,7 +105,7 @@ public class TableHat extends Composite {
      */
     public void enableButton(boolean enabled) {
         if (addButton == null) {
-            addButton = new SimpleButton(Messages.i18n.tr("Добавить"), ImageResources.IMPL.zoom());
+            addButton = new SimpleButton(Messages.i18n().tr("Добавить"), ImageResources.IMPL.zoom());
         }
         if (enabled) {
             if (!addButton.isAttached()) {

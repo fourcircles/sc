@@ -9,10 +9,10 @@ package kz.arta.synergy.components.client.theme;
 public enum  Theme {
 
     /*Стандартная цветовая схема*/
-    standard,
+    STANDARD,
 
     /*Темная цветовая схема*/
-    dark;
+    DARK;
 
     public static Theme getTheme(String themeName) {
         for (Theme theme : Theme.values()) {
@@ -20,6 +20,6 @@ public enum  Theme {
                 return theme;
             }
         }
-        return standard;
+        return STANDARD;
     }
 }

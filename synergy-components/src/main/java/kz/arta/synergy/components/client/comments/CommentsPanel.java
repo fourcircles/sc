@@ -54,7 +54,7 @@ public class CommentsPanel extends Composite {
         commentInput.addNewCommentHandler(new NewCommentEvent.Handler() {
             @Override
             public void onNewComment(NewCommentEvent event) {
-                comments.addComment(new SimpleComment(event.getComment(), "John Doe", new Date(), CommentType.GENERAL));
+                comments.addComment(new TextComment(event.getComment(), "John Doe", new Date(), CommentType.GENERAL));
             }
         });
         commentInput.addResizeHandler(new ResizeHandler() {

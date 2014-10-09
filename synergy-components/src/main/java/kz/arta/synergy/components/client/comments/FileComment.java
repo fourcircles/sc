@@ -13,7 +13,7 @@ import java.util.Date;
  *
  * Комментарий с файлом
  */
-public class FileComment implements Comment {
+public class FileComment extends AbstractComment {
     /**
      * Иконка файла
      */
@@ -24,19 +24,14 @@ public class FileComment implements Comment {
      */
     private String fileName;
 
-    private String author;
-    private Date date;
-    private CommentType type;
-
     private Image icon;
 
     public FileComment(ImageResource image, String fileName,
                        String author, Date date, CommentType type) {
+        super(author, date, type);
+
         this.image = image;
         this.fileName = fileName;
-        this.author = author;
-        this.date = date;
-        this.type = type;
 
         if (image != null) {
             icon = new Image();
@@ -45,7 +40,8 @@ public class FileComment implements Comment {
 
     }
 
-    private native String getOuterHTML(Element e) /*-{
+    private native String getOuterHTML(Element e)
+    /*-{
         return e.outerHTML;
     }-*/;
 
@@ -54,23 +50,4 @@ public class FileComment implements Comment {
         return icon == null ? fileName : getOuterHTML(icon.getElement()) + fileName;
     }
 
-    @Override
-    public String getAuthor() {
-        return author;
-    }
-
-    @Override
-    public Date getDate() {
-        return date;
-    }
-
-    @Override
-    public CommentType getType() {
-        return type;
-    }
-
-    @Override
-    public boolean isDeletable() {
-        return false;
-    }
 }

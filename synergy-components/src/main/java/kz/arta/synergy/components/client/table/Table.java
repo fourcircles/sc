@@ -12,7 +12,6 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -117,11 +116,6 @@ public class Table<T> extends Composite {
     private FlowPanel headerDivider;
 
     /**
-     * Заданная высота
-     */
-    private int wholeTableHeight;
-
-    /**
      * Шапка
      */
     private TableHat hat;
@@ -130,6 +124,7 @@ public class Table<T> extends Composite {
      * Таблица
      */
     private TableCore<T> tableCore;
+    private MouseDownHandler headerMouseDownHandler;
 
     public Table(int pageSize) {
         this(pageSize, null);
@@ -229,6 +224,7 @@ public class Table<T> extends Composite {
                     updateHeaderWidth(i);
                 }
                 redraw();
+                redrawDividers();
             }
         });
     }
@@ -261,10 +257,6 @@ public class Table<T> extends Composite {
      * @param width ширина, если -1, то свойство width убирается и столбец растягивается
      */
     public void setColumnWidth(int index, int width) {
-//        if (!tableCore.columnHasWidth(index)) {
-//            return;
-//        }
-
         tableCore.setColumnWidth(index, width);
 
         //при обновлении ширины столбца необходимо обновить ширину у всех виджетов заголовка,
@@ -642,27 +634,27 @@ public class Table<T> extends Composite {
         headerProxy.getElement().getStyle().setWidth(header.getOffsetWidth(), Style.Unit.PX);
     }
 
-    /**
-     * Добавляет столбец
-     * @param column столбец
-     */
-    public void addColumn(final ArtaColumn<T> column) {
-        tableCore.addColumn(column);
 
-        final Header header = column.getHeader();
-        header.addMouseDownHandler(new MouseDownHandler() {
-            @Override
-            public void onMouseDown(MouseDownEvent event) {
-                if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
-                    return;
+    private MouseDownHandler getHeaderDownHandler() {
+        if (headerMouseDownHandler == null) {
+            headerMouseDownHandler = new MouseDownHandler() {
+                @Override
+                public void onMouseDown(MouseDownEvent event) {
+                    if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+                        return;
+                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    headerMouseDown = true;
                 }
-                event.preventDefault();
-                event.stopPropagation();
+            };
+        }
+        return headerMouseDownHandler;
+    }
 
-                headerMouseDown = true;
-            }
-        });
-        header.addMouseMoveHandler(new MouseMoveHandler() {
+    private MouseMoveHandler createMouseMoveHandler(final Header header) {
+        return new MouseMoveHandler() {
             @Override
             public void onMouseMove(MouseMoveEvent event) {
                 if (headerMouseDown) {
@@ -674,8 +666,21 @@ public class Table<T> extends Composite {
                     headerMouseDown = false;
                 }
             }
-        });
+        };
+    }
+
+    /**
+     * Добавляет столбец
+     * @param column столбец
+     */
+    public void addColumn(final ArtaColumn<T> column) {
+        tableCore.addColumn(column);
+
+        final Header header = column.getHeader();
         headersTable.setWidget(0, tableCore.getColumns().size() - 1, header);
+
+        header.addMouseDownHandler(getHeaderDownHandler());
+        header.addMouseMoveHandler(createMouseMoveHandler(header));
         header.addMouseUpHandler(new MouseUpHandler() {
             @Override
             public void onMouseUp(MouseUpEvent event) {

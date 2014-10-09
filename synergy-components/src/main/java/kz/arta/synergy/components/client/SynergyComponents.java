@@ -37,7 +37,7 @@ public class SynergyComponents implements EntryPoint {
 
     private String getThemeName() {
         String themeName = Cookies.getCookie("theme");
-        return themeName == null ? Theme.standard.name() : themeName;
+        return themeName == null ? Theme.STANDARD.name() : themeName;
     }
 
     /**
@@ -47,10 +47,10 @@ public class SynergyComponents implements EntryPoint {
     private void initTheme(String themeName) {
         Theme theme = Theme.getTheme(themeName);
         switch (theme) {
-            case standard:
+            case STANDARD:
                 resources = GWT.create(ComponentResources.class);
                 break;
-            case dark:
+            case DARK:
                 resources = GWT.create(ComponentResourcesDark.class);
                 break;
             default:

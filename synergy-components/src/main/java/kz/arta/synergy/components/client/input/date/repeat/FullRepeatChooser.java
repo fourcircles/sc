@@ -43,7 +43,7 @@ public class FullRepeatChooser extends Composite implements HasEnabled {
 
         modeCombo = new ComboBox<RepeatChooser.MODE>();
         modeCombo.setReadOnly(true);
-        modeCombo.addItem(Messages.i18n.tr("Нет"), null);
+        modeCombo.addItem(Messages.i18n().tr("Нет"), null);
         for (RepeatChooser.MODE mode : RepeatChooser.MODE.values()) {
             modeCombo.addItem(mode.toString(), mode);
         }

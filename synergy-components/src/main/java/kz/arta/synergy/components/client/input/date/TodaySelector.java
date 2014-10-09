@@ -52,7 +52,7 @@ public class TodaySelector extends Composite {
         back.getElement().getStyle().setCursor(Style.Cursor.POINTER);
 
         /*инициализируем надпись месяца*/
-        todayLabel.setText(Messages.i18n.tr("Сегодня"));
+        todayLabel.setText(Messages.i18n().tr("Сегодня"));
         todayLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
         todayLabel.getElement().getStyle().setCursor(Style.Cursor.POINTER);
         todayLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);

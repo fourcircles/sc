@@ -31,7 +31,7 @@ import kz.arta.synergy.components.style.client.Constants;
  * Поле с результатами поиска
  */
 public class SearchResultInput<V> extends Composite implements HasSelectionEventHandlers<V>, HasClickHandlers{
-    private final String placeholderText = Messages.i18n.tr("Поиск");
+    private final String placeholderText = Messages.i18n().tr("Поиск");
 
     private EventBus innerBus;
     /**
@@ -132,7 +132,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
         });
 
         input.addStyleName(SynergyComponents.resources.cssComponents().placeHolder());
-        input.setText(Messages.i18n.tr("Поиск"), false);
+        input.setText(Messages.i18n().tr("Поиск"), false);
 
         input.addKeyUpHandler(new KeyUpHandler() {
             @Override

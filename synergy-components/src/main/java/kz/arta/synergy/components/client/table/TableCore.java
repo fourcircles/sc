@@ -346,29 +346,6 @@ public class TableCore<T> extends Composite implements HasData<T> {
         for (ArtaColumn<T> column : unsetColumns) {
             setColumnWidth(column, -1);
         }
-//
-//        boolean hasFreeColumn = false;
-//        for (ArtaColumn<T> column : widths.keySet()) {
-//            Integer columnWidth = widths.get(column);
-//            freeWidth -= columnWidth;
-//
-//            setColumnWidth(column, columnWidth);
-//
-//            if (columnWidth == -1) {
-//                hasFreeColumn = true;
-//            }
-//        }
-//
-//        if (!unsetColumns.isEmpty()) {
-//            double unsetColumnWidth = freeWidth / (unsetColumns.size() - (hasFreeColumn ? 0 : 1));
-//            for (ArtaColumn<T> column : unsetColumns) {
-//                setColumnWidth(column, (int) unsetColumnWidth);
-//            }
-//            if (!hasFreeColumn) {
-//                ArtaColumn<T> lastColumn = unsetColumns.get(unsetColumns.size() - 1);
-//                setColumnWidth(lastColumn, -1);
-//            }
-//        }
     }
 
     /**
@@ -932,14 +909,13 @@ public class TableCore<T> extends Composite implements HasData<T> {
         } else if (objects.size() > count) {
 
             //случай когда удаляются элементы в конце
-            if (count - start < pageSize) {
-                for (int row = count - start; row < pageSize; row++) {
-                    TableRowElement rowElement = TableRowElement.as(table.getRowFormatter().getElement(row));
-                    while (rowElement.getCells().getLength() > 0) {
-                        rowElement.deleteCell(0);
-                    }
+            for (int row = count - start; row < pageSize; row++) {
+                TableRowElement rowElement = TableRowElement.as(table.getRowFormatter().getElement(row));
+                while (rowElement.getCells().getLength() > 0) {
+                    rowElement.deleteCell(0);
                 }
             }
+
             objects.subList(count, objects.size()).clear();
             rowCountChange = true;
         }

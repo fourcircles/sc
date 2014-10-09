@@ -84,7 +84,7 @@ public class MonthSelector extends Composite {
         topBack.getElement().getStyle().setCursor(Style.Cursor.POINTER);
 
         /*инициализируем надпись месяца*/
-        monthLabel.setText(DateUtil.getMonth(DateUtil.currentDate.getMonth()));
+        monthLabel.setText(DateUtil.getMonth(DateUtil.getCurrentDate().getMonth()));
         monthLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
         monthLabel.getElement().getStyle().setCursor(Style.Cursor.POINTER);
         if (LocaleInfo.getCurrentLocale().isRTL()) {
@@ -109,7 +109,7 @@ public class MonthSelector extends Composite {
         });
         for (int i = 0; i < 12; i++) {
             DropDownList.Item item = monthList.addItem(DateUtil.getMonth(i), i);
-            if ((Integer)item.getValue() == DateUtil.currentDate.getMonth()) {
+            if ((Integer)item.getValue() == DateUtil.getCurrentDate().getMonth()) {
                 monthList.setSelectedValue((Integer)item.getValue());
             }
         }
@@ -128,7 +128,7 @@ public class MonthSelector extends Composite {
         });
 
         /*инициализируем надпись года*/
-        yearLabel.setText((DateUtil.currentDate.getYear() + DateUtil.YEAR_OFFSET) + "");
+        yearLabel.setText((DateUtil.getCurrentDate().getYear() + DateUtil.YEAR_OFFSET) + "");
         yearLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
         yearLabel.getElement().getStyle().setCursor(Style.Cursor.POINTER);
         EventBus bus = new SimpleEventBus();
@@ -146,9 +146,9 @@ public class MonthSelector extends Composite {
                 picker.setCurrentDate(year, false);
             }
         });
-        for (int i = DateUtil.currentDate.getYear() - 90; i < DateUtil.currentDate.getYear() + 10; i++) {
+        for (int i = DateUtil.getCurrentDate().getYear() - 90; i < DateUtil.getCurrentDate().getYear() + 10; i++) {
             DropDownList.Item item = yearsList.addItem((i + DateUtil.YEAR_OFFSET) + "", (i + DateUtil.YEAR_OFFSET));
-            if ((Integer)item.getValue() == DateUtil.currentDate.getYear() + DateUtil.YEAR_OFFSET) {
+            if ((Integer)item.getValue() == DateUtil.getCurrentDate().getYear() + DateUtil.YEAR_OFFSET) {
                 yearsList.setSelectedValue((Integer)item.getValue());
             }
         }

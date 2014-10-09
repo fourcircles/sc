@@ -14,7 +14,7 @@ public abstract class TreeColumn<T extends TreeTableItem<T>> extends AbstractArt
 
     public TreeColumn(String headerText) {
         super(headerText);
-        setSortable(false);
+        isSortable = false;
     }
 
     @Override

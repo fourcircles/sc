@@ -105,13 +105,13 @@ public class Header extends Composite implements ArtaHasText,
      * @param isSorted отсортирован ли
      */
     public void setSorted(boolean isSorted) {
-        boolean isAscending;
+        boolean order;
         if (!this.isSorted) {
-            isAscending = DEFAULT_IS_ASCENDING;
+            order = DEFAULT_IS_ASCENDING;
         } else {
-            isAscending = !this.isAscending;
+            order = !this.isAscending;
         }
-        setSorted(isSorted, isAscending);
+        setSorted(isSorted, order);
     }
 
     public boolean isAscending() {
@@ -147,11 +147,12 @@ public class Header extends Composite implements ArtaHasText,
     }
 
     public void setWidth(int width) {
-        width -= 18;
+        int labelWidth = width;
+        labelWidth -= 18;
         if (isSorted) {
-            width -= 10 + Constants.STD_ICON_WIDTH + 5;
+            labelWidth -= 10 + Constants.STD_ICON_WIDTH + 5;
         }
-        label.setWidth(width);
+        label.setWidth(labelWidth);
     }
 
     @Override

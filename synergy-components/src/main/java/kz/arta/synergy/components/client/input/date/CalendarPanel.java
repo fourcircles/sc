@@ -49,7 +49,7 @@ public class CalendarPanel extends Composite {
 
     ArtaDatePicker datePicker;
 
-    Date today = DateUtil.currentDate;
+    Date today = DateUtil.getCurrentDate();
 
     private DateTimeFormat format = DateTimeFormat.getFormat("dd.MM.yyyy");
 

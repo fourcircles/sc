@@ -38,7 +38,7 @@ public class Tabs extends Composite implements HasTabHandlers {
      */
     private static final int SCROLL_DURATION = 500;
 
-    static final EventBus innerBus = new SimpleEventBus();
+    static final EventBus INNER_BUS = new SimpleEventBus();
 
     /**
      * Панель в которую добавляются кнопки для скролла
@@ -317,7 +317,7 @@ public class Tabs extends Composite implements HasTabHandlers {
      */
     public void addTab(Tab tab) {
         //перед добавлением первой вкладки надо убрать кнопку закрыть
-        if (tabs.size() == 0 && tab.hasCloseButton()) {
+        if (tabs.isEmpty() && tab.hasCloseButton()) {
             restoreCloseButton = true;
             tab.setHasCloseButton(false);
         }
@@ -440,7 +440,7 @@ public class Tabs extends Composite implements HasTabHandlers {
             }
 
             if (fireEvents) {
-                innerBus.fireEventFromSource(new TabSelectionEvent(tab), this);
+                INNER_BUS.fireEventFromSource(new TabSelectionEvent(tab), this);
             }
         }
     }
@@ -478,7 +478,7 @@ public class Tabs extends Composite implements HasTabHandlers {
         }
 
         if (fireEvents) {
-            innerBus.fireEventFromSource(new TabCloseEvent(tab), this);
+            INNER_BUS.fireEventFromSource(new TabCloseEvent(tab), this);
         }
 
         checkScrollButtons();
@@ -505,12 +505,12 @@ public class Tabs extends Composite implements HasTabHandlers {
 
     @Override
     public HandlerRegistration addTabSelectionHandler(TabSelectionEvent.Handler handler) {
-        return innerBus.addHandlerToSource(TabSelectionEvent.getType(), this, handler);
+        return INNER_BUS.addHandlerToSource(TabSelectionEvent.getType(), this, handler);
     }
 
     @Override
     public HandlerRegistration addTabCloseHandler(TabCloseEvent.Handler handler) {
-        return innerBus.addHandlerToSource(TabCloseEvent.getType(), this, handler);
+        return INNER_BUS.addHandlerToSource(TabCloseEvent.getType(), this, handler);
     }
 
     /**

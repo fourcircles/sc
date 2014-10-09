@@ -48,7 +48,7 @@ public class ButtonBase extends FlowPanel implements
     /**
      * Текст кнопки
      */
-    protected String text = Messages.i18n.tr("Кнопка");
+    protected String text = Messages.i18n().tr("Кнопка");
 
     /**
      * Иконка
@@ -280,6 +280,7 @@ public class ButtonBase extends FlowPanel implements
             case Event.ONMOUSEOUT:
                 MouseStyle.removeAll(this);
                 break;
+            default:
         }
         super.onBrowserEvent(event);
     }

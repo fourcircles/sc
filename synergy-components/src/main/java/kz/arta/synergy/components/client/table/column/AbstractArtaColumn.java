@@ -10,7 +10,7 @@ import kz.arta.synergy.components.client.table.Header;
  * Time: 17:41
  */
 public abstract class AbstractArtaColumn<T> implements ArtaColumn<T> {
-    private boolean isSortable = false;
+    protected boolean isSortable = false;
     private String dataStoreName;
 
     private Header header;
@@ -21,10 +21,6 @@ public abstract class AbstractArtaColumn<T> implements ArtaColumn<T> {
 
     public boolean isSortable() {
         return isSortable;
-    }
-
-    protected void setSortable(boolean isSorted) {
-        this.isSortable = isSorted;
     }
 
     @Override

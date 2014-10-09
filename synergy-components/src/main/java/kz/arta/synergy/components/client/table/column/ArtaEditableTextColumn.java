@@ -58,9 +58,8 @@ public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T> {
         return true;
     }
 
-    @Override
-    public void setSortable(boolean isSorted) {
-        super.setSortable(isSorted);
+    public void setSortable(boolean isSortable) {
+        this.isSortable = isSortable;
     }
 
     /**
@@ -144,14 +143,9 @@ public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T> {
             int keyCode = event.getKeyCode();
             if (isEditing) {
                 editEvent(event);
-            } else {
-                switch (type) {
-                    case Event.ONKEYDOWN :
-                        if (keyCode == KeyCodes.KEY_ENTER || keyCode == KeyCodes.KEY_F2) {
-                            edit();
-                        }
-                        break;
-                }
+            } else if (type == Event.ONKEYDOWN &&
+                    (keyCode == KeyCodes.KEY_ENTER || keyCode == KeyCodes.KEY_F2)) {
+                edit();
             }
             super.onBrowserEvent(event);
         }
@@ -176,6 +170,7 @@ public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T> {
                     case KeyCodes.KEY_TAB :
                         commit(true);
                         break;
+                    default:
                 }
                 event.stopPropagation();
             }

@@ -9,7 +9,11 @@ import org.xnap.commons.i18n.I18n;
  * Time: 15:47
  */
 public class SCMessages {
-    public static final I18n i18n = I18nFactory.getI18n();
+    private static final I18n I_18_N = I18nFactory.getI18n();
 
     public static final String SIZE = "Размер";
+
+    public static I18n i18n() {
+        return I_18_N;
+    }
 }

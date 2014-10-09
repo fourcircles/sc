@@ -150,7 +150,7 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
         todaySelector.todayLabel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                setCurrentDate(DateUtil.currentDate);
+                setCurrentDate(DateUtil.getCurrentDate());
             }
         });
         todaySelector.back.addClickHandler(new ClickHandler() {

@@ -239,9 +239,9 @@ public class RepeatChooser implements IsWidget, HasEnabled {
      * Возможные режимы выбора периода
      */
     public enum MODE {
-        WEEK(Messages.i18n.tr("По дням недели")),
-        MONTH(Messages.i18n.tr("По дням месяца")),
-        YEAR(Messages.i18n.tr("Ежегодно"));
+        WEEK(Messages.i18n().tr("По дням недели")),
+        MONTH(Messages.i18n().tr("По дням месяца")),
+        YEAR(Messages.i18n().tr("Ежегодно"));
 
         private String name;
 

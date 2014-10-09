@@ -55,9 +55,9 @@ public class Dialog extends DialogSimple {
         buttonsPanel.setHeight(Constants.DIALOG_BUTTON_PANEL_HEIGHT + "px");
         panel.add(buttonsPanel);
 
-        leftButton = makeButton(Messages.i18n.tr("Назад"), ImageResources.IMPL.navigationLeft(), ButtonBase.IconPosition.LEFT);
-        saveButton = makeButton(Messages.i18n.tr("Сохранить"));
-        rightButton = makeButton(Messages.i18n.tr("Еще"), ImageResources.IMPL.navigationRight(), ButtonBase.IconPosition.RIGHT);
+        leftButton = makeButton(Messages.i18n().tr("Назад"), ImageResources.IMPL.navigationLeft(), ButtonBase.IconPosition.LEFT);
+        saveButton = makeButton(Messages.i18n().tr("Сохранить"));
+        rightButton = makeButton(Messages.i18n().tr("Еще"), ImageResources.IMPL.navigationRight(), ButtonBase.IconPosition.RIGHT);
 
         buttonsPanel.add(leftButton);
         buttonsPanel.add(saveButton);

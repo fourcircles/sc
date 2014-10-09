@@ -15,6 +15,7 @@ import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.comments.events.InputChangeEvent;
 import kz.arta.synergy.components.client.comments.events.NewCommentEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.client.resources.Messages;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.Utils;
@@ -70,6 +71,11 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
      * Сумма отступов для текста
      */
     private int textPadding = Constants.COMMON_INPUT_PADDING * 3 + Constants.STD_ICON_WIDTH;
+
+    /**
+     * Показывать ли placeholder
+     */
+    private boolean isPlaceHolder;
 
     public CommentInput() {
         scroll = new ArtaScrollPanel();
@@ -131,6 +137,23 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
                 }
             }
         });
+
+        textArea.addFocusHandler(new FocusHandler() {
+            @Override
+            public void onFocus(FocusEvent event) {
+                placeHolderOff();
+            }
+        });
+        textArea.addBlurHandler(new BlurHandler() {
+            @Override
+            public void onBlur(BlurEvent event) {
+                if (textArea.getValue().isEmpty()) {
+                    placeHolderOn();
+                }
+            }
+        });
+
+        placeHolderOn();
     }
 
     /**
@@ -271,6 +294,26 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
             scroll.setVerticalScrollPosition(scroll.getMaximumVerticalScrollPosition());
             ResizeEvent.fire(this, -1, height);
         }
+    }
+
+    /**
+     * Показать placeholder
+     */
+    private void placeHolderOn() {
+        textArea.setValue(Messages.COMMENT_INPUT_PLACEHOLDER, false);
+        textArea.addStyleName(SynergyComponents.resources.cssComponents().placeHolder());
+        isPlaceHolder = true;
+    }
+
+    /**
+     * Убрать placeholder
+     */
+    private void placeHolderOff() {
+        if (isPlaceHolder) {
+            textArea.setValue("", false);
+        }
+        isPlaceHolder = false;
+        textArea.removeStyleName(SynergyComponents.resources.cssComponents().placeHolder());
     }
 
     @Override

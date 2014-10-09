@@ -730,7 +730,7 @@
     color: textColor2;
 }
 
-.commonInput.placeHolder, .artaText.placeHolder{
+.commonInput.placeHolder, .artaText.placeHolder, .commentInput > textarea.placeHolder{
     color: border1;
 }
 

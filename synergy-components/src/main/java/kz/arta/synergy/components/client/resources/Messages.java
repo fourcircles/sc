@@ -26,6 +26,8 @@ public class Messages {
     public static final String NOVEMBER_FULL = i18n().tr("Ноябрь");
     public static final String DECEMBER_FULL = i18n().tr("Декабрь");
 
+    public static final String COMMENT_INPUT_PLACEHOLDER = i18n().tr("Введите комментарий и нажмите Enter...");
+
     public static I18n i18n() {
         return i18n;
     }

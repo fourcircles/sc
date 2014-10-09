@@ -206,4 +206,6 @@ public interface CssComponents extends CssResource {
 
 
     String dark();
+
+    String treeTableItem();
 }

@@ -58,6 +58,11 @@ public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T> {
         return true;
     }
 
+    @Override
+    public void setSortable(boolean isSorted) {
+        super.setSortable(isSorted);
+    }
+
     /**
      * Изменяемый текст. При изменении текст заменяется на элемент input.
      * Создает соответствующие события {@link kz.arta.synergy.components.client.table.events.CellEditEvent}

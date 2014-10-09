@@ -4,12 +4,16 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -31,6 +35,10 @@ import java.util.List;
  * Time: 11:50
  *
  * Таблица
+ *
+ * Если размер таблицы зависит от контейнера, то после изменения размеров контейнера необходимо вызывать методы
+ * {@link #heightUpdated()} и {@link #widthUpdated()}.
+ * При изменении размеров окна браузера таблица сама вызывает эти методы.
  */
 public class Table<T> extends Composite {
     /**
@@ -109,11 +117,6 @@ public class Table<T> extends Composite {
     private FlowPanel headerDivider;
 
     /**
-     * Задана ли высота. Если не задана, то таблица растягивается
-     */
-    private boolean isHeightSet = false;
-
-    /**
      * Заданная высота
      */
     private int wholeTableHeight;
@@ -148,6 +151,27 @@ public class Table<T> extends Composite {
         root.add(headersTable);
 
         root.add(tableCore);
+
+        Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                heightUpdated();
+                widthUpdated();
+            }
+        });
+    }
+
+    public void widthUpdated() {
+        redrawDividers();
+    }
+
+    public void heightUpdated() {
+        int tableHeight = getOffsetHeight();
+        if (hasHat()) {
+            tableHeight -= 40;
+        }
+        tableHeight -= 32;
+        tableCore.setHeight(tableHeight);
     }
 
     /**
@@ -155,16 +179,7 @@ public class Table<T> extends Composite {
      */
     public void redraw() {
         tableCore.redraw();
-
-        if (isHeightSet) {
-            int tableHeight = wholeTableHeight;
-            if (hasHat()) {
-                tableHeight -= 40; //шапка
-            }
-            tableHeight -= 32; //хедеры
-            tableCore.setHeight(tableHeight);
-        }
-        redrawDividers();
+        heightUpdated();
     }
 
     /**
@@ -245,14 +260,20 @@ public class Table<T> extends Composite {
      * @param index позиция
      * @param width ширина, если -1, то свойство width убирается и столбец растягивается
      */
-    private void setColumnWidth(int index, int width) {
+    public void setColumnWidth(int index, int width) {
+//        if (!tableCore.columnHasWidth(index)) {
+//            return;
+//        }
+
         tableCore.setColumnWidth(index, width);
 
         //при обновлении ширины столбца необходимо обновить ширину у всех виджетов заголовка,
         //у которых ширина не указана явна, потому что она изменится
-        for (int i = 0; i < tableCore.getColumns().size(); i++) {
-            if (!tableCore.columnHasWidth(i) || index == i) {
-                updateHeaderWidth(i);
+        if (isAttached()) {
+            for (int i = 0; i < tableCore.getColumns().size(); i++) {
+                if (!tableCore.columnHasWidth(i) || index == i) {
+                    updateHeaderWidth(i);
+                }
             }
         }
     }
@@ -318,8 +339,26 @@ public class Table<T> extends Composite {
             rightIndex++;
         }
 
-        setColumnWidth(leftIndex, tableCore.getElement(0, leftIndex).getOffsetWidth() + delta);
-        setColumnWidth(rightIndex, tableCore.getElement(0, rightIndex).getOffsetWidth() - delta);
+        int leftWidth = tableCore.getElement(0, leftIndex).getOffsetWidth();
+        int rightWidth = tableCore.getElement(0, rightIndex).getOffsetWidth();
+
+        // если один из соседних столбцов - без ширины, то ему не обязательно задавать ширину
+        boolean widthSet = false;
+        if (tableCore.columnHasWidth(leftIndex)) {
+            setColumnWidth(leftIndex, leftWidth + delta);
+            widthSet = true;
+        }
+        if (tableCore.columnHasWidth(rightIndex)) {
+            setColumnWidth(rightIndex, rightWidth - delta);
+            widthSet = true;
+        }
+        if (!widthSet) {
+            // случай, когда у обоих столбцов ширина не проставлена
+            // чтобы зафиксировать изменение левому столбцу указывается
+            // ширина и он больше не растягивается
+            setColumnWidth(leftIndex, leftWidth + delta);
+        }
+        redrawDividers();
     }
 
     /**
@@ -553,7 +592,7 @@ public class Table<T> extends Composite {
     /**
      * Действия при завершении перемещения столбца.
      */
-    private void stopDragging() {
+    private void stopColumnDragging() {
         isDragging = false;
         headerProxy.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
         Event.releaseCapture(headerProxy.getElement());
@@ -593,7 +632,7 @@ public class Table<T> extends Composite {
                     if (isDragging) {
                         event.preventDefault();
                         event.stopPropagation();
-                        stopDragging();
+                        stopColumnDragging();
                     }
                 }
             });
@@ -664,48 +703,16 @@ public class Table<T> extends Composite {
         }, ContextMenuEvent.getType());
     }
 
-    /**
-     * Высота задается через setHeight(int)
-     */
     @Override
     public void setHeight(String height) {
-        throw new UnsupportedOperationException();
+        super.setHeight(height);
+        heightUpdated();
     }
 
-    /**
-     * Обновляет высоту в соответствии с заданной или незаданной высотой
-     */
-    private void updateHeight() {
-        if (isHeightSet) {
-            int tableHeight = wholeTableHeight;
-            if (hasHat()) {
-                tableHeight -= 40; //шапка
-            }
-            tableHeight -= 32; //хедеры
-            tableCore.setHeight(tableHeight);
-        } else {
-            tableCore.clearHeight();
-        }
-    }
-
-    /**
-     * Задает высоту
-     * @param height высота
-     */
-    public void setHeight(int height) {
-        isHeightSet = true;
-        this.wholeTableHeight = height;
-        root.getElement().getStyle().setHeight(height, Style.Unit.PX);
-        updateHeight();
-    }
-
-    /**
-     * Снять заданную высоту
-     */
-    public void clearHeight() {
-        isHeightSet = false;
-        root.getElement().getStyle().clearHeight();
-        updateHeight();
+    @Override
+    public void setWidth(String width) {
+        super.setWidth(width);
+        widthUpdated();
     }
 
     /**

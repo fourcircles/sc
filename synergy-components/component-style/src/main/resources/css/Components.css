@@ -1347,6 +1347,7 @@ p {
 }
 .tab > div {
     margin: 0 commonInputPadding;
+    text-align: center;
 }
 .tab + .tab {
     border-left-style: hidden;
@@ -2171,4 +2172,11 @@ p {
     border-left-width: 6px;
     border-right-width: 6px;
     right: 10px;
+}
+
+.treeTableItem > img {
+    vertical-align: top;
+    position: relative;
+    top: 7px;
+    margin-right: 6px;
 }

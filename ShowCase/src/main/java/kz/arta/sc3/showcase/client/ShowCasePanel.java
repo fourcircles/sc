@@ -1,9 +1,12 @@
 package kz.arta.sc3.showcase.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -21,6 +24,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.ProvidesKey;
+import com.google.gwt.view.client.RowCountChangeEvent;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
 import kz.arta.synergy.components.client.ComboBox;
@@ -53,13 +58,12 @@ import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+import kz.arta.synergy.components.client.table.*;
+import kz.arta.synergy.components.client.table.column.TreeColumn;
 import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.stack.SingleStack;
 import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
-import kz.arta.synergy.components.client.table.Pager;
-import kz.arta.synergy.components.client.table.Table;
-import kz.arta.synergy.components.client.table.User;
 import kz.arta.synergy.components.client.table.column.ArtaEditableTextColumn;
 import kz.arta.synergy.components.client.table.column.ArtaTextColumn;
 import kz.arta.synergy.components.client.table.events.TableCellMenuEvent;
@@ -86,8 +90,7 @@ import java.util.*;
  */
 public class ShowCasePanel extends FlowPanel {
     private static final String THEME_COOKIE = "theme";
-    private static final int LOCAL_TREE_HEIGHT = 400;
-    private static final int LOCAL_TREE_WIDTH = 300;
+    private static final int LOCAL_TREE_SIZE = 400;
     public static final String DEFAULT_LOCALE = "default";
     public static final String DIRECTION_PROPERTY = "direction";
 
@@ -101,6 +104,8 @@ public class ShowCasePanel extends FlowPanel {
     private Set<Widget> openTabs;
 
     @UiField TaskBar taskBar;
+
+    private TreeItem firstTab;
 
     interface ShowCasePanelUiBinder extends UiBinder<FlowPanel, ShowCasePanel> {
     }
@@ -257,17 +262,19 @@ public class ShowCasePanel extends FlowPanel {
         });
     }
 
-//    @Override
-//    protected void onLoad() {
-//        super.onLoad();
-//        //открывает первую вкладку
-//        TreeItem item = tree.getItems().get(0);
-//        while (item.hasItems()) {
-//            item = item.getItems().get(0);
-//        }
-//        item.setSelected(true, true);
-//    }
-//
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        Scheduler.get().scheduleDeferred(new Command() {
+            @Override
+            public void execute() {
+                if (firstTab != null) {
+                    firstTab.setSelected(true, true);
+                }
+            }
+        });
+    }
+
     private void setTreeIcons(TreeItem item, ImageResource icon) {
         item.setIcon(icon);
 
@@ -289,7 +296,7 @@ public class ShowCasePanel extends FlowPanel {
                                      final boolean buttons,
                                      final boolean backButton,
                                      final boolean moreButton) {
-        final String title = SCMessages.i18n.tr("Размер") + ": " + width + "x" + height;
+        final String title = SCMessages.i18n.tr(SCMessages.SIZE) + ": " + width + "x" + height;
 
         SimpleButton button = new SimpleButton(title);
         button.addClickHandler(new ClickHandler() {
@@ -356,7 +363,6 @@ public class ShowCasePanel extends FlowPanel {
                     DialogSimple dialog = createDialog(400, 400, false, false, false, SCMessages.i18n.tr("Диалог"));
                     dialog.open();
                     dialog.collapse();
-//                    dialogsManager.initDialog(dialog);
                 }
             });
 
@@ -493,9 +499,10 @@ public class ShowCasePanel extends FlowPanel {
         public abstract Widget getContentWidget();
     }
 
-    private void addTreeItem(TreeItem parentItem, LoadPanel loadPanel) {
+    private TreeItem addTreeItem(TreeItem parentItem, LoadPanel loadPanel) {
         TreeItem item = tree.addItem(parentItem, loadPanel.getText());
         item.setUserObject(loadPanel);
+        return item;
     }
 
     private void treeSetUp() {
@@ -580,17 +587,24 @@ public class ShowCasePanel extends FlowPanel {
                 return getTreePanel();
             }
         });
-        TreeItem trees = tree.addItem(basicComponents, SCMessages.i18n.tr("Таблица"));
-        addTreeItem(trees, new LoadPanel(SCMessages.i18n.tr("Таблица - ряды")) {
+        TreeItem table = tree.addItem(basicComponents, SCMessages.i18n.tr("Таблица"));
+        addTreeItem(table, new LoadPanel(SCMessages.i18n.tr("Таблица - ряды")) {
             @Override
             public Widget getContentWidget() {
                 return getTablePanel(true);
             }
         });
-        addTreeItem(trees, new LoadPanel(SCMessages.i18n.tr("Таблица - ячейки")) {
+        addTreeItem(table, new LoadPanel(SCMessages.i18n.tr("Таблица - ячейки")) {
             @Override
             public Widget getContentWidget() {
                 return getTablePanel(false);
+            }
+        });
+
+        addTreeItem(table, new LoadPanel(SCMessages.i18n.tr("Дерево-таблица")) {
+            @Override
+            public Widget getContentWidget() {
+                return getTreeTable();
             }
         });
 
@@ -670,8 +684,8 @@ public class ShowCasePanel extends FlowPanel {
 
         kz.arta.synergy.components.client.tree.Tree localTree = copyTree(tree);
 
-        localTree.getElement().getStyle().setHeight(LOCAL_TREE_HEIGHT, Style.Unit.PX);
-        localTree.getElement().getStyle().setWidth(LOCAL_TREE_HEIGHT, Style.Unit.PX);
+        localTree.getElement().getStyle().setHeight(LOCAL_TREE_SIZE, Style.Unit.PX);
+        localTree.getElement().getStyle().setWidth(LOCAL_TREE_SIZE, Style.Unit.PX);
 
         localTree.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
         localTree.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
@@ -712,7 +726,7 @@ public class ShowCasePanel extends FlowPanel {
 
         table.getCore().setOnlyRows(onlyRows);
         if (onlyRows) {
-            table.setHeight(600);
+            table.setHeight(600 + "px");
         }
 
         final ArtaTextColumn<User> idColumn = new ArtaTextColumn<User>("#") {
@@ -883,6 +897,96 @@ public class ShowCasePanel extends FlowPanel {
         });
 
         return scroll;
+    }
+
+    private Widget getTreeTable() {
+        FlowPanel root = new FlowPanel();
+
+        final Table<UserTree> table = new Table<UserTree>(10, new ProvidesKey<UserTree>() {
+            @Override
+            public Object getKey(UserTree item) {
+                return item.getKey();
+            }
+        });
+        Style tableStyle = table.getElement().getStyle();
+        tableStyle.setPosition(Style.Position.ABSOLUTE);
+        tableStyle.setBottom(20, Style.Unit.PX);
+        tableStyle.setTop(20, Style.Unit.PX);
+        tableStyle.setLeft(10, Style.Unit.PX);
+        tableStyle.setRight(10, Style.Unit.PX);
+
+        table.getCore().addRowCountChangeHandler(new RowCountChangeEvent.Handler() {
+            @Override
+            public void onRowCountChange(RowCountChangeEvent event) {
+                table.getCore().setPageSize(event.getNewRowCount());
+            }
+        });
+
+        table.getCore().setOnlyRows(true);
+        table.enableHat(true);
+        table.getHat().setName(SCMessages.i18n.tr("Таблица"));
+        table.getHat().enableButton(true);
+
+        ArtaTextColumn<UserTree> idColumn = new ArtaTextColumn<UserTree>("id") {
+            @Override
+            public String getValue(UserTree object) {
+                return "" + object.getKey();
+            }
+        };
+        table.addColumn(idColumn);
+
+        TreeColumn<UserTree> treeColumn = new TreeColumn<UserTree>("Название человека") {
+            @Override
+            public String getText(UserTree object) {
+                return object.getFirstName();
+            }
+        };
+        table.addColumn(treeColumn);
+
+        ArtaTextColumn<UserTree> lastNameColumn = new ArtaTextColumn<UserTree>(SCMessages.i18n.tr("Фамилия")) {
+            @Override
+            public String getValue(UserTree object) {
+                return object.getLastName();
+            }
+        };
+        table.addColumn(lastNameColumn);
+
+        ArtaEditableTextColumn<UserTree> addressColumn = new ArtaEditableTextColumn<UserTree>(SCMessages.i18n.tr("Адрес")) {
+            @Override
+            public String getValue(UserTree object) {
+                return object.getAddress();
+            }
+
+            @Override
+            public void setValue(UserTree object, String value) {
+                object.setAddress(value);
+            }
+        };
+        table.addColumn(addressColumn);
+
+        table.getCore().setColumnWidth(idColumn, 65);
+        table.getCore().setColumnWidth(lastNameColumn, 150);
+        table.getCore().setColumnWidth(addressColumn, 150);
+
+        TreeTableProvider<UserTree> provider = new TreeTableProvider<UserTree>();
+        provider.addDataDisplay(table.getCore());
+
+        for (int i = 0; i < 15; i++) {
+            String name = "john";
+            String lastName = "jones";
+            String address = "Orinbor";
+
+            UserTree user = new UserTree(null, name + i, lastName + i, address + " " + (i + 1));
+            UserTree user2 = new UserTree(user, name + (i + 1), lastName + (i + 1), address + " " + (i + 2));
+            new UserTree(user2, name + (i + 2), lastName + (i + 2), address + " " + (i + 3));
+            new UserTree(user2, name + (i + 3), lastName + (i + 3), address + " " + (i + 4));
+            provider.addItem(user);
+        }
+        provider.flush();
+
+        root.add(table);
+
+        return root;
     }
 
     /**

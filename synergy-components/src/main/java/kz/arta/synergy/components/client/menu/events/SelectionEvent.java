@@ -13,7 +13,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * Событие выбора значения в списке
  */
 public class SelectionEvent<V> extends GwtEvent<SelectionEvent.Handler<V>> {
-    public final static Type<Handler<?>> TYPE = new Type<Handler<?>>();
+    public static final Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     /**
      * Значение

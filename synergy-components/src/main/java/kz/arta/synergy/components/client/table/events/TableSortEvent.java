@@ -17,7 +17,7 @@ import java.util.*;
  * {@link com.google.gwt.user.cellview.client.ColumnSortList}
  */
 public class TableSortEvent<T> extends GwtEvent<TableSortEvent.Handler<T>> {
-    public final static Type<Handler<?>> TYPE = new Type<Handler<?>>();
+    public static final Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     private ArtaColumn<T> column;
     private boolean isAscending;

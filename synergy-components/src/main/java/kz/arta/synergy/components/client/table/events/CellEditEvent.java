@@ -12,7 +12,7 @@ import kz.arta.synergy.components.client.table.column.ArtaColumn;
  * Событие изменения значения в таблице
  */
 public class CellEditEvent<T> extends GwtEvent<CellEditEvent.Handler<T>> {
-    public final static Type<Handler<?>> TYPE = new Type<Handler<?>>();
+    public static final Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     /**
      * Объект

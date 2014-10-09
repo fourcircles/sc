@@ -12,13 +12,6 @@ import kz.arta.synergy.components.client.table.Header;
  * Столбец. "Заимствован" из {@link com.google.gwt.user.cellview.client.Column}.
  */
 public interface ArtaColumn<T> {
-//    /**
-//     * Возвращает логическое значение столбца.
-//     * По этому значение будет производиться сортировка.
-//     * @param object объект
-//     */
-//    Object getValue(T object);
-
     /**
      * Создает новый виджет для отображения объекта
      * @param object объект

@@ -71,35 +71,6 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
      */
     private int textPadding = Constants.COMMON_INPUT_PADDING * 3 + Constants.STD_ICON_WIDTH;
 
-    /**
-     * Создает элемент, по которому считается необходимая высота текста
-     */
-    private static void initMirror() {
-        if (mirror == null) {
-            mirror = new TextArea();
-            RootPanel.get().add(mirror);
-            mirror.setStyleName(FONT);
-
-            Style style = mirror.getElement().getStyle();
-
-            style.setPadding(0, Style.Unit.PX);
-            style.setPaddingLeft(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
-            style.setPaddingRight(0, Style.Unit.PX);
-            style.setMargin(0, Style.Unit.PX);
-            style.setBorderStyle(Style.BorderStyle.NONE);
-            style.setOverflow(Style.Overflow.HIDDEN);
-
-            style.setProperty("resize", "none");
-            style.setProperty("wordBreak", "break-all");
-            style.setLineHeight(Constants.COMMENT_INPUT_LINE_HEIGHT, Style.Unit.PX);
-
-            style.setPosition(Style.Position.ABSOLUTE);
-            style.setTop(0, Style.Unit.PX);
-            style.setLeft(0, Style.Unit.PX);
-            style.setHeight(0, Style.Unit.PX);
-        }
-    }
-
     public CommentInput() {
         scroll = new ArtaScrollPanel();
         initWidget(scroll);
@@ -163,6 +134,35 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
     }
 
     /**
+     * Создает элемент, по которому считается необходимая высота текста
+     */
+    private static void initMirror() {
+        if (mirror == null) {
+            mirror = new TextArea();
+            RootPanel.get().add(mirror);
+            mirror.setStyleName(FONT);
+
+            Style style = mirror.getElement().getStyle();
+
+            style.setPadding(0, Style.Unit.PX);
+            style.setPaddingLeft(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
+            style.setPaddingRight(0, Style.Unit.PX);
+            style.setMargin(0, Style.Unit.PX);
+            style.setBorderStyle(Style.BorderStyle.NONE);
+            style.setOverflow(Style.Overflow.HIDDEN);
+
+            style.setProperty("resize", "none");
+            style.setProperty("wordBreak", "break-all");
+            style.setLineHeight(Constants.COMMENT_INPUT_LINE_HEIGHT, Style.Unit.PX);
+
+            style.setPosition(Style.Position.ABSOLUTE);
+            style.setTop(0, Style.Unit.PX);
+            style.setLeft(0, Style.Unit.PX);
+            style.setHeight(0, Style.Unit.PX);
+        }
+    }
+
+    /**
      * Метод вызывается при добавлении комментария
      */
     private void postComment() {
@@ -209,7 +209,8 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
      */
     private void updateOffsetForScroll(boolean hasScroll) {
         int imagePadding = Constants.COMMON_INPUT_PADDING;
-        int sideTextPadding = Constants.STD_ICON_WIDTH + Constants.COMMON_INPUT_PADDING * 2; //ширина иконки
+        //ширина иконки
+        int sideTextPadding = Constants.STD_ICON_WIDTH + Constants.COMMON_INPUT_PADDING * 2;
 
         if (hasScroll) {
             imagePadding += Constants.SCROLL_BAR_WIDTH;

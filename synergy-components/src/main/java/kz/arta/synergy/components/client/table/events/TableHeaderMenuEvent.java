@@ -12,7 +12,7 @@ import kz.arta.synergy.components.client.table.column.ArtaColumn;
  * Событие контекстного меню для хедера
  */
 public class TableHeaderMenuEvent<T> extends GwtEvent<TableHeaderMenuEvent.Handler<T>> {
-    public final static Type<Handler<?>> TYPE = new Type<Handler<?>>();
+    public static final Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     private ArtaColumn<T> column;
 

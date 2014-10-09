@@ -14,7 +14,7 @@ import kz.arta.synergy.components.client.menu.DropDownList;
  * Событие выбора элемента списка
  */
 public class ListSelectionEvent<V> extends GwtEvent<ListSelectionEvent.Handler<V>> {
-    public final static Type<Handler<?>> TYPE = new Type<Handler<?>>();
+    public static final Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     /**
      * Выбор или снятие выбора для списков предусматривающих выбор нескольких элементов

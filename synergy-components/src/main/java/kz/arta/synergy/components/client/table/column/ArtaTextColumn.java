@@ -47,4 +47,9 @@ public abstract class ArtaTextColumn<T> extends AbstractArtaColumn<T> {
     public int getMinWidth() {
         return 60;
     }
+
+    @Override
+    public void setSortable(boolean isSorted) {
+        super.setSortable(isSorted);
+    }
 }

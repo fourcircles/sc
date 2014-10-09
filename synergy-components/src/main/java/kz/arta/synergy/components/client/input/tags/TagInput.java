@@ -56,7 +56,7 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
     /**
      * Кнопка поля
      */
-    protected ImageButton button;
+    protected ImageButton mainButton;
 
     /**
      * Панель для отображения тегов, которые не скрыты в индикаторе
@@ -115,8 +115,8 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
         tagsPanel = new TagsPanel<V>(innerBus, 0);
 
         if (hasButton) {
-            button = createButton();
-            root.add(button);
+            mainButton = createButton();
+            root.add(mainButton);
             setWidth(Constants.FIELD_WITH_BUTTON_MIN_WIDTH);
         } else {
             setWidth(Constants.TAG_INPUT_NO_BUTTON_MIN_WIDTH);
@@ -337,17 +337,17 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
      */
     public void setWidth(int width) {
         this.offsetWidth = width;
-        int inputWidth = width;
-        inputWidth -= Constants.BORDER_WIDTH * 2;
-        super.setWidth(inputWidth + "px");
+        int newInputWidth = width;
+        newInputWidth -= Constants.BORDER_WIDTH * 2;
+        super.setWidth(newInputWidth + "px");
 
         if (hasButton) {
-            inputWidth -= Constants.IMAGE_BUTTON_WIDTH + 1;
+            newInputWidth -= Constants.IMAGE_BUTTON_WIDTH + 1;
         }
-        inputWidth -= Constants.COMMON_INPUT_PADDING * 2;
+        newInputWidth -= Constants.COMMON_INPUT_PADDING * 2;
 
-        this.inputWidth = inputWidth;
-        inputBox.setWidth(inputWidth + "px");
+        this.inputWidth = newInputWidth;
+        inputBox.setWidth(newInputWidth + "px");
 
         setInputOffset(Constants.COMMON_INPUT_PADDING);
 
@@ -380,7 +380,7 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
 
         dropDownList.removeAutoHidePartner(this.getElement());
         if (hasButton) {
-            dropDownList.addAutoHidePartner(button.getElement());
+            dropDownList.addAutoHidePartner(mainButton.getElement());
         }
         dropDownList.setBus(innerBus);
     }
@@ -399,7 +399,7 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
         }
         input.setEnabled(enabled);
         if (hasButton) {
-            button.setEnabled(enabled);
+            mainButton.setEnabled(enabled);
         }
         tagsPanel.setEnabled(enabled);
     }

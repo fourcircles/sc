@@ -326,13 +326,49 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Инициализирует ширину столбцов
+     *
+     * Ширина столбцов, которым она не была присвоена методом {@link #setColumnWidth(kz.arta.synergy.components.client.table.column.ArtaColumn, int)}
+     * одинаковая и определяется исходя из ширины таблицы.
+     * В таблице всегда будет хотя бы один столбец с неопределенной
+     * Если до начала инициализации некоторым столбцам были присвоена ширина с помощью метода
+     * {@link #setColumnWidth(kz.arta.synergy.components.client.table.column.ArtaColumn, int)},
+     * то ширина оставшихся столбцов равна оставшейся ширине таблице
+     *
      */
     void initWidths() {
-        for (int i = 0; i < columns.size() - 1; i++) {
-            setColumnWidth(i, table.getFlexCellFormatter().getElement(0, i).getOffsetWidth());
+        List<ArtaColumn<T>> unsetColumns = new ArrayList<ArtaColumn<T>>();
+        unsetColumns.addAll(columns);
+
+        for (ArtaColumn<T> column : widths.keySet()) {
+            setColumnWidth(column, widths.get(column));
+            unsetColumns.remove(column);
         }
-        //последний столбец (на момент загрузки) подстраивается по ширине
-        setColumnWidth(columns.size() - 1, -1);
+        for (ArtaColumn<T> column : unsetColumns) {
+            setColumnWidth(column, -1);
+        }
+//
+//        boolean hasFreeColumn = false;
+//        for (ArtaColumn<T> column : widths.keySet()) {
+//            Integer columnWidth = widths.get(column);
+//            freeWidth -= columnWidth;
+//
+//            setColumnWidth(column, columnWidth);
+//
+//            if (columnWidth == -1) {
+//                hasFreeColumn = true;
+//            }
+//        }
+//
+//        if (!unsetColumns.isEmpty()) {
+//            double unsetColumnWidth = freeWidth / (unsetColumns.size() - (hasFreeColumn ? 0 : 1));
+//            for (ArtaColumn<T> column : unsetColumns) {
+//                setColumnWidth(column, (int) unsetColumnWidth);
+//            }
+//            if (!hasFreeColumn) {
+//                ArtaColumn<T> lastColumn = unsetColumns.get(unsetColumns.size() - 1);
+//                setColumnWidth(lastColumn, -1);
+//            }
+//        }
     }
 
     /**
@@ -634,10 +670,14 @@ public class TableCore<T> extends Composite implements HasData<T> {
         }
         int index = columns.indexOf(column);
         if (width < 0) {
-            table.getFlexCellFormatter().getElement(0, index).getStyle().clearWidth();
+            if (isAttached()) {
+                table.getFlexCellFormatter().getElement(0, index).getStyle().clearWidth();
+            }
             widths.put(column, -1);
         } else {
-            table.getFlexCellFormatter().getElement(0, index).getStyle().setWidth(width, Style.Unit.PX);
+            if (isAttached()) {
+                table.getFlexCellFormatter().getElement(0, index).getStyle().setWidth(width, Style.Unit.PX);
+            }
             widths.put(column, width);
         }
     }
@@ -759,7 +799,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
         table.getRowFormatter().getElement(pageSize - 1).addClassName(SynergyComponents.resources.cssComponents().last());
 
         if (!isHeightSet) {
-            scroll.getElement().getStyle().setHeight(table.getOffsetHeight(), Style.Unit.PX);
+            scroll.getElement().getStyle().setHeight(pageSize * 27 - 1, Style.Unit.PX);
         }
     }
 
@@ -771,6 +811,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
     public void setHeight(int height) {
         isHeightSet = true;
         scroll.getElement().getStyle().setHeight(height, Style.Unit.PX);
+        scroll.onResize();
     }
 
     /**
@@ -805,6 +846,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
                 setRow(rowNum, values.get(i));
             }
         }
+        SelectionChangeEvent.fire(selectionModel);
     }
 
     @SuppressWarnings("unchecked")
@@ -888,6 +930,16 @@ public class TableCore<T> extends Composite implements HasData<T> {
             }
             rowCountChange = true;
         } else if (objects.size() > count) {
+
+            //случай когда удаляются элементы в конце
+            if (count - start < pageSize) {
+                for (int row = count - start; row < pageSize; row++) {
+                    TableRowElement rowElement = TableRowElement.as(table.getRowFormatter().getElement(row));
+                    while (rowElement.getCells().getLength() > 0) {
+                        rowElement.deleteCell(0);
+                    }
+                }
+            }
             objects.subList(count, objects.size()).clear();
             rowCountChange = true;
         }
@@ -957,6 +1009,10 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     public int getPageSize() {
         return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
     }
 
     /**

@@ -10,7 +10,7 @@ import kz.arta.synergy.components.client.table.column.ArtaColumn;
  * Time: 15:10
  */
 public class TableCellMenuEvent<T> extends GwtEvent<TableCellMenuEvent.Handler<T>> {
-    public final static Type<Handler<?>> TYPE = new Type<Handler<?>>();
+    public static final Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     private T object;
     private ArtaColumn<T> column;

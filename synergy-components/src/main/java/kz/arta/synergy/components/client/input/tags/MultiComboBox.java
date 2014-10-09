@@ -15,7 +15,7 @@ import java.util.List;
 public class MultiComboBox<V> extends TagInput<V> {
     public MultiComboBox() {
         super(true);
-        button.setIcon(ImageResources.IMPL.comboBoxDropDown());
+        mainButton.setIcon(ImageResources.IMPL.comboBoxDropDown());
     }
 
     @Override

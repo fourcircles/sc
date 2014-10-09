@@ -9,8 +9,8 @@ import com.google.gwt.dom.client.Element;
  * Time: 17:59
  */
 public class Utils {
-    private final RulerLabel RULER = GWT.create(RulerLabel.class);
-    private final HeightRuler HEIGHT_RULER = GWT.create(HeightRuler.class);
+    private final RulerLabel ruler = GWT.create(RulerLabel.class);
+    private final HeightRuler heightRuler = GWT.create(HeightRuler.class);
 
     private static final Utils UTILS = GWT.create(Utils.class);
 
@@ -25,7 +25,7 @@ public class Utils {
      * @return ширина
      */
     public int getTextWidth(String text, String style) {
-        return RULER.getTextWidth(text, style);
+        return ruler.getTextWidth(text, style);
     }
 
     /**
@@ -34,19 +34,19 @@ public class Utils {
      * @return ширина текста
      */
     public int getTextWidth(ArtaHasText textWidget) {
-        return RULER.getTextWidth(textWidget);
+        return ruler.getTextWidth(textWidget);
     }
 
     public double getPreciseTextWidth(String text, String style) {
-        return RULER.getPresiceTextWidth(text, style);
+        return ruler.getPresiceTextWidth(text, style);
     }
 
     public double getPreciseTextWidth(ArtaHasText textWidget) {
-        return RULER.getPreciseTextWidth(textWidget);
+        return ruler.getPreciseTextWidth(textWidget);
     }
 
     public int getTextHeight(String text, String style, int width) {
-        return HEIGHT_RULER.getTextHeight(text, style, width);
+        return heightRuler.getTextHeight(text, style, width);
     }
 
     /**

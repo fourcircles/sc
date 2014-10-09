@@ -48,9 +48,8 @@ public class NumberInput extends TextInput {
     @Override
     public void onBrowserEvent(Event event) {
         super.onBrowserEvent(event);
-        switch(event.getTypeInt()) {
-            case Event.ONPASTE :
-                event.preventDefault();
+        if (event.getTypeInt() == Event.ONPASTE) {
+            event.preventDefault();
         }
     }
 

@@ -9,7 +9,7 @@ import com.google.gwt.event.shared.GwtEvent;
  * Time: 15:28
  */
 public class TableRowMenuEvent<T> extends GwtEvent<TableRowMenuEvent.Handler<T>> {
-    public final static Type<Handler<?>> TYPE = new Type<Handler<?>>();
+    public static final Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     private T object;
 

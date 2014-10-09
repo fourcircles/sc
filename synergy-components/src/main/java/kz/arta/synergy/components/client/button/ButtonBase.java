@@ -267,14 +267,11 @@ public class ButtonBase extends FlowPanel implements
     }
 
     public void onBrowserEvent(Event event) {
-        if (!enabled){
+        if (!enabled || event.getButton() != NativeEvent.BUTTON_LEFT){
             return;
         }
         switch (DOM.eventGetType(event)) {
             case Event.ONMOUSEDOWN:
-                if (event.getButton() != NativeEvent.BUTTON_LEFT) {
-                    return;
-                }
                 MouseStyle.setPressed(this);
                 break;
             case Event.ONMOUSEUP:

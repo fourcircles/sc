@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.comments;
 
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
@@ -78,8 +79,14 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
     private boolean isPlaceHolder;
 
     public CommentInput() {
+        FlowPanel scrollRoot = new FlowPanel();
+        initWidget(scrollRoot);
+        scrollRoot.getElement().getStyle().setWidth(100, Style.Unit.PCT);
+
         scroll = new ArtaScrollPanel();
-        initWidget(scroll);
+        scrollRoot.add(scroll);
+        scroll.getElement().getStyle().setHeight(100, Style.Unit.PCT);
+        scroll.getElement().getStyle().setWidth(100, Style.Unit.PCT);
         scroll.getElement().getStyle().setFontSize(0, Style.Unit.PX);
 
         root = new FlowPanel();
@@ -101,9 +108,16 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
 
         acceptImage = new Image(ImageResources.IMPL.post());
         acceptImage.setStyleName(SynergyComponents.resources.cssComponents().commentInputAccept());
+        scrollRoot.add(acceptImage);
 
-        /* добавляем картилку в элемент скролла, чтобы она была видна всегда */
-        scroll.getElement().appendChild(acceptImage.getElement());
+        acceptImage.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (event.getNativeButton() == NativeEvent.BUTTON_LEFT) {
+                    postComment();
+                }
+            }
+        });
 
         InputChangeEvent.addInputHandler(getElement(), new InputChangeEvent.Handler() {
             @Override
@@ -122,13 +136,6 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
                 }
             });
         }
-
-        acceptImage.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                postComment();
-            }
-        });
 
         textArea.addKeyDownHandler(new KeyDownHandler() {
             @Override
@@ -268,6 +275,10 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
         mirror.setValue(textArea.getValue());
 
         int height = mirror.getElement().getScrollHeight();
+
+        /* fix для пустых textarea в ie11*/
+        height = Math.max(height, 16);
+
         int oldHeight = textArea.getOffsetHeight() - Constants.COMMON_INPUT_PADDING * 2;
         int lines = height / Constants.COMMENT_INPUT_LINE_HEIGHT;
 

@@ -189,7 +189,7 @@ public class ShowCasePanel extends FlowPanel {
         ComboBox<Theme> themesCombo = new ComboBox<Theme>();
         themesCombo.setReadOnly(true);
         for (Theme th : Theme.values()) {
-            themesCombo.addItem(th.name(), th);
+            themesCombo.addItem(th.name().toLowerCase(), th);
         }
         themesCombo.addValueChangeHandler(new ValueChangeHandler<Theme>() {
             @Override
@@ -1797,8 +1797,10 @@ public class ShowCasePanel extends FlowPanel {
         commentsPanel.setWidth("400px");
         root.add(commentsPanel);
 
-        Comment comment1 = new TextComment("Поле ввода текста комментария «растягивается» вниз при увеличении количества строк, но не более чем на 10 строк. После ввода 11-й строки появляется полоса прокрутки в поле ввода.",
+        TextComment comment1 = new TextComment("Поле ввода текста комментария «растягивается» вниз при увеличении количества строк, но не более чем на 10 строк. После ввода 11-й строки появляется полоса прокрутки в поле ввода.",
                 "John Doe", new Date(), CommentType.GENERAL);
+        comment1.setDeletable(false);
+
         Comment comment2 = new TextComment("Все хорошо.\n--\n http://arta.pro", "John Doe", new Date(), CommentType.ACCEPT);
         Comment comment3 = new TextComment("Все плохо.", "Jane Doe", new Date(), CommentType.DECLINE);
 

@@ -1,5 +1,7 @@
 package kz.arta.synergy.components.client.comments;
 
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -77,7 +79,8 @@ public class CommentUI extends Composite {
         icon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (comment.getType() == CommentType.GENERAL &&
+                if (event.getNativeButton() == NativeEvent.BUTTON_LEFT &&
+                        comment.getType() == CommentType.GENERAL &&
                         comment.isDeletable()) {
                     fireEvent(new DeleteCommentEvent(comment));
                 }
@@ -104,6 +107,11 @@ public class CommentUI extends Composite {
                 break;
             default:
                 icon.setResource(ImageResources.IMPL.deleteComment());
+                if (comment.isDeletable()) {
+                    icon.getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+                } else {
+                    icon.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+                }
         }
 
     }

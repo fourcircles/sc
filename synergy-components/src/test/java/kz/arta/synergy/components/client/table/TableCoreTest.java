@@ -252,9 +252,6 @@ public class TableCoreTest {
         assertFalse(table.widths.containsKey(firstName));
         table.setColumnWidth(firstName, 80);
         assertEquals(Integer.valueOf(80), table.widths.get(firstName));
-
-        verify(cellFormatter, times(1)).getElement(0, 0);
-        verify(style, times(1)).setWidth(80, Style.Unit.PX);
     }
 
     @Test
@@ -270,9 +267,6 @@ public class TableCoreTest {
         assertFalse(table.widths.containsKey(firstName));
         table.setColumnWidth(firstName, -1);
         assertEquals(Integer.valueOf(-1), table.widths.get(firstName));
-
-        verify(cellFormatter, times(1)).getElement(0, 0);
-        verify(style, times(1)).clearWidth();
     }
 
     private ArtaColumn<User> createEditableColumn(boolean isEditable) {

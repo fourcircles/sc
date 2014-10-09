@@ -5,8 +5,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -58,14 +56,13 @@ import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
-import kz.arta.synergy.components.client.table.*;
-import kz.arta.synergy.components.client.table.column.TreeColumn;
-import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.stack.SingleStack;
 import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
+import kz.arta.synergy.components.client.table.*;
 import kz.arta.synergy.components.client.table.column.ArtaEditableTextColumn;
 import kz.arta.synergy.components.client.table.column.ArtaTextColumn;
+import kz.arta.synergy.components.client.table.column.TreeColumn;
 import kz.arta.synergy.components.client.table.events.TableCellMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableHeaderMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableRowMenuEvent;
@@ -73,6 +70,7 @@ import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.client.tabs.TabPanel;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.taskbar.TaskBar;
+import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.client.tree.Tree;
 import kz.arta.synergy.components.client.tree.TreeItem;
@@ -105,6 +103,9 @@ public class ShowCasePanel extends FlowPanel {
 
     @UiField TaskBar taskBar;
 
+    /**
+     * Таб, открывается сразу
+     */
     private TreeItem firstTab;
 
     interface ShowCasePanelUiBinder extends UiBinder<FlowPanel, ShowCasePanel> {

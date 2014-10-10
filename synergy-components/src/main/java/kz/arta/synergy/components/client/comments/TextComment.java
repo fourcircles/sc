@@ -17,7 +17,8 @@ public class TextComment extends AbstractComment {
 
     public TextComment(String text, String author, Date date, CommentType type) {
         super(author, date, type);
-        this.text = Utils.impl().parseComment(SafeHtmlUtils.htmlEscape(text));
+        this.text = text;
+//        this.text = Utils.impl().parseComment(SafeHtmlUtils.htmlEscape(text));
     }
 
     @Override

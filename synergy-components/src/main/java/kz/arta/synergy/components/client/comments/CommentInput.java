@@ -183,8 +183,8 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
             style.setOverflow(Style.Overflow.HIDDEN);
 
             style.setProperty("resize", "none");
-            style.setProperty("wordBreak", "break-all");
-            style.setLineHeight(Constants.COMMENT_INPUT_LINE_HEIGHT, Style.Unit.PX);
+            style.setProperty("wordBreak", "break-word");
+//            style.setLineHeight(Constants.COMMENT_INPUT_LINE_HEIGHT, Style.Unit.PX);
 
             style.setPosition(Style.Position.ABSOLUTE);
             style.setTop(0, Style.Unit.PX);
@@ -232,31 +232,44 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
             //без него при RTL будет неправильное смещение
             root.getElement().getStyle().setLeft(-0.1, Style.Unit.PX);
         }
+
+        textArea.setValue("0", false);
+        textChanged();
+        textArea.setValue(Messages.COMMENT_INPUT_PLACEHOLDER, false);
     }
 
+    //при изменении padding и line-height ie9 не перестраивает текст и текст может выходить за padding
+    //чтобы он перестроил текст делается следующая процедура (например)
+    private void maybeUpdateTextIE() {
+        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+            textArea.setValue(textArea.getValue(), false);
+        }
+    }
     /**
      * Изменяет отступы при появлении скролла
      * @param hasScroll отображен ли скролл
      */
     private void updateOffsetForScroll(boolean hasScroll) {
-        int imagePadding = Constants.COMMON_INPUT_PADDING;
+        int imageMargin = 0;
         //ширина иконки
         int sideTextPadding = Constants.STD_ICON_WIDTH + Constants.COMMON_INPUT_PADDING * 2;
 
         if (hasScroll) {
-            imagePadding += Constants.SCROLL_BAR_WIDTH;
             sideTextPadding += Constants.SCROLL_BAR_WIDTH;
+            imageMargin = Constants.SCROLL_BAR_WIDTH;
         }
 
         this.textPadding = sideTextPadding + Constants.COMMON_INPUT_PADDING;
 
         if (LocaleInfo.getCurrentLocale().isRTL()) {
-            acceptImage.getElement().getStyle().setPaddingLeft(imagePadding, Style.Unit.PX);
+            acceptImage.getElement().getStyle().setMarginLeft(imageMargin, Style.Unit.PX);
             textArea.getElement().getStyle().setPaddingLeft(sideTextPadding, Style.Unit.PX);
         } else {
-            acceptImage.getElement().getStyle().setPaddingRight(imagePadding, Style.Unit.PX);
+            acceptImage.getElement().getStyle().setMarginRight(imageMargin, Style.Unit.PX);
             textArea.getElement().getStyle().setPaddingRight(sideTextPadding, Style.Unit.PX);
         }
+
+        maybeUpdateTextIE();
     }
 
     /**
@@ -272,34 +285,56 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
         mirror.getElement().getStyle().setPaddingRight(0, Style.Unit.PX);
 
         mirror.getElement().getStyle().setWidth(width, Style.Unit.PX);
-        mirror.setValue(textArea.getValue());
+
+        /* ie11 при наличии в тексте только whitespace (например пяти \n) считает, что scrollHeight = 0 */
+        if (Window.Navigator.getAppVersion().contains("Trident") && textArea.getValue().trim().isEmpty()) {
+            mirror.setValue("," + textArea.getValue());
+        } else {
+            mirror.setValue(textArea.getValue(), false);
+        }
 
         int height = mirror.getElement().getScrollHeight();
-
-        /* fix для пустых textarea в ie11*/
-        height = Math.max(height, 16);
 
         int oldHeight = textArea.getOffsetHeight() - Constants.COMMON_INPUT_PADDING * 2;
         int lines = height / Constants.COMMENT_INPUT_LINE_HEIGHT;
 
-        if (lines <= MAX_LINES) {
-            if (this.hasScroll) {
-                //случай, когда скролл надо убрать
-                hasScroll = false;
-                updateOffsetForScroll(false);
-                textChanged();
-            }
-            textArea.getElement().getStyle().setHeight(height + Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
-            scroll.getElement().getStyle().setHeight(height + Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
+        /* Браузеры по-разному считают line-height для разных размеров текста. Поэтому
+        * фиксированное значение line-height в нашем случае не подойдет (иначе в каком-то браузере
+        * будет большое расстояние между строчками или наложение).
+        * Для сохранения одинаковой начальной высоты поля ввода во всех браузерах в случае, когда
+        * есть одна линия текста - line-height и высота фиксированна, если линий больше - высота линии снимается.
+        */
+        if (lines <= 1 || textArea.getValue().isEmpty()) {
+            textArea.getElement().getStyle().setLineHeight(Constants.COMMENT_INPUT_LINE_HEIGHT, Style.Unit.PX);
+            textArea.getElement().getStyle().setHeight(Constants.COMMENT_INPUT_LINE_HEIGHT +
+                    Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
+            scroll.getElement().getStyle().setHeight(Constants.COMMENT_INPUT_LINE_HEIGHT +
+                    Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
+            maybeUpdateTextIE();
+
         } else {
-            if (!this.hasScroll) {
-                //случай, когда скролл надо добавить
-                hasScroll = true;
-                updateOffsetForScroll(true);
-                textChanged();
+            textArea.getElement().getStyle().clearLineHeight();
+            maybeUpdateTextIE();
+
+            if (lines <= MAX_LINES) {
+                if (this.hasScroll) {
+                    //случай, когда скролл надо убрать
+                    hasScroll = false;
+                    updateOffsetForScroll(false);
+                    textChanged();
+                }
+                textArea.getElement().getStyle().setHeight(height + Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
+                scroll.getElement().getStyle().setHeight(height + Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
+            } else {
+                if (!this.hasScroll) {
+                    //случай, когда скролл надо добавить
+                    hasScroll = true;
+                    updateOffsetForScroll(true);
+                    textChanged();
+                }
+                textArea.getElement().getStyle().setHeight(height + Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
+                scroll.getElement().getStyle().setHeight(MAX_LINES * Constants.COMMENT_INPUT_LINE_HEIGHT + Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
             }
-            textArea.getElement().getStyle().setHeight(height + Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
-            scroll.getElement().getStyle().setHeight(MAX_LINES * Constants.COMMENT_INPUT_LINE_HEIGHT + Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
         }
 
         if (oldHeight != height) {
@@ -340,7 +375,8 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
 
     @Override
     public void setText(String text) {
-        mirror.setText(Utils.impl().parseComment(text));
+        mirror.setText(text);
+//        mirror.setText(Utils.impl().parseComment(text));
     }
 
     public HandlerRegistration addKeyUpHandler(KeyUpHandler handler) {

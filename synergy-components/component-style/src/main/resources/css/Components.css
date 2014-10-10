@@ -2007,7 +2007,7 @@ p {
 
 .comment .content {
     color: textColor1;
-    margin-top: 16px;
+    margin-top: 13px;
     height: auto;
     cursor: pointer;
 }
@@ -2026,8 +2026,8 @@ p {
     width: 100%;
 }
 .commentInput > textarea {
+    /*line-height: commentInputCommentLineHeight;*/
     height: commentInputCommentLineHeight;
-    line-height: commentInputCommentLineHeight;
 
     background-color: #ffffff;
 

@@ -18,6 +18,7 @@ import kz.arta.synergy.components.client.comments.events.NewCommentEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.resources.Messages;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.client.util.Utils;
@@ -80,11 +81,18 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
     private boolean isPlaceHolder;
 
     public CommentInput() {
+        this(false);
+    }
+
+    /**
+     * @param dark темное ли поле ввода
+     */
+    public CommentInput(boolean dark) {
         FlowPanel scrollRoot = new FlowPanel();
         initWidget(scrollRoot);
         scrollRoot.getElement().getStyle().setWidth(100, Style.Unit.PCT);
 
-        scroll = new ArtaScrollPanel();
+        scroll = new ArtaScrollPanel(dark ? ColorType.BLACK : ColorType.WHITE);
         scrollRoot.add(scroll);
         scroll.getElement().getStyle().setHeight(100, Style.Unit.PCT);
         scroll.getElement().getStyle().setWidth(100, Style.Unit.PCT);

@@ -21,6 +21,7 @@ public class Colors {
     public static final Color mainBG = new Color("#373d49");
     public static final Color border1 = new Color("#afafaf");
     public static final Color buttonBorder = new Color("#e2e2e2");
+    public static final Color navigatorBG = new Color("#292f3b");
 
 
     public static Color whiteBG() {
@@ -57,4 +58,7 @@ public class Colors {
         return tabBG2;
     }
     public static Color border1() { return border1;}
+    public static Color navigatorBG() {
+        return navigatorBG;
+    }
 }

@@ -8,7 +8,6 @@
     url('droid/bold/DroidSans-Bold-webfont.svg#DroidSansBold') format('svg');
     font-weight: normal;
     font-style: normal;
-
 }
 
 @font-face {
@@ -119,6 +118,8 @@
 @def scrollDark #555d6f;
 @def scrollDarkBar #434958;
 @def scrollDarkBarPressed #2c313a;
+
+@def searchBG #424b5c;
 
 #titlePanel {
     line-height: 54px;
@@ -733,7 +734,6 @@
 .commonInput.placeHolder, .artaText.placeHolder, .commentInput > textarea.placeHolder{
     color: border1;
 }
-
 
 @eval comboMinWidth kz.arta.synergy.components.style.client.Constants.comboMinWidth();
 @eval dateInputWidth kz.arta.synergy.components.style.client.Constants.dateInputWidth();
@@ -1978,13 +1978,23 @@ p {
     border-bottom: 1px solid buttonBorder;
     white-space: pre-wrap;
     word-wrap: break-word;
+    cursor: pointer;
 }
+.commentsPanel.dark .comment {
+    border-bottom-color: searchBG;
+    border-bottom-style: dotted;
+}
+
 .comment > img {
     position:  absolute;
     top: 16px;
     right: 16px;
     cursor: pointer;
     opacity: 0.5;
+    visibility: hidden;
+}
+.comment:hover >img {
+    visibility: visible;
 }
 .comment > img:hover {
     opacity: 1;
@@ -1992,6 +2002,7 @@ p {
 .comment.accept > img, .comment.decline > img {
     opacity: 1;
     cursor: default;
+    visibility: visible;
 }
 
 .comment .name, .comment .date {
@@ -2005,11 +2016,18 @@ p {
     color: declineButtonBG4;
 }
 
+.commentsPanel.dark .comment .name, .commentsPanel.dark .comment .date {
+    color: border1;
+}
+
 .comment .content {
     color: textColor1;
     margin-top: 13px;
     height: auto;
-    cursor: pointer;
+}
+
+.commentsPanel.dark .content {
+    color: buttonPressed;
 }
 
 .comment .content img {
@@ -2046,6 +2064,10 @@ p {
 
     overflow: hidden;
 }
+.commentsPanel.dark .commentInput > textarea {
+    color: border1;
+    background-color: searchBG;
+}
 
 .commentInputAccept {
     padding: 8px;
@@ -2065,9 +2087,16 @@ p {
     position: relative;
     border: 1px solid buttonBorder;
 }
+.commentsPanel.dark {
+    border-color: navigatorBG;
+}
 .commentsPanel > div:first-child {
     position: absolute;
     top: 0;
+    border-bottom: 1px solid buttonBorder;
+}
+.commentsPanel.dark > div:first-child {
+    border-style: none;
 }
 .commentsPanel > div:last-child {
     bottom: 0;

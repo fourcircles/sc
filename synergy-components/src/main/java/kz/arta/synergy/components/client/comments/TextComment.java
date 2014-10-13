@@ -17,6 +17,11 @@ public class TextComment extends AbstractComment {
         this.text = text;
     }
 
+    public TextComment(TextComment comment) {
+        super(comment.getAuthor(), comment.getDate(), comment.getType());
+        this.text = comment.getText();
+    }
+
     @Override
     public String getText() {
         return text;

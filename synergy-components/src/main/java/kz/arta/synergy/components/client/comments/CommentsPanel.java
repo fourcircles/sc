@@ -32,18 +32,25 @@ public class CommentsPanel extends Composite {
     private Comments comments;
 
     public CommentsPanel() {
+        this(false);
+    }
+
+    /**
+     * @param dark темная ли панель
+     */
+    public CommentsPanel(boolean dark) {
         FlowPanel root = new FlowPanel();
         initWidget(root);
 
         root.setStyleName(SynergyComponents.getResources().cssComponents().commentsPanel());
 
-        commentInput = new CommentInput();
+        if (dark) {
+            root.addStyleName(SynergyComponents.getResources().cssComponents().dark());
+        }
 
-        commentInput.getElement().getStyle().setBorderColor(Colors.buttonBorder.hex());
-        commentInput.getElement().getStyle().setBorderWidth(Constants.BORDER_WIDTH, Style.Unit.PX);
-        commentInput.getElement().getStyle().setProperty("borderBottomStyle", "solid");
+        commentInput = new CommentInput(dark);
 
-        comments = new Comments();
+        comments = new Comments(dark);
         comments.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
         comments.getElement().getStyle().setLeft(0, Style.Unit.PX);
         comments.getElement().getStyle().setRight(0, Style.Unit.PX);

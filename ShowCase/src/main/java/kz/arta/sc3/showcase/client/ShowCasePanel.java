@@ -1787,7 +1787,6 @@ public class ShowCasePanel extends FlowPanel {
     private Widget getCommentsPanel() {
         FlowPanel root = new FlowPanel();
 
-
         CommentsPanel commentsPanel = new CommentsPanel();
         Style style = commentsPanel.getElement().getStyle();
         style.setPosition(Style.Position.ABSOLUTE);
@@ -1810,6 +1809,17 @@ public class ShowCasePanel extends FlowPanel {
 
         Comment fileComment = new FileComment(ImageResources.IMPL.calendarIcon(), "calendar.png", "John Doe", new Date(), CommentType.ACCEPT);
         commentsPanel.getComments().addComment(fileComment);
+
+        CommentsPanel darkCommentsPanel = new CommentsPanel(true);
+        Style darkStyle = darkCommentsPanel.getElement().getStyle();
+        darkStyle.setPosition(Style.Position.ABSOLUTE);
+        darkStyle.setTop(20, Style.Unit.PX);
+        darkStyle.setBottom(20, Style.Unit.PX);
+        darkStyle.setLeft(500, Style.Unit.PX);
+        darkCommentsPanel.setWidth("400px");
+        root.add(darkCommentsPanel);
+
+        darkCommentsPanel.getComments().addComment(new TextComment(comment1));
 
         return root;
     }

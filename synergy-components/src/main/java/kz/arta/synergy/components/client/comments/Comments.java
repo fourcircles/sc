@@ -8,6 +8,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.comments.events.DeleteCommentEvent;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+import kz.arta.synergy.components.client.theme.ColorType;
+import kz.arta.synergy.components.style.client.Colors;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
@@ -50,15 +52,18 @@ public class Comments extends Composite {
      * Пустая панель комментариев
      */
     public Comments() {
-        this(null);
+        this(null, false);
     }
 
     /**
      * @param comments после создания панели добавить комментарии из списка
+     * @param dark темная ли панель комментариев
      */
-    public Comments(List<Comment> comments) {
-        scroll = new ArtaScrollPanel();
+    public Comments(List<Comment> comments, boolean dark) {
+        scroll = new ArtaScrollPanel(dark ? ColorType.BLACK : ColorType.WHITE);
         initWidget(scroll);
+        scroll.getElement().getStyle().setBackgroundColor(dark ? Colors.navigatorBG.hex() : Colors.whiteBG.hex());
+
 
         root = new FlowPanel();
         root.getElement().getStyle().setPosition(Style.Position.RELATIVE);
@@ -73,6 +78,14 @@ public class Comments extends Composite {
                 addComment(comment);
             }
         }
+    }
+
+    public Comments(List<Comment> comments) {
+        this(comments, false);
+    }
+
+    public Comments(boolean dark) {
+        this(null, dark);
     }
 
     @Override

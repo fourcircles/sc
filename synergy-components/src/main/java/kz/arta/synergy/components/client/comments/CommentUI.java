@@ -108,7 +108,7 @@ public class CommentUI extends Composite {
             default:
                 icon.setResource(ImageResources.IMPL.deleteComment());
                 if (comment.isDeletable()) {
-                    icon.getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+                    icon.getElement().getStyle().clearVisibility();
                 } else {
                     icon.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
                 }

@@ -24,7 +24,6 @@ import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
-//todo комментарий-placeholder, пустой комментарий
 /**
  * User: vsl
  * Date: 26.09.14
@@ -206,8 +205,10 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
      * Метод вызывается при добавлении комментария
      */
     private void postComment() {
-        fireEvent(new NewCommentEvent(textArea.getValue()));
-        setValue("");
+        if (!isPlaceHolder && !textArea.getValue().isEmpty()) {
+            fireEvent(new NewCommentEvent(textArea.getValue()));
+            setValue("");
+        }
     }
 
     /**

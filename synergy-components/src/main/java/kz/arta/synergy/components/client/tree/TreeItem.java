@@ -20,6 +20,7 @@ import kz.arta.synergy.components.client.tree.events.TreeItemContextMenuEvent;
 import kz.arta.synergy.components.client.tree.events.TreeOpenEvent;
 import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
 import kz.arta.synergy.components.client.util.ArtaHasText;
+import kz.arta.synergy.components.client.util.Navigator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +113,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
 
     TreeItem(String text, final EventBus bus) {
         root = ourUiBinder.createAndBindUi(this);
-        root.addStyleName(SynergyComponents.resources.cssComponents().treeItem());
+        root.addStyleName(SynergyComponents.getResources().cssComponents().treeItem());
 
 
         ClickHandler selectionHandler = new ClickHandler() {
@@ -131,7 +132,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
 
         indicator.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
 
-        content.setStyleName(SynergyComponents.resources.cssComponents().content());
+        content.setStyleName(SynergyComponents.getResources().cssComponents().content());
         content.getElement().getStyle().setHeight(0, Style.Unit.PX);
         content.getElement().getStyle().setDisplay(Style.Display.NONE);
 
@@ -265,12 +266,12 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
         label.addStyleName(getFontStyle());
 
         if (selected) {
-            root.addStyleName(SynergyComponents.resources.cssComponents().selected());
+            root.addStyleName(SynergyComponents.getResources().cssComponents().selected());
             if (fireEvents) {
                 bus.fireEvent(new TreeSelectionEvent(this));
             }
         } else {
-            root.removeStyleName(SynergyComponents.resources.cssComponents().selected());
+            root.removeStyleName(SynergyComponents.getResources().cssComponents().selected());
         }
     }
 
@@ -281,9 +282,9 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     @Override
     public String getFontStyle() {
         if (isSelected()) {
-            return SynergyComponents.resources.cssComponents().mainTextBold();
+            return SynergyComponents.getResources().cssComponents().mainTextBold();
         } else {
-            return SynergyComponents.resources.cssComponents().mainText();
+            return SynergyComponents.getResources().cssComponents().mainText();
         }
     }
 
@@ -370,7 +371,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
      * @param height новая высота
      */
     private void setContentHeight(int height) {
-        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+        if (Navigator.isIE()) {
             if (animation == null) {
                 animation = new TreeAnimationIE9(content.getElement());
             }

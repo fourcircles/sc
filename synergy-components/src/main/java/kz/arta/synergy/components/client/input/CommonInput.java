@@ -54,7 +54,7 @@ public class CommonInput extends TextBox implements ArtaHasText{
         sinkEvents(Event.FOCUSEVENTS);
         sinkEvents(Event.MOUSEEVENTS);
         sinkEvents(Event.ONPASTE);
-        setStyleName(SynergyComponents.resources.cssComponents().commonInput());
+        setStyleName(SynergyComponents.getResources().cssComponents().commonInput());
         addStyleName(getFontStyle());
         addKeyUpHandler(new KeyUpHandler() {
             @Override
@@ -88,9 +88,9 @@ public class CommonInput extends TextBox implements ArtaHasText{
         setReadOnly(!enabled);
         this.enabled = enabled;
         if (enabled) {
-            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+            removeStyleName(SynergyComponents.getResources().cssComponents().disabled());
         } else {
-            addStyleName(SynergyComponents.resources.cssComponents().disabled());
+            addStyleName(SynergyComponents.getResources().cssComponents().disabled());
         }
 
     }
@@ -134,9 +134,9 @@ public class CommonInput extends TextBox implements ArtaHasText{
             correct = !getText().trim().isEmpty();
         }
         if (correct) {
-            removeStyleName(SynergyComponents.resources.cssComponents().invalid());
+            removeStyleName(SynergyComponents.getResources().cssComponents().invalid());
         } else {
-            addStyleName(SynergyComponents.resources.cssComponents().invalid());
+            addStyleName(SynergyComponents.getResources().cssComponents().invalid());
         }
         return correct;
     }
@@ -153,6 +153,6 @@ public class CommonInput extends TextBox implements ArtaHasText{
 
     @Override
     public String getFontStyle() {
-        return SynergyComponents.resources.cssComponents().mainText();
+        return SynergyComponents.getResources().cssComponents().mainText();
     }
 }

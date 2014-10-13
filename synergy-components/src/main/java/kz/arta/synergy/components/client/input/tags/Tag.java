@@ -103,7 +103,7 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
         setText(text);
         root.add(label);
         root.add(image);
-        addStyleName(SynergyComponents.resources.cssComponents().tag());
+        addStyleName(SynergyComponents.getResources().cssComponents().tag());
         addStyleName(getFontStyle());
     }
 
@@ -119,7 +119,7 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
 
     @Override
     public String getFontStyle() {
-        return SynergyComponents.resources.cssComponents().mainText();
+        return SynergyComponents.getResources().cssComponents().mainText();
     }
 
     /**
@@ -200,7 +200,7 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
 
     @Override
     public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler<V> handler) {
-        return bus.addHandlerToSource(TagRemoveEvent.getType(), this, handler);
+        return bus.addHandlerToSource(TagRemoveEvent.TYPE, this, handler);
     }
 
     @Override

@@ -71,7 +71,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
                     return;
                 }
                 if (isEnabled && isReadOnly) {
-                    root.addStyleName(SynergyComponents.resources.cssComponents().pressed());
+                    root.addStyleName(SynergyComponents.getResources().cssComponents().pressed());
                 }
             }
         });
@@ -82,7 +82,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
                     return;
                 }
                 if (isEnabled) {
-                    root.removeStyleName(SynergyComponents.resources.cssComponents().pressed());
+                    root.removeStyleName(SynergyComponents.getResources().cssComponents().pressed());
                     if (!list.isShowing()) {
                         filter.setText("");
                         list.show(selectedItem);
@@ -95,7 +95,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
         root.addMouseOutHandler(new MouseOutHandler() {
             @Override
             public void onMouseOut(MouseOutEvent event) {
-                root.removeStyleName(SynergyComponents.resources.cssComponents().pressed());
+                root.removeStyleName(SynergyComponents.getResources().cssComponents().pressed());
             }
         });
 
@@ -123,7 +123,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
             @Override
             public void onFocus(FocusEvent event) {
                 if (!isReadOnly) {
-                    addStyleName(SynergyComponents.resources.cssComponents().focus());
+                    addStyleName(SynergyComponents.getResources().cssComponents().focus());
                 } else {
                     //этот хак нужен для firefox
                     //firefox показывает курсор при фокусировке readonly элемента,
@@ -139,7 +139,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
                 if (selectedItem != null) {
                     input.setText(selectedItem.getText(), false);
                 }
-                removeStyleName(SynergyComponents.resources.cssComponents().focus());
+                removeStyleName(SynergyComponents.getResources().cssComponents().focus());
             }
         });
         input.addKeyUpHandler(new KeyUpHandler() {
@@ -167,8 +167,8 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
         root.add(input);
         root.add(dropDownButton);
 
-        setStyleName(SynergyComponents.resources.cssComponents().comboBox());
-        addStyleName(SynergyComponents.resources.cssComponents().mainText());
+        setStyleName(SynergyComponents.getResources().cssComponents().comboBox());
+        addStyleName(SynergyComponents.getResources().cssComponents().mainText());
         setWidth(Constants.FIELD_WITH_BUTTON_MIN_WIDTH);
     }
 
@@ -283,9 +283,9 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
         isEnabled = enabled;
         input.setEnabled(enabled);
         if (!enabled) {
-            addStyleName(SynergyComponents.resources.cssComponents().disabled());
+            addStyleName(SynergyComponents.getResources().cssComponents().disabled());
         } else {
-            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+            removeStyleName(SynergyComponents.getResources().cssComponents().disabled());
         }
     }
 

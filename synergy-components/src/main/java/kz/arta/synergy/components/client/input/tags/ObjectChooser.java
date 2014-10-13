@@ -5,7 +5,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -46,8 +45,8 @@ public class ObjectChooser<T> extends TagsContainer<T> implements HasEnabled{
         FlowPanel root = new FlowPanel();
         initWidget(root);
 
-        addStyleName(SynergyComponents.resources.cssComponents().mainText());
-        addStyleName(SynergyComponents.resources.cssComponents().tagInput());
+        addStyleName(SynergyComponents.getResources().cssComponents().mainText());
+        addStyleName(SynergyComponents.getResources().cssComponents().tagInput());
         getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
         offsetWidth = Constants.FIELD_WITH_BUTTON_MIN_WIDTH;
@@ -117,9 +116,9 @@ public class ObjectChooser<T> extends TagsContainer<T> implements HasEnabled{
         button.setEnabled(enabled);
         tagsPanel.setEnabled(enabled);
         if (!enabled) {
-            addStyleName(SynergyComponents.resources.cssComponents().disabled());
+            addStyleName(SynergyComponents.getResources().cssComponents().disabled());
         } else {
-            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+            removeStyleName(SynergyComponents.getResources().cssComponents().disabled());
         }
     }
 }

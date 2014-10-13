@@ -100,7 +100,7 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
 
     public ArtaHorizontalScroll(final ArtaScrollPanel scrollPanel) {
         images = ImageResources.IMPL;
-        resources = SynergyComponents.resources;
+        resources = SynergyComponents.getResources();
 
         panel = binder.createAndBindUi(this);
         initWidget(panel);
@@ -177,7 +177,7 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
     @UiHandler("bar")
     void barDown(MouseDownEvent event) {
         event.stopPropagation();
-        bar.addStyleName(SynergyComponents.resources.cssComponents().pressed());
+        bar.addStyleName(SynergyComponents.getResources().cssComponents().pressed());
         dragging = true;
         dragStartX = event.getX();
         Event.setCapture(bar.getElement());
@@ -189,7 +189,7 @@ public class ArtaHorizontalScroll extends Composite implements HorizontalScrollb
     @UiHandler("bar")
     void barUp(MouseUpEvent event) {
         event.stopPropagation();
-        bar.removeStyleName(SynergyComponents.resources.cssComponents().pressed());
+        bar.removeStyleName(SynergyComponents.getResources().cssComponents().pressed());
         dragging = false;
         Event.releaseCapture(bar.getElement());
     }

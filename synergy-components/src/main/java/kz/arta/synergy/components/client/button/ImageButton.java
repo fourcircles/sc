@@ -3,7 +3,6 @@ package kz.arta.synergy.components.client.button;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.resources.client.ImageResource;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.style.client.Constants;
 
 /**
  * User: user
@@ -23,8 +22,8 @@ public class ImageButton extends ButtonBase {
     }
 
     protected void init() {
-        setStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
-        addStyleName(SynergyComponents.resources.cssComponents().unselectable());
+        setStyleName(SynergyComponents.getResources().cssComponents().buttonSimple());
+        addStyleName(SynergyComponents.getResources().cssComponents().unselectable());
         icon.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
         icon.getElement().getStyle().setMarginRight(0, Style.Unit.PX);
     }

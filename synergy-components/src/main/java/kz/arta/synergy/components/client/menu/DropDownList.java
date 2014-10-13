@@ -6,7 +6,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.events.FilterUpdateEvent;
@@ -73,14 +72,12 @@ public class DropDownList<V> extends MenuBase{
 
         items = new ArrayList<Item>();
 
-        popup.setStyleName(SynergyComponents.resources.cssComponents().contextMenu());
+        popup.setStyleName(SynergyComponents.getResources().cssComponents().contextMenu());
 
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             root.getElement().getStyle().setPosition(Style.Position.RELATIVE);
             // вроде как не происходит сдвига для стандартного скрываемого скролла
-            if (!Window.Navigator.getAppVersion().contains("MSIE") &&
-                    !Window.Navigator.getAppVersion().contains("Trident") &&
-                    !Navigator.isFirefox()) {
+            if (Navigator.isChrome()) {
                 root.getElement().getStyle().setRight(-15, Style.Unit.PX);
             }
         }
@@ -132,10 +129,10 @@ public class DropDownList<V> extends MenuBase{
     public void setSelectedValue(V value) {
         if (contains(value)) {
             if (getSelectedItem() != null) {
-                getSelectedItem().removeStyleName(SynergyComponents.resources.cssComponents().selected());
+                getSelectedItem().removeStyleName(SynergyComponents.getResources().cssComponents().selected());
             }
             selectedItem = get(value);
-            selectedItem.addStyleName(SynergyComponents.resources.cssComponents().selected());
+            selectedItem.addStyleName(SynergyComponents.getResources().cssComponents().selected());
         }
     }
 
@@ -340,7 +337,7 @@ public class DropDownList<V> extends MenuBase{
     public void show() {
         noFocused();
         if (selectedItem != null) {
-            selectedItem.removeStyleName(SynergyComponents.resources.cssComponents().selected());
+            selectedItem.removeStyleName(SynergyComponents.getResources().cssComponents().selected());
         }
 
         popup.setHeight(getHeight() + "px");
@@ -370,7 +367,7 @@ public class DropDownList<V> extends MenuBase{
         show();
         if (item != null && items.contains(item) && (filter == null || filter.include(item))) {
             selectedItem = item;
-            item.addStyleName(SynergyComponents.resources.cssComponents().selected());
+            item.addStyleName(SynergyComponents.getResources().cssComponents().selected());
             scroll.ensureVisible(item);
 
             //навигация клавиатурой при уже выбранном значении начинается с него

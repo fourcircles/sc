@@ -20,7 +20,7 @@ import kz.arta.synergy.components.client.tabs.events.TabSelectionEvent;
  * Панель вкладок
  */
 public class TabPanel extends Composite implements HasTabHandlers {
-    static final EventBus innerBus = new SimpleEventBus();
+    static final EventBus INNER_BUS = new SimpleEventBus();
 
     /**
      * Панель для содержимого
@@ -40,21 +40,21 @@ public class TabPanel extends Composite implements HasTabHandlers {
         root.add(tabs);
 
         contentPanel = new FlowPanel();
-        contentPanel.addStyleName(SynergyComponents.resources.cssComponents().tabContent());
+        contentPanel.addStyleName(SynergyComponents.getResources().cssComponents().tabContent());
 
         root.add(contentPanel);
 
         tabs.addTabCloseHandler(new TabCloseEvent.Handler() {
             @Override
             public void onTabClose(TabCloseEvent event) {
-                innerBus.fireEventFromSource(event, TabPanel.this);
+                INNER_BUS.fireEventFromSource(event, TabPanel.this);
             }
         });
         tabs.addTabSelectionHandler(new TabSelectionEvent.Handler() {
             @Override
             public void onTabSelection(TabSelectionEvent event) {
                 setContent(event.getTab());
-                innerBus.fireEventFromSource(event, TabPanel.this);
+                INNER_BUS.fireEventFromSource(event, TabPanel.this);
             }
         });
     }
@@ -110,12 +110,12 @@ public class TabPanel extends Composite implements HasTabHandlers {
 
     @Override
     public HandlerRegistration addTabSelectionHandler(TabSelectionEvent.Handler handler) {
-        return innerBus.addHandlerToSource(TabSelectionEvent.getType(), this, handler);
+        return INNER_BUS.addHandlerToSource(TabSelectionEvent.getType(), this, handler);
     }
 
     @Override
     public HandlerRegistration addTabCloseHandler(TabCloseEvent.Handler handler) {
-        return innerBus.addHandlerToSource(TabCloseEvent.getType(), this, handler);
+        return INNER_BUS.addHandlerToSource(TabCloseEvent.getType(), this, handler);
     }
 
     public FlowPanel getContentPanel() {

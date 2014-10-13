@@ -41,7 +41,7 @@ public class GradientLabel2 extends Composite implements ArtaHasText{
         root.add(label);
 
         gradient = new FlowPanel();
-        gradient.setStyleName(SynergyComponents.resources.cssComponents().gradient());
+        gradient.setStyleName(SynergyComponents.getResources().cssComponents().gradient());
     }
 
     public void adjustGradient() {

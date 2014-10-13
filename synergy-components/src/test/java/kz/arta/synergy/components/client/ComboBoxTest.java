@@ -2,6 +2,7 @@ package kz.arta.synergy.components.client;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
 import kz.arta.synergy.components.style.client.resources.CssComponents;
@@ -21,16 +22,15 @@ import static org.mockito.Mockito.*;
  */
 @RunWith(GwtMockitoTestRunner.class)
 public class ComboBoxTest {
-    @Mock ComponentResources resources;
+    @GwtMock ComponentResources resources;
     @Mock CssComponents cssComponents;
 
     ComboBox<Integer> combo;
 
     @Before
     public void setUp() {
-        SynergyComponents.resources = resources;
         when(resources.cssComponents()).thenReturn(cssComponents);
-
+        new SynergyComponents().onModuleLoad();
         combo = new ComboBox<Integer>();
     }
 

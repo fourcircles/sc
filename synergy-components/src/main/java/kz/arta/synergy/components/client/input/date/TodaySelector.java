@@ -43,7 +43,7 @@ public class TodaySelector extends Composite {
     private void init() {
         panel = GWT.create(FlowPanel.class);
         initWidget(panel);
-        setStyleName(SynergyComponents.resources.cssComponents().datePickerTop());
+        setStyleName(SynergyComponents.getResources().cssComponents().datePickerTop());
 
         /*кнопка назад*/
         panel.add(back);
@@ -53,7 +53,7 @@ public class TodaySelector extends Composite {
 
         /*инициализируем надпись месяца*/
         todayLabel.setText(Messages.i18n().tr("Сегодня"));
-        todayLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
+        todayLabel.setStyleName(SynergyComponents.getResources().cssComponents().bigText());
         todayLabel.getElement().getStyle().setCursor(Style.Cursor.POINTER);
         todayLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 

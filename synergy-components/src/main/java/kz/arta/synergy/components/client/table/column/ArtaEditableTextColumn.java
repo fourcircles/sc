@@ -181,7 +181,7 @@ public abstract class ArtaEditableTextColumn<T> extends AbstractArtaColumn<T> {
          */
         private TextBox createInput() {
             TextBox inputBox = new TextBox();
-            inputBox.setStyleName(SynergyComponents.resources.cssComponents().mainText());
+            inputBox.setStyleName(SynergyComponents.getResources().cssComponents().mainText());
             inputBox.setDirectionEstimator(false);
 
             if (LocaleInfo.getCurrentLocale().isRTL()) {

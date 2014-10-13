@@ -35,7 +35,7 @@ public class ArtaCheckBox extends com.google.gwt.user.client.ui.CheckBox {
 
     public ArtaCheckBox() {
         super();
-        setStyleName(SynergyComponents.resources.cssComponents().checkbox());
+        setStyleName(SynergyComponents.getResources().cssComponents().checkbox());
         Utils.impl().cancelNonLeftButtons(getElement().getFirstChildElement().getNextSiblingElement());
     }
 
@@ -46,9 +46,9 @@ public class ArtaCheckBox extends com.google.gwt.user.client.ui.CheckBox {
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         if (enabled) {
-            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+            removeStyleName(SynergyComponents.getResources().cssComponents().disabled());
         } else {
-            addStyleName(SynergyComponents.resources.cssComponents().disabled());
+            addStyleName(SynergyComponents.getResources().cssComponents().disabled());
         }
     }
 
@@ -58,16 +58,16 @@ public class ArtaCheckBox extends com.google.gwt.user.client.ui.CheckBox {
     private void update() {
         if (off.isEmpty()) {
             setValue(true, false);
-            removeStyleName(SynergyComponents.resources.cssComponents().group());
+            removeStyleName(SynergyComponents.getResources().cssComponents().group());
             return;
         }
         if (on.isEmpty()) {
             setValue(false, false);
-            removeStyleName(SynergyComponents.resources.cssComponents().group());
+            removeStyleName(SynergyComponents.getResources().cssComponents().group());
             return;
         }
         setValue(true, false);
-        addStyleName(SynergyComponents.resources.cssComponents().group());
+        addStyleName(SynergyComponents.getResources().cssComponents().group());
     }
 
     /**
@@ -116,7 +116,7 @@ public class ArtaCheckBox extends com.google.gwt.user.client.ui.CheckBox {
                         off.addAll(on);
                         on.clear();
                     }
-                    removeStyleName(SynergyComponents.resources.cssComponents().group());
+                    removeStyleName(SynergyComponents.getResources().cssComponents().group());
                 }
             };
             addValueChangeHandler(groupHandler);

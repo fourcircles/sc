@@ -38,21 +38,23 @@ public class TreeItemTest {
 
     private TreeItem treeItem;
     private static ResettableEventBus bus;
+    @GwtMock private ComponentResources resources;
 
     @BeforeClass
     public static void beforeClass() {
-        ComponentResources resources = mock(ComponentResources.class);
-        CssComponents cssComponents = mock(CssComponents.class);
-
-        SynergyComponents.resources = resources;
-        when(resources.cssComponents()).thenReturn(cssComponents);
-        when(cssComponents.selected()).thenReturn(SELECTED);
-
         bus = new ResettableEventBus(new SimpleEventBus());
     }
 
     @Before
     public void setUp() {
+        CssComponents cssComponents = mock(CssComponents.class);
+        when(resources.cssComponents()).thenReturn(cssComponents);
+
+        new SynergyComponents().onModuleLoad();
+
+        when(resources.cssComponents()).thenReturn(cssComponents);
+        when(cssComponents.selected()).thenReturn(SELECTED);
+
         bus.removeHandlers();
         treeItem = new TreeItem("treeItem", bus);
     }

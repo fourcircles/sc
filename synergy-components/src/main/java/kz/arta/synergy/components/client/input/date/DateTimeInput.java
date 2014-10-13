@@ -60,7 +60,7 @@ public class DateTimeInput extends Composite implements HasEnabled {
         }
         timeInput.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
-        setStyleName(SynergyComponents.resources.cssComponents().dateTimeInput());
+        setStyleName(SynergyComponents.getResources().cssComponents().dateTimeInput());
     }
 
     public boolean checkInput() {

@@ -1,10 +1,9 @@
 package kz.arta.synergy.components.client.input;
 
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.TextBox;
 import kz.arta.synergy.components.client.input.events.TextChangedEvent;
 
 /**

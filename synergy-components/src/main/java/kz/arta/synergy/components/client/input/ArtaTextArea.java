@@ -11,6 +11,7 @@ import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.comments.events.InputChangeEvent;
 import kz.arta.synergy.components.client.input.handlers.PlaceHolderFocusHandler;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.client.util.WidthUtil;
 import kz.arta.synergy.components.style.client.Constants;
@@ -83,8 +84,8 @@ public class ArtaTextArea extends Composite {
         textArea.sinkEvents(Event.FOCUSEVENTS);
         textArea.sinkEvents(Event.MOUSEEVENTS);
 
-        textArea.setStyleName(SynergyComponents.resources.cssComponents().artaText());
-        textArea.addStyleName(SynergyComponents.resources.cssComponents().mainText());
+        textArea.setStyleName(SynergyComponents.getResources().cssComponents().artaText());
+        textArea.addStyleName(SynergyComponents.getResources().cssComponents().mainText());
         textArea.getElement().getStyle().setProperty("resize", "none");
         textArea.addKeyUpHandler(new KeyUpHandler() {
             @Override
@@ -92,17 +93,17 @@ public class ArtaTextArea extends Composite {
                 checkInput();
             }
         });
-        setStyleName(SynergyComponents.resources.cssComponents().artaTextPanel());
+        setStyleName(SynergyComponents.getResources().cssComponents().artaTextPanel());
         textArea.addFocusHandler(new FocusHandler() {
             @Override
             public void onFocus(FocusEvent event) {
-                addStyleName(SynergyComponents.resources.cssComponents().focus());
+                addStyleName(SynergyComponents.getResources().cssComponents().focus());
             }
         });
         textArea.addBlurHandler(new BlurHandler() {
             @Override
             public void onBlur(BlurEvent event) {
-                removeStyleName(SynergyComponents.resources.cssComponents().focus());
+                removeStyleName(SynergyComponents.getResources().cssComponents().focus());
             }
         });
 
@@ -114,7 +115,7 @@ public class ArtaTextArea extends Composite {
         });
         //ie9 не создает событие "input" при удалении символов, поэтому
         //надо слушать KeyUpEvent.
-        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+        if (Navigator.isIE()) {
             textArea.addKeyUpHandler(new KeyUpHandler() {
                 @Override
                 public void onKeyUp(KeyUpEvent event) {
@@ -160,11 +161,11 @@ public class ArtaTextArea extends Composite {
         textArea.setReadOnly(!enabled);
         this.enabled = enabled;
         if (enabled) {
-            textArea.removeStyleName(SynergyComponents.resources.cssComponents().disabled());
-            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+            textArea.removeStyleName(SynergyComponents.getResources().cssComponents().disabled());
+            removeStyleName(SynergyComponents.getResources().cssComponents().disabled());
         } else {
-            textArea.addStyleName(SynergyComponents.resources.cssComponents().disabled());
-            addStyleName(SynergyComponents.resources.cssComponents().disabled());
+            textArea.addStyleName(SynergyComponents.getResources().cssComponents().disabled());
+            addStyleName(SynergyComponents.getResources().cssComponents().disabled());
         }
 
     }
@@ -208,9 +209,9 @@ public class ArtaTextArea extends Composite {
             correct = !getText().trim().isEmpty();
         }
         if (correct) {
-            removeStyleName(SynergyComponents.resources.cssComponents().invalid());
+            removeStyleName(SynergyComponents.getResources().cssComponents().invalid());
         } else {
-            addStyleName(SynergyComponents.resources.cssComponents().invalid());
+            addStyleName(SynergyComponents.getResources().cssComponents().invalid());
         }
         return correct;
     }

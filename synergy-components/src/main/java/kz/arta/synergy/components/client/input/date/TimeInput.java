@@ -106,9 +106,9 @@ public class TimeInput extends MaskTextInput {
             valid = false;
         }
         if (valid) {
-            removeStyleName(SynergyComponents.resources.cssComponents().invalid());
+            removeStyleName(SynergyComponents.getResources().cssComponents().invalid());
         } else {
-            addStyleName(SynergyComponents.resources.cssComponents().invalid());
+            addStyleName(SynergyComponents.getResources().cssComponents().invalid());
         }
         return valid;
     }

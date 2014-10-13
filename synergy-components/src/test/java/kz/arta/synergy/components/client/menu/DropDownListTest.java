@@ -1,17 +1,12 @@
 package kz.arta.synergy.components.client.menu;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.ResettableEventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.client.menu.events.FilterUpdateEvent;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
-import kz.arta.synergy.components.client.menu.filters.ListFilter;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
 import kz.arta.synergy.components.style.client.resources.CssComponents;
 import org.junit.Before;
@@ -34,7 +29,7 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class DropDownListTest {
 
-    @Mock ComponentResources resources;
+    @GwtMock ComponentResources resources;
     @Mock CssComponents cssComponents;
 
     @Mock private Widget relativeWidget;
@@ -46,9 +41,9 @@ public class DropDownListTest {
 
     @Before
     public void setUp() {
-        SynergyComponents.resources = resources;
         when(resources.cssComponents()).thenReturn(cssComponents);
         when(cssComponents.selected()).thenReturn("selected");
+        new SynergyComponents().onModuleLoad();
 
         bus = new ResettableEventBus(new SimpleEventBus());
 
@@ -153,9 +148,9 @@ public class DropDownListTest {
         mockList.setSelectedValue("3");
 
         InOrder order = inOrder(item1, item2);
-        order.verify(item1).addStyleName(SynergyComponents.resources.cssComponents().selected());
-        order.verify(item1).removeStyleName(SynergyComponents.resources.cssComponents().selected());
-        order.verify(item2).addStyleName(SynergyComponents.resources.cssComponents().selected());
+        order.verify(item1).addStyleName(SynergyComponents.getResources().cssComponents().selected());
+        order.verify(item1).removeStyleName(SynergyComponents.getResources().cssComponents().selected());
+        order.verify(item2).addStyleName(SynergyComponents.getResources().cssComponents().selected());
     }
 
     @Test

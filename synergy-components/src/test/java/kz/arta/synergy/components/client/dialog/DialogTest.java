@@ -39,6 +39,7 @@ public class DialogTest {
 
     @GwtMock
     ComponentResources resources;
+
     @Mock Element element;
     @Mock Style style;
 
@@ -53,8 +54,6 @@ public class DialogTest {
 
     @Before
     public void setUp() {
-        SynergyComponents.resources = resources;
-
         when(element.getStyle()).thenReturn(style);
 
         when(resources.cssComponents()).thenReturn(css);
@@ -64,6 +63,8 @@ public class DialogTest {
         when(leftButton.getElement()).thenReturn(element);
         when(rightButton.getElement()).thenReturn(element);
         when(saveButton.getElement()).thenReturn(element);
+
+        new SynergyComponents().onModuleLoad();
 
         dialog = new Dialog() {
             @Override

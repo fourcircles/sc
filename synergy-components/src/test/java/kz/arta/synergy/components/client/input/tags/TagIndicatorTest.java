@@ -39,7 +39,7 @@ public class TagIndicatorTest {
     @Mock Element element;
     @Mock Style style;
 
-    @Mock ComponentResources resources;
+    @GwtMock ComponentResources resources;
     @Mock CssComponents cssComponents;
 
     EventBus bus;
@@ -47,13 +47,13 @@ public class TagIndicatorTest {
 
     @Before
     public void setUp() {
-        SynergyComponents.resources = resources;
         when(resources.cssComponents()).thenReturn(cssComponents);
 
         when(label.getElement()).thenReturn(element);
         when(element.getStyle()).thenReturn(style);
 
         bus = new SimpleEventBus();
+        new SynergyComponents().onModuleLoad();
     }
 
     @Test

@@ -100,8 +100,8 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
 
         this.hasButton = hasButton;
 
-        addStyleName(SynergyComponents.resources.cssComponents().mainText());
-        addStyleName(SynergyComponents.resources.cssComponents().tagInput());
+        addStyleName(SynergyComponents.getResources().cssComponents().mainText());
+        addStyleName(SynergyComponents.getResources().cssComponents().tagInput());
         getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
         input = new InputWithEvents(innerBus);
@@ -152,13 +152,13 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
         input.addFocusHandler(new FocusHandler() {
             @Override
             public void onFocus(FocusEvent event) {
-                addStyleName(SynergyComponents.resources.cssComponents().focus());
+                addStyleName(SynergyComponents.getResources().cssComponents().focus());
             }
         });
         input.addBlurHandler(new BlurHandler() {
             @Override
             public void onBlur(BlurEvent event) {
-                removeStyleName(SynergyComponents.resources.cssComponents().focus());
+                removeStyleName(SynergyComponents.getResources().cssComponents().focus());
             }
         });
 
@@ -393,9 +393,9 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
     @Override
     public void setEnabled(boolean enabled) {
         if (!enabled) {
-            root.addStyleName(SynergyComponents.resources.cssComponents().disabled());
+            root.addStyleName(SynergyComponents.getResources().cssComponents().disabled());
         } else {
-            root.removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+            root.removeStyleName(SynergyComponents.getResources().cssComponents().disabled());
         }
         input.setEnabled(enabled);
         if (hasButton) {
@@ -406,12 +406,12 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
 
     @Override
     public HandlerRegistration addTagAddHandler(TagAddEvent.Handler<V> handler) {
-        return innerBus.addHandlerToSource(TagAddEvent.getType(), this, handler);
+        return innerBus.addHandlerToSource(TagAddEvent.TYPE, this, handler);
     }
 
     @Override
     public HandlerRegistration addTagRemoveHandler(TagRemoveEvent.Handler<V> handler) {
-        return innerBus.addHandlerToSource(TagRemoveEvent.getType(), this, handler);
+        return innerBus.addHandlerToSource(TagRemoveEvent.TYPE, this, handler);
     }
 
     public void setListFilter(ListTextFilter filter) {

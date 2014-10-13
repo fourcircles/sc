@@ -11,7 +11,7 @@ import org.xnap.commons.i18n.I18n;
  */
 public class Messages {
 
-    private static final I18n i18n = I18nFactory.getI18n();
+    private static final I18n I_18_N = I18nFactory.getI18n();
 
     public static final String JANUARY_FULL = i18n().tr("Январь");
     public static final String FEBRUARY_FULL = i18n().tr("Февраль");
@@ -28,7 +28,10 @@ public class Messages {
 
     public static final String COMMENT_INPUT_PLACEHOLDER = i18n().tr("Введите комментарий и нажмите Enter...");
 
+    private Messages() {
+    }
+
     public static I18n i18n() {
-        return i18n;
+        return I_18_N;
     }
 }

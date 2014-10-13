@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
  */
 @RunWith(GwtMockitoTestRunner.class)
 public class StackPanelTest {
-    @Mock ComponentResources resources;
+    @GwtMock ComponentResources resources;
     @Mock CssComponents cssComponents;
 
     @GwtMock InlineLabel label;
@@ -40,8 +40,8 @@ public class StackPanelTest {
 
     @Before
     public void setUp() {
-        SynergyComponents.resources = resources;
         when(resources.cssComponents()).thenReturn(cssComponents);
+        new SynergyComponents().onModuleLoad();
     }
 
     @Test

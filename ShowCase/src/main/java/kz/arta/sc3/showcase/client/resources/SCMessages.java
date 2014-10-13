@@ -13,6 +13,9 @@ public class SCMessages {
 
     public static final String SIZE = "Размер";
 
+    private SCMessages() {
+    }
+
     public static I18n i18n() {
         return I_18_N;
     }

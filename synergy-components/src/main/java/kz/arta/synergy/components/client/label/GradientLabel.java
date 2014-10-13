@@ -69,7 +69,7 @@ public class GradientLabel extends Composite implements ArtaHasText {
         getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
         getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
 
-        gradient.setStyleName(SynergyComponents.resources.cssComponents().gradient());
+        gradient.setStyleName(SynergyComponents.getResources().cssComponents().gradient());
     }
 
     /**

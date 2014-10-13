@@ -93,7 +93,7 @@ public class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
 
     public ArtaVerticalScroll(final ArtaScrollPanel scrollPanel) {
         images = ImageResources.IMPL;
-        resources = SynergyComponents.resources;
+        resources = SynergyComponents.getResources();
 
         panel = binder.createAndBindUi(this);
         initWidget(panel);
@@ -143,7 +143,7 @@ public class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
     @UiHandler("bar")
     void barDown(MouseDownEvent event) {
         event.stopPropagation();
-        bar.addStyleName(SynergyComponents.resources.cssComponents().pressed());
+        bar.addStyleName(SynergyComponents.getResources().cssComponents().pressed());
         dragging = true;
         dragStartY = event.getY();
         Event.setCapture(bar.getElement());
@@ -191,7 +191,7 @@ public class ArtaVerticalScroll extends Composite implements VerticalScrollbar{
     @UiHandler("bar")
     void barUp(MouseUpEvent event) {
         event.stopPropagation();
-        bar.removeStyleName(SynergyComponents.resources.cssComponents().pressed());
+        bar.removeStyleName(SynergyComponents.getResources().cssComponents().pressed());
         dragging = false;
         Event.releaseCapture(bar.getElement());
     }

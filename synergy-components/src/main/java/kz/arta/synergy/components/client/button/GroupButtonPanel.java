@@ -70,7 +70,7 @@ public class GroupButtonPanel extends Composite {
     }
 
     private void init() {
-        setStyleName(SynergyComponents.resources.cssComponents().groupButtonPanel());
+        setStyleName(SynergyComponents.getResources().cssComponents().groupButtonPanel());
     }
 
     /**

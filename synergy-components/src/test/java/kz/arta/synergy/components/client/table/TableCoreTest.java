@@ -6,6 +6,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.view.client.*;
+import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.table.column.ArtaColumn;
@@ -50,20 +51,20 @@ public class TableCoreTest {
 
     private ListDataProvider<User> provider;
     private Pager pager;
+    @GwtMock private ComponentResources resources;
 
     @BeforeClass
     public static void beforeClass() {
-        ComponentResources resources = mock(ComponentResources.class);
-        CssComponents cssComponents = mock(CssComponents.class);
-
-        SynergyComponents.resources = resources;
-        when(resources.cssComponents()).thenReturn(cssComponents);
-
         bus = new ResettableEventBus(new SimpleEventBus());
     }
 
     @Before
     public void setUpTest() {
+        CssComponents cssComponents = mock(CssComponents.class);
+
+        when(resources.cssComponents()).thenReturn(cssComponents);
+        new SynergyComponents().onModuleLoad();
+
         bus.removeHandlers();
         keyProvider = new ProvidesKey<User>() {
             @Override

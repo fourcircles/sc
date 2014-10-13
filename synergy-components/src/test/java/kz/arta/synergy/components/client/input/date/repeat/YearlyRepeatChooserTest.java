@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.input.date.repeat;
 
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
@@ -30,20 +31,15 @@ public class YearlyRepeatChooserTest {
 
     private List<InlineLabel> days;
     private Map<InlineLabel, List<String>> daysStyles;
-
-    @BeforeClass
-    public static void beforeClass() {
-        ComponentResources resources = mock(ComponentResources.class);
-        CssComponents cssComponents = mock(CssComponents.class);
-
-        SynergyComponents.resources = resources;
-        when(resources.cssComponents()).thenReturn(cssComponents);
-
-        when(cssComponents.pressed()).thenReturn(PRESSED);
-    }
+    @GwtMock private ComponentResources resources;
 
     @Before
     public void setUp() {
+        CssComponents cssComponents = mock(CssComponents.class);
+        when(resources.cssComponents()).thenReturn(cssComponents);
+        when(cssComponents.pressed()).thenReturn(PRESSED);
+        new SynergyComponents().onModuleLoad();
+
         days = new ArrayList<InlineLabel>();
         daysStyles = new HashMap<InlineLabel, List<String>>();
 
@@ -74,7 +70,6 @@ public class YearlyRepeatChooserTest {
             }
         };
         reset(days.toArray());
-
     }
 
     @Test

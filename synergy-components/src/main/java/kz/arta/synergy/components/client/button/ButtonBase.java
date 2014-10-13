@@ -163,9 +163,9 @@ public class ButtonBase extends FlowPanel implements
         this.enabled = enabled;
 
         if (enabled) {
-            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+            removeStyleName(SynergyComponents.getResources().cssComponents().disabled());
         } else {
-            addStyleName(SynergyComponents.resources.cssComponents().disabled());
+            addStyleName(SynergyComponents.getResources().cssComponents().disabled());
         }
 
         if (icon != null) {
@@ -198,7 +198,7 @@ public class ButtonBase extends FlowPanel implements
             needRebuild = true;
             textLabel = GWT.create(GradientLabel.class);
 
-            textLabel.setStyleName(SynergyComponents.resources.cssComponents().buttonText());
+            textLabel.setStyleName(SynergyComponents.getResources().cssComponents().buttonText());
 
             Selection.disableTextSelectInternal(getElement());
         }

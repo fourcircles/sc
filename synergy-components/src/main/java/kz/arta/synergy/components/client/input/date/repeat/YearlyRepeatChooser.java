@@ -31,7 +31,7 @@ public class YearlyRepeatChooser extends MonthlyRepeatChooser {
 
     public YearlyRepeatChooser() {
         FlowPanel monthSelector = new FlowPanel();
-        monthSelector.setStyleName(SynergyComponents.resources.cssComponents().datePickerTop());
+        monthSelector.setStyleName(SynergyComponents.getResources().cssComponents().datePickerTop());
 
         Image previous = GWT.create(Image.class);
         previous.setResource(ImageResources.IMPL.navigationLeft());
@@ -39,7 +39,7 @@ public class YearlyRepeatChooser extends MonthlyRepeatChooser {
         next.setResource(ImageResources.IMPL.navigationRight());
 
         monthLabel = GWT.create(InlineLabel.class);
-        monthLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
+        monthLabel.setStyleName(SynergyComponents.getResources().cssComponents().bigText());
 
         monthSelector.add(previous);
         monthSelector.add(monthLabel);
@@ -79,13 +79,13 @@ public class YearlyRepeatChooser extends MonthlyRepeatChooser {
 
         //снятие выделения дней
         for (InlineLabel day : days) {
-            day.removeStyleName(SynergyComponents.resources.cssComponents().pressed());
+            day.removeStyleName(SynergyComponents.getResources().cssComponents().pressed());
         }
 
         //выделение добавленых ранее дней в текущем месяце
         for (RepeatDate date : getSelectedDates()) {
             if (date.getMonth() == currentMonth) {
-                days.get(date.getDay()).addStyleName(SynergyComponents.resources.cssComponents().pressed());
+                days.get(date.getDay()).addStyleName(SynergyComponents.getResources().cssComponents().pressed());
             }
         }
     }

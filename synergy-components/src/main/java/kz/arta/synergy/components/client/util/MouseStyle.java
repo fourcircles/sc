@@ -9,8 +9,8 @@ import kz.arta.synergy.components.client.SynergyComponents;
  * Time: 16:53
  */
 public enum MouseStyle {
-    OVER(SynergyComponents.resources.cssComponents().over()),
-    PRESSED(SynergyComponents.resources.cssComponents().pressed());
+    OVER(SynergyComponents.getResources().cssComponents().over()),
+    PRESSED(SynergyComponents.getResources().cssComponents().pressed());
 
     private String styleName;
 

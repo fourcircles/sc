@@ -80,9 +80,9 @@ public class ArtaScrollPanel extends CustomScrollPanel {
     public ArtaScrollPanel(ColorType type) {
         this();
         if (type == ColorType.BLACK) {
-            vScroll.panel.addStyleName(SynergyComponents.resources.cssComponents().dark());
+            vScroll.panel.addStyleName(SynergyComponents.getResources().cssComponents().dark());
             vScroll.setType(type);
-            hScroll.panel.addStyleName(SynergyComponents.resources.cssComponents().dark());
+            hScroll.panel.addStyleName(SynergyComponents.getResources().cssComponents().dark());
             hScroll.setType(type);
             addStyleName(resources.customScrollPanelStyle().dark());
         }

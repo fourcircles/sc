@@ -51,11 +51,11 @@ public class TableSortEvent<T> extends GwtEvent<TableSortEvent.Handler<T>> {
 
         @Override
         public void onSort(TableSortEvent<V> event) {
-            ArtaColumn<V> column = event.getColumn();
-            if (column == null) {
+            ArtaColumn<V> eventColumn = event.getColumn();
+            if (eventColumn == null) {
                 return;
             }
-            final Comparator<V> comparator = comparators.get(column);
+            final Comparator<V> comparator = comparators.get(eventColumn);
             if (comparator == null) {
                 return;
             }

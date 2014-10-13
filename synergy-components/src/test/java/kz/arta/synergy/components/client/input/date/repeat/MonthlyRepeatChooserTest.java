@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.input.date.repeat;
 
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
@@ -29,21 +30,18 @@ public class MonthlyRepeatChooserTest {
     private MonthlyRepeatChooser chooser;
 
     private List<InlineLabel> days;
+    @GwtMock private ComponentResources resources;
 
-    @BeforeClass
-    public static void beforeClass() {
-        ComponentResources resources = mock(ComponentResources.class);
+    @Before
+    public void setUp() {
         CssComponents cssComponents = mock(CssComponents.class);
 
-        SynergyComponents.resources = resources;
         when(resources.cssComponents()).thenReturn(cssComponents);
 
         when(cssComponents.outMonth()).thenReturn(OUT_MONTH);
         when(cssComponents.pressed()).thenReturn(PRESSED);
-    }
+        new SynergyComponents().onModuleLoad();
 
-    @Before
-    public void setUp() {
         days = new ArrayList<InlineLabel>();
 
         chooser = new MonthlyRepeatChooser() {

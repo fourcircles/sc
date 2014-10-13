@@ -191,7 +191,7 @@ public class DateInput extends Composite implements HasEnabled, HasValueChangeHa
             }
         });
         calendarPopup.setWidget(datePicker);
-        calendarPopup.setStyleName(SynergyComponents.resources.cssComponents().calendarPopup());
+        calendarPopup.setStyleName(SynergyComponents.getResources().cssComponents().calendarPopup());
         calendarButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -220,8 +220,8 @@ public class DateInput extends Composite implements HasEnabled, HasValueChangeHa
             }
         });
 
-        setStyleName(SynergyComponents.resources.cssComponents().dateInput());
-        addStyleName(SynergyComponents.resources.cssComponents().mainText());
+        setStyleName(SynergyComponents.getResources().cssComponents().dateInput());
+        addStyleName(SynergyComponents.getResources().cssComponents().mainText());
 
         textInput.addKeyDownHandler(dateCheckHandler);
         textInput.addKeyUpHandler(dateCheckHandler);
@@ -230,14 +230,14 @@ public class DateInput extends Composite implements HasEnabled, HasValueChangeHa
             @Override
             public void onFocus(FocusEvent event) {
                 focused = true;
-                addStyleName(SynergyComponents.resources.cssComponents().focus());
+                addStyleName(SynergyComponents.getResources().cssComponents().focus());
             }
         });
         textInput.addBlurHandler(new BlurHandler() {
             @Override
             public void onBlur(BlurEvent event) {
                 focused = false;
-                removeStyleName(SynergyComponents.resources.cssComponents().focus());
+                removeStyleName(SynergyComponents.getResources().cssComponents().focus());
             }
         });
 
@@ -262,17 +262,17 @@ public class DateInput extends Composite implements HasEnabled, HasValueChangeHa
             correct = DateUtil.isDateValid(textInput.getText().trim()) && textInput.checkInput();
         }
         if (correct) {
-            removeStyleName(SynergyComponents.resources.cssComponents().invalid());
+            removeStyleName(SynergyComponents.getResources().cssComponents().invalid());
             if (focused) {
-                addStyleName(SynergyComponents.resources.cssComponents().focus());
+                addStyleName(SynergyComponents.getResources().cssComponents().focus());
             }
             if (calendarMode == ArtaDatePicker.CalendarMode.DAY) {
                 date = DateUtil.parseDate(textInput.getText().trim());
             }
             datePicker.setCurrentDateWithoutFireChange(date);
         } else {
-            addStyleName(SynergyComponents.resources.cssComponents().invalid());
-            removeStyleName(SynergyComponents.resources.cssComponents().focus());
+            addStyleName(SynergyComponents.getResources().cssComponents().invalid());
+            removeStyleName(SynergyComponents.getResources().cssComponents().focus());
         }
         return correct;
     }
@@ -321,9 +321,9 @@ public class DateInput extends Composite implements HasEnabled, HasValueChangeHa
         textInput.setEnabled(enabled);
         calendarButton.setEnabled(enabled);
         if (!enabled) {
-            addStyleName(SynergyComponents.resources.cssComponents().disabled());
+            addStyleName(SynergyComponents.getResources().cssComponents().disabled());
         } else {
-            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+            removeStyleName(SynergyComponents.getResources().cssComponents().disabled());
         }
     }
 

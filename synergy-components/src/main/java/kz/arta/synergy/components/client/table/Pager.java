@@ -70,7 +70,7 @@ public class Pager extends AbstractPager implements HasEnabled {
     public Pager(boolean hasText) {
         root = new FlowPanel();
         initWidget(root);
-        root.setStyleName(SynergyComponents.resources.cssComponents().pager());
+        root.setStyleName(SynergyComponents.getResources().cssComponents().pager());
 
         this.hasText = hasText;
 
@@ -114,17 +114,17 @@ public class Pager extends AbstractPager implements HasEnabled {
      * Создает виджет для текста
      */
     private InlineLabel createLabel() {
-        InlineLabel label = new InlineLabel();
-        label.setStyleName(SynergyComponents.resources.cssComponents().mainText());
+        InlineLabel newLabel = new InlineLabel();
+        newLabel.setStyleName(SynergyComponents.getResources().cssComponents().mainText());
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             //-1 из-за наложения границы
-            label.getElement().getStyle().setRight(Constants.PAGER_BUTTON_WIDTH - 1, Style.Unit.PX);
+            newLabel.getElement().getStyle().setRight(Constants.PAGER_BUTTON_WIDTH - 1, Style.Unit.PX);
         } else {
-            label.getElement().getStyle().setLeft(Constants.PAGER_BUTTON_WIDTH - 1, Style.Unit.PX);
+            newLabel.getElement().getStyle().setLeft(Constants.PAGER_BUTTON_WIDTH - 1, Style.Unit.PX);
         }
         //на данный момент не имеет смысла разворачивать фразу для ar локали
-        label.getElement().setAttribute("dir", "ltr");
-        return label;
+        newLabel.getElement().setAttribute("dir", "ltr");
+        return newLabel;
     }
 
     public boolean hasText() {

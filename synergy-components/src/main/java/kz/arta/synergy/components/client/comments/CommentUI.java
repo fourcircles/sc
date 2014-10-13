@@ -55,20 +55,20 @@ public class CommentUI extends Composite {
     public CommentUI(final Comment comment) {
         root = new FlowPanel();
         initWidget(root);
-        setStyleName(SynergyComponents.resources.cssComponents().comment());
+        setStyleName(SynergyComponents.getResources().cssComponents().comment());
         this.comment = comment;
 
         authorLabel = new HTML();
-        authorLabel.setStyleName(SynergyComponents.resources.cssComponents().name());
-        authorLabel.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
+        authorLabel.setStyleName(SynergyComponents.getResources().cssComponents().name());
+        authorLabel.addStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
 
         dateLabel = new Label();
-        dateLabel.setStyleName(SynergyComponents.resources.cssComponents().date());
+        dateLabel.setStyleName(SynergyComponents.getResources().cssComponents().date());
 
         icon = new Image();
 
         content = new HTML();
-        content.setStyleName(SynergyComponents.resources.cssComponents().content());
+        content.setStyleName(SynergyComponents.getResources().cssComponents().content());
 
         root.add(authorLabel);
         root.add(dateLabel);
@@ -94,15 +94,15 @@ public class CommentUI extends Composite {
      * Обновляет иконку в соответствии с комментарием
      */
     private void updateIcon() {
-        root.removeStyleName(SynergyComponents.resources.cssComponents().accept());
-        root.removeStyleName(SynergyComponents.resources.cssComponents().decline());
+        root.removeStyleName(SynergyComponents.getResources().cssComponents().accept());
+        root.removeStyleName(SynergyComponents.getResources().cssComponents().decline());
         switch (comment.getType()) {
             case ACCEPT:
-                root.addStyleName(SynergyComponents.resources.cssComponents().accept());
+                root.addStyleName(SynergyComponents.getResources().cssComponents().accept());
                 icon.setResource(ImageResources.IMPL.positiveComment());
                 break;
             case DECLINE:
-                root.addStyleName(SynergyComponents.resources.cssComponents().decline());
+                root.addStyleName(SynergyComponents.getResources().cssComponents().decline());
                 icon.setResource(ImageResources.IMPL.negativeComment());
                 break;
             default:

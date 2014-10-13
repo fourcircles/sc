@@ -12,13 +12,13 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface ImageResources extends ClientBundle {
 
-    public static ImageResources IMPL = GWT.create(ImageResources.class);
+    ImageResources IMPL = GWT.create(ImageResources.class);
 
     @Source("images/buttons/zoom-original.16.png")
     ImageResource zoom();
 
     @Source("images/buttons/zoom-original.16_transparent.png")
-    ImageResource zoom_transparent();
+    ImageResource zoomTransparent();
 
     @Source("images/dialog/d_close.png")
     ImageResource dialogCloseButton();

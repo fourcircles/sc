@@ -78,7 +78,7 @@ public class ContextMenuButton extends SimpleButton {
         contextButton.addDomHandler(down, MouseDownEvent.getType());
         contextButton.addDomHandler(click, ClickEvent.getType());
 
-        contextButton.setStyleName(SynergyComponents.resources.cssComponents().dropDownButton());
+        contextButton.setStyleName(SynergyComponents.getResources().cssComponents().dropDownButton());
         add(contextButton);
 
         addClickHandler(new ClickHandler() {
@@ -131,7 +131,7 @@ public class ContextMenuButton extends SimpleButton {
      */
     public void setContextMenu(ContextMenu contextMenu) {
         if (type == Type.APPROVE) {
-            contextMenu.addStyleName(SynergyComponents.resources.cssComponents().green());
+            contextMenu.addStyleName(SynergyComponents.getResources().cssComponents().green());
         }
         contextMenu.setRelativeWidget(this);
         this.contextMenu = contextMenu;

@@ -86,19 +86,19 @@ public class SimpleButton extends ButtonBase implements HasText {
         }
         switch (borderType) {
             case EDGE:
-                addStyleName(SynergyComponents.resources.cssComponents().edge());
+                addStyleName(SynergyComponents.getResources().cssComponents().edge());
                 break;
             case LEFT:
-                addStyleName(SynergyComponents.resources.cssComponents().left());
+                addStyleName(SynergyComponents.getResources().cssComponents().left());
                 break;
             case RIGHT:
-                addStyleName(SynergyComponents.resources.cssComponents().right());
+                addStyleName(SynergyComponents.getResources().cssComponents().right());
                 break;
             default:
                 break;
         }
-        addStyleName(SynergyComponents.resources.cssComponents().unselectable());
-        setFontStyle(SynergyComponents.resources.cssComponents().mainTextBold());
+        addStyleName(SynergyComponents.getResources().cssComponents().unselectable());
+        setFontStyle(SynergyComponents.getResources().cssComponents().mainTextBold());
     }
 
     public Type getType() {
@@ -124,21 +124,21 @@ public class SimpleButton extends ButtonBase implements HasText {
     }
 
     protected void approveButton() {
-        removeStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
-        removeStyleName(SynergyComponents.resources.cssComponents().declineButton());
-        addStyleName(SynergyComponents.resources.cssComponents().approveButton());
+        removeStyleName(SynergyComponents.getResources().cssComponents().buttonSimple());
+        removeStyleName(SynergyComponents.getResources().cssComponents().declineButton());
+        addStyleName(SynergyComponents.getResources().cssComponents().approveButton());
     }
 
     protected void declineButton() {
-        removeStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
-        removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
-        addStyleName(SynergyComponents.resources.cssComponents().declineButton());
+        removeStyleName(SynergyComponents.getResources().cssComponents().buttonSimple());
+        removeStyleName(SynergyComponents.getResources().cssComponents().approveButton());
+        addStyleName(SynergyComponents.getResources().cssComponents().declineButton());
     }
 
     protected void regularButton() {
-        removeStyleName(SynergyComponents.resources.cssComponents().approveButton());
-        removeStyleName(SynergyComponents.resources.cssComponents().declineButton());
-        addStyleName(SynergyComponents.resources.cssComponents().buttonSimple());
+        removeStyleName(SynergyComponents.getResources().cssComponents().approveButton());
+        removeStyleName(SynergyComponents.getResources().cssComponents().declineButton());
+        addStyleName(SynergyComponents.getResources().cssComponents().buttonSimple());
     }
 
     /**

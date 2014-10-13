@@ -11,7 +11,7 @@ import kz.arta.synergy.components.client.input.tags.Tag;
  * Событие для добавления тега
  */
 public class TagAddEvent<V> extends GwtEvent<TagAddEvent.Handler<V>> {
-    private static Type<Handler<?>> TYPE;
+    public static final Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     private Tag<V> tag;
 
@@ -19,16 +19,9 @@ public class TagAddEvent<V> extends GwtEvent<TagAddEvent.Handler<V>> {
         this.tag = tag;
     }
 
-    public static Type<Handler<?>> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<Handler<?>>();
-        }
-        return TYPE;
-    }
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Type<Handler<V>> getAssociatedType() {
-        return (Type) getType();
+        return (Type) TYPE;
     }
 
     protected void dispatch(Handler<V> handler) {
@@ -48,6 +41,6 @@ public class TagAddEvent<V> extends GwtEvent<TagAddEvent.Handler<V>> {
     }
 
     public static HandlerRegistration register(EventBus bus, Handler<?> handler) {
-        return bus.addHandler(getType(), handler);
+        return bus.addHandler(TYPE, handler);
     }
 }

@@ -61,7 +61,7 @@ public class RepeatChooser implements IsWidget, HasEnabled {
     public RepeatChooser(MODE mode) {
         bus = new SimpleEventBus();
         tags = new ObjectChooser<RepeatDate>(bus, ImageResources.IMPL.calendarIcon());
-        tags.addStyleName(SynergyComponents.resources.cssComponents().repeatChooser());
+        tags.addStyleName(SynergyComponents.getResources().cssComponents().repeatChooser());
 
         tags.addButtonClickHandler(new ClickHandler() {
             @Override
@@ -85,7 +85,7 @@ public class RepeatChooser implements IsWidget, HasEnabled {
         this.mode = mode;
         chooser = createChooser();
 
-        bus.addHandler(TagRemoveEvent.getType(), new TagRemoveEvent.Handler<RepeatDate>() {
+        bus.addHandler(TagRemoveEvent.TYPE, new TagRemoveEvent.Handler<RepeatDate>() {
             @Override
             public void onTagRemove(TagRemoveEvent<RepeatDate> event) {
                 RepeatDate date = event.getTag().getValue();
@@ -162,22 +162,22 @@ public class RepeatChooser implements IsWidget, HasEnabled {
      * Создает компонент выбора для текущего режима
      */
     private BaseRepeatChooser createChooser() {
-        BaseRepeatChooser chooser;
+        BaseRepeatChooser newChooser;
         switch (mode) {
             case MONTH:
-                chooser = new MonthlyRepeatChooser();
+                newChooser = new MonthlyRepeatChooser();
                 break;
             case YEAR:
-                chooser = new YearlyRepeatChooser();
+                newChooser = new YearlyRepeatChooser();
                 break;
             case WEEK:
-                chooser = new WeeklyRepeatChooser();
+                newChooser = new WeeklyRepeatChooser();
                 break;
             default:
                 throw new IllegalStateException();
         }
-        chooser.addAutoHidePartner(tags.getElement());
-        chooser.addValueChangeHandler(new ValueChangeHandler<Collection<RepeatDate>>() {
+        newChooser.addAutoHidePartner(tags.getElement());
+        newChooser.addValueChangeHandler(new ValueChangeHandler<Collection<RepeatDate>>() {
             @Override
             public void onValueChange(ValueChangeEvent<Collection<RepeatDate>> event) {
                 for (RepeatDate value : event.getValue()) {
@@ -189,7 +189,7 @@ public class RepeatChooser implements IsWidget, HasEnabled {
                 }
             }
         });
-        return chooser;
+        return newChooser;
     }
 
     @Override

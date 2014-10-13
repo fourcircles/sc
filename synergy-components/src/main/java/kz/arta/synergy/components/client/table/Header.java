@@ -50,9 +50,9 @@ public class Header extends Composite implements ArtaHasText,
     public Header(String text) {
         root = new ArtaFlowPanel();
         initWidget(root);
-        root.addStyleName(SynergyComponents.resources.cssComponents().header());
+        root.addStyleName(SynergyComponents.getResources().cssComponents().header());
 
-        label = new GradientLabel(SynergyComponents.resources.cssComponents().mainText());
+        label = new GradientLabel(SynergyComponents.getResources().cssComponents().mainText());
         label.setText(text);
 
         image = new Image();
@@ -64,7 +64,7 @@ public class Header extends Composite implements ArtaHasText,
 
     @Override
     public String getFontStyle() {
-        return SynergyComponents.resources.cssComponents().mainText();
+        return SynergyComponents.getResources().cssComponents().mainText();
     }
 
     @Override

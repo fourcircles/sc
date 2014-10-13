@@ -33,7 +33,7 @@ public class WeeklyRepeatChooser extends BaseRepeatChooser {
     /**
      * Шрифт для дней
      */
-    private static final String FONT = SynergyComponents.resources.cssComponents().mainTextBold();
+    private static final String FONT = SynergyComponents.getResources().cssComponents().mainTextBold();
 
     /**
      * UI-элементы для дней
@@ -54,7 +54,7 @@ public class WeeklyRepeatChooser extends BaseRepeatChooser {
         super();
 
         root = new FlowPanel();
-        root.setStyleName(SynergyComponents.resources.cssComponents().weekChooser());
+        root.setStyleName(SynergyComponents.getResources().cssComponents().weekChooser());
         root.addStyleName(FONT);
 
         popupPanel.setWidget(root);
@@ -99,14 +99,14 @@ public class WeeklyRepeatChooser extends BaseRepeatChooser {
     public void add(RepeatDate date, boolean fireEvents) {
         super.add(date, true);
         Label dayLabel = labels.get(days.indexOf(date));
-        dayLabel.addStyleName(SynergyComponents.resources.cssComponents().selected());
+        dayLabel.addStyleName(SynergyComponents.getResources().cssComponents().selected());
     }
 
     @Override
     protected void remove(RepeatDate date, boolean fireEvents) {
         super.remove(date, fireEvents);
         Label dayLabel = labels.get(days.indexOf(date));
-        dayLabel.removeStyleName(SynergyComponents.resources.cssComponents().selected());
+        dayLabel.removeStyleName(SynergyComponents.getResources().cssComponents().selected());
     }
 
     /**
@@ -115,7 +115,7 @@ public class WeeklyRepeatChooser extends BaseRepeatChooser {
      */
     private Label createLabel(final RepeatDate date) {
         final Label dayLabel = new Label();
-        dayLabel.setStyleName(SynergyComponents.resources.cssComponents().day());
+        dayLabel.setStyleName(SynergyComponents.getResources().cssComponents().day());
         dayLabel.setText(date.toString());
         dayLabel.addClickHandler(new ClickHandler() {
             @Override

@@ -14,7 +14,7 @@ import kz.arta.synergy.components.client.util.Utils;
 public class ArtaRadioButton extends com.google.gwt.user.client.ui.RadioButton {
     public ArtaRadioButton(String name) {
         super(name);
-        setStyleName(SynergyComponents.resources.cssComponents().radio());
+        setStyleName(SynergyComponents.getResources().cssComponents().radio());
         Utils.impl().cancelNonLeftButtons(getElement().getFirstChildElement().getNextSiblingElement());
     }
 
@@ -25,9 +25,9 @@ public class ArtaRadioButton extends com.google.gwt.user.client.ui.RadioButton {
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         if (enabled) {
-            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+            removeStyleName(SynergyComponents.getResources().cssComponents().disabled());
         } else {
-            addStyleName(SynergyComponents.resources.cssComponents().disabled());
+            addStyleName(SynergyComponents.getResources().cssComponents().disabled());
         }
     }
 }

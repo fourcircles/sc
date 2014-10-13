@@ -55,20 +55,20 @@ public class SingleStack extends Composite implements HasEnabled, ArtaHasText, H
         root = new ArtaFlowPanel();
         initWidget(root);
 
-        root.setStyleName(SynergyComponents.resources.cssComponents().stack());
+        root.setStyleName(SynergyComponents.getResources().cssComponents().stack());
 
         label = GWT.create(InlineLabel.class);
         label.setText(text);
-        label.setStyleName(SynergyComponents.resources.cssComponents().title());
+        label.setStyleName(SynergyComponents.getResources().cssComponents().title());
         label.addStyleName(getFontStyle());
         root.add(label);
 
         FlowPanel indicator = new FlowPanel();
-        indicator.setStyleName(SynergyComponents.resources.cssComponents().indicator());
+        indicator.setStyleName(SynergyComponents.getResources().cssComponents().indicator());
         root.add(indicator);
 
         contentPanel = new FlowPanel();
-        contentPanel.setStyleName(SynergyComponents.resources.cssComponents().stackContent());
+        contentPanel.setStyleName(SynergyComponents.getResources().cssComponents().stackContent());
 
         contentContainer = new SimplePanel(contentPanel);
         contentContainer.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
@@ -95,15 +95,15 @@ public class SingleStack extends Composite implements HasEnabled, ArtaHasText, H
         isEnabled = enabled;
 
         if (enabled) {
-            root.removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+            root.removeStyleName(SynergyComponents.getResources().cssComponents().disabled());
         } else {
-            root.addStyleName(SynergyComponents.resources.cssComponents().disabled());
+            root.addStyleName(SynergyComponents.getResources().cssComponents().disabled());
         }
     }
 
     @Override
     public String getFontStyle() {
-        return SynergyComponents.resources.cssComponents().bigText();
+        return SynergyComponents.getResources().cssComponents().bigText();
     }
 
     @Override
@@ -125,7 +125,7 @@ public class SingleStack extends Composite implements HasEnabled, ArtaHasText, H
      */
     public void open() {
         isOpen = true;
-        root.addStyleName(SynergyComponents.resources.cssComponents().open());
+        root.addStyleName(SynergyComponents.getResources().cssComponents().open());
     }
 
     /**
@@ -133,7 +133,7 @@ public class SingleStack extends Composite implements HasEnabled, ArtaHasText, H
      */
     public void close() {
         isOpen = false;
-        root.removeStyleName(SynergyComponents.resources.cssComponents().open());
+        root.removeStyleName(SynergyComponents.getResources().cssComponents().open());
     }
 
     /**

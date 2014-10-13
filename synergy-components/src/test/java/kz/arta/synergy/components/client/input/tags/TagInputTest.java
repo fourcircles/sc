@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.input.tags;
 
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.input.InputWithEvents;
@@ -30,15 +31,15 @@ import static org.mockito.Mockito.*;
  */
 @RunWith(GwtMockitoTestRunner.class)
 public class TagInputTest {
-    @Mock ComponentResources resources;
+    @GwtMock ComponentResources resources;
     @Mock CssComponents cssComponents;
 
     TagInput<Integer> tagInput;
 
     @Before
     public void setUp() {
-        SynergyComponents.resources = resources;
         when(resources.cssComponents()).thenReturn(cssComponents);
+        new SynergyComponents().onModuleLoad();
 
         tagInput = new TagInput<Integer>(true);
         DropDownListMulti<Integer> list = new DropDownListMulti<Integer>(mock(Widget.class), tagInput.innerBus);

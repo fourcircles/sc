@@ -56,7 +56,7 @@ public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnable
     public TagIndicator(EventBus bus) {
         label = GWT.create(Label.class);
         initWidget(label);
-        label.setStyleName(SynergyComponents.resources.cssComponents().tag());
+        label.setStyleName(SynergyComponents.getResources().cssComponents().tag());
         label.addStyleName(getFontStyle());
         label.getElement().getStyle().setCursor(Style.Cursor.POINTER);
         label.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
@@ -82,14 +82,14 @@ public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnable
         popupPanel.addAutoHidePartner(label.getElement());
 
         popupRootPanel = new FlowPanel();
-        popupRootPanel.addStyleName(SynergyComponents.resources.cssComponents().tagIndicatorContent());
+        popupRootPanel.addStyleName(SynergyComponents.getResources().cssComponents().tagIndicatorContent());
 
         ArtaScrollPanel vScroll = new ArtaScrollPanel(popupRootPanel);
 
         popupPanel.setWidget(vScroll);
         vScroll.removeHorizontalScrollbar();
 
-        popupPanel.setStyleName(SynergyComponents.resources.cssComponents().tagIndicator());
+        popupPanel.setStyleName(SynergyComponents.getResources().cssComponents().tagIndicator());
 
         TagRemoveEvent.register(bus, new TagRemoveEvent.Handler() {
             @Override
@@ -148,19 +148,19 @@ public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnable
 
         if (popupPanel.getAbsoluteLeft() + (double) labelWidth / 2 - width / 2 < 0) {
             //треугольник слева
-            popupPanel.removeStyleName(SynergyComponents.resources.cssComponents().rightIndicator());
-            popupPanel.removeStyleName(SynergyComponents.resources.cssComponents().centerIndicator());
-            popupPanel.addStyleName(SynergyComponents.resources.cssComponents().leftIndicator());
+            popupPanel.removeStyleName(SynergyComponents.getResources().cssComponents().rightIndicator());
+            popupPanel.removeStyleName(SynergyComponents.getResources().cssComponents().centerIndicator());
+            popupPanel.addStyleName(SynergyComponents.getResources().cssComponents().leftIndicator());
         } else if (popupPanel.getAbsoluteLeft() + (double) labelWidth / 2 + width / 2 > Window.getClientWidth()) {
             //треугольник справа
-            popupPanel.removeStyleName(SynergyComponents.resources.cssComponents().leftIndicator());
-            popupPanel.removeStyleName(SynergyComponents.resources.cssComponents().centerIndicator());
-            popupPanel.addStyleName(SynergyComponents.resources.cssComponents().rightIndicator());
+            popupPanel.removeStyleName(SynergyComponents.getResources().cssComponents().leftIndicator());
+            popupPanel.removeStyleName(SynergyComponents.getResources().cssComponents().centerIndicator());
+            popupPanel.addStyleName(SynergyComponents.getResources().cssComponents().rightIndicator());
         } else {
             //треугольник посередине
-            popupPanel.removeStyleName(SynergyComponents.resources.cssComponents().leftIndicator());
-            popupPanel.removeStyleName(SynergyComponents.resources.cssComponents().rightIndicator());
-            popupPanel.addStyleName(SynergyComponents.resources.cssComponents().centerIndicator());
+            popupPanel.removeStyleName(SynergyComponents.getResources().cssComponents().leftIndicator());
+            popupPanel.removeStyleName(SynergyComponents.getResources().cssComponents().rightIndicator());
+            popupPanel.addStyleName(SynergyComponents.getResources().cssComponents().centerIndicator());
             double offset = ((double) labelWidth - width) / 2;
             if (LocaleInfo.getCurrentLocale().isRTL()) {
                 offset = -offset;
@@ -207,7 +207,7 @@ public class TagIndicator<V> extends Composite implements ArtaHasText, HasEnable
 
     @Override
     public String getFontStyle() {
-        return SynergyComponents.resources.cssComponents().mainText();
+        return SynergyComponents.getResources().cssComponents().mainText();
     }
 
     @Override

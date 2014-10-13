@@ -188,12 +188,12 @@ public class ArtaDatePicker extends Composite implements HasValueChangeHandlers<
             }
         });
 
-        panel.setStyleName(SynergyComponents.resources.cssComponents().datePicker());
+        panel.setStyleName(SynergyComponents.getResources().cssComponents().datePicker());
         if (colorType == ColorType.BLACK) {
-            panel.addStyleName(SynergyComponents.resources.cssComponents().dark());
-            todaySelector.addStyleName(SynergyComponents.resources.cssComponents().dark());
+            panel.addStyleName(SynergyComponents.getResources().cssComponents().dark());
+            todaySelector.addStyleName(SynergyComponents.getResources().cssComponents().dark());
         }
-        calendarPanel.setStyleName(SynergyComponents.resources.cssComponents().datePickerCalendar());
+        calendarPanel.setStyleName(SynergyComponents.getResources().cssComponents().datePickerCalendar());
 
     }
 

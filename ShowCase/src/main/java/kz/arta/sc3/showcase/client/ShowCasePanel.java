@@ -122,7 +122,7 @@ public class ShowCasePanel extends FlowPanel {
         binder.createAndBindUi(this);
 
         titlePanel.getElement().setId("titlePanel");
-        showCaseLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
+        showCaseLabel.setStyleName(SynergyComponents.getResources().cssComponents().bigText());
 
         treeSetUp();
         setTreeIcons(ImageResources.IMPL.folder());
@@ -1121,7 +1121,7 @@ public class ShowCasePanel extends FlowPanel {
 
         FlowPanel row = new FlowPanel();
         row.getElement().getStyle().setLineHeight(32, Style.Unit.PX);
-        row.setStyleName(SynergyComponents.resources.cssComponents().mainText());
+        row.setStyleName(SynergyComponents.getResources().cssComponents().mainText());
         row.setWidth(textWidth + inputWidth + 5 + "px");
 
         InlineLabel label = new InlineLabel(text);
@@ -1330,7 +1330,7 @@ public class ShowCasePanel extends FlowPanel {
                 new ArtaCheckBox(), new ArtaCheckBox(),
                 new ArtaCheckBox(), new ArtaCheckBox()
         };
-        checkBoxes[1].addStyleName(SynergyComponents.resources.cssComponents().group());
+        checkBoxes[1].addStyleName(SynergyComponents.getResources().cssComponents().group());
         checkBoxes[1].setValue(true);
         checkBoxes[1].setEnabled(false);
         checkBoxes[2].setEnabled(false);
@@ -1444,7 +1444,7 @@ public class ShowCasePanel extends FlowPanel {
 
     private static InlineLabel createLabel(String text, int width) {
         InlineLabel label = new InlineLabel(SCMessages.i18n().tr(text));
-        label.setStyleName(SynergyComponents.resources.cssComponents().mainText());
+        label.setStyleName(SynergyComponents.getResources().cssComponents().mainText());
         label.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
         label.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         label.getElement().getStyle().setLineHeight(32, Style.Unit.PX);

@@ -58,7 +58,7 @@ public class PlaceHolderFocusHandler implements FocusHandler, BlurHandler {
         if (textWidget.getText() == null || textWidget.getText().length() == 0) {
             containsPlaceHolder = true;
             textWidget.setText(placeHolder);
-            textWidget.addStyleName(SynergyComponents.resources.cssComponents().placeHolder());
+            textWidget.addStyleName(SynergyComponents.getResources().cssComponents().placeHolder());
         }
     }
 
@@ -66,7 +66,7 @@ public class PlaceHolderFocusHandler implements FocusHandler, BlurHandler {
         if (containsPlaceHolder) {
             containsPlaceHolder = false;
             textWidget.setText("");
-            textWidget.removeStyleName(SynergyComponents.resources.cssComponents().placeHolder());
+            textWidget.removeStyleName(SynergyComponents.getResources().cssComponents().placeHolder());
         }
     }
 

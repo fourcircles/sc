@@ -13,6 +13,7 @@ import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.stack.events.HasStackOpenHandlers;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
 import kz.arta.synergy.components.client.theme.ColorType;
+import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
         initWidget(root);
         root.setHeight(offsetHeight + "px");
 
-        root.setStyleName(SynergyComponents.resources.cssComponents().stackPanel());
+        root.setStyleName(SynergyComponents.getResources().cssComponents().stackPanel());
 
         this.stacks = new ArrayList<SingleStack>();
 
@@ -101,7 +102,7 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
     public StackPanel(List<SingleStack> stacks, int offsetHeight, ColorType type) {
         this(stacks, offsetHeight);
         if (type == ColorType.WHITE) {
-            root.addStyleName(SynergyComponents.resources.cssComponents().white());
+            root.addStyleName(SynergyComponents.getResources().cssComponents().white());
         }
     }
 
@@ -167,7 +168,7 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
         if (openedStack == stack || !stack.isEnabled()) {
             return;
         }
-        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+        if (Navigator.isIE()) {
             if (ie9Animation == null) {
                 ie9Animation = new StackAnimationIE9(contentHeight);
             } else {

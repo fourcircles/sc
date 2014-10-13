@@ -35,20 +35,17 @@ public class TaskBarItemUITest {
 
     @GwtMock private InlineLabel label;
     private String labelText = "";
-
-    @BeforeClass
-    public static void beforeClass() {
-        ComponentResources resources = mock(ComponentResources.class);
-        CssComponents cssComponents = mock(CssComponents.class);
-
-        SynergyComponents.resources = resources;
-        when(resources.cssComponents()).thenReturn(cssComponents);
-
-        when(cssComponents.open()).thenReturn(OPEN);
-    }
+    @GwtMock private ComponentResources resources;
 
     @Before
     public void setUp() throws Exception {
+        CssComponents cssComponents = mock(CssComponents.class);
+
+        when(resources.cssComponents()).thenReturn(cssComponents);
+        new SynergyComponents().onModuleLoad();
+
+        when(cssComponents.open()).thenReturn(OPEN);
+
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {

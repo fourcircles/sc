@@ -75,15 +75,15 @@ public class TaskBar extends Composite {
     public TaskBar() {
         root = new FlowPanel();
         initWidget(root);
-        root.setStyleName(SynergyComponents.resources.cssComponents().taskBar());
+        root.setStyleName(SynergyComponents.getResources().cssComponents().taskBar());
 
         indicatorLabel = new Label();
         indicator = createIndicator(indicatorLabel);
 
         popup = new PopupPanel(true);
-        popup.setStyleName(SynergyComponents.resources.cssComponents().taskBarIndicator());
+        popup.setStyleName(SynergyComponents.getResources().cssComponents().taskBarIndicator());
         indicatorRoot = new FlowPanel();
-        indicatorRoot.setStyleName(SynergyComponents.resources.cssComponents().content());
+        indicatorRoot.setStyleName(SynergyComponents.getResources().cssComponents().content());
         popup.setWidget(indicatorRoot);
         popup.addAutoHidePartner(indicator.getElement());
 
@@ -100,24 +100,24 @@ public class TaskBar extends Composite {
      * Создает индикатор
      */
     private FlowPanel createIndicator(Label label) {
-        FlowPanel indicator = new FlowPanel();
-        indicator.sinkEvents(Event.ONCLICK);
-        indicator.setStyleName(SynergyComponents.resources.cssComponents().item());
-        indicator.addStyleName(SynergyComponents.resources.cssComponents().indicator());
+        FlowPanel newIndicator = new FlowPanel();
+        newIndicator.sinkEvents(Event.ONCLICK);
+        newIndicator.setStyleName(SynergyComponents.getResources().cssComponents().item());
+        newIndicator.addStyleName(SynergyComponents.getResources().cssComponents().indicator());
         Image indicatorImage = GWT.create(Image.class);
         indicatorImage.setResource(ImageResources.IMPL.calendarIcon());
 
-        indicator.add(indicatorImage);
-        indicator.add(label);
+        newIndicator.add(indicatorImage);
+        newIndicator.add(label);
 
-        indicator.addDomHandler(new ClickHandler() {
+        newIndicator.addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 indicatorClick();
             }
         }, ClickEvent.getType());
 
-        return indicator;
+        return newIndicator;
     }
 
     /**
@@ -254,7 +254,7 @@ public class TaskBar extends Composite {
      * @return ширина индикатора
      */
     private double getIndicatorWidth(int num) {
-        double textWidth = Utils.impl().getPreciseTextWidth("+" + num, SynergyComponents.resources.cssComponents().mainText());
+        double textWidth = Utils.impl().getPreciseTextWidth("+" + num, SynergyComponents.getResources().cssComponents().mainText());
         return textWidth + Constants.STD_ICON_WIDTH + Constants.TASKBAR_IMAGE_MARGIN
                 + Constants.TASKBAR_ITEM_PADDING * 2 + Constants.BORDER_WIDTH * 2;
     }

@@ -33,18 +33,14 @@ public class TaskBarTest {
     private TaskBar taskBar;
 
     @GwtMock Utils utils;
-
-    @BeforeClass
-    public static void beforeClass() {
-        ComponentResources resources = mock(ComponentResources.class);
-        CssComponents cssComponents = mock(CssComponents.class);
-
-        SynergyComponents.resources = resources;
-        when(resources.cssComponents()).thenReturn(cssComponents);
-    }
+    @GwtMock private ComponentResources resources;
 
     @Before
     public void setUp() {
+        CssComponents cssComponents = mock(CssComponents.class);
+        when(resources.cssComponents()).thenReturn(cssComponents);
+        new SynergyComponents().onModuleLoad();
+
         uis = new HashMap<TaskBarItemTest, TaskBarItemUI>();
         taskBar = new TaskBar() {
             @Override

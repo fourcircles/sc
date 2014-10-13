@@ -63,7 +63,7 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
         FlowPanel root = new FlowPanel();
         initWidget(root);
 
-        root.setStyleName(SynergyComponents.resources.cssComponents().treeTableItem());
+        root.setStyleName(SynergyComponents.getResources().cssComponents().treeTableItem());
 
         this.column = column;
 
@@ -71,7 +71,7 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
         image.setResource(ImageResources.IMPL.nodeClosed16());
 
         label = GWT.create(InlineLabel.class);
-        label.setStyleName(SynergyComponents.resources.cssComponents().mainText());
+        label.setStyleName(SynergyComponents.getResources().cssComponents().mainText());
         label.setText("");
 
         update(item);
@@ -136,8 +136,8 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
         }
 
         if (item.hasChildren()) {
-            label.removeStyleName(SynergyComponents.resources.cssComponents().mainText());
-            label.setStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
+            label.removeStyleName(SynergyComponents.getResources().cssComponents().mainText());
+            label.setStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
             image.getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
             image.getElement().getStyle().setCursor(Style.Cursor.POINTER);
             if (item.isOpen()) {
@@ -146,8 +146,8 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
                 image.setResource(ImageResources.IMPL.nodeClosed16());
             }
         } else {
-            label.removeStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
-            label.setStyleName(SynergyComponents.resources.cssComponents().mainText());
+            label.removeStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
+            label.setStyleName(SynergyComponents.getResources().cssComponents().mainText());
             image.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
             image.getElement().getStyle().setCursor(Style.Cursor.DEFAULT);
         }

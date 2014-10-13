@@ -8,40 +8,44 @@ import com.google.gwt.user.client.Window;
  * Time: 16:48
  */
 public class Navigator {
+    private static final String IE_TOKEN = "msie";
+    private static final String IE11_TOKEN = "trident";
+    private static final String CHROME_TOKEN = "chrome";
 
-    private static boolean isIE = false;
-    private static boolean isIE11 = false;
-    private static boolean isChrome = false;
-    private static boolean isFirefox = false;
+    private static final BrowserType browser;
 
     static {
-        if ((Window.Navigator.getUserAgent()).toLowerCase().contains("msie")){
-            isIE = true;
+        if ((Window.Navigator.getAppVersion()).toLowerCase().contains(IE_TOKEN)) {
+            browser = BrowserType.IE;
+        } else if (Window.Navigator.getAppVersion().toLowerCase().contains(IE11_TOKEN)) {
+            browser = BrowserType.IE11;
+        } else if ((Window.Navigator.getAppName() + " " + Window.Navigator.getUserAgent()).toLowerCase().contains(CHROME_TOKEN)) {
+            browser = BrowserType.CHROME;
+        } else {
+            browser = BrowserType.FIREFOX;
         }
-        if (Window.Navigator.getAppVersion().toLowerCase().contains("trident")) {
-            isIE11 = true;
-        }
-        if ((Window.Navigator.getAppName() + " " + Window.Navigator.getUserAgent()).toLowerCase().contains("chrome")){
-            isChrome = true;
-        }
-        if ((Window.Navigator.getAppName() + " " + Window.Navigator.getUserAgent()).toLowerCase().contains("firefox")){
-            isFirefox = true;
-        }
+    }
+
+    private Navigator() {
     }
 
     public static boolean isIE() {
-        return isIE;
+        return browser == BrowserType.IE;
     }
 
     public static boolean isIE11() {
-        return isIE11;
+        return browser == BrowserType.IE11;
     }
 
     public static boolean isChrome() {
-        return isChrome;
+        return browser == BrowserType.CHROME;
     }
 
     public static boolean isFirefox() {
-        return isFirefox;
+        return browser == BrowserType.FIREFOX;
+    }
+
+    private enum BrowserType {
+        IE, IE11, CHROME, FIREFOX
     }
 }

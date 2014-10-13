@@ -17,7 +17,7 @@ public class Selection {
      * Запрет на выделение текста в элементе
      * @param e     элемент
      */
-    public native static void disableTextSelectInternal(Element e)
+    public static native void disableTextSelectInternal(Element e)
     /*-{
         if (typeof e.onselectstart!="undefined")
             e.onselectstart=function(){return false}
@@ -33,7 +33,7 @@ public class Selection {
      * Разрешение на выделение текства в элементе
      * @param e     элемент
      */
-    public native static void enableTextSelectInternal(Element e)
+    public static native void enableTextSelectInternal(Element e)
     /*-{
         if (typeof e.onselectstart!="undefined")
             e.onselectstart=null;
@@ -43,7 +43,7 @@ public class Selection {
             e.onmousedown=null;
     }-*/;
 
-    public native static void focus(Element e)
+    public static native void focus(Element e)
     /*-{
         e.focus();
     }-*/;

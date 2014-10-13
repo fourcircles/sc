@@ -60,12 +60,12 @@ public class TableHat extends Composite {
     public TableHat(HasData<?> table) {
         root = new FlowPanel();
         initWidget(root);
-        root.setStyleName(SynergyComponents.resources.cssComponents().hat());
+        root.setStyleName(SynergyComponents.getResources().cssComponents().hat());
 
         this.table = table;
 
         nameLabel = new InlineLabel("");
-        nameLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
+        nameLabel.setStyleName(SynergyComponents.getResources().cssComponents().bigText());
         root.add(nameLabel);
     }
 

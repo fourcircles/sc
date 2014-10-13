@@ -42,7 +42,6 @@ public class ButtonBaseTest {
     @Before
     public void setUp() {
 
-        SynergyComponents.resources = resources;
         when(resources.cssComponents()).thenReturn(css);
         when(css.disabled()).thenReturn("disabled");
 
@@ -61,6 +60,8 @@ public class ButtonBaseTest {
 
         when(buttonBaseSpy.getButton()).thenReturn(hasClickHandlers);
         buttonBaseSpy.getButton().addClickHandler(clickHandler);
+
+        new SynergyComponents().onModuleLoad();
     }
 
 

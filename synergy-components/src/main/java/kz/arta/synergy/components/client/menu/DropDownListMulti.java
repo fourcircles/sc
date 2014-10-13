@@ -43,13 +43,13 @@ public class DropDownListMulti<V> extends DropDownList<V>{
          */
         public void setSelected(boolean selected, boolean fireEvents) {
             if (selected) {
-                addStyleName(SynergyComponents.resources.cssComponents().selected());
+                addStyleName(SynergyComponents.getResources().cssComponents().selected());
                 selectedItems.add(this);
                 if (fireEvents) {
                     bus.fireEvent(new ListSelectionEvent<V>(this, ListSelectionEvent.ActionType.SELECT));
                 }
             } else {
-                removeStyleName(SynergyComponents.resources.cssComponents().selected());
+                removeStyleName(SynergyComponents.getResources().cssComponents().selected());
                 selectedItems.remove(this);
                 if (fireEvents) {
                     bus.fireEvent(new ListSelectionEvent<V>(this, ListSelectionEvent.ActionType.DESELECT));

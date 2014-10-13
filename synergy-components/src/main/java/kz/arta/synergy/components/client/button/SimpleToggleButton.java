@@ -61,7 +61,7 @@ public class SimpleToggleButton extends SimpleButton {
         } else {
             getElement().getStyle().setMarginLeft(-1, Style.Unit.PX);
         }
-        setFontStyle(SynergyComponents.resources.cssComponents().mainText());
+        setFontStyle(SynergyComponents.getResources().cssComponents().mainText());
         getElement().getStyle().setPosition(Style.Position.RELATIVE);
     }
 
@@ -144,13 +144,13 @@ public class SimpleToggleButton extends SimpleButton {
         if (pressed) {
             getElement().getStyle().setZIndex(2);
             MouseStyle.setPressed(this);
-            setFontStyle(SynergyComponents.resources.cssComponents().mainTextBold());
+            setFontStyle(SynergyComponents.getResources().cssComponents().mainTextBold());
         } else {
             if (!over) {
                 getElement().getStyle().setZIndex(1);
             }
             MouseStyle.removeAll(this);
-            setFontStyle(SynergyComponents.resources.cssComponents().mainText());
+            setFontStyle(SynergyComponents.getResources().cssComponents().mainText());
         }
     }
 
@@ -161,11 +161,11 @@ public class SimpleToggleButton extends SimpleButton {
     public void onLoad() {
         super.onLoad();
         if (!isPressed()) {
-            setFontStyle(SynergyComponents.resources.cssComponents().mainTextBold());
+            setFontStyle(SynergyComponents.getResources().cssComponents().mainTextBold());
         }
         setWidth(WidthUtil.getWidth(getElement()) + "px");
         if (!isPressed()) {
-            setFontStyle(SynergyComponents.resources.cssComponents().mainText());
+            setFontStyle(SynergyComponents.getResources().cssComponents().mainText());
         }
     }
 

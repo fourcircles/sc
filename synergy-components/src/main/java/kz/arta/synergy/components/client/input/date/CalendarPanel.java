@@ -28,7 +28,7 @@ import java.util.*;
  */
 public class CalendarPanel extends Composite {
 
-    CssComponents cssComponents = SynergyComponents.resources.cssComponents();
+    CssComponents cssComponents = SynergyComponents.getResources().cssComponents();
 
     FlowPanel panel;
 
@@ -138,7 +138,7 @@ public class CalendarPanel extends Composite {
                 newRow = true;
             }
             week.setStyleName(cssComponents.daysPanel());
-            week.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
+            week.addStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
         }
 
     }

@@ -137,12 +137,12 @@ public class Table<T> extends Composite {
     public Table(int pageSize, ProvidesKey<T> keyProvider) {
         root = new FlowPanel();
         initWidget(root);
-        root.addStyleName(SynergyComponents.resources.cssComponents().tableWhole());
+        root.addStyleName(SynergyComponents.getResources().cssComponents().tableWhole());
 
         tableCore = new TableCore<T>(pageSize, keyProvider, bus);
 
         headersTable = new FlexTable();
-        headersTable.setStyleName(SynergyComponents.resources.cssComponents().headersTable());
+        headersTable.setStyleName(SynergyComponents.getResources().cssComponents().headersTable());
         root.add(headersTable);
 
         root.add(tableCore);
@@ -276,7 +276,7 @@ public class Table<T> extends Composite {
      */
     private void startResizing(ArtaFlowPanel divider) {
         resizing = true;
-        divider.addStyleName(SynergyComponents.resources.cssComponents().drag());
+        divider.addStyleName(SynergyComponents.getResources().cssComponents().drag());
         RootPanel.get().getElement().getStyle().setCursor(Style.Cursor.COL_RESIZE);
 
         int index = dividers.indexOf(divider);
@@ -315,7 +315,7 @@ public class Table<T> extends Composite {
      */
     private void stopResizing(ArtaFlowPanel divider) {
         resizing = false;
-        divider.removeStyleName(SynergyComponents.resources.cssComponents().drag());
+        divider.removeStyleName(SynergyComponents.getResources().cssComponents().drag());
         RootPanel.get().getElement().getStyle().clearCursor();
 
         int index = dividers.indexOf(divider);
@@ -358,7 +358,7 @@ public class Table<T> extends Composite {
      */
     private ArtaFlowPanel createDivider() {
         final ArtaFlowPanel divider = new ArtaFlowPanel();
-        divider.setStyleName(SynergyComponents.resources.cssComponents().tableDivider());
+        divider.setStyleName(SynergyComponents.getResources().cssComponents().tableDivider());
 
         divider.addMouseDownHandler(new MouseDownHandler() {
             @Override
@@ -413,7 +413,7 @@ public class Table<T> extends Composite {
     private FlowPanel getHeaderDivider() {
         if (headerDivider == null) {
             headerDivider = new FlowPanel();
-            headerDivider.addStyleName(SynergyComponents.resources.cssComponents().headerDivider());
+            headerDivider.addStyleName(SynergyComponents.getResources().cssComponents().headerDivider());
             headerDivider.getElement().getStyle().setWidth(HEADER_DIVIDER_WIDTH, Style.Unit.PX);
             root.add(headerDivider);
         }

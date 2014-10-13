@@ -35,7 +35,7 @@ public class CommentsPanel extends Composite {
         FlowPanel root = new FlowPanel();
         initWidget(root);
 
-        root.setStyleName(SynergyComponents.resources.cssComponents().commentsPanel());
+        root.setStyleName(SynergyComponents.getResources().cssComponents().commentsPanel());
 
         commentInput = new CommentInput();
 

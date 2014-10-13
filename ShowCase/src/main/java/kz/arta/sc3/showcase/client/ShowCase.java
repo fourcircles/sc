@@ -3,8 +3,6 @@ package kz.arta.sc3.showcase.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 
@@ -20,6 +18,6 @@ public class ShowCase implements EntryPoint {
         Window.setMargin("0px");
         RootPanel.get().getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
         RootPanel.get().add(new ShowCasePanel());
-        RootPanel.get().addStyleName(SynergyComponents.resources.cssComponents().mainText());
+        RootPanel.get().addStyleName(SynergyComponents.getResources().cssComponents().mainText());
     }
 }

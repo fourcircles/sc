@@ -38,7 +38,7 @@ public class TaskBarItemUI extends Composite implements HasClickHandlers {
     /**
      * Стиль шрифта
      */
-    private static final String FONT = SynergyComponents.resources.cssComponents().mainText();
+    private static final String FONT = SynergyComponents.getResources().cssComponents().mainText();
 
     /**
      * Иконка
@@ -68,7 +68,7 @@ public class TaskBarItemUI extends Composite implements HasClickHandlers {
 
         FlowPanel root = new FlowPanel();
         initWidget(root);
-        root.setStyleName(SynergyComponents.resources.cssComponents().item());
+        root.setStyleName(SynergyComponents.getResources().cssComponents().item());
 
         icon = GWT.create(Image.class);
         updateIcon();
@@ -153,9 +153,9 @@ public class TaskBarItemUI extends Composite implements HasClickHandlers {
      */
     private void openChanged() {
         if (model.isOpen()) {
-            addStyleName(SynergyComponents.resources.cssComponents().open());
+            addStyleName(SynergyComponents.getResources().cssComponents().open());
         } else {
-            removeStyleName(SynergyComponents.resources.cssComponents().open());
+            removeStyleName(SynergyComponents.getResources().cssComponents().open());
         }
     }
 

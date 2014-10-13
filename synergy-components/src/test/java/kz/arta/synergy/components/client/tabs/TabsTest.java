@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
  */
 @RunWith(GwtMockitoTestRunner.class)
 public class TabsTest {
-    @Mock ComponentResources resources;
+    @GwtMock ComponentResources resources;
     @Mock CssComponents cssComponents;
     @Mock Element element;
     @Mock Style style;
@@ -36,13 +36,14 @@ public class TabsTest {
     @GwtMock FlowPanel root;
 
     private Tabs tabs;
+
     @Before
     public void setUp() {
-        SynergyComponents.resources = resources;
         when(resources.cssComponents()).thenReturn(cssComponents);
 
         when(root.getElement()).thenReturn(element);
         when(element.getStyle()).thenReturn(style);
+        new SynergyComponents().onModuleLoad();
     }
 
 

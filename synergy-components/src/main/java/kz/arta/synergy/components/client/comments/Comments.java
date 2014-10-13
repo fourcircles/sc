@@ -156,9 +156,9 @@ public class Comments extends Composite {
     private void updateScrollOffset() {
         scroll.onResize();
         if (isAttached()) {
-            boolean hasScroll = scroll.getOffsetHeight() < root.getOffsetHeight();
-            if (this.hasScroll != hasScroll) {
-                this.hasScroll = hasScroll;
+            boolean newHasScroll = scroll.getOffsetHeight() < root.getOffsetHeight();
+            if (this.hasScroll != newHasScroll) {
+                this.hasScroll = newHasScroll;
 
                 for (CommentUI commentUI : commentsUI) {
                     updateCommentOffset(commentUI);

@@ -29,7 +29,7 @@ import kz.arta.synergy.components.style.client.Constants;
  * Вкладка
  */
 public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
-    static final EventBus bus = new SimpleEventBus();
+    static final EventBus BUS = new SimpleEventBus();
 
     /**
      * Корневая панель
@@ -67,7 +67,7 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
     public Tab(boolean hasCloseButton) {
         root = GWT.create(ArtaFlowPanel.class);
         initWidget(root);
-        addStyleName(SynergyComponents.resources.cssComponents().tab());
+        addStyleName(SynergyComponents.getResources().cssComponents().tab());
 
         label = new GradientLabel(getFontStyle());
         label.setHeight(Constants.TAB_HEIGHT - Constants.BORDER_WIDTH * 2 + "px");
@@ -106,9 +106,9 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
     @Override
     public String getFontStyle() {
         if (isActive) {
-            return SynergyComponents.resources.cssComponents().mainTextBold();
+            return SynergyComponents.getResources().cssComponents().mainTextBold();
         } else {
-            return SynergyComponents.resources.cssComponents().mainText();
+            return SynergyComponents.getResources().cssComponents().mainText();
         }
     }
 
@@ -121,7 +121,7 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
      * Задает ширину текста с градиентом для правильного выставления градиента
      */
     private void adjustWidth() {
-        int width = Utils.impl().getTextWidth(getText(), SynergyComponents.resources.cssComponents().mainTextBold());
+        int width = Utils.impl().getTextWidth(getText(), SynergyComponents.getResources().cssComponents().mainTextBold());
         width += Constants.COMMON_INPUT_PADDING * 2 + Constants.BORDER_WIDTH * 2;
         if (hasCloseButton) {
             width += Constants.STD_ICON_WIDTH + Constants.DIALOG_CLOSE_BUTTON_RIGHT_MARGIN;
@@ -173,13 +173,13 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
 
         label.removeStyleName(getFontStyle());
         if (isActive) {
-            addStyleName(SynergyComponents.resources.cssComponents().selected());
+            addStyleName(SynergyComponents.getResources().cssComponents().selected());
             getElement().getStyle().setBorderStyle(Style.BorderStyle.SOLID);
             if (fireEvents) {
-                bus.fireEventFromSource(new TabSelectionEvent(this), this);
+                BUS.fireEventFromSource(new TabSelectionEvent(this), this);
             }
         } else {
-            removeStyleName(SynergyComponents.resources.cssComponents().selected());
+            removeStyleName(SynergyComponents.getResources().cssComponents().selected());
             getElement().getStyle().clearBorderStyle();
         }
         this.isActive = isActive;
@@ -190,7 +190,7 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
      * Закрывает вкладку
      */
     public void close() {
-        bus.fireEventFromSource(new TabCloseEvent(this), this);
+        BUS.fireEventFromSource(new TabCloseEvent(this), this);
     }
 
     public IsWidget getContent() {
@@ -224,11 +224,11 @@ public class Tab extends Composite implements ArtaHasText, HasTabHandlers {
 
     @Override
     public HandlerRegistration addTabSelectionHandler(TabSelectionEvent.Handler handler) {
-        return bus.addHandlerToSource(TabSelectionEvent.getType(), this, handler);
+        return BUS.addHandlerToSource(TabSelectionEvent.getType(), this, handler);
     }
 
     @Override
     public HandlerRegistration addTabCloseHandler(TabCloseEvent.Handler handler) {
-        return bus.addHandlerToSource(TabCloseEvent.getType(), this, handler);
+        return BUS.addHandlerToSource(TabCloseEvent.getType(), this, handler);
     }
 }

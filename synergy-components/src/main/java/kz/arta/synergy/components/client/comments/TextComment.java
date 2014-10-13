@@ -1,8 +1,5 @@
 package kz.arta.synergy.components.client.comments;
 
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import kz.arta.synergy.components.client.util.Utils;
-
 import java.util.Date;
 
 /**
@@ -18,7 +15,6 @@ public class TextComment extends AbstractComment {
     public TextComment(String text, String author, Date date, CommentType type) {
         super(author, date, type);
         this.text = text;
-//        this.text = Utils.impl().parseComment(SafeHtmlUtils.htmlEscape(text));
     }
 
     @Override

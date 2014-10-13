@@ -48,7 +48,7 @@ public class ContextMenu extends MenuBase {
     public ContextMenu(Widget relativeWidget) {
         items = new ArrayList<ContextMenuItem>();
 
-        popup.setStyleName(SynergyComponents.resources.cssComponents().contextMenu());
+        popup.setStyleName(SynergyComponents.getResources().cssComponents().contextMenu());
 
         setRelativeWidget(relativeWidget);
         selectionHandler = new SelectionEvent.Handler<ContextMenuItem>() {
@@ -108,7 +108,7 @@ public class ContextMenu extends MenuBase {
 
             @Override
             protected String getMainStyle() {
-                return SynergyComponents.resources.cssComponents().menuSeparator();
+                return SynergyComponents.getResources().cssComponents().menuSeparator();
             }
         };
         items.add(item);

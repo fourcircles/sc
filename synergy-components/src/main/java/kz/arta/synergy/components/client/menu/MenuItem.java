@@ -15,7 +15,7 @@ import kz.arta.synergy.components.client.util.Selection;
 /**
  * Пункт меню
  */
-abstract public class MenuItem extends Composite {
+public abstract class MenuItem extends Composite {
     /**
      * Корневая панель
      */
@@ -107,20 +107,20 @@ abstract public class MenuItem extends Composite {
     /**
      * Вызывается когда элемент был выбран
      */
-    abstract protected void select();
+    protected abstract void select();
 
     /**
      * Вызывается при выделении
      */
     protected void focus() {
-        addStyleName(SynergyComponents.resources.cssComponents().over());
+        addStyleName(SynergyComponents.getResources().cssComponents().over());
     }
 
     /**
      * Вызывается при снятии выделения
      */
     protected void blurItem() {
-        removeStyleName(SynergyComponents.resources.cssComponents().over());
+        removeStyleName(SynergyComponents.getResources().cssComponents().over());
     }
 
     /**
@@ -136,6 +136,6 @@ abstract public class MenuItem extends Composite {
      * @return название стиля
      */
     protected String getMainStyle() {
-        return SynergyComponents.resources.cssComponents().contextMenuItem();
+        return SynergyComponents.getResources().cssComponents().contextMenuItem();
     }
 }

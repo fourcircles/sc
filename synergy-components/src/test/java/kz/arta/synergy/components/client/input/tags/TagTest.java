@@ -28,13 +28,13 @@ import static org.mockito.Mockito.*;
 public class TagTest {
     @GwtMock Image image;
 
-    @Mock ComponentResources resources;
+    @GwtMock ComponentResources resources;
     @Mock CssComponents cssComponents;
 
     @Before
     public void setUp() {
-        SynergyComponents.resources = resources;
         when(resources.cssComponents()).thenReturn(cssComponents);
+        new SynergyComponents().onModuleLoad();
     }
 
     @Test

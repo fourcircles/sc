@@ -72,9 +72,9 @@ public class MonthSelector extends Composite {
     private void init() {
         panel = GWT.create(FlowPanel.class);
         initWidget(panel);
-        setStyleName(SynergyComponents.resources.cssComponents().datePickerTop());
+        setStyleName(SynergyComponents.getResources().cssComponents().datePickerTop());
         if (picker.colorType == ColorType.BLACK) {
-            addStyleName(SynergyComponents.resources.cssComponents().dark());
+            addStyleName(SynergyComponents.getResources().cssComponents().dark());
         }
 
         /*кнопка назад*/
@@ -85,7 +85,7 @@ public class MonthSelector extends Composite {
 
         /*инициализируем надпись месяца*/
         monthLabel.setText(DateUtil.getMonth(DateUtil.getCurrentDate().getMonth()));
-        monthLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
+        monthLabel.setStyleName(SynergyComponents.getResources().cssComponents().bigText());
         monthLabel.getElement().getStyle().setCursor(Style.Cursor.POINTER);
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             monthLabel.getElement().getStyle().setPaddingLeft(5, Style.Unit.PX);
@@ -118,7 +118,7 @@ public class MonthSelector extends Composite {
             @Override
             public void onClick(ClickEvent event) {
                 event.stopPropagation();
-                removeStyleName(SynergyComponents.resources.cssComponents().pressed());
+                removeStyleName(SynergyComponents.getResources().cssComponents().pressed());
                 if (monthList.isShowing()) {
                     monthList.hide();
                 } else {
@@ -129,7 +129,7 @@ public class MonthSelector extends Composite {
 
         /*инициализируем надпись года*/
         yearLabel.setText((DateUtil.getCurrentDate().getYear() + DateUtil.YEAR_OFFSET) + "");
-        yearLabel.setStyleName(SynergyComponents.resources.cssComponents().bigText());
+        yearLabel.setStyleName(SynergyComponents.getResources().cssComponents().bigText());
         yearLabel.getElement().getStyle().setCursor(Style.Cursor.POINTER);
         EventBus bus = new SimpleEventBus();
         yearsList = new FixedWidthList<Integer>(yearLabel, bus);
@@ -157,7 +157,7 @@ public class MonthSelector extends Composite {
             @Override
             public void onClick(ClickEvent event) {
                 event.stopPropagation();
-                removeStyleName(SynergyComponents.resources.cssComponents().pressed());
+                removeStyleName(SynergyComponents.getResources().cssComponents().pressed());
                 if (yearsList.isShowing()) {
                     yearsList.hide();
                 } else {

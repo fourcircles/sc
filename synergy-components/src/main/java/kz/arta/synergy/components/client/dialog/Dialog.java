@@ -30,11 +30,6 @@ public class Dialog extends DialogSimple {
     FlowPanel buttonsPanel;
 
     /**
-     * margin кнопки "сохранить", когда кнопки по бокам видны
-     */
-    private double saveButtonBaseMargin;
-
-    /**
      * кнопка "назад"
      */
     private SimpleButton leftButton;
@@ -63,18 +58,24 @@ public class Dialog extends DialogSimple {
         buttonsPanel.add(saveButton);
         buttonsPanel.add(rightButton);
 
-        leftButton.addStyleName(SynergyComponents.resources.cssComponents().dialogButton());
-        saveButton.addStyleName(SynergyComponents.resources.cssComponents().dialogButton());
-        saveButton.addStyleName(SynergyComponents.resources.cssComponents().approveButton());
-        rightButton.addStyleName(SynergyComponents.resources.cssComponents().dialogButton());
+        leftButton.addStyleName(SynergyComponents.getResources().cssComponents().dialogButton());
+        saveButton.addStyleName(SynergyComponents.getResources().cssComponents().dialogButton());
+        saveButton.addStyleName(SynergyComponents.getResources().cssComponents().approveButton());
+        rightButton.addStyleName(SynergyComponents.getResources().cssComponents().dialogButton());
 
-        leftButton.addStyleName(SynergyComponents.resources.cssComponents().dialogBackButton());
-        rightButton.addStyleName(SynergyComponents.resources.cssComponents().dialogMoreButton());
+        leftButton.addStyleName(SynergyComponents.getResources().cssComponents().dialogBackButton());
+        rightButton.addStyleName(SynergyComponents.getResources().cssComponents().dialogMoreButton());
 
-        addStyleName(SynergyComponents.resources.cssComponents().dialogWithButtons());
+        addStyleName(SynergyComponents.getResources().cssComponents().dialogWithButtons());
 
         leftButton.setVisible(true);
         rightButton.setVisible(true);
+    }
+
+    public Dialog(String title, Widget content) {
+        this();
+        setText(title);
+        setContent(content);
     }
 
     SimpleButton makeButton(String title) {
@@ -83,12 +84,6 @@ public class Dialog extends DialogSimple {
 
     SimpleButton makeButton(String title, ImageResource img, ButtonBase.IconPosition position) {
         return new SimpleButton(title, img, position);
-    }
-
-    public Dialog(String title, Widget content) {
-        this();
-        setText(title);
-        setContent(content);
     }
 
     @Override
@@ -177,7 +172,6 @@ public class Dialog extends DialogSimple {
 
     /**
      * Изменяет видимость левой кнопки
-     * @param visible
      */
     public void setLeftButtonVisible(boolean visible) {
         leftButton.setVisible(visible);
@@ -186,7 +180,6 @@ public class Dialog extends DialogSimple {
 
     /**
      * Изменяет видимость правой кнопки
-     * @param visible
      */
     public void setRightButtonVisible(boolean visible) {
         rightButton.setVisible(visible);

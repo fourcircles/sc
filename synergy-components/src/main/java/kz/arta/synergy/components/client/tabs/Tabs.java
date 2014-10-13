@@ -19,6 +19,7 @@ import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.tabs.events.HasTabHandlers;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.tabs.events.TabSelectionEvent;
+import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
@@ -99,8 +100,8 @@ public class Tabs extends Composite implements HasTabHandlers {
         root = GWT.create(FlowPanel.class);
         rootContainer.add(root);
 
-        root.addStyleName(SynergyComponents.resources.cssComponents().tabs());
-        rootContainer.addStyleName(SynergyComponents.resources.cssComponents().tabsContainer());
+        root.addStyleName(SynergyComponents.getResources().cssComponents().tabs());
+        rootContainer.addStyleName(SynergyComponents.getResources().cssComponents().tabsContainer());
 
         tabs = new ArrayList<Tab>();
 
@@ -255,7 +256,7 @@ public class Tabs extends Composite implements HasTabHandlers {
      * @param left величина смещения
      */
     private void offsetBy(int left) {
-        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+        if (Navigator.isIE()) {
             offsetAnimationIE9.scrollTo(left);
         } else {
             for (Tab tab : tabs) {

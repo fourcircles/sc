@@ -16,7 +16,11 @@ import kz.arta.synergy.components.style.client.resources.ComponentResourcesDark;
  */
 public class SynergyComponents implements EntryPoint {
 
-    public static ComponentResources resources;
+    private static ComponentResources resources;
+
+    public static ComponentResources getResources() {
+        return resources;
+    }
 
     @Override
     public void onModuleLoad() {
@@ -56,7 +60,7 @@ public class SynergyComponents implements EntryPoint {
             default:
                 resources = GWT.create(ComponentResources.class);
         }
-        resources.cssComponents().ensureInjected();
+        getResources().cssComponents().ensureInjected();
     }
 
 }

@@ -19,6 +19,7 @@ import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.resources.Messages;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.util.ArtaHasText;
+import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -36,7 +37,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
     /**
      * Стиль шрифта
      */
-    private static final String FONT = SynergyComponents.resources.cssComponents().mainText();
+    private static final String FONT = SynergyComponents.getResources().cssComponents().mainText();
     /**
      * Максимальное количество линий, при которых не отображается скролл-бар
      */
@@ -92,7 +93,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
         root = new FlowPanel();
 
         scroll.setWidget(root);
-        root.setStyleName(SynergyComponents.resources.cssComponents().commentInput());
+        root.setStyleName(SynergyComponents.getResources().cssComponents().commentInput());
 
         textArea = new TextArea();
         textArea.setDirectionEstimator(new DirectionEstimator() {
@@ -101,13 +102,13 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
                 return LocaleInfo.getCurrentLocale().isRTL() ? HasDirection.Direction.RTL : HasDirection.Direction.LTR;
             }
         });
-        textArea.setStyleName(SynergyComponents.resources.cssComponents().mainText());
+        textArea.setStyleName(SynergyComponents.getResources().cssComponents().mainText());
         root.add(textArea);
 
         initMirror();
 
         acceptImage = new Image(ImageResources.IMPL.post());
-        acceptImage.setStyleName(SynergyComponents.resources.cssComponents().commentInputAccept());
+        acceptImage.setStyleName(SynergyComponents.getResources().cssComponents().commentInputAccept());
         scrollRoot.add(acceptImage);
 
         acceptImage.addClickHandler(new ClickHandler() {
@@ -128,7 +129,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
 
         //ie9 не создает событие "input" при удалении символов, поэтому
         //надо слушать KeyUpEvent.
-        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+        if (Navigator.isIE()) {
             textArea.addKeyUpHandler(new KeyUpHandler() {
                 @Override
                 public void onKeyUp(KeyUpEvent event) {
@@ -184,7 +185,6 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
 
             style.setProperty("resize", "none");
             style.setProperty("wordBreak", "break-word");
-//            style.setLineHeight(Constants.COMMENT_INPUT_LINE_HEIGHT, Style.Unit.PX);
 
             style.setPosition(Style.Position.ABSOLUTE);
             style.setTop(0, Style.Unit.PX);
@@ -241,7 +241,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
     //при изменении padding и line-height ie9 не перестраивает текст и текст может выходить за padding
     //чтобы он перестроил текст делается следующая процедура (например)
     private void maybeUpdateTextIE() {
-        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+        if (Navigator.isIE()) {
             textArea.setValue(textArea.getValue(), false);
         }
     }
@@ -348,7 +348,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
      */
     private void placeHolderOn() {
         textArea.setValue(Messages.COMMENT_INPUT_PLACEHOLDER, false);
-        textArea.addStyleName(SynergyComponents.resources.cssComponents().placeHolder());
+        textArea.addStyleName(SynergyComponents.getResources().cssComponents().placeHolder());
         isPlaceHolder = true;
     }
 
@@ -360,7 +360,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
             textArea.setValue("", false);
         }
         isPlaceHolder = false;
-        textArea.removeStyleName(SynergyComponents.resources.cssComponents().placeHolder());
+        textArea.removeStyleName(SynergyComponents.getResources().cssComponents().placeHolder());
     }
 
     @Override
@@ -376,7 +376,6 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
     @Override
     public void setText(String text) {
         mirror.setText(text);
-//        mirror.setText(Utils.impl().parseComment(text));
     }
 
     public HandlerRegistration addKeyUpHandler(KeyUpHandler handler) {

@@ -55,20 +55,20 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
     public MonthlyRepeatChooser(int daysCount) {
         super();
         root = new FlowPanel();
-        root.setStyleName(SynergyComponents.resources.cssComponents().datePicker());
-        root.addStyleName(SynergyComponents.resources.cssComponents().mainTextBold());
+        root.setStyleName(SynergyComponents.getResources().cssComponents().datePicker());
+        root.addStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
         popupPanel.setWidget(root);
 
         FlowPanel weekDaysPanel = new FlowPanel();
-        weekDaysPanel.setStyleName(SynergyComponents.resources.cssComponents().dayWeekPanel());
+        weekDaysPanel.setStyleName(SynergyComponents.getResources().cssComponents().dayWeekPanel());
 
         FlowPanel datePicker = new FlowPanel();
-        datePicker.setStyleName(SynergyComponents.resources.cssComponents().datePickerCalendar());
+        datePicker.setStyleName(SynergyComponents.getResources().cssComponents().datePickerCalendar());
 
         List<FlowPanel> weeks = new ArrayList<FlowPanel>();
         for (int i = 0; i < WEEKS; i++) {
             FlowPanel week = new FlowPanel();
-            week.setStyleName(SynergyComponents.resources.cssComponents().daysPanel());
+            week.setStyleName(SynergyComponents.getResources().cssComponents().daysPanel());
             weeks.add(week);
             datePicker.add(week);
         }
@@ -102,7 +102,7 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
         super.add(date, fireEvents);
         InlineLabel day = days.get(date.getDay());
         if (day != null) {
-            day.addStyleName(SynergyComponents.resources.cssComponents().pressed());
+            day.addStyleName(SynergyComponents.getResources().cssComponents().pressed());
         }
     }
 
@@ -111,7 +111,7 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
         super.remove(date, fireEvents);
         InlineLabel day = days.get(date.getDay());
         if (day != null) {
-            day.removeStyleName(SynergyComponents.resources.cssComponents().pressed());
+            day.removeStyleName(SynergyComponents.getResources().cssComponents().pressed());
         }
     }
 
@@ -138,7 +138,7 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
      */
     InlineLabel createDay() {
         final InlineLabel day = new InlineLabel();
-        day.setStyleName(SynergyComponents.resources.cssComponents().month());
+        day.setStyleName(SynergyComponents.getResources().cssComponents().month());
 
         day.addClickHandler(dayClickHandler);
         return day;
@@ -152,10 +152,10 @@ public class MonthlyRepeatChooser extends BaseRepeatChooser {
         int valueDaysCount = Math.max(validDaysCount, 0);
 
         for (int i = validDaysCount; i < this.daysCount; i++) {
-            days.get(i).addStyleName(SynergyComponents.resources.cssComponents().outMonth());
+            days.get(i).addStyleName(SynergyComponents.getResources().cssComponents().outMonth());
         }
         for (int i = this.daysCount; i < validDaysCount; i++) {
-            days.get(i).removeStyleName(SynergyComponents.resources.cssComponents().outMonth());
+            days.get(i).removeStyleName(SynergyComponents.getResources().cssComponents().outMonth());
         }
         this.daysCount = daysCount;
     }

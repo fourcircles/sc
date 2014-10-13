@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
  */
 @RunWith(GwtMockitoTestRunner.class)
 public class TabTest {
-    @Mock ComponentResources resources;
+    @GwtMock ComponentResources resources;
     @Mock CssComponents cssComponents;
 
     @GwtMock ArtaFlowPanel root;
@@ -35,8 +35,8 @@ public class TabTest {
 
     @Before
     public void setUp() {
-        SynergyComponents.resources = resources;
         when(resources.cssComponents()).thenReturn(cssComponents);
+        new SynergyComponents().onModuleLoad();
     }
 
     @Test

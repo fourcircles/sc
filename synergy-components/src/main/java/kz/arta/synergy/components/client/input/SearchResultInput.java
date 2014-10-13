@@ -7,7 +7,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -21,6 +20,7 @@ import kz.arta.synergy.components.client.menu.events.SelectionEvent;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.resources.Messages;
+import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 
 /**
@@ -72,8 +72,8 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
         FlowPanel root = new FlowPanel();
         initWidget(root);
 
-        setStyleName(SynergyComponents.resources.cssComponents().searchResult());
-        addStyleName(SynergyComponents.resources.cssComponents().mainText());
+        setStyleName(SynergyComponents.getResources().cssComponents().searchResult());
+        addStyleName(SynergyComponents.getResources().cssComponents().mainText());
 
         innerBus = new SimpleEventBus();
 
@@ -87,7 +87,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
         inputContainer.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
         //ie 9 не отображает курсор если этого не сделать
-        if (LocaleInfo.getCurrentLocale().isRTL() && Window.Navigator.getAppVersion().contains("MSIE 9")) {
+        if (LocaleInfo.getCurrentLocale().isRTL() && Navigator.isIE()) {
             input.getElement().getStyle().setPaddingRight(1, Style.Unit.PX);
             inputContainer.getElement().getStyle().setPaddingRight(Constants.COMMON_INPUT_PADDING - 1, Style.Unit.PX);
         }
@@ -95,7 +95,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
         root.add(inputContainer);
 
         if (hasButton) {
-            button = new ImageButton(ImageResources.IMPL.zoom_transparent());
+            button = new ImageButton(ImageResources.IMPL.zoomTransparent());
             root.add(button);
         }
 
@@ -105,7 +105,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
             public void onSelection(final ListSelectionEvent<V> event) {
                 input.setFocus(true);
                 selectedItem = event.getItem();
-                if (Window.Navigator.getAppVersion().contains("MSIE 9")) {
+                if (Navigator.isIE()) {
                     new Timer() {
                         @Override
                         public void run() {
@@ -131,7 +131,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
             }
         });
 
-        input.addStyleName(SynergyComponents.resources.cssComponents().placeHolder());
+        input.addStyleName(SynergyComponents.getResources().cssComponents().placeHolder());
         input.setText(Messages.i18n().tr("Поиск"), false);
 
         input.addKeyUpHandler(new KeyUpHandler() {
@@ -151,7 +151,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
                     input.setText(selectedItem.getText(), false);
                 } else {
                     input.setText(placeholderText, false);
-                    input.addStyleName(SynergyComponents.resources.cssComponents().placeHolder());
+                    input.addStyleName(SynergyComponents.getResources().cssComponents().placeHolder());
                 }
             }
         });
@@ -162,7 +162,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
                 if (selectedItem == null) {
                     input.setText("");
                 }
-                input.removeStyleName(SynergyComponents.resources.cssComponents().placeHolder());
+                input.removeStyleName(SynergyComponents.getResources().cssComponents().placeHolder());
             }
         });
 
@@ -211,9 +211,9 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
         }
         input.setEnabled(enabled);
         if (enabled) {
-            removeStyleName(SynergyComponents.resources.cssComponents().disabled());
+            removeStyleName(SynergyComponents.getResources().cssComponents().disabled());
         } else {
-            addStyleName(SynergyComponents.resources.cssComponents().disabled());
+            addStyleName(SynergyComponents.getResources().cssComponents().disabled());
         }
     }
 

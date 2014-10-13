@@ -128,7 +128,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
         table = new FlexTable();
         table.sinkEvents(Event.ONCONTEXTMENU);
 
-        table.addStyleName(SynergyComponents.resources.cssComponents().table());
+        table.addStyleName(SynergyComponents.getResources().cssComponents().table());
         for (int i = 0; i < pageSize; i++) {
             table.insertRow(0);
         }
@@ -241,16 +241,16 @@ public class TableCore<T> extends Composite implements HasData<T> {
             tdUnder = table.getFlexCellFormatter().getElement(row + 1, column);
         }
         if (start) {
-            table.getRowFormatter().getElement(row).addClassName(SynergyComponents.resources.cssComponents().edit());
-            td.addClassName(SynergyComponents.resources.cssComponents().edit());
+            table.getRowFormatter().getElement(row).addClassName(SynergyComponents.getResources().cssComponents().edit());
+            td.addClassName(SynergyComponents.getResources().cssComponents().edit());
             if (tdUnder != null) {
-                tdUnder.addClassName(SynergyComponents.resources.cssComponents().underEdit());
+                tdUnder.addClassName(SynergyComponents.getResources().cssComponents().underEdit());
             }
         } else {
-            table.getRowFormatter().getElement(row).removeClassName(SynergyComponents.resources.cssComponents().edit());
-            td.removeClassName(SynergyComponents.resources.cssComponents().edit());
+            table.getRowFormatter().getElement(row).removeClassName(SynergyComponents.getResources().cssComponents().edit());
+            td.removeClassName(SynergyComponents.getResources().cssComponents().edit());
             if (tdUnder != null) {
-                tdUnder.removeClassName(SynergyComponents.resources.cssComponents().underEdit());
+                tdUnder.removeClassName(SynergyComponents.getResources().cssComponents().underEdit());
             }
         }
 
@@ -407,10 +407,10 @@ public class TableCore<T> extends Composite implements HasData<T> {
             table.getElement().focus();
         }
         if (select) {
-            element.addClassName(SynergyComponents.resources.cssComponents().selected());
+            element.addClassName(SynergyComponents.getResources().cssComponents().selected());
             element.scrollIntoView();
         } else {
-            element.removeClassName(SynergyComponents.resources.cssComponents().selected());
+            element.removeClassName(SynergyComponents.getResources().cssComponents().selected());
         }
     }
 
@@ -764,16 +764,16 @@ public class TableCore<T> extends Composite implements HasData<T> {
     public void redraw() {
         selectionModel.clear();
         if (pageSize > objects.size() - start) {
-            table.addStyleName(SynergyComponents.resources.cssComponents().notFull());
+            table.addStyleName(SynergyComponents.getResources().cssComponents().notFull());
         } else {
-            table.removeStyleName(SynergyComponents.resources.cssComponents().notFull());
+            table.removeStyleName(SynergyComponents.getResources().cssComponents().notFull());
         }
 
         while (table.getRowCount() > pageSize) {
             table.getRowFormatter().getElement(table.getRowCount() - 1).removeFromParent();
         }
 
-        table.getRowFormatter().getElement(pageSize - 1).addClassName(SynergyComponents.resources.cssComponents().last());
+        table.getRowFormatter().getElement(pageSize - 1).addClassName(SynergyComponents.getResources().cssComponents().last());
 
         if (!isHeightSet) {
             scroll.getElement().getStyle().setHeight(pageSize * 27 - 1, Style.Unit.PX);
@@ -955,9 +955,9 @@ public class TableCore<T> extends Composite implements HasData<T> {
      */
     public void setOnlyRows(boolean onlyRows) {
         if (onlyRows) {
-            table.addStyleName(SynergyComponents.resources.cssComponents().onlyRows());
+            table.addStyleName(SynergyComponents.getResources().cssComponents().onlyRows());
         } else {
-            table.removeStyleName(SynergyComponents.resources.cssComponents().onlyRows());
+            table.removeStyleName(SynergyComponents.getResources().cssComponents().onlyRows());
         }
         this.onlyRows = onlyRows;
         selectionModel.clear();
@@ -996,9 +996,9 @@ public class TableCore<T> extends Composite implements HasData<T> {
      */
     public void setMultiLine(boolean multiLine) {
         if (multiLine) {
-            table.addStyleName(SynergyComponents.resources.cssComponents().multipleLines());
+            table.addStyleName(SynergyComponents.getResources().cssComponents().multipleLines());
         } else {
-            table.removeStyleName(SynergyComponents.resources.cssComponents().multipleLines());
+            table.removeStyleName(SynergyComponents.getResources().cssComponents().multipleLines());
         }
     }
 

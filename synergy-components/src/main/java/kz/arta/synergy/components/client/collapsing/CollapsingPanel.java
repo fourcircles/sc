@@ -4,12 +4,12 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.ArtaHasText;
+import kz.arta.synergy.components.client.util.Navigator;
 
 /**
  * User: vsl
@@ -66,11 +66,11 @@ public class CollapsingPanel extends Composite implements ArtaHasText {
     public CollapsingPanel(String titleText) {
         FlowPanel root = new FlowPanel();
         initWidget(root);
-        root.addStyleName(SynergyComponents.resources.cssComponents().collapsingPanel());
+        root.addStyleName(SynergyComponents.getResources().cssComponents().collapsingPanel());
 
         ArtaFlowPanel title = new ArtaFlowPanel();
 
-        title.addStyleName(SynergyComponents.resources.cssComponents().collapsingTitle());
+        title.addStyleName(SynergyComponents.getResources().cssComponents().collapsingTitle());
         title.getElement().getStyle().setCursor(Style.Cursor.POINTER);
 
         titleLabel = new InlineLabel();
@@ -106,7 +106,7 @@ public class CollapsingPanel extends Composite implements ArtaHasText {
         contentPanel = new FlowPanel();
         contentContainer = new SimplePanel(contentPanel);
         contentContainer.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
-        contentPanel.setStyleName(SynergyComponents.resources.cssComponents().collapsingContent());
+        contentPanel.setStyleName(SynergyComponents.getResources().cssComponents().collapsingContent());
 
         root.add(contentContainer);
     }
@@ -116,10 +116,10 @@ public class CollapsingPanel extends Composite implements ArtaHasText {
      */
     public void open() {
         isOpen = true;
-        addStyleName(SynergyComponents.resources.cssComponents().open());
+        addStyleName(SynergyComponents.getResources().cssComponents().open());
         contentContainer.getElement().getStyle().setHeight(contentPanel.getElement().getPropertyInt("scrollHeight"), Style.Unit.PX);
 
-        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+        if (Navigator.isIE()) {
             if (ie9Animation == null) {
                 ie9Animation = new CollapsingAnimationIE9(contentContainer,
                         contentPanel.getElement().getPropertyInt("scrollHeight"), arrow);
@@ -133,11 +133,11 @@ public class CollapsingPanel extends Composite implements ArtaHasText {
      */
     public void close() {
         isOpen = false;
-        removeStyleName(SynergyComponents.resources.cssComponents().open());
+        removeStyleName(SynergyComponents.getResources().cssComponents().open());
 
         contentContainer.getElement().getStyle().clearHeight();
 
-        if (Window.Navigator.getAppVersion().contains("MSIE")) {
+        if (Navigator.isIE()) {
             if (ie9Animation == null) {
                 ie9Animation = new CollapsingAnimationIE9(contentContainer,
                         contentPanel.getElement().getPropertyInt("scrollHeight"), arrow);
@@ -166,7 +166,7 @@ public class CollapsingPanel extends Composite implements ArtaHasText {
 
     @Override
     public String getFontStyle() {
-        return SynergyComponents.resources.cssComponents().bigText();
+        return SynergyComponents.getResources().cssComponents().bigText();
     }
 
     @Override

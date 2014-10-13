@@ -16,6 +16,7 @@ import kz.arta.synergy.components.client.label.GradientLabel;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.taskbar.TaskBarItem;
 import kz.arta.synergy.components.client.taskbar.events.ModelChangeEvent;
+import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 
 /**
@@ -113,13 +114,13 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
 
         setWidget(panel);
 
-        this.setStyleName(SynergyComponents.resources.cssComponents().popupPanel());
-        panel.setStyleName(SynergyComponents.resources.cssComponents().dialog());
-        titlePanel.setStyleName(SynergyComponents.resources.cssComponents().dialogTitle());
-        titleLabel.setStyleName(SynergyComponents.resources.cssComponents().dialogTitleLabel());
-        closeButton.setStyleName(SynergyComponents.resources.cssComponents().dialogTitleButton());
-        collapseButton.setStyleName(SynergyComponents.resources.cssComponents().dialogTitleButton());
-        contentPanel.setStyleName(SynergyComponents.resources.cssComponents().dialogContent());
+        this.setStyleName(SynergyComponents.getResources().cssComponents().popupPanel());
+        panel.setStyleName(SynergyComponents.getResources().cssComponents().dialog());
+        titlePanel.setStyleName(SynergyComponents.getResources().cssComponents().dialogTitle());
+        titleLabel.setStyleName(SynergyComponents.getResources().cssComponents().dialogTitleLabel());
+        closeButton.setStyleName(SynergyComponents.getResources().cssComponents().dialogTitleButton());
+        collapseButton.setStyleName(SynergyComponents.getResources().cssComponents().dialogTitleButton());
+        contentPanel.setStyleName(SynergyComponents.getResources().cssComponents().dialogContent());
 
         setUpDragging();
 
@@ -185,7 +186,7 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
         textWidth -= Constants.DIALOG_CLOSE_BUTTON_RIGHT_MARGIN;
         textWidth -= Constants.DIALOG_TITLE_LEFT_MARGIN + Constants.DIALOG_TITLE_LABEL_RIGHT_PADDING;
 
-        if (Window.Navigator.getAppVersion().contains("MSIE") || Window.Navigator.getAppVersion().contains("Trident")) {
+        if (Navigator.isIE() || Navigator.isIE11()) {
             textWidth -= 2;
         }
         titleLabel.setWidth(textWidth);

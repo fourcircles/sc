@@ -48,7 +48,7 @@ public class Dialog extends DialogSimple {
         super();
         buttonsPanel = new FlowPanel();
         buttonsPanel.setHeight(Constants.DIALOG_BUTTON_PANEL_HEIGHT + "px");
-        panel.add(buttonsPanel);
+        root.add(buttonsPanel);
 
         leftButton = makeButton(Messages.i18n().tr("Назад"), ImageResources.IMPL.navigationLeft(), ButtonBase.IconPosition.LEFT);
         saveButton = makeButton(Messages.i18n().tr("Сохранить"));

@@ -70,6 +70,7 @@ import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.client.tabs.TabPanel;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.taskbar.TaskBar;
+import kz.arta.synergy.components.client.taskbar.events.TaskBarEvent;
 import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.theme.Theme;
 import kz.arta.synergy.components.client.tree.Tree;
@@ -107,6 +108,8 @@ public class ShowCasePanel extends FlowPanel {
      * Таб, открывается сразу
      */
     private TreeItem firstTab;
+
+    private static int dialogsCount = 1;
 
     interface ShowCasePanelUiBinder extends UiBinder<FlowPanel, ShowCasePanel> {
     }
@@ -292,103 +295,191 @@ public class ShowCasePanel extends FlowPanel {
         }
     }
 
-    private SimpleButton setUpDialog(final int width,
-                                     final int height,
-                                     final boolean buttons,
-                                     final boolean backButton,
-                                     final boolean moreButton) {
-        final String title = SCMessages.i18n().tr(SCMessages.SIZE) + ": " + width + "x" + height;
+//    private SimpleButton makeDialogButton(final int width,
+//                                          final int height,
+//                                          final boolean backButton,
+//                                          final boolean moreButton) {
+//        final String title = SCMessages.i18n().tr(SCMessages.SIZE) + ": " + width + "x" + height;
+//
+//        SimpleButton button = new SimpleButton(title);
+//        button.addClickHandler(new ClickHandler() {
+//            @Override
+//            public void onClick(ClickEvent event) {
+//                DialogSimple dialog = createDialog(width, height, backButton, moreButton, title);
+//                dialog.center();
+//                dialog.show();
+//            }
+//        });
+//        return button;
+//    }
 
-        SimpleButton button = new SimpleButton(title);
+    private SimpleButton makeDialogButton(final DialogSimple dialog) {
+        final SimpleButton button = new SimpleButton(dialog.getText());
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                DialogSimple dialog = createDialog(width, height, buttons, backButton, moreButton, title);
                 dialog.center();
                 dialog.show();
+            }
+        });
+        dialog.addTaskBarHandler(new TaskBarEvent.AbstractHandler() {
+            @Override
+            public void onClose(TaskBarEvent event) {
+                super.onClose(event);
+                button.setEnabled(false);
             }
         });
         return button;
     }
 
-    private DialogSimple createDialog(int width, int height, boolean buttons, boolean backButton, boolean moreButton, String title) {
-        final DialogSimple dialog;
-        if (buttons) {
-            Dialog withButtons = new Dialog();
-            withButtons.setLeftButtonVisible(backButton);
-            withButtons.setRightButtonVisible(moreButton);
-
-            dialog = withButtons;
-        } else {
-            dialog = new DialogSimple();
-        }
-        taskBar.addItem(dialog);
-
+    private void initDialog(DialogSimple dialog, int width, int height, String title, boolean modal) {
         dialog.setText(title);
+
+        if (!modal) {
+            taskBar.addItem(dialog);
+        }
+        dialog.setModal(modal);
 
         FlowPanel content = new FlowPanel();
         content.getElement().getStyle().setWidth(width, Style.Unit.PX);
         content.getElement().getStyle().setHeight(height, Style.Unit.PX);
         dialog.setContent(content);
+    }
+
+    private void initButtonDialog(Dialog dialog, boolean hasLeft, boolean hasRight) {
+        dialog.setLeftButtonVisible(hasLeft);
+        dialog.setRightButtonVisible(hasRight);
+    }
+
+    private Dialog createDialog(String title,
+                                      int width,
+                                      int height,
+                                      boolean modal,
+                                      boolean backButton,
+                                      boolean moreButton) {
+        final Dialog dialog = new Dialog();
+        initDialog(dialog, width, height, title, modal);
+
+        if (backButton || moreButton) {
+            Dialog withButtons = new Dialog();
+            initButtonDialog(withButtons, backButton, moreButton);
+        } else {
+            throw new IllegalArgumentException();
+        }
 
         return dialog;
     }
 
-    private Panel createDialogsPanel(boolean hasButtons) {
-        FlowPanel panel = new FlowPanel();
-        panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
+    private DialogSimple createDialog(String title, int width, int heigth, boolean modal) {
+        DialogSimple dialog = new DialogSimple(modal);
+        initDialog(dialog, width, heigth, title, modal);
+        return dialog;
+    }
 
-        SimpleButton tiny = setUpDialog(116, 84, hasButtons, true, true);
-        tiny.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+    private void randomizePosition(PopupPanel popup) {
+        int x = (int) (Math.random() * (Window.getClientWidth() - 400));
+        int y = (int) (Math.random() * (Window.getClientHeight() - 400));
+        popup.setPopupPosition(x, y);
+    }
 
-        SimpleButton small = setUpDialog(300, 300, hasButtons, true, true);
-        small.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+    private Panel createDialogsWithButtonsPanel() {
+        FlowPanel root = new FlowPanel();
 
-        SimpleButton middle = setUpDialog(400, 400, hasButtons, true, true);
-        middle.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        final SimpleButton showTiny = new SimpleButton(SCMessages.i18n().tr("Показать небольшой диалог"));
+        showTiny.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        showTiny.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        showTiny.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Dialog dialog = new Dialog();
+                initDialog(dialog, 116, 84, SCMessages.i18n().tr("Небольшой диалог"), true);
+                initButtonDialog(dialog, false, true);
+                dialog.center();
+                dialog.show();
+            }
+        });
+        root.add(showTiny);
 
-        SimpleButton big = setUpDialog(800, 500, hasButtons, true, true);
-        big.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        panel.add(tiny);
-        panel.add(small);
-        panel.add(middle);
-        panel.add(big);
+        final SimpleButton showMedium = new SimpleButton(SCMessages.i18n().tr("Показать небольшой диалог"));
+        showMedium.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        showMedium.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        showMedium.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Dialog dialog = new Dialog();
+                initDialog(dialog, 400, 400, SCMessages.i18n().tr("Средний диалог"), true);
+                initButtonDialog(dialog, true, true);
+                dialog.center();
+                dialog.show();
+            }
+        });
+        root.add(showMedium);
 
-        if (!hasButtons) {
-            SimpleButton createButton = new SimpleButton(SCMessages.i18n().tr("Создать новый диалог"));
-            createButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        SimpleButton newDialog = new SimpleButton(SCMessages.i18n().tr("Добавить новый диалог"));
+        newDialog.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        newDialog.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        newDialog.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Dialog dialog = new Dialog();
+                randomizePosition(dialog);
+                initDialog(dialog, 400, 400, SCMessages.i18n().tr("Диалог #") + dialogsCount++, false);
+                initButtonDialog(dialog, true, true);
+                taskBar.addItem(dialog);
+            }
+        });
+        root.add(newDialog);
 
-            createButton.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    DialogSimple dialog = createDialog(400, 400, false, false, false, SCMessages.i18n().tr("Диалог"));
-                    dialog.open();
-                    dialog.collapse();
-                }
-            });
+        return root;
+    }
 
-            panel.add(createButton);
-        }
+    private Panel createDialogsPanel() {
+        FlowPanel root = new FlowPanel();
 
+        final SimpleButton showTiny = new SimpleButton(SCMessages.i18n().tr("Показать небольшой диалог"));
+        showTiny.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        showTiny.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        showTiny.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                DialogSimple dialog = new DialogSimple();
+                initDialog(dialog, 116, 84, SCMessages.i18n().tr("Небольшой диалог"), true);
+                dialog.center();
+                dialog.show();
+            }
+        });
+        root.add(showTiny);
 
-        panel.add(new HTML("<p/>"));
+        final SimpleButton showMedium = new SimpleButton(SCMessages.i18n().tr("Показать небольшой диалог"));
+        showMedium.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        showMedium.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        showMedium.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                DialogSimple dialog = new DialogSimple();
+                initDialog(dialog, 400, 400, SCMessages.i18n().tr("Средний диалог"), true);
+                dialog.center();
+                dialog.show();
+            }
+        });
+        root.add(showMedium);
 
-        if (hasButtons) {
-            SimpleButton noLeft = setUpDialog(400, 400, true, false, true);
-            noLeft.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-            SimpleButton noRight = setUpDialog(400, 400, true, true, false);
-            noRight.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-            SimpleButton onlySave = setUpDialog(400, 400, true, false, false);
-            onlySave.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        SimpleButton newDialog = new SimpleButton(SCMessages.i18n().tr("Добавить новый диалог"));
+        newDialog.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        newDialog.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        newDialog.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                DialogSimple dialog = new DialogSimple();
 
-            panel.add(noLeft);
-            panel.add(noRight);
-            panel.add(onlySave);
-        }
+                randomizePosition(dialog);
+                initDialog(dialog, 400, 400, SCMessages.i18n().tr("Диалог #") + dialogsCount++, false);
+                taskBar.addItem(dialog);
+            }
+        });
+        root.add(newDialog);
 
-        panel.setSize("100%", "100%");
-
-        return panel;
+        return root;
     }
 
     private void fillCombobox(ComboBox<String> combobox) {
@@ -627,13 +718,13 @@ public class ShowCasePanel extends FlowPanel {
         addTreeItem(shell, new LoadPanel(SCMessages.i18n().tr("Диалог без кнопок")) {
             @Override
             public Widget getContentWidget() {
-                return createDialogsPanel(false);
+                return createDialogsPanel();
             }
         });
         addTreeItem(shell, new LoadPanel(SCMessages.i18n().tr("Диалог с кнопками")) {
             @Override
             public Widget getContentWidget() {
-                return createDialogsPanel(true);
+                return createDialogsWithButtonsPanel();
             }
         });
     }

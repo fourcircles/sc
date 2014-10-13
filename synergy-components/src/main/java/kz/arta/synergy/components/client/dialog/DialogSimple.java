@@ -1,21 +1,21 @@
 package kz.arta.synergy.components.client.dialog;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.client.taskbar.events.TaskBarEvent;
 import kz.arta.synergy.components.client.label.GradientLabel;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.taskbar.TaskBarItem;
 import kz.arta.synergy.components.client.taskbar.events.ModelChangeEvent;
+import kz.arta.synergy.components.client.taskbar.events.TaskBarEvent;
 import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -28,7 +28,7 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
     /**
      * панель для диалога
      */
-    protected FlowPanel panel;
+    protected FlowPanel root;
 
     /**
      * панель для заголовка
@@ -73,13 +73,12 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
     }
 
     public DialogSimple(boolean modal) {
+        root = GWT.create(FlowPanel.class);
 
-        setModal(modal);
-
-        if (modal) {
-            setGlassEnabled(true);
-        }
-        panel = GWT.create(FlowPanel.class);
+        titlePanel = GWT.create(FlowPanel.class);
+        titleLabel = GWT.create(GradientLabel.class);
+        titleLabel.setWidth(10);
+        titlePanel.add(titleLabel);
 
         closeButton = makeTitleButton(ImageResources.IMPL.dialogCloseButton(), ImageResources.IMPL.dialogCloseButtonOver());
         closeButton.addClickHandler(new ClickHandler() {
@@ -88,6 +87,7 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
                 close();
             }
         });
+        titlePanel.add(closeButton);
 
         collapseButton = makeTitleButton(ImageResources.IMPL.dialogCollapseButton(), ImageResources.IMPL.dialogCollapseButtonOver());
         collapseButton.addClickHandler(new ClickHandler() {
@@ -96,30 +96,25 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
                 collapse();
             }
         });
-
-        titlePanel = GWT.create(FlowPanel.class);
-        titleLabel = GWT.create(GradientLabel.class);
-        titleLabel.setWidth(10);
-
-        titlePanel.add(titleLabel);
-        titlePanel.add(closeButton);
         titlePanel.add(collapseButton);
+        collapseButton.setStyleName(SynergyComponents.getResources().cssComponents().dialogTitleButton());
+
+        setModal(modal);
 
         titlePanel.setWidth("100%");
 
         contentPanel = GWT.create(FlowPanel.class);
 
-        panel.add(titlePanel);
-        panel.add(contentPanel);
+        root.add(titlePanel);
+        root.add(contentPanel);
 
-        setWidget(panel);
+        setWidget(root);
 
         this.setStyleName(SynergyComponents.getResources().cssComponents().popupPanel());
-        panel.setStyleName(SynergyComponents.getResources().cssComponents().dialog());
+        root.setStyleName(SynergyComponents.getResources().cssComponents().dialog());
         titlePanel.setStyleName(SynergyComponents.getResources().cssComponents().dialogTitle());
         titleLabel.setStyleName(SynergyComponents.getResources().cssComponents().dialogTitleLabel());
         closeButton.setStyleName(SynergyComponents.getResources().cssComponents().dialogTitleButton());
-        collapseButton.setStyleName(SynergyComponents.getResources().cssComponents().dialogTitleButton());
         contentPanel.setStyleName(SynergyComponents.getResources().cssComponents().dialogContent());
 
         setUpDragging();
@@ -304,8 +299,18 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
 
     @Override
     public void open() {
-        center();
         show();
         fireEvent(new TaskBarEvent(TaskBarEvent.EventType.SHOW));
+    }
+
+    @Override
+    public void setModal(boolean modal) {
+        super.setModal(modal);
+        if (modal) {
+            collapseButton.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+        } else {
+            collapseButton.getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
+        }
+        setGlassEnabled(modal);
     }
 }

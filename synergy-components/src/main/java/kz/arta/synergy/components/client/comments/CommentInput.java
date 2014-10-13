@@ -24,6 +24,7 @@ import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
+//todo комментарий-placeholder, пустой комментарий
 /**
  * User: vsl
  * Date: 26.09.14

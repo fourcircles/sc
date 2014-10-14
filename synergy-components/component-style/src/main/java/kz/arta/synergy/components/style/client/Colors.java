@@ -61,4 +61,7 @@ public class Colors {
     public static Color navigatorBG() {
         return navigatorBG;
     }
+    public static Color buttonBorder() {
+        return buttonBorder;
+    }
 }

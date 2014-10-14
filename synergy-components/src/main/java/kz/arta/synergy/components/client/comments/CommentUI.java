@@ -50,13 +50,20 @@ public class CommentUI extends Composite {
     private HTML content;
 
     /**
+     * темный ли комментарий
+     */
+    private boolean dark;
+
+    /**
      * @param comment комментарий
      */
-    public CommentUI(final Comment comment) {
+    public CommentUI(final Comment comment, boolean dark) {
         root = new FlowPanel();
         initWidget(root);
         setStyleName(SynergyComponents.getResources().cssComponents().comment());
         this.comment = comment;
+
+        this.dark = dark;
 
         authorLabel = new HTML();
         authorLabel.setStyleName(SynergyComponents.getResources().cssComponents().name());
@@ -90,6 +97,10 @@ public class CommentUI extends Composite {
         update();
     }
 
+    public CommentUI(Comment comment) {
+        this(comment, false);
+    }
+
     /**
      * Обновляет иконку в соответствии с комментарием
      */
@@ -106,7 +117,11 @@ public class CommentUI extends Composite {
                 icon.setResource(ImageResources.IMPL.negativeComment());
                 break;
             default:
-                icon.setResource(ImageResources.IMPL.deleteComment());
+                if (dark) {
+                    icon.setResource(ImageResources.IMPL.deleteNote());
+                } else {
+                    icon.setResource(ImageResources.IMPL.deleteComment());
+                }
                 if (comment.isDeletable()) {
                     icon.getElement().getStyle().clearVisibility();
                 } else {

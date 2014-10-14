@@ -115,7 +115,12 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
 
         initMirror();
 
-        acceptImage = new Image(ImageResources.IMPL.post());
+        if (dark) {
+            acceptImage = new Image(ImageResources.IMPL.submitNote());
+        } else {
+            acceptImage = new Image(ImageResources.IMPL.post());
+        }
+
         acceptImage.setStyleName(SynergyComponents.getResources().cssComponents().commentInputAccept());
         scrollRoot.add(acceptImage);
 

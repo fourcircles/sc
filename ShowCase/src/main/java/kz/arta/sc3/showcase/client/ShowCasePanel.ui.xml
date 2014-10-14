@@ -1,19 +1,23 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:arta="urn:import:kz.arta.synergy.components.client"
              xmlns:artaTree="urn:import:kz.arta.synergy.components.client.tree"
              xmlns:artaTabs="urn:import:kz.arta.synergy.components.client.tabs"
              xmlns:taskBar="urn:import:kz.arta.synergy.components.client.taskbar"
+             xmlns:code="urn:import:kz.arta.sc3.showcase.client"
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <ui:with type="kz.arta.synergy.components.client.resources.ImageResources" field="images"/>
+    <ui:with type="kz.arta.synergy.components.style.client.Colors" field="colors" />
     <ui:style>
-        .titlePanel{
+        @eval buttonBorder kz.arta.synergy.components.style.client.Colors.buttonBorder().hex();
+
+        .titlePanel {
             position: absolute;
-            top: 0px;
+            top: 0;
             height: 54px;
             box-sizing: border-box;
             -moz-box-sizing: border-box;
             width: 100%;
         }
+
         .tree {
             position: absolute;
             top: 59px;
@@ -21,6 +25,7 @@
             left: 5px;
             width: 280px;
         }
+
         .tabs {
             position: absolute;
             top: 59px;
@@ -31,19 +36,75 @@
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
         }
+
         .taskbar {
             position: absolute;
             left: 290px;
             right: 5px;
             bottom: 5px;
+            height: 28px;
+        }
+
+        .codePanel {
+            position: absolute;
+            left: 290px;
+            right: 5px;
+            bottom: 45px;
+            height: 334px;
+            /*noinspection CssInvalidElement*/
+            border: 1px solid buttonBorder;
+            border-bottom-style: none;
+        }
+
+        .codePanel .closeImage {
+            position: absolute;
+            right: 6px;
+            top: 8px;
+            opacity: 0.5;
+            cursor: pointer;
+        }
+
+        .codePanel .closeImage:hover {
+            opacity: 1;
+        }
+
+        .codePanel .code {
+            margin: 0;
+            /*noinspection CssInvalidElement*/
+            border: 1px solid buttonBorder;
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            left: 3px;
+            top: 35px;
+        }
+
+        .codePanel > div:first-child, .componentName {
+            display: inline-block;
+            position: relative;
+            top: 7px;
+        }
+
+        .codePanel > div:first-child {
+            margin-left: 12px;
+        }
+
+        .componentName {
+            margin-left: 5px;
         }
     </ui:style>
     <g:FlowPanel>
-        <g:FlowPanel addStyleNames="{style.titlePanel}" ui:field="titlePanel">
+        <g:FlowPanel styleName="{style.titlePanel}" ui:field="titlePanel">
             <g:InlineLabel text="ShowCase" ui:field="showCaseLabel" />
         </g:FlowPanel>
         <artaTree:Tree addStyleNames="{style.tree}" ui:field="tree"/>
         <artaTabs:TabPanel addStyleNames="{style.tabs}" ui:field="tabPanel"/>
+        <g:FlowPanel styleName="{style.codePanel}" ui:field="codePanel">
+            <g:Label styleName="" text="Компонент" ui:field="codeLabel" />
+            <g:Label styleName="{style.componentName}" text="Корова" ui:field="codeComponentName" />
+            <g:Image styleName="{style.closeImage}" resource="{images.deleteComment}" ui:field="codeButton"/>
+            <code:Code styleName="{style.code}" ui:field="code" />
+        </g:FlowPanel>
         <taskBar:TaskBar addStyleNames="{style.taskbar}" ui:field="taskBar"/>
     </g:FlowPanel>
 </ui:UiBinder>

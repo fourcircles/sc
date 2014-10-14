@@ -26,6 +26,7 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.sc3.showcase.client.resources.SCResources;
 import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ButtonBase;
@@ -103,6 +104,11 @@ public class ShowCasePanel extends FlowPanel {
     private Set<Widget> openTabs;
 
     @UiField TaskBar taskBar;
+    @UiField FlowPanel codePanel;
+    @UiField Label codeLabel;
+    @UiField Image codeButton;
+    @UiField Code code;
+    @UiField Label codeComponentName;
 
     /**
      * Таб, открывается сразу
@@ -241,9 +247,13 @@ public class ShowCasePanel extends FlowPanel {
         tabsContentStyle.setProperty("borderBottomLeftRadius", "0px");
         tabsContentStyle.setProperty("borderBottomRightRadius", "0px");
 
+        codeLabel.addStyleName(SynergyComponents.getResources().cssComponents().mainText());
+        codeComponentName.addStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
+
         add(titlePanel);
         add(tree);
         add(tabPanel);
+        add(codePanel);
         add(taskBar);
 
         openTabs = new HashSet<Widget>();
@@ -264,6 +274,30 @@ public class ShowCasePanel extends FlowPanel {
                 openTabs.remove(event.getTab().getContent().asWidget());
             }
         });
+
+        hideCode();
+        codeButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                hideCode();
+            }
+        });
+    }
+
+    private void hideCode() {
+        codePanel.getElement().getStyle().setDisplay(Style.Display.NONE);
+        tabPanel.getElement().getStyle().clearBottom();
+    }
+
+    private void showCode() {
+        tabPanel.getElement().getStyle().setBottom(380, Style.Unit.PX);
+        codePanel.getElement().getStyle().clearDisplay();
+        code.updateScroll();
+    }
+
+    private void showCode(String text) {
+        code.setText(text);
+        showCode();
     }
 
     @Override
@@ -294,24 +328,6 @@ public class ShowCasePanel extends FlowPanel {
             setTreeIcons(item, icon);
         }
     }
-
-//    private SimpleButton makeDialogButton(final int width,
-//                                          final int height,
-//                                          final boolean backButton,
-//                                          final boolean moreButton) {
-//        final String title = SCMessages.i18n().tr(SCMessages.SIZE) + ": " + width + "x" + height;
-//
-//        SimpleButton button = new SimpleButton(title);
-//        button.addClickHandler(new ClickHandler() {
-//            @Override
-//            public void onClick(ClickEvent event) {
-//                DialogSimple dialog = createDialog(width, height, backButton, moreButton, title);
-//                dialog.center();
-//                dialog.show();
-//            }
-//        });
-//        return button;
-//    }
 
     private SimpleButton makeDialogButton(final DialogSimple dialog) {
         final SimpleButton button = new SimpleButton(dialog.getText());
@@ -693,7 +709,7 @@ public class ShowCasePanel extends FlowPanel {
             }
         });
 
-        addTreeItem(table, new LoadPanel(SCMessages.i18n().tr("Дерево-таблица")) {
+        addTreeItem(basicComponents, new LoadPanel(SCMessages.i18n().tr("Дерево-таблица")) {
             @Override
             public Widget getContentWidget() {
                 return getTreeTable();
@@ -1836,10 +1852,18 @@ public class ShowCasePanel extends FlowPanel {
 
         simpleButtonPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
-        SimpleButton simpleButton = new SimpleButton(SCMessages.i18n().tr("Простая кнопка"));
+        final SimpleButton simpleButton = new SimpleButton(SCMessages.i18n().tr("Простая кнопка"));
         simpleButton.setWidth("140px");
         simpleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton);
+
+        simpleButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                showCode(SCResources.IMPL.buttons().getText());
+                codeComponentName.setText(simpleButton.getText());
+            }
+        });
 
         SimpleButton simpleButton1 = new SimpleButton(SCMessages.i18n().tr("Неактивная кнопка"));
         simpleButton1.setEnabled(false);

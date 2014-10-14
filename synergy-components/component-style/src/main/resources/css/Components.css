@@ -121,6 +121,11 @@
 
 @def searchBG #424b5c;
 
+code, pre {
+    margin: 0;
+    padding: 0;
+}
+
 #titlePanel {
     line-height: 54px;
     padding-left: 20px;
@@ -2212,3 +2217,5 @@ p {
     top: 7px;
     margin-right: 6px;
 }
+
+

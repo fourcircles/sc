@@ -136,6 +136,10 @@ public interface ImageResources extends ClientBundle {
     ImageResource negativeComment();
     @Source("images/comments/positive_comment.png")
     ImageResource positiveComment();
+    @Source("images/comments/delete_note.png")
+    ImageResource deleteNote();
+    @Source("images/comments/submit_note.png")
+    ImageResource submitNote();
 
     @Source("images/scroll/dark/scrollbar_dark_down.png")
     ImageResource scrollBarDarkDown();

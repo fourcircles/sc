@@ -48,6 +48,8 @@ public class Comments extends Composite {
      */
     private boolean hasScroll;
 
+    private boolean dark;
+
     /**
      * Пустая панель комментариев
      */
@@ -60,6 +62,8 @@ public class Comments extends Composite {
      * @param dark темная ли панель комментариев
      */
     public Comments(List<Comment> comments, boolean dark) {
+        this.dark = dark;
+
         scroll = new ArtaScrollPanel(dark ? ColorType.BLACK : ColorType.WHITE);
         initWidget(scroll);
         scroll.getElement().getStyle().setBackgroundColor(dark ? Colors.navigatorBG.hex() : Colors.whiteBG.hex());
@@ -110,7 +114,7 @@ public class Comments extends Composite {
      * @param comment комментарий
      */
     private CommentUI createCommentUI(Comment comment) {
-        CommentUI ui = new CommentUI(comment);
+        CommentUI ui = new CommentUI(comment, dark);
 
         //отступ при наличии скролла
         updateCommentOffset(ui);

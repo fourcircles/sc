@@ -35,7 +35,7 @@ public class TaskBar extends Composite {
     /**
      * Минимальная ширина элемента
      */
-    private static final int MIN_ITEM_WIDTH = 50;
+    private static final int MIN_ITEM_WIDTH = 53;
 
     /**
      * Корневая панель

@@ -2128,6 +2128,7 @@ p {
 }
 .taskBar > .item.open, .taskBarIndicator .content > .item.open {
     border-color: border1;
+    color: textColor2;
 }
 .taskBar > .item + .item {
     margin-left: taskbarItemPadding;

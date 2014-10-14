@@ -1,6 +1,5 @@
 package kz.arta.sc3.showcase.client.resources;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.TextResource;
@@ -11,7 +10,6 @@ import com.google.gwt.resources.client.TextResource;
  * Time: 16:03
  */
 public interface SCResources extends ClientBundle {
-    SCResources IMPL = GWT.create(SCResources.class);
 
     @ClientBundle.Source("js/highlight.pack.js")
     TextResource highlightJs();
@@ -24,6 +22,13 @@ public interface SCResources extends ClientBundle {
     @CssResource.NotStrict
     CssResource gitHub();
 
-    @ClientBundle.Source("java-samples/simple-buttons.java")
-    TextResource buttons();
+    @ClientBundle.Source("java-samples/simple-button.java")
+    TextResource simpleButton();
+    @ClientBundle.Source("java-samples/simple-button-click.java")
+    TextResource simpleButtonClick();
+    @ClientBundle.Source("java-samples/simple-button-disabled.java")
+    TextResource simpleButtonDisabled();
+    @ClientBundle.Source("java-samples/simple-button-menu.java")
+    TextResource simpleButtonMenu();
+
 }

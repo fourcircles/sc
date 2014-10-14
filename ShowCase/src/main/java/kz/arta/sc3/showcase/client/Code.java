@@ -26,11 +26,6 @@ public class Code extends Composite {
     private ArtaScrollPanel scroll;
 
     /**
-     * Код
-     */
-    private String text;
-
-    /**
      * Элемент для кода
      */
     private Element codeElement;
@@ -46,7 +41,6 @@ public class Code extends Composite {
 
         scroll.setWidget(code);
 
-        Element preElement = code.getElement();
         codeElement = code.getElement().getFirstChildElement();
     }
 

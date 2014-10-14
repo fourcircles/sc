@@ -3,8 +3,7 @@ package kz.arta.sc3.showcase.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -15,10 +14,9 @@ import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.Random;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import com.google.gwt.view.client.ListDataProvider;
@@ -26,7 +24,6 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
-import kz.arta.sc3.showcase.client.resources.SCResources;
 import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ButtonBase;
@@ -79,6 +76,7 @@ import kz.arta.synergy.components.client.tree.TreeItem;
 import kz.arta.synergy.components.client.tree.events.TreeItemContextMenuEvent;
 import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
 import kz.arta.synergy.components.client.util.PPanel;
+import kz.arta.synergy.components.style.client.Colors;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.*;
@@ -106,7 +104,7 @@ public class ShowCasePanel extends FlowPanel {
     @UiField TaskBar taskBar;
     @UiField FlowPanel codePanel;
     @UiField Label codeLabel;
-    @UiField Image codeButton;
+    @UiField Image codeCloseButton;
     @UiField Code code;
     @UiField Label codeComponentName;
 
@@ -276,7 +274,7 @@ public class ShowCasePanel extends FlowPanel {
         });
 
         hideCode();
-        codeButton.addClickHandler(new ClickHandler() {
+        codeCloseButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 hideCode();
@@ -295,8 +293,9 @@ public class ShowCasePanel extends FlowPanel {
         code.updateScroll();
     }
 
-    private void showCode(String text) {
+    private void showCode(String componentName, String text) {
         code.setText(text);
+        codeComponentName.setText(componentName);
         showCode();
     }
 
@@ -327,6 +326,72 @@ public class ShowCasePanel extends FlowPanel {
         for (TreeItem item : tree.getItems()) {
             setTreeIcons(item, icon);
         }
+    }
+
+    private Image codeOpenButton;
+    private String codeText;
+    private String componentName;
+    private Timer codeSampleTimer;
+
+    private void initCodeSample(final Widget widget, final String name, final String text) {
+        if (codeOpenButton == null) {
+            codeOpenButton = createCodeOpenButton();
+            RootPanel.get().add(codeOpenButton);
+        }
+
+        if (codeSampleTimer == null) {
+            codeSampleTimer = new Timer() {
+                @Override
+                public void run() {
+                    codeOpenButton.getElement().getStyle().setDisplay(Style.Display.NONE);
+                }
+            };
+        }
+
+        widget.sinkEvents(Event.ONMOUSEOVER);
+        widget.sinkEvents(Event.ONMOUSEOUT);
+
+        widget.addDomHandler(new MouseOverHandler() {
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                codeSampleTimer.cancel();
+                componentName = name;
+                codeText = text;
+                Style widgetStyle = codeOpenButton.getElement().getStyle();
+                widgetStyle.setTop(widget.getAbsoluteTop(), Style.Unit.PX);
+                widgetStyle.setLeft(widget.getAbsoluteLeft() + widget.getOffsetWidth() + 5, Style.Unit.PX);
+                widgetStyle.setDisplay(Style.Display.BLOCK);
+            }
+        }, MouseOverEvent.getType());
+
+        widget.addDomHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                codeSampleTimer.cancel();
+                codeSampleTimer.schedule(800);
+            }
+        }, MouseOutEvent.getType());
+
+    }
+
+    private Image createCodeOpenButton() {
+        codeOpenButton = new Image();
+        codeOpenButton.setResource(ShowCase.SC_IMAGES.code());
+
+        Style style = codeOpenButton.getElement().getStyle();
+        style.setPosition(Style.Position.FIXED);
+        style.setDisplay(Style.Display.NONE);
+        style.setCursor(Style.Cursor.POINTER);
+
+        codeOpenButton.sinkEvents(Event.ONCLICK);
+        codeOpenButton.addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                showCode(componentName, codeText);
+            }
+        }, ClickEvent.getType());
+
+        return codeOpenButton;
     }
 
     private SimpleButton makeDialogButton(final DialogSimple dialog) {
@@ -1853,25 +1918,20 @@ public class ShowCasePanel extends FlowPanel {
         simpleButtonPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         final SimpleButton simpleButton = new SimpleButton(SCMessages.i18n().tr("Простая кнопка"));
+        initCodeSample(simpleButton, simpleButton.getText(), ShowCase.SC_RESOURCES.simpleButton().getText());
         simpleButton.setWidth("140px");
         simpleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton);
 
-        simpleButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                showCode(SCResources.IMPL.buttons().getText());
-                codeComponentName.setText(simpleButton.getText());
-            }
-        });
-
         SimpleButton simpleButton1 = new SimpleButton(SCMessages.i18n().tr("Неактивная кнопка"));
+        initCodeSample(simpleButton1, simpleButton1.getText(), ShowCase.SC_RESOURCES.simpleButtonDisabled().getText());
         simpleButton1.setEnabled(false);
         simpleButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         simpleButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton1);
 
         SimpleButton simpleButton2 = new SimpleButton(SCMessages.i18n().tr("Кнопка с кликом"));
+        initCodeSample(simpleButton2, simpleButton2.getText(), ShowCase.SC_RESOURCES.simpleButtonClick().getText());
         simpleButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         simpleButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton2);
@@ -1884,6 +1944,7 @@ public class ShowCasePanel extends FlowPanel {
 
         ContextMenu menuForSimple = createSimpleMenu();
         ContextMenuButton simpleButton4 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"));
+        initCodeSample(simpleButton4, simpleButton4.getText(), ShowCase.SC_RESOURCES.simpleButtonMenu().getText());
         simpleButton4.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -1946,41 +2007,41 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel iconButtonPanel = new FlowPanel();
         iconButtonPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
-        SimpleButton iconButton = new SimpleButton(SCMessages.i18n().tr("Кнопка с иконкой"), SCImageResources.IMPL.zoom());
+        SimpleButton iconButton = new SimpleButton(SCMessages.i18n().tr("Кнопка с иконкой"), ShowCase.SC_IMAGES.zoom());
         iconButtonPanel.add(iconButton);
         iconButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
 
-        SimpleButton iconButton1 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), SCImageResources.IMPL.zoom());
+        SimpleButton iconButton1 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), ShowCase.SC_IMAGES.zoom());
         iconButtonPanel.add(iconButton1);
         iconButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         iconButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
-        SimpleButton iconButton2 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), SCImageResources.IMPL.zoom(), ButtonBase.IconPosition.RIGHT);
+        SimpleButton iconButton2 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), ShowCase.SC_IMAGES.zoom(), ButtonBase.IconPosition.RIGHT);
         iconButton2.setWidth("150px");
         iconButtonPanel.add(iconButton2);
         iconButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         iconButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
-        SimpleButton iconButton3 = new SimpleButton(SCMessages.i18n().tr("Кнопка неактивная"), SCImageResources.IMPL.zoom());
+        SimpleButton iconButton3 = new SimpleButton(SCMessages.i18n().tr("Кнопка неактивная"), ShowCase.SC_IMAGES.zoom());
         iconButton3.setWidth("200px");
         iconButtonPanel.add(iconButton3);
         iconButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         iconButton3.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         iconButton3.setEnabled(false);
 
-        ImageButton iconButton4 = new ImageButton(SCImageResources.IMPL.zoom());
+        ImageButton iconButton4 = new ImageButton(ShowCase.SC_IMAGES.zoom());
         iconButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         iconButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         iconButtonPanel.add(iconButton4);
 
-        ImageButton iconButton5 = new ImageButton(SCImageResources.IMPL.zoom());
+        ImageButton iconButton5 = new ImageButton(ShowCase.SC_IMAGES.zoom());
         iconButton5.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         iconButton5.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         iconButton5.setEnabled(false);
         iconButtonPanel.add(iconButton5);
 
         ContextMenu menu2 = createSimpleMenu();
-        ContextMenuButton iconButton6 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"), SCImageResources.IMPL.zoom());
+        ContextMenuButton iconButton6 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"), ShowCase.SC_IMAGES.zoom());
         iconButton6.setWidth("150px");
         iconButtonPanel.add(iconButton6);
         iconButton6.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
@@ -1988,7 +2049,7 @@ public class ShowCasePanel extends FlowPanel {
         iconButton6.setContextMenu(menu2);
 
         ContextMenu menu4 = createSimpleMenu();
-        ContextMenuButton iconButton7 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"), SCImageResources.IMPL.zoom(), ButtonBase.IconPosition.RIGHT);
+        ContextMenuButton iconButton7 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"), ShowCase.SC_IMAGES.zoom(), ButtonBase.IconPosition.RIGHT);
         iconButton7.setWidth("150px");
         iconButtonPanel.add(iconButton7);
         iconButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
@@ -1996,7 +2057,7 @@ public class ShowCasePanel extends FlowPanel {
         iconButton7.setContextMenu(menu4);
 
         ContextMenu menu5 = createSimpleMenu();
-        ContextMenuButton iconButton8 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"), SCImageResources.IMPL.zoom(), ButtonBase.IconPosition.RIGHT);
+        ContextMenuButton iconButton8 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"), ShowCase.SC_IMAGES.zoom(), ButtonBase.IconPosition.RIGHT);
         iconButton8.setWidth("400px");
         iconButtonPanel.add(iconButton8);
         iconButton8.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);

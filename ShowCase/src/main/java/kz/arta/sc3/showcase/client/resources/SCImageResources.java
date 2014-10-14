@@ -11,8 +11,9 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface SCImageResources extends ClientBundle {
 
-    public static SCImageResources IMPL = GWT.create(SCImageResources.class);
-
     @Source("images/zoom-original.16.png")
     ImageResource zoom();
+
+    @ClientBundle.Source("images/code-sample.png")
+    ImageResource code();
 }

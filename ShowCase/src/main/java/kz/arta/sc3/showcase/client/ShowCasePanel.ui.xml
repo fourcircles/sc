@@ -102,7 +102,7 @@
         <g:FlowPanel styleName="{style.codePanel}" ui:field="codePanel">
             <g:Label styleName="" text="Компонент" ui:field="codeLabel" />
             <g:Label styleName="{style.componentName}" text="Корова" ui:field="codeComponentName" />
-            <g:Image styleName="{style.closeImage}" resource="{images.deleteComment}" ui:field="codeButton"/>
+            <g:Image styleName="{style.closeImage}" resource="{images.deleteComment}" ui:field="codeCloseButton"/>
             <code:Code styleName="{style.code}" ui:field="code" />
         </g:FlowPanel>
         <taskBar:TaskBar addStyleNames="{style.taskbar}" ui:field="taskBar"/>

@@ -267,7 +267,7 @@ public class ButtonBase extends FlowPanel implements
     }
 
     public void onBrowserEvent(Event event) {
-        if (!enabled || event.getButton() != NativeEvent.BUTTON_LEFT){
+        if (event.getButton() != NativeEvent.BUTTON_LEFT){
             return;
         }
         switch (DOM.eventGetType(event)) {

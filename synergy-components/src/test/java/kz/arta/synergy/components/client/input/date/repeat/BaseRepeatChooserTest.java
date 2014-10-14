@@ -38,7 +38,7 @@ public class BaseRepeatChooserTest {
     }
 
     @Test
-    public void testAddDate() {
+    public void testAdd() {
         chooser.add(new RepeatDate(0, RepeatChooser.MODE.WEEK), false);
         chooser.add(new RepeatDate(0, RepeatChooser.MODE.WEEK), false);
 
@@ -53,7 +53,7 @@ public class BaseRepeatChooserTest {
     }
 
     @Test
-    public void testRemoveDate() {
+    public void testRemove() {
         chooser.add(new RepeatDate(0, RepeatChooser.MODE.WEEK), false);
         chooser.add(new RepeatDate(1, RepeatChooser.MODE.WEEK), false);
 
@@ -66,7 +66,7 @@ public class BaseRepeatChooserTest {
     }
 
     @Test
-    public void testAddEvents() {
+    public void testAdd_events() {
         chooser.addValueChangeHandler(valueHandler);
 
         chooser.add(new RepeatDate(0, RepeatChooser.MODE.WEEK), true);
@@ -78,7 +78,7 @@ public class BaseRepeatChooserTest {
     }
 
     @Test
-    public void testRemoveEvents() {
+    public void testRemove_events() {
         chooser.addValueChangeHandler(valueHandler);
 
         chooser.add(new RepeatDate(0, RepeatChooser.MODE.WEEK), false);

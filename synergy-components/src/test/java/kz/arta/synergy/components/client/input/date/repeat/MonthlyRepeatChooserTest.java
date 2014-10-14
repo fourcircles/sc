@@ -73,8 +73,11 @@ public class MonthlyRepeatChooserTest {
         }
     }
 
+    /**
+     * Тест на изменение количества выбираемых дней на небольшое значение.
+     */
     @Test
-    public void testSetDayCountSmall() {
+    public void testSetDayCount_smallDayCount() {
         int daysCount = 5;
         chooser.setDaysCount(daysCount);
         for (int i = daysCount; i < RepeatDate.MAX_DAYS; i++) {
@@ -88,8 +91,11 @@ public class MonthlyRepeatChooserTest {
         }
     }
 
+    /**
+     * Тест на изменение количества выбираемых дней на максимальное значение
+     */
     @Test
-    public void testSetDayCountMax() {
+    public void testSetDayCount_maxCount() {
         chooser.setDaysCount(33);
         for (InlineLabel day : days) {
             verify(day, times(0)).addStyleName(same(OUT_MONTH));
@@ -100,7 +106,7 @@ public class MonthlyRepeatChooserTest {
     }
 
     @Test
-    public void testDayClickNonActive() {
+    public void testDayClick_nonActive() {
         int dayNum = 25;
         chooser.setDaysCount(dayNum);
         reset(days.toArray());
@@ -112,7 +118,7 @@ public class MonthlyRepeatChooserTest {
     }
 
     @Test
-    public void testDayClickActive() {
+    public void testDayClick_active() {
         int dayNum = 20;
         chooser.dayClick(days.get(dayNum));
 

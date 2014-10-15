@@ -22,13 +22,28 @@ public interface SCResources extends ClientBundle {
     @CssResource.NotStrict
     CssResource gitHub();
 
-    @ClientBundle.Source("java-samples/simple-button.java")
+    @ClientBundle.Source("java-samples/buttons/simple-button.java")
     TextResource simpleButton();
-    @ClientBundle.Source("java-samples/simple-button-click.java")
+    @ClientBundle.Source("java-samples/buttons/simple-button-click.java")
     TextResource simpleButtonClick();
-    @ClientBundle.Source("java-samples/simple-button-disabled.java")
+    @ClientBundle.Source("java-samples/buttons/simple-button-disabled.java")
     TextResource simpleButtonDisabled();
-    @ClientBundle.Source("java-samples/simple-button-menu.java")
+    @ClientBundle.Source("java-samples/buttons/simple-button-menu.java")
     TextResource simpleButtonMenu();
+    @ClientBundle.Source("java-samples/buttons/accept-button.java")
+    TextResource acceptButton();
+    @ClientBundle.Source("java-samples/buttons/decline-button.java")
+    TextResource declineButton();
+    @ClientBundle.Source("java-samples/buttons/accept-button-menu.java")
+    TextResource acceptButtonMenu();
+    @ClientBundle.Source("java-samples/buttons/icon-button.java")
+    TextResource iconButton();
+    @ClientBundle.Source("java-samples/buttons/icon-button-right.java")
+    TextResource iconButtonRight();
+    @ClientBundle.Source("java-samples/buttons/only-icon-button.java")
+    TextResource onlyIconButton();
+    @ClientBundle.Source("java-samples/buttons/icon-button-menu-wide.java")
+    TextResource iconButtonMenuWide();
+
 
 }

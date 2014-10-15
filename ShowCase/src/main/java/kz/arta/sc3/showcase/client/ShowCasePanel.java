@@ -24,6 +24,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.sc3.showcase.client.resources.SCResources;
 import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ButtonBase;
@@ -358,7 +359,7 @@ public class ShowCasePanel extends FlowPanel {
                 codeText = text;
                 Style widgetStyle = codeOpenButton.getElement().getStyle();
                 widgetStyle.setTop(widget.getAbsoluteTop(), Style.Unit.PX);
-                widgetStyle.setLeft(widget.getAbsoluteLeft() + widget.getOffsetWidth() + 5, Style.Unit.PX);
+                widgetStyle.setLeft(widget.getAbsoluteLeft() + widget.getOffsetWidth() + 3, Style.Unit.PX);
                 widgetStyle.setDisplay(Style.Display.BLOCK);
             }
         }, MouseOverEvent.getType());
@@ -1919,11 +1920,20 @@ public class ShowCasePanel extends FlowPanel {
         return scroll;
     }
 
+    private void setMarginLeft(Widget w, int margin) {
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            w.getElement().getStyle().setMarginRight(margin, Style.Unit.PX);
+        } else {
+            w.getElement().getStyle().setMarginLeft(margin, Style.Unit.PX);
+        }
+    }
+
     /**
      * Простые кнопки
      */
     private Widget getSimpleButtonPanel() {
         final FlowPanel simpleButtonPanel = new FlowPanel();
+        int horizontalMargin = 20;
 
         simpleButtonPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
@@ -1937,13 +1947,13 @@ public class ShowCasePanel extends FlowPanel {
         addCodeSample(simpleButton1, simpleButton1.getText(), ShowCase.SC_RESOURCES.simpleButtonDisabled().getText());
         simpleButton1.setEnabled(false);
         simpleButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        simpleButton1.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        setMarginLeft(simpleButton1, horizontalMargin);
         simpleButtonPanel.add(simpleButton1);
 
         SimpleButton simpleButton2 = new SimpleButton(SCMessages.i18n().tr("Кнопка с кликом"));
         addCodeSample(simpleButton2, simpleButton2.getText(), ShowCase.SC_RESOURCES.simpleButtonClick().getText());
         simpleButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        simpleButton2.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        setMarginLeft(simpleButton2, horizontalMargin);
         simpleButtonPanel.add(simpleButton2);
         simpleButton2.addClickHandler(new ClickHandler() {
             @Override
@@ -1963,7 +1973,7 @@ public class ShowCasePanel extends FlowPanel {
         });
         simpleButton4.setWidth("140px");
         simpleButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        simpleButton4.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        setMarginLeft(simpleButton4, horizontalMargin);
         simpleButtonPanel.add(simpleButton4);
         simpleButton4.setContextMenu(menuForSimple);
 
@@ -2014,19 +2024,23 @@ public class ShowCasePanel extends FlowPanel {
      * Кнопки с иконками
      */
     private Widget getIconButtonPanel() {
+        int horizontalMargin = 20;
+
         FlowPanel iconButtonPanel = new FlowPanel();
         iconButtonPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         SimpleButton iconButton = new SimpleButton(SCMessages.i18n().tr("Кнопка с иконкой"), ShowCase.SC_IMAGES.zoom());
+        addCodeSample(iconButton, iconButton.getText(), ShowCase.SC_RESOURCES.iconButton().getText());
         iconButtonPanel.add(iconButton);
         iconButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
 
         SimpleButton iconButton1 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), ShowCase.SC_IMAGES.zoom());
         iconButtonPanel.add(iconButton1);
         iconButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(iconButton1, horizontalMargin);
 
         SimpleButton iconButton2 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), ShowCase.SC_IMAGES.zoom(), ButtonBase.IconPosition.RIGHT);
+        addCodeSample(iconButton2, SCMessages.i18n().tr("Кнопка с иконкой справа"), ShowCase.SC_RESOURCES.iconButtonRight().getText());
         iconButton2.setWidth("150px");
         iconButtonPanel.add(iconButton2);
         iconButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
@@ -2040,13 +2054,14 @@ public class ShowCasePanel extends FlowPanel {
         iconButton3.setEnabled(false);
 
         ImageButton iconButton4 = new ImageButton(ShowCase.SC_IMAGES.zoom());
+        addCodeSample(iconButton4, SCMessages.i18n().tr("Кнопка только с иконкой"), ShowCase.SC_RESOURCES.onlyIconButton().getText());
         iconButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         iconButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         iconButtonPanel.add(iconButton4);
 
         ImageButton iconButton5 = new ImageButton(ShowCase.SC_IMAGES.zoom());
         iconButton5.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton5.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(iconButton5, horizontalMargin);
         iconButton5.setEnabled(false);
         iconButtonPanel.add(iconButton5);
 
@@ -2068,6 +2083,7 @@ public class ShowCasePanel extends FlowPanel {
 
         ContextMenu menu5 = createSimpleMenu();
         ContextMenuButton iconButton8 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"), ShowCase.SC_IMAGES.zoom(), ButtonBase.IconPosition.RIGHT);
+        addCodeSample(iconButton8, SCMessages.i18n().tr("Широкая кнопка с меню и иконкой справа"), ShowCase.SC_RESOURCES.iconButtonMenuWide().getText());
         iconButton8.setWidth("400px");
         iconButtonPanel.add(iconButton8);
         iconButton8.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
@@ -2080,50 +2096,54 @@ public class ShowCasePanel extends FlowPanel {
      * Цветные кнопки
      */
     private Widget getColorButtonPanel() {
+        int horizontalMargin = 20;
         FlowPanel colorButtonPanel = new FlowPanel();
         colorButtonPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
         colorButtonPanel.setHeight("2000px");
         colorButtonPanel.setWidth("2000px");
 
         SimpleButton colorButton = new SimpleButton((SCMessages.i18n().tr("Создать")), SimpleButton.Type.APPROVE);
+        addCodeSample(colorButton, SCMessages.i18n().tr("Кнопка подтверждения"), ShowCase.SC_RESOURCES.acceptButton().getText());
         colorButtonPanel.add(colorButton);
         colorButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
 
         SimpleButton colorButton1 = new SimpleButton(SCMessages.i18n().tr("Удалить"), SimpleButton.Type.DECLINE);
+        addCodeSample(colorButton1, SCMessages.i18n().tr("Кнопка отклонения"), ShowCase.SC_RESOURCES.acceptButton().getText());
         colorButtonPanel.add(colorButton1);
         colorButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(colorButton1, horizontalMargin);
 
         SimpleButton colorButton2 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), SimpleButton.Type.DECLINE);
         colorButtonPanel.add(colorButton2);
         colorButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(colorButton2, horizontalMargin);
 
         SimpleButton colorButton3 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), SimpleButton.Type.DECLINE);
         colorButton3.setWidth("100px");
         colorButtonPanel.add(colorButton3);
         colorButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton3.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(colorButton3, horizontalMargin);
 
         SimpleButton colorButton4 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), SimpleButton.Type.APPROVE);
         colorButton4.setWidth("100px");
         colorButtonPanel.add(colorButton4);
         colorButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(colorButton4, horizontalMargin);
 
         SimpleButton colorButton5 = new SimpleButton(SCMessages.i18n().tr("Кнопка неактивная"), SimpleButton.Type.APPROVE);
         colorButton5.setEnabled(false);
         colorButtonPanel.add(colorButton5);
         colorButton5.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton5.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(colorButton5, horizontalMargin);
 
         SimpleButton colorButton6 = new SimpleButton(SCMessages.i18n().tr("Кнопка неактивная"), SimpleButton.Type.DECLINE);
         colorButton6.setEnabled(false);
         colorButtonPanel.add(colorButton6);
         colorButton6.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton6.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(colorButton6, horizontalMargin);
 
         ContextMenuButton colorButton7 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"), SimpleButton.Type.APPROVE);
+        addCodeSample(colorButton7, SCMessages.i18n().tr("Кнопка подтверждения с меню"), ShowCase.SC_RESOURCES.acceptButtonMenu().getText());
         colorButtonPanel.add(colorButton7);
         colorButton7.addClickHandler(new ClickHandler() {
             @Override
@@ -2132,7 +2152,7 @@ public class ShowCasePanel extends FlowPanel {
             }
         });
         colorButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        colorButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(colorButton7, horizontalMargin);
         ContextMenu menu3 = createSimpleMenu();
         menu3.addItem(SCMessages.i18n().tr("Очень-очень длинный текст"), null);
         colorButton7.setContextMenu(menu3);

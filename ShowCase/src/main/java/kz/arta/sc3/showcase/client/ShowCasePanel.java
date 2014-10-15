@@ -2,7 +2,8 @@ package kz.arta.sc3.showcase.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.*;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -462,7 +463,7 @@ public class ShowCasePanel extends FlowPanel {
     }
 
     private Panel createDialogsWithButtonsPanel() {
-        FlowPanel root = new FlowPanel();
+        final FlowPanel root = new FlowPanel();
 
         final SimpleButton showTiny = new SimpleButton(SCMessages.i18n().tr("Показать небольшой диалог"));
         showTiny.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
@@ -494,17 +495,28 @@ public class ShowCasePanel extends FlowPanel {
         });
         root.add(showMedium);
 
-        SimpleButton newDialog = new SimpleButton(SCMessages.i18n().tr("Добавить новый диалог"));
-        newDialog.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        root.add(new HTML("<br/>"));
+
+        final TextInput input = new TextInput();
+        input.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        input.setWidth("300px");
+        input.setAllowEmpty(false);
+        root.add(input);
+
+        final SimpleButton newDialog = new SimpleButton(SCMessages.i18n().tr("Добавить новый диалог"));
         newDialog.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         newDialog.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                Dialog dialog = new Dialog();
-                randomizePosition(dialog);
-                initDialog(dialog, 400, 400, SCMessages.i18n().tr("Диалог #") + dialogsCount++, false);
-                initButtonDialog(dialog, true, true);
-                taskBar.addItem(dialog);
+                if (input.checkInput()) {
+                    Dialog dialog = new Dialog();
+                    randomizePosition(dialog);
+                    initDialog(dialog, 400, 400, input.getText(), false);
+//                initDialog(dialog, 400, 400, SCMessages.i18n().tr("Диалог #") + dialogsCount++, false);
+                    initButtonDialog(dialog, true, true);
+                    taskBar.addItem(dialog);
+                    input.setValue("", false);
+                }
             }
         });
         root.add(newDialog);

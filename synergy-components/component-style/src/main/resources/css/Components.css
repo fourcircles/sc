@@ -203,7 +203,10 @@ code, pre {
     min-width: 10px;
 }
 
-.buttonSimple .gradient, .taskBar .gradient {
+.buttonSimple .gradient,
+.taskBar .gradient,
+.taskBarIndicator .gradient
+{
     background: -moz-linear-gradient(left, whiteBG_0 0%, whiteBG 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,whiteBG_0), color-stop(100%,whiteBG));
     background: -webkit-linear-gradient(left, whiteBG_0 0%,whiteBG 100%);
@@ -214,7 +217,10 @@ code, pre {
     filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")whiteBG_0_ie literal("endColorstr=")whiteBG literal(",GradientType=1 )");
 }
 
-*[dir="rtl"] .buttonSimple .gradient, *[dir="rtl"] .taskBar .gradient{
+*[dir="rtl"] .buttonSimple .gradient,
+*[dir="rtl"] .taskBar .gradient
+*[dir="rtl"] .taskBarIndicator .gradient
+{
     background: -moz-linear-gradient(left, whiteBG 0%, whiteBG_0 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,whiteBG), color-stop(100%,whiteBG_0));
     background: -webkit-linear-gradient(left, whiteBG 0%,whiteBG_0 100%);
@@ -2125,6 +2131,7 @@ p {
     height: 26px;
     color: stackPanelText2;
     cursor: pointer;
+    max-width: 318px;
 }
 .taskBar > .item.open, .taskBarIndicator .content > .item.open {
     border-color: border1;

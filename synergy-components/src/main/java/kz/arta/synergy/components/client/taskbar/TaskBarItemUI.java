@@ -115,7 +115,7 @@ public class TaskBarItemUI extends Composite implements HasClickHandlers {
 
     void click() {
         if (model.isOpen()) {
-            model.close();
+            model.collapse();
         } else {
             model.open();
         }
@@ -191,8 +191,10 @@ public class TaskBarItemUI extends Composite implements HasClickHandlers {
      */
     public double getNormalWidth() {
         double textWidth = Utils.impl().getPreciseTextWidth(model.getText(), FONT);
-        return textWidth + Constants.STD_ICON_WIDTH +
+        textWidth += Constants.STD_ICON_WIDTH +
                 Constants.TASKBAR_ITEM_PADDING * 3 + Constants.TASKBAR_IMAGE_MARGIN;
+        textWidth = Math.min(textWidth, 320);
+        return textWidth;
     }
 
     public HandlerRegistration addModelChangeHandler(ModelChangeEvent.Handler handler) {

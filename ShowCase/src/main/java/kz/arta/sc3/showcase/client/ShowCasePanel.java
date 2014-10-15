@@ -22,7 +22,6 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.RowCountChangeEvent;
-import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
 import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -76,7 +75,6 @@ import kz.arta.synergy.components.client.tree.TreeItem;
 import kz.arta.synergy.components.client.tree.events.TreeItemContextMenuEvent;
 import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
 import kz.arta.synergy.components.client.util.PPanel;
-import kz.arta.synergy.components.style.client.Colors;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.*;
@@ -107,6 +105,11 @@ public class ShowCasePanel extends FlowPanel {
     @UiField Image codeCloseButton;
     @UiField Code code;
     @UiField Label codeComponentName;
+
+    private Image codeOpenButton;
+    private String codeText;
+    private String componentName;
+    private Timer codeSampleTimer;
 
     /**
      * Таб, открывается сразу
@@ -328,12 +331,7 @@ public class ShowCasePanel extends FlowPanel {
         }
     }
 
-    private Image codeOpenButton;
-    private String codeText;
-    private String componentName;
-    private Timer codeSampleTimer;
-
-    private void initCodeSample(final Widget widget, final String name, final String text) {
+    private void addCodeSample(final Widget widget, final String name, final String text) {
         if (codeOpenButton == null) {
             codeOpenButton = createCodeOpenButton();
             RootPanel.get().add(codeOpenButton);
@@ -1918,22 +1916,22 @@ public class ShowCasePanel extends FlowPanel {
         simpleButtonPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         final SimpleButton simpleButton = new SimpleButton(SCMessages.i18n().tr("Простая кнопка"));
-        initCodeSample(simpleButton, simpleButton.getText(), ShowCase.SC_RESOURCES.simpleButton().getText());
+        addCodeSample(simpleButton, simpleButton.getText(), ShowCase.SC_RESOURCES.simpleButton().getText());
         simpleButton.setWidth("140px");
         simpleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton);
 
         SimpleButton simpleButton1 = new SimpleButton(SCMessages.i18n().tr("Неактивная кнопка"));
-        initCodeSample(simpleButton1, simpleButton1.getText(), ShowCase.SC_RESOURCES.simpleButtonDisabled().getText());
+        addCodeSample(simpleButton1, simpleButton1.getText(), ShowCase.SC_RESOURCES.simpleButtonDisabled().getText());
         simpleButton1.setEnabled(false);
         simpleButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        simpleButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        simpleButton1.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton1);
 
         SimpleButton simpleButton2 = new SimpleButton(SCMessages.i18n().tr("Кнопка с кликом"));
-        initCodeSample(simpleButton2, simpleButton2.getText(), ShowCase.SC_RESOURCES.simpleButtonClick().getText());
+        addCodeSample(simpleButton2, simpleButton2.getText(), ShowCase.SC_RESOURCES.simpleButtonClick().getText());
         simpleButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        simpleButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        simpleButton2.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton2);
         simpleButton2.addClickHandler(new ClickHandler() {
             @Override
@@ -1944,7 +1942,7 @@ public class ShowCasePanel extends FlowPanel {
 
         ContextMenu menuForSimple = createSimpleMenu();
         ContextMenuButton simpleButton4 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"));
-        initCodeSample(simpleButton4, simpleButton4.getText(), ShowCase.SC_RESOURCES.simpleButtonMenu().getText());
+        addCodeSample(simpleButton4, simpleButton4.getText(), ShowCase.SC_RESOURCES.simpleButtonMenu().getText());
         simpleButton4.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -1953,7 +1951,7 @@ public class ShowCasePanel extends FlowPanel {
         });
         simpleButton4.setWidth("140px");
         simpleButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        simpleButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        simpleButton4.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton4);
         simpleButton4.setContextMenu(menuForSimple);
 

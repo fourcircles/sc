@@ -1,6 +1,5 @@
 package kz.arta.sc3.showcase.client.resources;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
@@ -14,6 +13,6 @@ public interface SCImageResources extends ClientBundle {
     @Source("images/zoom-original.16.png")
     ImageResource zoom();
 
-    @ClientBundle.Source("images/code-sample.png")
+    @ClientBundle.Source("images/code_icon.png")
     ImageResource code();
 }

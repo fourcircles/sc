@@ -13,6 +13,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.taskbar.events.TaskBarEvent;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.taskbar.events.ModelChangeEvent;
@@ -36,6 +37,8 @@ public class TaskBar extends Composite {
      * Минимальная ширина элемента
      */
     private static final int MIN_ITEM_WIDTH = 53;
+
+    private static final int MAX_INDICATOR_ITEMS = 8;
 
     /**
      * Корневая панель
@@ -61,6 +64,7 @@ public class TaskBar extends Composite {
      */
     private final Label indicatorLabel;
 
+    private ArtaScrollPanel scroll;
     private PopupPanel popup;
     /**
      * Корневая панель для скрытых элементов
@@ -82,9 +86,15 @@ public class TaskBar extends Composite {
 
         popup = new PopupPanel(true);
         popup.setStyleName(SynergyComponents.getResources().cssComponents().taskBarIndicator());
+
+        scroll = new ArtaScrollPanel();
+        scroll.removeHorizontalScrollbar();
+        popup.setWidget(scroll);
+
         indicatorRoot = new FlowPanel();
+        scroll.setWidget(indicatorRoot);
+
         indicatorRoot.setStyleName(SynergyComponents.getResources().cssComponents().content());
-        popup.setWidget(indicatorRoot);
         popup.addAutoHidePartner(indicator.getElement());
 
         Window.addResizeHandler(new ResizeHandler() {
@@ -121,6 +131,17 @@ public class TaskBar extends Composite {
     }
 
     /**
+     * Возвращает высоту индикатора, в котором можно вместить заданное количество элементов.
+     * @param itemsCount количество элементов
+     * @return высота
+     */
+    private int getPopupHeight(int itemsCount) {
+        return itemsCount * 28 + (itemsCount - 1) * 5 + 6 * 2;
+    }
+
+    private boolean hasIndicatorScroll = false;
+
+    /**
      * Клик по индикатору
      */
     private void indicatorClick() {
@@ -130,6 +151,14 @@ public class TaskBar extends Composite {
             popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
                 @Override
                 public void setPosition(int offsetWidth, int offsetHeight) {
+                    int scrollWidth = indicatorRoot.getOffsetWidth();
+                    if (indicatorRoot.getWidgetCount() > MAX_INDICATOR_ITEMS) {
+                        scrollWidth += Constants.SCROLL_BAR_WIDTH;
+                    }
+                    scroll.getElement().getStyle().setWidth(scrollWidth, Style.Unit.PX);
+                    scroll.getElement().getStyle().setHeight(Math.min(indicatorRoot.getOffsetHeight(), getPopupHeight(MAX_INDICATOR_ITEMS)), Style.Unit.PX);
+                    scroll.onResize();
+
                     int popupHeight = popup.getOffsetHeight();
                     int left;
                     if (LocaleInfo.getCurrentLocale().isRTL()) {
@@ -140,6 +169,7 @@ public class TaskBar extends Composite {
                     popup.setPopupPosition(left, indicator.getAbsoluteTop() - popupHeight - Constants.TASKBAR_IMAGE_MARGIN);
                 }
             });
+            scroll.onResize();
         }
     }
 
@@ -179,6 +209,7 @@ public class TaskBar extends Composite {
      * Добавляет элемент
      */
     public void addItem(final TaskBarItem item) {
+        popup.hide();
         if (item != null && !items.contains(item)) {
             items.add(item);
 
@@ -191,6 +222,7 @@ public class TaskBar extends Composite {
                 @Override
                 public void onClose(TaskBarEvent event) {
                     removeItem(item);
+                    popup.hide();
                 }
             });
 

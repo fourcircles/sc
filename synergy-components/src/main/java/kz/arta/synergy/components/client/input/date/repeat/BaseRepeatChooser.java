@@ -44,6 +44,10 @@ public class BaseRepeatChooser implements HasValueChangeHandlers<Collection<Repe
         });
     }
 
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
     public int size() {
         return selectedDates.size();
     }
@@ -53,9 +57,9 @@ public class BaseRepeatChooser implements HasValueChangeHandlers<Collection<Repe
     }
 
     /**
-     * Добавляет все
-     * @param dates
-     * @param fireEvents
+     * Добавляет все даты
+     * @param dates даты
+     * @param fireEvents создавать ли события
      */
     public void addAll(Collection<RepeatDate> dates, boolean fireEvents) {
         if (dates == null || selectedDates.containsAll(dates)) {

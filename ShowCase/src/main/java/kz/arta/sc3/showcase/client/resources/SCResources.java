@@ -88,4 +88,14 @@ public interface SCResources extends ClientBundle {
     @ClientBundle.Source("java-samples/tags/tag-input-nobutton.java")
     TextResource tagInputNoButton();
 
+    @ClientBundle.Source("java-samples/fields/period-input.java")
+    TextResource periodInput();
+
+    @ClientBundle.Source("java-samples/collapsing-panel.java")
+    TextResource collapsingPanel();
+    @ClientBundle.Source("java-samples/stack-panel.java")
+    TextResource stackPanel();
+    @ClientBundle.Source("java-samples/tabs.java")
+    TextResource tabs();
+
 }

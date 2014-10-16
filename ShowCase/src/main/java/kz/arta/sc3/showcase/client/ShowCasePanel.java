@@ -34,7 +34,6 @@ import kz.arta.synergy.components.client.comments.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
-import kz.arta.synergy.components.client.input.number.*;
 import kz.arta.synergy.components.client.input.SearchResultInput;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.input.date.ArtaDatePicker;
@@ -44,6 +43,7 @@ import kz.arta.synergy.components.client.input.date.TimeInput;
 import kz.arta.synergy.components.client.input.date.repeat.FullRepeatChooser;
 import kz.arta.synergy.components.client.input.date.repeat.RepeatChooser;
 import kz.arta.synergy.components.client.input.date.repeat.RepeatDate;
+import kz.arta.synergy.components.client.input.number.*;
 import kz.arta.synergy.components.client.input.tags.MultiComboBox;
 import kz.arta.synergy.components.client.input.tags.ObjectChooser;
 import kz.arta.synergy.components.client.input.tags.TagInput;
@@ -636,22 +636,37 @@ public class ShowCasePanel extends FlowPanel {
         root.add(addTab);
 
         final TabPanel localTabPanel = new TabPanel();
+        addCodeSample(localTabPanel, SCMessages.i18n().tr("Панель вкладок"), ShowCase.SC_RESOURCES.tabs().getText());
         localTabPanel.getElement().getStyle().setPosition(Style.Position.RELATIVE);
         localTabPanel.setWidth("450px");
         localTabPanel.setHeight("300px");
 
         root.add(localTabPanel);
 
-        localTabPanel.addTab(SCMessages.i18n().tr("Вкладка") + " 1", new SimplePanel());
+        addSimpleTab(localTabPanel, SCMessages.i18n().tr("Вкладка") + " 1");
+        addSimpleTab(localTabPanel, SCMessages.i18n().tr("Вкладка") + " 2");
+        addSimpleTab(localTabPanel, SCMessages.i18n().tr("Вкладка") + " 3");
+
+        localTabPanel.selectTab(1);
+
         addTab.addClickHandler(new ClickHandler() {
-            private int tabCount = 2;
+            private int tabCount = 3;
             @Override
             public void onClick(ClickEvent event) {
-                localTabPanel.addTab(SCMessages.i18n().tr("Вкладка") + " " + tabCount++, new SimplePanel());
+                addSimpleTab(localTabPanel, SCMessages.i18n().tr("Вкладка") + " " + ++tabCount);
             }
         });
 
         return root;
+    }
+
+    private void addSimpleTab(TabPanel tabPanel, String text) {
+        Label label = new Label(text);
+        label.setStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
+        SimplePanel panel = new SimplePanel(label);
+        panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
+
+        tabPanel.addTab(text, panel);
     }
 
     private abstract class LoadPanel implements Command {
@@ -1333,6 +1348,7 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel collapsingPanels = new FlowPanel();
 
         CollapsingPanel meta = new CollapsingPanel(SCMessages.i18n().tr("Метаданные"));
+        addCodeSample(meta, SCMessages.i18n().tr("Коллапсинг-панель"), ShowCase.SC_RESOURCES.collapsingPanel().getText());
         meta.setWidth("500px");
         meta.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         meta.getPanel().getElement().getStyle().setPadding(18, Style.Unit.PX);
@@ -1357,19 +1373,20 @@ public class ShowCasePanel extends FlowPanel {
         collapsingPanels.add(classifier);
         root.add(collapsingPanels);
 
-        SingleStack stack = new SingleStack(SCMessages.i18n().tr("Первая"));
+        final StackPanel stacks = new StackPanel(Arrays.asList(
+                new SingleStack(SCMessages.i18n().tr("Первая")),
+                new SingleStack(SCMessages.i18n().tr("Вторая")),
+                new SingleStack(SCMessages.i18n().tr("Третья")),
+                new SingleStack(SCMessages.i18n().tr("Четвертая"))), 500);
+        stacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+
         ArtaScrollPanel scroll1 = new ArtaScrollPanel(ColorType.BLACK);
         FlowPanel colorButtonPanel = new FlowPanel();
         colorButtonPanel.setPixelSize(500, 1000);
         scroll1.setWidget(colorButtonPanel);
         scroll1.setHeight("100%");
-        stack.getPanel().add(scroll1);
+        stacks.getStacks().get(0).getPanel().add(scroll1);
 
-        final StackPanel stacks = new StackPanel(Arrays.asList(stack,
-                new SingleStack(SCMessages.i18n().tr("Вторая")),
-                new SingleStack(SCMessages.i18n().tr("Третья")),
-                new SingleStack(SCMessages.i18n().tr("Четвертая"))), 500);
-        stacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             stacks.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         } else {
@@ -1497,6 +1514,8 @@ public class ShowCasePanel extends FlowPanel {
                 }
             }
         });
+
+        addCodeSample(whiteStacks, SCMessages.i18n().tr("Стек-панель"), ShowCase.SC_RESOURCES.stackPanel().getText());
 
         ArtaScrollPanel scroll = new ArtaScrollPanel(root);
         scroll.setHeight("100%");
@@ -1628,6 +1647,8 @@ public class ShowCasePanel extends FlowPanel {
         root.add(box);
 
         final FullRepeatChooser chooser = new FullRepeatChooser();
+        addCodeSample(chooser, SCMessages.i18n().tr("Компонент повторения"), ShowCase.SC_RESOURCES.periodInput().getText());
+        chooser.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         chooser.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         chooser.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         root.add(chooser);

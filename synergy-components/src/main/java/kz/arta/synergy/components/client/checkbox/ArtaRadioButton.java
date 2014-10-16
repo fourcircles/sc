@@ -12,6 +12,9 @@ import kz.arta.synergy.components.client.util.Utils;
  * Радиокнопка
  */
 public class ArtaRadioButton extends com.google.gwt.user.client.ui.RadioButton {
+    /**
+     * @param name название группы радиокнопок
+     */
     public ArtaRadioButton(String name) {
         super(name);
         setStyleName(SynergyComponents.getResources().cssComponents().radio());

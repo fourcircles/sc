@@ -272,7 +272,9 @@ public class ButtonBase extends FlowPanel implements
         }
         switch (DOM.eventGetType(event)) {
             case Event.ONMOUSEDOWN:
-                MouseStyle.setPressed(this);
+                if (isEnabled()) {
+                    MouseStyle.setPressed(this);
+                }
                 break;
             case Event.ONMOUSEUP:
                 MouseStyle.removeAll(this);

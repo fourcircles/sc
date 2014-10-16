@@ -163,7 +163,6 @@ public interface CssComponents extends CssResource {
 
     String checkbox();
     String radio();
-    String group();
 
     String table();
     String edit();

@@ -1245,10 +1245,8 @@ p {
 .searchResult .buttonSimple {
     border-width: 0px;
     vertical-align: top;
-    cursor: pointer;
 }
 .searchResult.disabled .buttonSimple {
-    cursor: default;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
 }
@@ -1576,39 +1574,11 @@ p {
 }
 
 .stackPanel .indicator + div {
-    height: 0px;
+    height: 0;
 }
 
-
-.checkbox input[type=checkbox] {
-    display: none;
-}
-@sprite .checkbox label{
-    gwt-image: "checkboxOff";
-    width: 16px;
-    height: 16px;
+.checkbox {
     cursor: pointer;
-
-    display: inline-block;
-    vertical-align: middle;
-}
-@sprite .checkbox input[type=checkbox]:checked + label {
-    gwt-image: "checkboxOn";
-}
-@sprite .checkbox.disabled input[type=checkbox] + label {
-    gwt-image: "checkboxOffDisabled";
-    cursor: default;
-}
-@sprite .checkbox.disabled input[type=checkbox]:checked + label {
-    gwt-image: "checkboxOnDisabled";
-    cursor: default;
-}
-@sprite .checkbox.group input[type=checkbox]:checked + label {
-    gwt-image: "checkboxGroup"
-}
-@sprite .checkbox.group.disabled input[type=checkbox]:checked + label {
-    gwt-image: "checkboxGroupDisabled";
-    cursor: default;
 }
 
 .radio input[type=radio] {

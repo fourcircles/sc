@@ -139,8 +139,6 @@ public class TaskBar extends Composite {
         return itemsCount * 28 + (itemsCount - 1) * 5 + 6 * 2;
     }
 
-    private boolean hasIndicatorScroll = false;
-
     /**
      * Клик по индикатору
      */
@@ -151,13 +149,7 @@ public class TaskBar extends Composite {
             popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
                 @Override
                 public void setPosition(int offsetWidth, int offsetHeight) {
-                    int scrollWidth = indicatorRoot.getOffsetWidth();
-                    if (indicatorRoot.getWidgetCount() > MAX_INDICATOR_ITEMS) {
-                        scrollWidth += Constants.SCROLL_BAR_WIDTH;
-                    }
-                    scroll.getElement().getStyle().setWidth(scrollWidth, Style.Unit.PX);
-                    scroll.getElement().getStyle().setHeight(Math.min(indicatorRoot.getOffsetHeight(), getPopupHeight(MAX_INDICATOR_ITEMS)), Style.Unit.PX);
-                    scroll.onResize();
+                    updateScrollWidth();
 
                     int popupHeight = popup.getOffsetHeight();
                     int left;
@@ -169,8 +161,20 @@ public class TaskBar extends Composite {
                     popup.setPopupPosition(left, indicator.getAbsoluteTop() - popupHeight - Constants.TASKBAR_IMAGE_MARGIN);
                 }
             });
-            scroll.onResize();
         }
+    }
+
+    /**
+     * Обновляет ширину скролла при появлении скролла
+     */
+    private void updateScrollWidth() {
+        int scrollWidth = indicatorRoot.getOffsetWidth();
+        if (indicatorRoot.getWidgetCount() > MAX_INDICATOR_ITEMS) {
+            scrollWidth += Constants.SCROLL_BAR_WIDTH;
+        }
+        scroll.getElement().getStyle().setWidth(scrollWidth, Style.Unit.PX);
+        scroll.getElement().getStyle().setHeight(Math.min(indicatorRoot.getOffsetHeight(), getPopupHeight(MAX_INDICATOR_ITEMS)), Style.Unit.PX);
+        scroll.onResize();
     }
 
     @Override

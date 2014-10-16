@@ -76,10 +76,12 @@ public class SimpleToggleButton extends SimpleButton {
                 if (!pressed) {
                     getElement().getStyle().setZIndex(1);
                 }
+                super.onBrowserEvent(event);
                 break;
             case Event.ONMOUSEOVER:
                 over = true;
                 getElement().getStyle().setZIndex(5);
+                super.onBrowserEvent(event);
                 break;
             case Event.ONCLICK:
                 pressed = !pressed;

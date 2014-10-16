@@ -2,8 +2,7 @@ package kz.arta.sc3.showcase.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.*;
-import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -23,8 +22,8 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.RowCountChangeEvent;
+import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
-import kz.arta.sc3.showcase.client.resources.SCResources;
 import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ButtonBase;
@@ -1507,61 +1506,46 @@ public class ShowCasePanel extends FlowPanel {
 
     public Widget getCheckBoxPanel() {
         FlowPanel root = new FlowPanel();
-        root.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
-        ArtaCheckBox[] checkBoxes = new ArtaCheckBox[] {
-                new ArtaCheckBox(), new ArtaCheckBox(),
-                new ArtaCheckBox(), new ArtaCheckBox()
-        };
-        checkBoxes[1].addStyleName(SynergyComponents.getResources().cssComponents().group());
-        checkBoxes[1].setValue(true);
-        checkBoxes[1].setEnabled(false);
-        checkBoxes[2].setEnabled(false);
-        checkBoxes[3].setValue(true);
-        checkBoxes[3].setEnabled(false);
+        ArtaCheckBox checkbox1 = new ArtaCheckBox();
+        addCodeSample(checkbox1, SCMessages.i18n().tr("Чекбокс"), ShowCase.SC_RESOURCES.checkbox().getText());
+        checkbox1.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        setMarginLeft(checkbox1, 20);
+        root.add(checkbox1);
+
+        ArtaCheckBox checkbox2 = new ArtaCheckBox();
+        checkbox2.setEnabled(false);
+        checkbox2.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        setMarginLeft(checkbox2, 20);
+        root.add(checkbox2);
+
+        ArtaCheckBox checkbox3 = new ArtaCheckBox();
+        addCodeSample(checkbox3, SCMessages.i18n().tr("Неактивный чекбокс"), ShowCase.SC_RESOURCES.checkboxDisabled().getText());
+        checkbox3.setValue(true, false);
+        checkbox3.setEnabled(false);
+        checkbox3.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        setMarginLeft(checkbox3, 20);
+        root.add(checkbox3);
+
+        root.add(new HTML("<br/>"));
 
         ArtaRadioButton[] radios = new ArtaRadioButton[] {
                 new ArtaRadioButton("showCaseRadio"), new ArtaRadioButton("showCaseRadio"),
                 new ArtaRadioButton("showCaseRadio"), new ArtaRadioButton("showCaseRadio"),
                 new ArtaRadioButton("showCaseRadio2")
         };
+
+        addCodeSample(radios[0], SCMessages.i18n().tr("Радио-кнопка"), ShowCase.SC_RESOURCES.radiobutton().getText());
+
         radios[3].setEnabled(false);
         radios[4].setValue(true);
         radios[4].setEnabled(false);
 
-        FlowPanel row1 = new FlowPanel();
-        for (ArtaCheckBox box : checkBoxes) {
-            box.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-            row1.add(box);
-        }
-        FlowPanel row2 = new FlowPanel();
-        row2.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         for (ArtaRadioButton radio : radios) {
-            radio.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-            row2.add(radio);
+            radio.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+            setMarginLeft(radio, 20);
+            root.add(radio);
         }
-
-        FlowPanel row3 = new FlowPanel();
-        row3.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
-
-        ArtaCheckBox[] group = new ArtaCheckBox[] {
-                new ArtaCheckBox(), new ArtaCheckBox(), new ArtaCheckBox(), new ArtaCheckBox()
-        };
-        ArtaCheckBox groupCheckbox = new ArtaCheckBox();
-        groupCheckbox.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        row3.add(groupCheckbox);
-
-        row3.add(groupCheckbox);
-        for (ArtaCheckBox box : group) {
-            groupCheckbox.add(box);
-            row3.add(box);
-            box.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        }
-        group[0].getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
-
-        root.add(row1);
-        root.add(row2);
-        root.add(row3);
 
         return root;
     }
@@ -1817,6 +1801,8 @@ public class ShowCasePanel extends FlowPanel {
         searchResultPanel.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
 
         SearchResultInput<String> searchEnabledWithButton = new SearchResultInput<String>(true);
+        addCodeSample(searchEnabledWithButton, SCMessages.i18n().tr("Поле поиска"), ShowCase.SC_RESOURCES.search().getText());
+
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             searchEnabledWithButton.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
         } else {
@@ -1830,7 +1816,7 @@ public class ShowCasePanel extends FlowPanel {
         searchResultPanel.add(searchEnabledWithButton);
 
         SearchResultInput<String> searchDisabledWithButton = new SearchResultInput<String>(true);
-        searchDisabledWithButton.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
+        searchDisabledWithButton.getElement().getStyle().setMarginLeft(15, Style.Unit.PX);
         searchDisabledWithButton.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
         DropDownList<String> list2 = createList(searchDisabledWithButton);
         for (DropDownList.Item item : list2.getItems()) {
@@ -2167,10 +2153,13 @@ public class ShowCasePanel extends FlowPanel {
      * Групповые кнопки
      */
     private Widget getGroupButton() {
+        int horizontalMargin = 20;
+
         FlowPanel panel = new FlowPanel();
         panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         final SimpleToggleButton toggleButton = new SimpleToggleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"));
+        addCodeSample(toggleButton, SCMessages.i18n().tr("Групповая кнопка"), ShowCase.SC_RESOURCES.toggleButton().getText());
         toggleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         panel.add(toggleButton);
 
@@ -2186,11 +2175,12 @@ public class ShowCasePanel extends FlowPanel {
             }
         });
         toggleButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        toggleButton1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(toggleButton1, horizontalMargin);
         panel.add(toggleButton1);
 
 
         GroupButtonPanel groupButtonPanel = new GroupButtonPanel(true);
+        addCodeSample(groupButtonPanel, SCMessages.i18n().tr("Группа кнопок"), ShowCase.SC_RESOURCES.buttonGroupToggle().getText());
         groupButtonPanel.addButton(SCMessages.i18n().tr("Первая кнопка длинная"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -2222,6 +2212,7 @@ public class ShowCasePanel extends FlowPanel {
         panel.add(groupButtonPanel);
 
         GroupButtonPanel groupButtonPanel1 = new GroupButtonPanel(true, true);
+        addCodeSample(groupButtonPanel1, SCMessages.i18n().tr("Группа кнопок"), ShowCase.SC_RESOURCES.buttonGroupMultiToggle().getText());
         groupButtonPanel1.addButton(SCMessages.i18n().tr("Первая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -2242,7 +2233,7 @@ public class ShowCasePanel extends FlowPanel {
         });
         groupButtonPanel1.buildPanel();
         groupButtonPanel1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        groupButtonPanel1.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(groupButtonPanel1, horizontalMargin);
         panel.add(groupButtonPanel1);
 
         GroupButtonPanel groupButtonPanel2 = new GroupButtonPanel(true);
@@ -2267,7 +2258,7 @@ public class ShowCasePanel extends FlowPanel {
         });
         groupButtonPanel2.buildPanel();
         groupButtonPanel2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        groupButtonPanel2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(groupButtonPanel2, horizontalMargin);
         panel.add(groupButtonPanel2);
 
         GroupButtonPanel groupButtonPanel3 = new GroupButtonPanel(true, true);
@@ -2295,6 +2286,7 @@ public class ShowCasePanel extends FlowPanel {
         panel.add(groupButtonPanel3);
 
         GroupButtonPanel groupButtonPanel4 = new GroupButtonPanel();
+        addCodeSample(groupButtonPanel4, SCMessages.i18n().tr("Группа кнопок"), ShowCase.SC_RESOURCES.buttonGroup().getText());
         groupButtonPanel4.addButton(SCMessages.i18n().tr("Первая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

@@ -23,6 +23,9 @@ import kz.arta.synergy.components.client.resources.Messages;
 import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 
+//todo убрать innerbus
+//todo написать тесты
+
 /**
  * User: vsl
  * Date: 07.08.14
@@ -68,6 +71,9 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
         this(true);
     }
 
+    /**
+     * @param hasButton есть ли индикатор
+     */
     public SearchResultInput(boolean hasButton) {
         FlowPanel root = new FlowPanel();
         initWidget(root);
@@ -215,6 +221,10 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
         } else {
             addStyleName(SynergyComponents.getResources().cssComponents().disabled());
         }
+    }
+
+    public V getSelectedValue() {
+        return selectedItem == null ? null : selectedItem.getValue();
     }
 
     @Override

@@ -45,5 +45,23 @@ public interface SCResources extends ClientBundle {
     @ClientBundle.Source("java-samples/buttons/icon-button-menu-wide.java")
     TextResource iconButtonMenuWide();
 
+    @ClientBundle.Source("java-samples/buttons/buttongroup.java")
+    TextResource buttonGroup();
+    @ClientBundle.Source("java-samples/buttons/buttongroup-multitoggle.java")
+    TextResource buttonGroupMultiToggle();
+    @ClientBundle.Source("java-samples/buttons/buttongroup-toggle.java")
+    TextResource buttonGroupToggle();
+    @ClientBundle.Source("java-samples/buttons/toggle-button.java")
+    TextResource toggleButton();
+
+    @ClientBundle.Source("java-samples/fields/search-result.java")
+    TextResource search();
+
+    @ClientBundle.Source("java-samples/checkbox/checkbox.java")
+    TextResource checkbox();
+    @ClientBundle.Source("java-samples/checkbox/checkbox-disabled.java")
+    TextResource checkboxDisabled();
+    @ClientBundle.Source("java-samples/checkbox/radiobutton.java")
+    TextResource radiobutton();
 
 }

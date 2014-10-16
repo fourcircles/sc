@@ -2145,7 +2145,7 @@ p {
 }
 
 .taskBarIndicator .content {
-    padding: 5px;
+    padding: 3px;
 }
 .taskBarIndicator .content:after {
     content: " ";
@@ -2157,6 +2157,7 @@ p {
 .taskBarIndicator .content > .item {
     float:left;
     clear: left;
+    white-space: nowrap;
 }
 
 .taskBarIndicator .content > .item + .item {

@@ -96,9 +96,4 @@ public class NumberInput extends TextInput {
     public double getDoubleValue() {
         return NumberFormat.getDecimalFormat().parse(getValue());
     }
-
-    @Override
-    public void setValue(String value) {
-        super.setValue(value);
-    }
 }

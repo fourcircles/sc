@@ -79,4 +79,13 @@ public interface SCResources extends ClientBundle {
     @ClientBundle.Source("java-samples/checkbox/radiobutton.java")
     TextResource radiobutton();
 
+    @ClientBundle.Source("java-samples/tags/multicombobox.java")
+    TextResource multiComboBox();
+    @ClientBundle.Source("java-samples/tags/tag-input.java")
+    TextResource tagInput();
+    @ClientBundle.Source("java-samples/tags/tag-input-list.java")
+    TextResource tagInputList();
+    @ClientBundle.Source("java-samples/tags/tag-input-nobutton.java")
+    TextResource tagInputNoButton();
+
 }

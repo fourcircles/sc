@@ -1649,9 +1649,9 @@ public class ShowCasePanel extends FlowPanel {
      * @return панель с полями с тегами
      */
     private Widget getTagInputs() {
-        FlowPanel tagInputPanel = new FlowPanel();
-        tagInputPanel.getElement().getStyle().setLineHeight(1, Style.Unit.PX);
-        tagInputPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
+        FlowPanel root = new FlowPanel();
+        root.getElement().getStyle().setLineHeight(1, Style.Unit.PX);
+        root.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         final List<HasEnabled> enableds = new ArrayList<HasEnabled>();
 
@@ -1664,14 +1664,16 @@ public class ShowCasePanel extends FlowPanel {
         rows[currentRow].add(createLabel("Поля с индикаторами: "));
 
         final TagInput noListHasIndicator = new TagInput();
-        noListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        addCodeSample(noListHasIndicator, SCMessages.i18n().tr("Поле с тэгами без списка"), ShowCase.SC_RESOURCES.tagInput().getText());
+        setMarginLeft(noListHasIndicator, 10);
         noListHasIndicator.setWidth(350);
 
         rows[currentRow].add(noListHasIndicator);
         enableds.add(noListHasIndicator);
 
         final TagInput<String> hasListHasIndicator = new TagInput<String>();
-        hasListHasIndicator.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        addCodeSample(hasListHasIndicator, SCMessages.i18n().tr("Поле с тэгами"), ShowCase.SC_RESOURCES.tagInputList().getText());
+        setMarginLeft(hasListHasIndicator, 20);
         hasListHasIndicator.setWidth(300);
         hasListHasIndicator.setDropDownList(createMultiList(hasListHasIndicator));
 
@@ -1693,6 +1695,8 @@ public class ShowCasePanel extends FlowPanel {
         enableds.add(noListNoButton);
 
         TagInput<String> hasListNoButton = new TagInput<String>(false);
+        addCodeSample(hasListNoButton, SCMessages.i18n().tr("Поле с тэгами без кнопки"),
+                ShowCase.SC_RESOURCES.tagInputNoButton().getText());
         hasListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         hasListNoButton.setDropDownList(createMultiList(hasListNoButton));
         hasListNoButton.setTitle(SCMessages.i18n().tr("Префиксный выбор из списка"));
@@ -1706,8 +1710,17 @@ public class ShowCasePanel extends FlowPanel {
         rows[currentRow].add(createLabel("Мультикомбобокс"));
 
         MultiComboBox<String> multiComboBox = new MultiComboBox<String>();
+        addCodeSample(multiComboBox, SCMessages.i18n().tr("Комбобокс"), ShowCase.SC_RESOURCES.multiComboBox().getText());
+        String[] comboNames = createShuffledNames();
+
+        for (String name : comboNames) {
+            multiComboBox.addItem(name, name);
+        }
+        multiComboBox.select(comboNames[0]);
+        multiComboBox.select(comboNames[1]);
+        multiComboBox.select(comboNames[comboNames.length - 1]);
+
         multiComboBox.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        multiComboBox.setDropDownList(createMultiList(multiComboBox));
         multiComboBox.setWidth(300);
         rows[currentRow].add(multiComboBox);
         enableds.add(multiComboBox);
@@ -1738,11 +1751,11 @@ public class ShowCasePanel extends FlowPanel {
         rows[currentRow].add(button);
 
         for (FlowPanel row : rows) {
-            tagInputPanel.add(row);
+            root.add(row);
             row.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         }
 
-        return tagInputPanel;
+        return root;
     }
 
     /**

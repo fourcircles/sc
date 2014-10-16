@@ -6,7 +6,7 @@ import kz.arta.synergy.components.client.resources.ImageResources;
 
 import java.util.ArrayList;
 import java.util.List;
-
+// todo test
 /**
  * User: vsl
  * Date: 18.08.14
@@ -15,6 +15,9 @@ import java.util.List;
 public class MultiComboBox<V> extends TagInput<V> {
     public MultiComboBox() {
         super(true);
+        DropDownListMulti<V> newList = new DropDownListMulti<V>(this, null);
+        setDropDownList(newList);
+
         mainButton.setIcon(ImageResources.IMPL.comboBoxDropDown());
     }
 
@@ -36,13 +39,25 @@ public class MultiComboBox<V> extends TagInput<V> {
     protected void keyEnter() {
     }
 
+    public void select(V value) {
+        dropDownList.selectValue(value);
+    }
+
+    public void deselect(V value) {
+        if (dropDownList.contains(value) && contains(value)) {
+            ((DropDownListMulti.Item) dropDownList.get(value)).setSelected(false, true);
+        }
+    }
+
     public void addItem(String text, V value) {
-        super.addTag(new Tag<V>(text, value));
+        dropDownList.addItem(text, value);
     }
+
     public boolean contains(V value) {
-        return getTag(value) != null;
+        return super.contains(value);
     }
-    public void remove(V value) {
+
+    public void removeItem(V value) {
         Tag<V> tag = getTag(value);
         if (tag != null) {
             removeTag(getTag(value));

@@ -118,4 +118,8 @@ publishing {
     }
 }
 
+test {
+    jvmArgs += [ "-XX:MaxPermSize=512m" ]
+}
+
 

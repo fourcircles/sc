@@ -56,6 +56,12 @@ public interface SCResources extends ClientBundle {
 
     @ClientBundle.Source("java-samples/fields/search-result.java")
     TextResource search();
+    @ClientBundle.Source("java-samples/fields/number-input-max.java")
+    TextResource numberInputMax();
+    @ClientBundle.Source("java-samples/fields/number-input-double.java")
+    TextResource numberInputDouble();
+    @ClientBundle.Source("java-samples/fields/number-input-integer.java")
+    TextResource numberInputInteger();
 
     @ClientBundle.Source("java-samples/checkbox/checkbox.java")
     TextResource checkbox();

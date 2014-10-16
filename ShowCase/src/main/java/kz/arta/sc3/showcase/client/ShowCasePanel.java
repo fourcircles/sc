@@ -22,7 +22,6 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.RowCountChangeEvent;
-import kz.arta.sc3.showcase.client.resources.SCImageResources;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
 import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -35,7 +34,7 @@ import kz.arta.synergy.components.client.comments.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
-import kz.arta.synergy.components.client.input.NumberInput;
+import kz.arta.synergy.components.client.input.number.*;
 import kz.arta.synergy.components.client.input.SearchResultInput;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.input.date.ArtaDatePicker;
@@ -1837,8 +1836,31 @@ public class ShowCasePanel extends FlowPanel {
 
         FlowPanel numberPanel = new FlowPanel();
         numberPanel.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        NumberInput numberInput = new NumberInput();
-        numberPanel.add(numberInput);
+
+        NumberInput integersInput = new NumberInput();
+        addCodeSample(integersInput, SCMessages.i18n().tr("Числовое поле (целые)"), ShowCase.SC_RESOURCES.numberInputInteger().getText());
+        integersInput.setPlaceHolder(SCMessages.i18n().tr("Только цифры"));
+        numberPanel.add(integersInput);
+
+        List<InputConstraint> constraintsForDouble = new ArrayList<InputConstraint>();
+        constraintsForDouble.add(DoubleConstraint.getInstance());
+        NumberInput doublesInput = new NumberInput(constraintsForDouble);
+        addCodeSample(doublesInput, SCMessages.i18n().tr("Числовое поле (дробные)"), ShowCase.SC_RESOURCES.numberInputDouble().getText());
+
+        doublesInput.setPlaceHolder(SCMessages.i18n().tr("Дробные"));
+        setMarginLeft(doublesInput, 20);
+        numberPanel.add(doublesInput);
+
+        List<InputConstraint> max200 = new ArrayList<InputConstraint>();
+        max200.add(OnlyDigitsConstraint.getInstance());
+        max200.add(new MaxNumberConstraint(200));
+        NumberInput maxInput = new NumberInput(max200);
+        addCodeSample(maxInput, SCMessages.i18n().tr("Числовое поле (целые, ограничены сверху)"),
+                ShowCase.SC_RESOURCES.numberInputMax().getText());
+        setMarginLeft(maxInput, 20);
+        maxInput.setPlaceHolder(SCMessages.i18n().tr("Максимально 200"));
+        numberPanel.add(maxInput);
+
         panel.add(numberPanel);
 
         Panel textAreaPanel = new FlowPanel();

@@ -1750,97 +1750,78 @@ public class ShowCasePanel extends FlowPanel {
      * @return панель с текстовыми полями
      */
     private Widget getTextInputs() {
-        FlowPanel panel = new FlowPanel();
-        panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
+        FlowPanel root = new FlowPanel();
+        root.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         final TextInput textInput = new TextInput();
-        if (LocaleInfo.getCurrentLocale().isRTL()) {
-            textInput.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
-        } else {
-            textInput.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
-        }
+        addCodeSample(textInput, SCMessages.i18n().tr("Текстовое поле"), ShowCase.SC_RESOURCES.textInput().getText());
         textInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        panel.add(textInput);
+        root.add(textInput);
         textInput.setPlaceHolder(SCMessages.i18n().tr("Необязательное поле"));
 
         final TextInput input = new TextInput();
+        addCodeSample(input, SCMessages.i18n().tr("Отключенное текстовое поле"), ShowCase.SC_RESOURCES.textInputDisabled().getText());
         input.setEnabled(false);
-        panel.add(input);
+        root.add(input);
         input.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        input.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
-        input.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
+        setMarginLeft(input, 20);
         input.setPlaceHolder(SCMessages.i18n().tr("Неактивное поле"));
 
         final TextInput inputAllow = new TextInput(false);
-        panel.add(inputAllow);
+        addCodeSample(inputAllow, SCMessages.i18n().tr("Обязательное текстовое поле"), ShowCase.SC_RESOURCES.textInputNonEmpty().getText());
+        root.add(inputAllow);
         inputAllow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        inputAllow.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
-        inputAllow.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
+        setMarginLeft(inputAllow, 20);
         inputAllow.setPlaceHolder(SCMessages.i18n().tr("Обязательное поле"));
 
         final TextInput widthInput = new TextInput(false);
-        panel.add(widthInput);
+        root.add(widthInput);
         widthInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        widthInput.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
-        widthInput.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
+        setMarginLeft(widthInput, 20);
         widthInput.setPlaceHolder(SCMessages.i18n().tr("Широкое поле ввода"));
         widthInput.setWidth("300px");
 
         final TextInput smallWidthInput = new TextInput(false);
-        panel.add(smallWidthInput);
+        root.add(smallWidthInput);
         smallWidthInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        smallWidthInput.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
-        smallWidthInput.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
+        setMarginLeft(smallWidthInput, 10);
         smallWidthInput.setPlaceHolder(SCMessages.i18n().tr("Маленькое поле ввода"));
         smallWidthInput.setWidth("100px");
 
-        Panel searchResultPanel = new FlowPanel();
-        searchResultPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
-        searchResultPanel.setHeight("32px");
-        searchResultPanel.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        root.add(new HTML("<br/>"));
 
         SearchResultInput<String> searchEnabledWithButton = new SearchResultInput<String>(true);
         addCodeSample(searchEnabledWithButton, SCMessages.i18n().tr("Поле поиска"), ShowCase.SC_RESOURCES.search().getText());
 
-        if (LocaleInfo.getCurrentLocale().isRTL()) {
-            searchEnabledWithButton.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
-        } else {
-            searchEnabledWithButton.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
-        }
         DropDownList<String> list = createList(searchEnabledWithButton);
         for (DropDownList.Item item : list.getItems()) {
             item.setIcon(ImageResources.IMPL.magzhan());
         }
         searchEnabledWithButton.setList(list);
-        searchResultPanel.add(searchEnabledWithButton);
+        root.add(searchEnabledWithButton);
 
         SearchResultInput<String> searchDisabledWithButton = new SearchResultInput<String>(true);
-        searchDisabledWithButton.getElement().getStyle().setMarginLeft(15, Style.Unit.PX);
-        searchDisabledWithButton.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
+        setMarginLeft(searchDisabledWithButton, 20);
         DropDownList<String> list2 = createList(searchDisabledWithButton);
         for (DropDownList.Item item : list2.getItems()) {
             item.setIcon(ImageResources.IMPL.magzhan());
         }
         searchDisabledWithButton.setList(list2);
         searchDisabledWithButton.setEnabled(false);
-        searchResultPanel.add(searchDisabledWithButton);
+        root.add(searchDisabledWithButton);
 
         SearchResultInput<String> searchNoButton = new SearchResultInput<String>(false);
-        searchNoButton.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
-        searchNoButton.getElement().getStyle().setMarginRight(5, Style.Unit.PX);
+        setMarginLeft(searchNoButton, 10);
         DropDownList<String> list3 = createList(searchNoButton);
         searchNoButton.setList(list3);
-        searchResultPanel.add(searchNoButton);
+        root.add(searchNoButton);
 
-        panel.add(searchResultPanel);
-
-        FlowPanel numberPanel = new FlowPanel();
-        numberPanel.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        root.add(new HTML("<br />"));
 
         NumberInput integersInput = new NumberInput();
         addCodeSample(integersInput, SCMessages.i18n().tr("Числовое поле (целые)"), ShowCase.SC_RESOURCES.numberInputInteger().getText());
         integersInput.setPlaceHolder(SCMessages.i18n().tr("Только цифры"));
-        numberPanel.add(integersInput);
+        root.add(integersInput);
 
         List<InputConstraint> constraintsForDouble = new ArrayList<InputConstraint>();
         constraintsForDouble.add(DoubleConstraint.getInstance());
@@ -1849,7 +1830,7 @@ public class ShowCasePanel extends FlowPanel {
 
         doublesInput.setPlaceHolder(SCMessages.i18n().tr("Дробные"));
         setMarginLeft(doublesInput, 20);
-        numberPanel.add(doublesInput);
+        root.add(doublesInput);
 
         List<InputConstraint> max200 = new ArrayList<InputConstraint>();
         max200.add(OnlyDigitsConstraint.getInstance());
@@ -1859,45 +1840,40 @@ public class ShowCasePanel extends FlowPanel {
                 ShowCase.SC_RESOURCES.numberInputMax().getText());
         setMarginLeft(maxInput, 20);
         maxInput.setPlaceHolder(SCMessages.i18n().tr("Максимально 200"));
-        numberPanel.add(maxInput);
+        root.add(maxInput);
 
-        panel.add(numberPanel);
-
-        Panel textAreaPanel = new FlowPanel();
-        textAreaPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+        root.add(new HTML("<br />"));
 
         final ArtaTextArea textArea = new ArtaTextArea();
-        textArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         textArea.setPlaceHolder(SCMessages.i18n().tr("Многострочное поле ввода"));
-        textAreaPanel.add(textArea);
+        root.add(textArea);
 
         final ArtaTextArea disableTextArea = new ArtaTextArea(false);
-        disableTextArea.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        disableTextArea.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(disableTextArea, 10);
         disableTextArea.setPlaceHolder(SCMessages.i18n().tr("Неактивное многострочное поле ввода"));
         disableTextArea.setEnabled(false);
-        textAreaPanel.add(disableTextArea);
+        root.add(disableTextArea);
 
         final ArtaTextArea textAreaEmpty = new ArtaTextArea(false);
-        textAreaEmpty.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        textAreaEmpty.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(textAreaEmpty, 10);
         textAreaEmpty.setPlaceHolder(SCMessages.i18n().tr("Обязательное многострочное поле ввода"));
-        textAreaPanel.add(textAreaEmpty);
+        root.add(textAreaEmpty);
+
+        root.add(new HTML("<br />"));
 
         final ArtaTextArea textAreaSize = new ArtaTextArea(false);
-        textAreaSize.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        textAreaSize.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        addCodeSample(textAreaSize, SCMessages.i18n().tr("Многострочное поле ввода"), ShowCase.SC_RESOURCES.textarea().getText());
         textAreaSize.setPlaceHolder(SCMessages.i18n().tr("Многострочное поле ввода с заданным размером"));
         textAreaSize.setPixelSize(300, 300);
-        textAreaPanel.add(textAreaSize);
+        root.add(textAreaSize);
 
         final ArtaTextArea textAreaWidth = new ArtaTextArea(false);
-        textAreaWidth.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        textAreaWidth.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(textAreaWidth, 20);
         textAreaWidth.setPlaceHolder(SCMessages.i18n().tr("Многострочное поле ввода с заданной шириной"));
         textAreaWidth.setWidth("500px");
-        textAreaPanel.add(textAreaWidth);
-        panel.add(textAreaPanel);
+        root.add(textAreaWidth);
+
+        root.add(new HTML("<br />"));
 
         SimpleButton button = new SimpleButton(SCMessages.i18n().tr("Валидация полей"), SimpleButton.Type.APPROVE);
         button.addClickHandler(new ClickHandler() {
@@ -1914,15 +1890,11 @@ public class ShowCasePanel extends FlowPanel {
                 textAreaWidth.checkInput();
             }
         });
-        Panel buttonPanel = new FlowPanel();
-        buttonPanel.add(button);
-        button.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
+        root.add(button);
         button.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        buttonPanel.getElement().getStyle().setDisplay(Style.Display.BLOCK);
-        panel.add(buttonPanel);
 
         ArtaScrollPanel scroll = new ArtaScrollPanel();
-        scroll.setWidget(panel);
+        scroll.setWidget(root);
         scroll.setHeight("100%");
 
         return scroll;

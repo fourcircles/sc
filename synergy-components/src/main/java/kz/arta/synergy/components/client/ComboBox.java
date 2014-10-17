@@ -7,16 +7,16 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HasValue;
 import kz.arta.synergy.components.client.button.ImageButton;
-import kz.arta.synergy.components.client.input.InputWithEvents;
-import kz.arta.synergy.components.client.input.events.TextChangedEvent;
+import kz.arta.synergy.components.client.comments.events.InputChangeEvent;
+import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
@@ -29,7 +29,7 @@ import kz.arta.synergy.components.style.client.Constants;
  * Time: 14:58
  * Комбо-бокс
  */
-public class ComboBox<V> extends Composite implements HasEnabled, HasValueChangeHandlers<V>, HasText{
+public class ComboBox<V> extends Composite implements HasEnabled, HasValueChangeHandlers<V>, HasText, HasValue<V> {
 
     /**
      * Выпадающий список
@@ -39,7 +39,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
     /**
      * Текст
      */
-    private InputWithEvents input;
+    private TextInput input;
 
     /**
      * Отключен или включен комбобокс
@@ -57,7 +57,6 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
     private ListTextFilter filter = ListTextFilter.createPrefixFilter();
 
     private DropDownList<V>.Item selectedItem;
-    private final EventBus bus;
 
     public ComboBox() {
         final ArtaFlowPanel root = new ArtaFlowPanel();
@@ -101,13 +100,13 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
 
         isEnabled = true;
 
-        bus = new SimpleEventBus();
+        EventBus listBus = new SimpleEventBus();
 
-        list = new DropDownList<V>(this, bus);
+        list = new DropDownList<V>(this, listBus);
         list.setRelativeWidget(this);
         list.setFilter(filter);
 
-        ListSelectionEvent.register(bus, new ListSelectionEvent.Handler<V>() {
+        ListSelectionEvent.register(listBus, new ListSelectionEvent.Handler<V>() {
             @Override
             public void onSelection(ListSelectionEvent<V> event) {
                 selectItem(event.getItem());
@@ -115,7 +114,8 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
             }
         });
 
-        input = new InputWithEvents(bus);
+
+        input = new TextInput();
 
         input.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
@@ -137,9 +137,15 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
             @Override
             public void onBlur(BlurEvent event) {
                 if (selectedItem != null) {
-                    input.setText(selectedItem.getText(), false);
+                    input.setValue(selectedItem.getText(), false);
                 }
                 removeStyleName(SynergyComponents.getResources().cssComponents().focus());
+            }
+        });
+        InputChangeEvent.addInputHandler(input.getElement(), new InputChangeEvent.Handler() {
+            @Override
+            public void onInputChange(InputChangeEvent event) {
+                textChanged();
             }
         });
         input.addKeyUpHandler(new KeyUpHandler() {
@@ -154,13 +160,13 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
             }
         });
 
-        TextChangedEvent.register(bus, new TextChangedEvent.Handler() {
-            @Override
-            public void onTextChanged(TextChangedEvent event) {
-                textChanged();
-            }
-        });
-
+//        TextChangedEvent.register(listBus, new TextChangedEvent.Handler() {
+//            @Override
+//            public void onTextChanged(TextChangedEvent event) {
+//                textChanged();
+//            }
+//        });
+//
         ImageButton dropDownButton = new ImageButton(ImageResources.IMPL.comboBoxDropDown());
         dropDownButton.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
@@ -316,7 +322,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
      */
     @Override
     public void setText(String text) {
-        input.setText(text, true);
+        input.setValue(text, true);
     }
 
     /**
@@ -341,12 +347,24 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
      */
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<V> handler) {
-        return bus.addHandlerToSource(ValueChangeEvent.getType(), this, handler);
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 
     @Override
-    public void fireEvent(GwtEvent<?> event) {
-        bus.fireEventFromSource(event, this);
+    public V getValue() {
+        return selectedItem.getValue();
+    }
+
+    @Override
+    public void setValue(V value) {
+        setValue(value, true);
+    }
+
+    @Override
+    public void setValue(V value, boolean fireEvents) {
+        if (list.contains(value)) {
+            selectValue(value, fireEvents);
+        }
     }
 }
 

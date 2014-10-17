@@ -7,8 +7,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.comments.events.NewCommentEvent;
-import kz.arta.synergy.components.style.client.Colors;
-import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.Date;
 

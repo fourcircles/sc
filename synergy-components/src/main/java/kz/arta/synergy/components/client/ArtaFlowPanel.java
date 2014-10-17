@@ -2,6 +2,7 @@ package kz.arta.synergy.components.client;
 
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
@@ -11,6 +12,10 @@ import com.google.gwt.user.client.ui.FlowPanel;
  */
 public class ArtaFlowPanel extends FlowPanel implements
         HasAllMouseHandlers, HasClickHandlers, HasContextMenuHandlers {
+
+    public ArtaFlowPanel() {
+        sinkEvents(Event.ONMOUSEOVER);
+    }
 
     @Override
     public HandlerRegistration addContextMenuHandler(ContextMenuHandler handler) {

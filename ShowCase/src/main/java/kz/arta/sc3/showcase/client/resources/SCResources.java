@@ -70,6 +70,8 @@ public interface SCResources extends ClientBundle {
     TextResource textInputNonEmpty();
     @ClientBundle.Source("java-samples/fields/textarea.java")
     TextResource textarea();
+    @ClientBundle.Source("java-samples/fields/combobox.java")
+    TextResource combobox();
 
 
     @ClientBundle.Source("java-samples/checkbox/checkbox.java")
@@ -103,4 +105,21 @@ public interface SCResources extends ClientBundle {
     TextResource tableCells();
     @ClientBundle.Source("java-samples/table-rows.java")
     TextResource tableRows();
+    @ClientBundle.Source("java-samples/treetable.java")
+    TextResource treetable();
+    @ClientBundle.Source("java-samples/comments.java")
+    TextResource comments();
+    @ClientBundle.Source("java-samples/comments-dark.java")
+    TextResource commentsDark();
+
+    @ClientBundle.Source("java-samples/dialogs/dialog-buttons-nomodal.java")
+    TextResource dialogButtons();
+    @ClientBundle.Source("java-samples/dialogs/dialog-modal-medium.java")
+    TextResource dialogModalMedium();
+    @ClientBundle.Source("java-samples/dialogs/dialog-modal-small.java")
+    TextResource dialogModalSmall();
+    @ClientBundle.Source("java-samples/dialogs/dialog-nomodal.java")
+    TextResource dialog();
+
+
 }

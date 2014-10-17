@@ -3,6 +3,7 @@ package kz.arta.synergy.components.client.input;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import kz.arta.synergy.components.client.input.events.TextChangedEvent;
 
@@ -76,4 +77,5 @@ public class InputWithEvents extends TextInput {
     public void setBus(EventBus bus) {
         this.bus = bus;
     }
+
 }

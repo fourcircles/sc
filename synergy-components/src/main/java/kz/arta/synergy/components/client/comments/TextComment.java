@@ -8,6 +8,7 @@ import java.util.Date;
  * Time: 14:03
  *
  * Простой пример реализации {@link kz.arta.synergy.components.client.comments.Comment}
+ * Используется при добавлении нового комментария через форму ввода комментария {@link kz.arta.synergy.components.client.comments.CommentInput}
  */
 public class TextComment extends AbstractComment {
     private String text;
@@ -17,6 +18,9 @@ public class TextComment extends AbstractComment {
         this.text = text;
     }
 
+    /**
+     * Конструктор копирования
+     */
     public TextComment(TextComment comment) {
         super(comment.getAuthor(), comment.getDate(), comment.getType());
         this.text = comment.getText();

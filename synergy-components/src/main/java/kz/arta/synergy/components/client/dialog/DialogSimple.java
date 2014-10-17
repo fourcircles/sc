@@ -262,6 +262,10 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
         fireEvent(new ModelChangeEvent());
     }
 
+    public Widget getContent() {
+        return contentPanel;
+    }
+
     public void setContent(Widget content) {
         contentPanel.clear();
         contentPanel.add(content);

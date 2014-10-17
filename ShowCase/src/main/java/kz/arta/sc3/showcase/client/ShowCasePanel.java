@@ -1211,6 +1211,7 @@ public class ShowCasePanel extends FlowPanel {
         firstRowPanel.add(timeInputNotAllowEmpty);
         TimeInput timeInputAllowEmpty = new TimeInput(true);
         timeInputAllowEmpty.setTitle(SCMessages.i18n().tr("Необязательное поле ввода"));
+        timeInputAllowEmpty.setTime(12, 12);
         firstRowPanel.add(timeInputAllowEmpty);
         TimeInput timeInput = new TimeInput();
         timeInput.setTitle(SCMessages.i18n().tr("Неактивное поле ввода"));
@@ -1219,7 +1220,9 @@ public class ShowCasePanel extends FlowPanel {
         panel.add(firstRow);
         firstRow.getElement().getStyle().setPadding(5, Style.Unit.PX);
         for (int i = 1; i < firstRowPanel.getWidgetCount(); i++) {
-            firstRowPanel.getWidget(i).getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+            Widget widget = firstRowPanel.getWidget(i);
+            setMarginLeft(widget, 20);
+            addCodeSample(widget, SCMessages.i18n().tr("Поле ввода времени"), ShowCase.SC_RESOURCES.timeInput().getText());
         }
 
         PPanel secondRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
@@ -1232,6 +1235,7 @@ public class ShowCasePanel extends FlowPanel {
         DateInput dateInput1 = new DateInput(true);
         dateInput1.setTitle(SCMessages.i18n().tr("Необязательное поле ввода"));
         secondRowPanel.add(dateInput1);
+        dateInput1.setDate(new Date());
 
         DateInput dateInput2 = new DateInput();
         dateInput2.setTitle(SCMessages.i18n().tr("Неактивное поле ввода"));
@@ -1240,7 +1244,9 @@ public class ShowCasePanel extends FlowPanel {
         panel.add(secondRow);
         secondRow.getElement().getStyle().setPadding(5, Style.Unit.PX);
         for (int i = 1; i < secondRowPanel.getWidgetCount(); i++) {
-            secondRowPanel.getWidget(i).getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+            Widget widget = secondRowPanel.getWidget(i);
+            setMarginLeft(widget, 20);
+            addCodeSample(widget, SCMessages.i18n().tr("Поле ввода даты"), ShowCase.SC_RESOURCES.dateInput().getText());
         }
 
         PPanel thirdRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
@@ -1248,9 +1254,11 @@ public class ShowCasePanel extends FlowPanel {
         thirdRow.setWidget(thirdRowPanel);
         thirdRowPanel.add(createLabel(SCMessages.i18n().tr("Поле дата - режим выбора неделя и месяц: "), width));
         DateInput dateInputWeek = new DateInput(ArtaDatePicker.CalendarMode.WEEK);
+        addCodeSample(dateInputWeek, SCMessages.i18n().tr("Поле ввода даты (режим выбора - неделя)"), ShowCase.SC_RESOURCES.dateInputWeek().getText());
         dateInputWeek.setTitle(SCMessages.i18n().tr("Неделя"));
         thirdRowPanel.add(dateInputWeek);
         DateInput dateInputMonth = new DateInput(ArtaDatePicker.CalendarMode.MONTH);
+        addCodeSample(dateInputMonth, SCMessages.i18n().tr("Поле ввода даты (режим выбора - месяц)"), ShowCase.SC_RESOURCES.dateInputMonth().getText());
         dateInputMonth.setTitle(SCMessages.i18n().tr("Месяц"));
         thirdRowPanel.add(dateInputMonth);
         DateInput dateInputMonthDisabled = new DateInput(ArtaDatePicker.CalendarMode.MONTH);
@@ -1268,10 +1276,12 @@ public class ShowCasePanel extends FlowPanel {
         fourthRow.setWidget(fourthRowPanel);
         fourthRowPanel.add(createLabel(SCMessages.i18n().tr("Поле ввода даты/времени: "), width));
         DateTimeInput dateTimeInput = new DateTimeInput();
+        addCodeSample(dateTimeInput, SCMessages.i18n().tr("Поле ввода даты-время"), ShowCase.SC_RESOURCES.dateTimeInput().getText());
         dateTimeInput.setTitle(SCMessages.i18n().tr("Обязательное поле ввода"));
         fourthRowPanel.add(dateTimeInput);
 
         DateTimeInput dateTimeInput1 = new DateTimeInput(true);
+        addCodeSample(dateTimeInput1, SCMessages.i18n().tr("Поле ввода даты-время"), ShowCase.SC_RESOURCES.dateTimeInput().getText());
         dateTimeInput1.setTitle(SCMessages.i18n().tr("Необязательное поле ввода"));
         fourthRowPanel.add(dateTimeInput1);
 
@@ -1282,30 +1292,42 @@ public class ShowCasePanel extends FlowPanel {
         panel.add(fourthRow);
         fourthRow.getElement().getStyle().setPadding(5, Style.Unit.PX);
         for (int i = 1; i < fourthRowPanel.getWidgetCount(); i++) {
-            fourthRowPanel.getWidget(i).getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+            setMarginLeft(fourthRowPanel.getWidget(i), 20);
         }
 
         FlowPanel datePickerPanel = new FlowPanel();
-        datePickerPanel.add(new ArtaDatePicker());
-        datePickerPanel.add(new ArtaDatePicker(ColorType.BLACK));
-        datePickerPanel.getWidget(0).getElement().getStyle().setMargin(5, Style.Unit.PX);
-        datePickerPanel.getWidget(1).getElement().getStyle().setMargin(5, Style.Unit.PX);
+        ArtaDatePicker pickerDay = new ArtaDatePicker();
+        addCodeSample(pickerDay, SCMessages.i18n().tr("Календарь (режим выбора - день)"), ShowCase.SC_RESOURCES.datePickerDay().getText());
+        datePickerPanel.add(pickerDay);
+        ArtaDatePicker pickerDayDark = new ArtaDatePicker(ColorType.BLACK);
+        addCodeSample(pickerDayDark, SCMessages.i18n().tr("Календарь (режим выбора - день)"), ShowCase.SC_RESOURCES.datePickerDay().getText());
+        datePickerPanel.add(pickerDayDark);
+        setMarginLeft(datePickerPanel.getWidget(0), 20);
+        setMarginLeft(datePickerPanel.getWidget(1), 20);
         panel.add(datePickerPanel);
         datePickerPanel.getElement().getStyle().setPadding(5, Style.Unit.PX);
 
         FlowPanel datePickerPanel1 = new FlowPanel();
-        datePickerPanel1.add(new ArtaDatePicker(ArtaDatePicker.CalendarMode.WEEK));
-        datePickerPanel1.add(new ArtaDatePicker(ArtaDatePicker.CalendarMode.WEEK, ColorType.BLACK));
-        datePickerPanel1.getWidget(0).getElement().getStyle().setMargin(5, Style.Unit.PX);
-        datePickerPanel1.getWidget(1).getElement().getStyle().setMargin(5, Style.Unit.PX);
+        ArtaDatePicker pickerWeek = new ArtaDatePicker(ArtaDatePicker.CalendarMode.WEEK);
+        addCodeSample(pickerWeek, SCMessages.i18n().tr("Календарь (режим выбора - неделя)"), ShowCase.SC_RESOURCES.datePickerWeek().getText());
+        datePickerPanel1.add(pickerWeek);
+        ArtaDatePicker pickerWeekDark = new ArtaDatePicker(ArtaDatePicker.CalendarMode.WEEK, ColorType.BLACK);
+        addCodeSample(pickerWeekDark, SCMessages.i18n().tr("Календарь (режим выбора - неделя)"), ShowCase.SC_RESOURCES.datePickerWeek().getText());
+        datePickerPanel1.add(pickerWeekDark);
+        setMarginLeft(datePickerPanel1.getWidget(0), 20);
+        setMarginLeft(datePickerPanel1.getWidget(1), 20);
         panel.add(datePickerPanel1);
         datePickerPanel1.getElement().getStyle().setPadding(5, Style.Unit.PX);
 
         FlowPanel datePickerPanel2 = new FlowPanel();
-        datePickerPanel2.add(new ArtaDatePicker(ArtaDatePicker.CalendarMode.MONTH));
-        datePickerPanel2.add(new ArtaDatePicker(ArtaDatePicker.CalendarMode.MONTH, ColorType.BLACK));
-        datePickerPanel2.getWidget(0).getElement().getStyle().setMargin(5, Style.Unit.PX);
-        datePickerPanel2.getWidget(1).getElement().getStyle().setMargin(5, Style.Unit.PX);
+        ArtaDatePicker pickerMonth = new ArtaDatePicker(ArtaDatePicker.CalendarMode.MONTH);
+        addCodeSample(pickerMonth, SCMessages.i18n().tr("Календарь (режим выбора - месяц)"), ShowCase.SC_RESOURCES.datePickerMonth().getText());
+        datePickerPanel2.add(pickerMonth);
+        ArtaDatePicker pickerMonthDark = new ArtaDatePicker(ArtaDatePicker.CalendarMode.MONTH, ColorType.BLACK);
+        addCodeSample(pickerMonthDark, SCMessages.i18n().tr("Календарь (режим выбора - месяц)"), ShowCase.SC_RESOURCES.datePickerMonth().getText());
+        datePickerPanel2.add(pickerMonthDark);
+        setMarginLeft(datePickerPanel2.getWidget(0), 20);
+        setMarginLeft(datePickerPanel2.getWidget(1), 20);
         panel.add(datePickerPanel2);
         datePickerPanel2.getElement().getStyle().setPadding(5, Style.Unit.PX);
 

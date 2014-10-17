@@ -121,5 +121,21 @@ public interface SCResources extends ClientBundle {
     @ClientBundle.Source("java-samples/dialogs/dialog-nomodal.java")
     TextResource dialog();
 
+    @ClientBundle.Source("java-samples/date/date-input.java")
+    TextResource dateInput();
+    @ClientBundle.Source("java-samples/date/date-input-month.java")
+    TextResource dateInputMonth();
+    @ClientBundle.Source("java-samples/date/date-input-week.java")
+    TextResource dateInputWeek();
+    @ClientBundle.Source("java-samples/date/date-time-input.java")
+    TextResource dateTimeInput();
+    @ClientBundle.Source("java-samples/date/datepicker-day.java")
+    TextResource datePickerDay();
+    @ClientBundle.Source("java-samples/date/datepicker-week.java")
+    TextResource datePickerWeek();
+    @ClientBundle.Source("java-samples/date/datepicker-month.java")
+    TextResource datePickerMonth();
+    @ClientBundle.Source("java-samples/date/time-input.java")
+    TextResource timeInput();
 
 }

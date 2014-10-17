@@ -191,32 +191,37 @@ public class DateInput extends Composite implements HasEnabled, HasValueChangeHa
             }
         });
         calendarPopup.setWidget(datePicker);
+        calendarPopup.addAutoHidePartner(calendarButton.getElement());
         calendarPopup.setStyleName(SynergyComponents.getResources().cssComponents().calendarPopup());
         calendarButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                calendarPopup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
-                    @Override
-                    public void setPosition(int offsetWidth, int offsetHeight) {
-                        if (resizeRegistration == null) {
-                            resizeRegistration = Window.addResizeHandler(resizeHandler);
-                        }
-                        int x = calendarButton.getAbsoluteLeft();
-                        int y = calendarButton.getAbsoluteTop() + calendarButton.getOffsetHeight();
+                if (calendarPopup.isShowing()) {
+                    calendarPopup.hide();
+                } else {
+                    calendarPopup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+                        @Override
+                        public void setPosition(int offsetWidth, int offsetHeight) {
+                            if (resizeRegistration == null) {
+                                resizeRegistration = Window.addResizeHandler(resizeHandler);
+                            }
+                            int x = calendarButton.getAbsoluteLeft();
+                            int y = calendarButton.getAbsoluteTop() + calendarButton.getOffsetHeight();
 
-                        int lenX = calendarPopup.getOffsetWidth();
-                        int lenY = calendarPopup.getOffsetHeight();
+                            int lenX = calendarPopup.getOffsetWidth();
+                            int lenY = calendarPopup.getOffsetHeight();
 
-                        if (x + lenX > Window.getClientWidth()) {
-                            x -= lenX;
-                            x += calendarButton.getOffsetWidth();
+                            if (x + lenX > Window.getClientWidth()) {
+                                x -= lenX;
+                                x += calendarButton.getOffsetWidth();
+                            }
+                            if (y + lenY > Window.getClientHeight()) {
+                                y -= lenY;
+                            }
+                            calendarPopup.setPopupPosition(x, y);
                         }
-                        if (y + lenY > Window.getClientHeight()) {
-                            y -= lenY;
-                        }
-                        calendarPopup.setPopupPosition(x, y);
-                    }
-                });
+                    });
+                }
             }
         });
 

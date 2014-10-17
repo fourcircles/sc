@@ -97,5 +97,10 @@ public interface SCResources extends ClientBundle {
     TextResource stackPanel();
     @ClientBundle.Source("java-samples/tabs.java")
     TextResource tabs();
-
+    @ClientBundle.Source("java-samples/tree.java")
+    TextResource tree();
+    @ClientBundle.Source("java-samples/table-cells.java")
+    TextResource tableCells();
+    @ClientBundle.Source("java-samples/table-rows.java")
+    TextResource tableRows();
 }

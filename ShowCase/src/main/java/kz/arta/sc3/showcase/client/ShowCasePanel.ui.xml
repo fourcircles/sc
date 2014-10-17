@@ -54,6 +54,7 @@
             /*noinspection CssInvalidElement*/
             border: 1px solid buttonBorder;
             border-bottom-style: none;
+            background-color: white;
         }
 
         .codePanel .closeImage {

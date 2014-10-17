@@ -33,6 +33,8 @@ public class Code extends Composite {
     public Code() {
         scroll = new ArtaScrollPanel();
         initWidget(scroll);
+        scroll.getElement().setAttribute("dir", "ltr");
+
         scroll.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
         scroll.getElement().getStyle().setBackgroundColor(BACKGROUND_COLOR.hex());
 

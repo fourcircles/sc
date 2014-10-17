@@ -74,6 +74,7 @@ import kz.arta.synergy.components.client.tree.Tree;
 import kz.arta.synergy.components.client.tree.TreeItem;
 import kz.arta.synergy.components.client.tree.events.TreeItemContextMenuEvent;
 import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
+import kz.arta.synergy.components.client.util.Br;
 import kz.arta.synergy.components.client.util.PPanel;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -380,6 +381,7 @@ public class ShowCasePanel extends FlowPanel {
         style.setPosition(Style.Position.FIXED);
         style.setDisplay(Style.Display.NONE);
         style.setCursor(Style.Cursor.POINTER);
+        style.setZIndex(1000);
 
         codeOpenButton.sinkEvents(Event.ONCLICK);
         codeOpenButton.addDomHandler(new ClickHandler() {
@@ -494,7 +496,7 @@ public class ShowCasePanel extends FlowPanel {
         });
         root.add(showMedium);
 
-        root.add(new HTML("<br/>"));
+        root.add(new Br());
 
         final TextInput input = new TextInput();
         input.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
@@ -880,6 +882,7 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel root = new FlowPanel();
 
         kz.arta.synergy.components.client.tree.Tree localTree = copyTree(tree);
+        addCodeSample(localTree, SCMessages.i18n().tr("Дерево"), ShowCase.SC_RESOURCES.tree().getText());
 
         localTree.getElement().getStyle().setHeight(LOCAL_TREE_SIZE, Style.Unit.PX);
         localTree.getElement().getStyle().setWidth(LOCAL_TREE_SIZE, Style.Unit.PX);
@@ -906,17 +909,19 @@ public class ShowCasePanel extends FlowPanel {
 
     private Widget getTablePanel(boolean onlyRows) {
         FlowPanel panel = new FlowPanel();
-        panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
-        if (LocaleInfo.getCurrentLocale().isRTL()) {
-            panel.getElement().getStyle().setPaddingLeft(20, Style.Unit.PX);
-        } else {
-            panel.getElement().getStyle().setPaddingRight(20, Style.Unit.PX);
-        }
+        panel.getElement().getStyle().setPadding(20, Style.Unit.PX);
+        panel.getElement().getStyle().setPaddingLeft(40, Style.Unit.PX);
+        panel.getElement().getStyle().setPaddingRight(40, Style.Unit.PX);
 
         final Table<User> table = new Table<User>(29);
+        if (onlyRows) {
+            addCodeSample(table, SCMessages.i18n().tr("Таблица с выбором рядом"), ShowCase.SC_RESOURCES.tableRows().getText());
+        } else {
+            addCodeSample(table, SCMessages.i18n().tr("Таблица с выбором ячеек"), ShowCase.SC_RESOURCES.tableCells().getText());
+        }
         table.enableHat(true);
         table.getHat().setName(SCMessages.i18n().tr("Таблица"));
-        table.getHat().enableButton(true);
+        table.getHat().enableAddButton(true);
         table.getHat().enablePagerAlways(true);
         table.getHat().enablePager(true);
         table.setMultiLine(!onlyRows);
@@ -1122,7 +1127,7 @@ public class ShowCasePanel extends FlowPanel {
         table.getCore().setOnlyRows(true);
         table.enableHat(true);
         table.getHat().setName(SCMessages.i18n().tr("Таблица"));
-        table.getHat().enableButton(true);
+        table.getHat().enableAddButton(true);
 
         ArtaTextColumn<UserTree> idColumn = new ArtaTextColumn<UserTree>("id") {
             @Override
@@ -1545,7 +1550,7 @@ public class ShowCasePanel extends FlowPanel {
         setMarginLeft(checkbox3, 20);
         root.add(checkbox3);
 
-        root.add(new HTML("<br/>"));
+        root.add(new Br());
 
         ArtaRadioButton[] radios = new ArtaRadioButton[] {
                 new ArtaRadioButton("showCaseRadio"), new ArtaRadioButton("showCaseRadio"),
@@ -1822,7 +1827,7 @@ public class ShowCasePanel extends FlowPanel {
         smallWidthInput.setPlaceHolder(SCMessages.i18n().tr("Маленькое поле ввода"));
         smallWidthInput.setWidth("100px");
 
-        root.add(new HTML("<br/>"));
+        root.add(new Br());
 
         SearchResultInput<String> searchEnabledWithButton = new SearchResultInput<String>(true);
         addCodeSample(searchEnabledWithButton, SCMessages.i18n().tr("Поле поиска"), ShowCase.SC_RESOURCES.search().getText());
@@ -1850,7 +1855,7 @@ public class ShowCasePanel extends FlowPanel {
         searchNoButton.setList(list3);
         root.add(searchNoButton);
 
-        root.add(new HTML("<br />"));
+        root.add(new Br());
 
         NumberInput integersInput = new NumberInput();
         addCodeSample(integersInput, SCMessages.i18n().tr("Числовое поле (целые)"), ShowCase.SC_RESOURCES.numberInputInteger().getText());
@@ -1876,7 +1881,7 @@ public class ShowCasePanel extends FlowPanel {
         maxInput.setPlaceHolder(SCMessages.i18n().tr("Максимально 200"));
         root.add(maxInput);
 
-        root.add(new HTML("<br />"));
+        root.add(new Br());
 
         final ArtaTextArea textArea = new ArtaTextArea();
         textArea.setPlaceHolder(SCMessages.i18n().tr("Многострочное поле ввода"));
@@ -1893,7 +1898,7 @@ public class ShowCasePanel extends FlowPanel {
         textAreaEmpty.setPlaceHolder(SCMessages.i18n().tr("Обязательное многострочное поле ввода"));
         root.add(textAreaEmpty);
 
-        root.add(new HTML("<br />"));
+        root.add(new Br());
 
         final ArtaTextArea textAreaSize = new ArtaTextArea(false);
         addCodeSample(textAreaSize, SCMessages.i18n().tr("Многострочное поле ввода"), ShowCase.SC_RESOURCES.textarea().getText());
@@ -1907,7 +1912,7 @@ public class ShowCasePanel extends FlowPanel {
         textAreaWidth.setWidth("500px");
         root.add(textAreaWidth);
 
-        root.add(new HTML("<br />"));
+        root.add(new Br());
 
         SimpleButton button = new SimpleButton(SCMessages.i18n().tr("Валидация полей"), SimpleButton.Type.APPROVE);
         button.addClickHandler(new ClickHandler() {
@@ -2058,19 +2063,19 @@ public class ShowCasePanel extends FlowPanel {
         iconButton2.setWidth("150px");
         iconButtonPanel.add(iconButton2);
         iconButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton2.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(iconButton2, horizontalMargin);
 
         SimpleButton iconButton3 = new SimpleButton(SCMessages.i18n().tr("Кнопка неактивная"), ShowCase.SC_IMAGES.zoom());
         iconButton3.setWidth("200px");
         iconButtonPanel.add(iconButton3);
         iconButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton3.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(iconButton3, 10);
         iconButton3.setEnabled(false);
 
         ImageButton iconButton4 = new ImageButton(ShowCase.SC_IMAGES.zoom());
         addCodeSample(iconButton4, SCMessages.i18n().tr("Кнопка только с иконкой"), ShowCase.SC_RESOURCES.onlyIconButton().getText());
         iconButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(iconButton4, horizontalMargin);
         iconButtonPanel.add(iconButton4);
 
         ImageButton iconButton5 = new ImageButton(ShowCase.SC_IMAGES.zoom());
@@ -2084,7 +2089,7 @@ public class ShowCasePanel extends FlowPanel {
         iconButton6.setWidth("150px");
         iconButtonPanel.add(iconButton6);
         iconButton6.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton6.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(iconButton6, horizontalMargin);
         iconButton6.setContextMenu(menu2);
 
         ContextMenu menu4 = createSimpleMenu();
@@ -2092,7 +2097,7 @@ public class ShowCasePanel extends FlowPanel {
         iconButton7.setWidth("150px");
         iconButtonPanel.add(iconButton7);
         iconButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton7.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(iconButton7, horizontalMargin);
         iconButton7.setContextMenu(menu4);
 
         ContextMenu menu5 = createSimpleMenu();
@@ -2101,7 +2106,7 @@ public class ShowCasePanel extends FlowPanel {
         iconButton8.setWidth("400px");
         iconButtonPanel.add(iconButton8);
         iconButton8.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        iconButton8.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(iconButton8, horizontalMargin);
         iconButton8.setContextMenu(menu5);
         return iconButtonPanel;
     }
@@ -2188,6 +2193,7 @@ public class ShowCasePanel extends FlowPanel {
 
         final SimpleToggleButton toggleButton = new SimpleToggleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"));
         addCodeSample(toggleButton, SCMessages.i18n().tr("Групповая кнопка"), ShowCase.SC_RESOURCES.toggleButton().getText());
+        setMarginLeft(toggleButton, horizontalMargin);
         toggleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         panel.add(toggleButton);
 
@@ -2310,7 +2316,7 @@ public class ShowCasePanel extends FlowPanel {
         });
         groupButtonPanel3.buildPanel();
         groupButtonPanel3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        groupButtonPanel3.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(groupButtonPanel3, horizontalMargin);
         panel.add(groupButtonPanel3);
 
         GroupButtonPanel groupButtonPanel4 = new GroupButtonPanel();
@@ -2335,7 +2341,7 @@ public class ShowCasePanel extends FlowPanel {
         });
         groupButtonPanel4.buildPanel();
         groupButtonPanel4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
-        groupButtonPanel4.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        setMarginLeft(groupButtonPanel4, horizontalMargin);
         panel.add(groupButtonPanel4);
 
         return panel;

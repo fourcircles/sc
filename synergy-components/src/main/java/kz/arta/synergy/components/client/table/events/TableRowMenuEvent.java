@@ -7,12 +7,20 @@ import com.google.gwt.event.shared.GwtEvent;
  * User: vsl
  * Date: 30.09.14
  * Time: 15:28
+ *
+ * Событие для контекстного меню ряда таблицы
  */
 public class TableRowMenuEvent<T> extends GwtEvent<TableRowMenuEvent.Handler<T>> {
     public static final Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
+    /**
+     * Объект соответствующий ряду для которого вызвано меню
+     */
     private T object;
 
+    /**
+     * Координаты клика мыши
+     */
     private int x;
     private int y;
 

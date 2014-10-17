@@ -53,10 +53,6 @@ public class MultiComboBox<V> extends TagInput<V> {
         dropDownList.addItem(text, value);
     }
 
-    public boolean contains(V value) {
-        return super.contains(value);
-    }
-
     public void removeItem(V value) {
         Tag<V> tag = getTag(value);
         if (tag != null) {

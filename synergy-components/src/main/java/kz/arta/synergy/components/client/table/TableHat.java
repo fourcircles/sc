@@ -103,7 +103,7 @@ public class TableHat extends Composite {
     /**
      * Показать или скрыть кнопку.
      */
-    public void enableButton(boolean enabled) {
+    public void enableAddButton(boolean enabled) {
         if (addButton == null) {
             addButton = new SimpleButton(Messages.i18n().tr("Добавить"), ImageResources.IMPL.zoom());
         }
@@ -170,6 +170,9 @@ public class TableHat extends Composite {
 
     public void enablePagerAlways(boolean always) {
         pagerEnabledAlways = always;
+        if (always) {
+            pagerEnabled = true;
+        }
         updatePagerVisibility();
     }
 }

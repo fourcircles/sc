@@ -16,9 +16,9 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.comments.events.InputChangeEvent;
-import kz.arta.synergy.components.client.dagger.DaggerDropDownList;
-import kz.arta.synergy.components.client.dagger.DaggerItem;
-import kz.arta.synergy.components.client.dagger.events.DaggerItemSelectionEvent;
+import kz.arta.synergy.components.client.menu.DropDownList;
+import kz.arta.synergy.components.client.menu.MenuItem;
+import kz.arta.synergy.components.client.menu.events.MenuItemSelection;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
@@ -35,7 +35,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
     /**
      * Выпадающий список
      */
-    private DaggerDropDownList<V> daggerList;
+    private DropDownList<V> daggerList;
 
     /**
      * Текст
@@ -57,7 +57,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
      */
     private ListTextFilter filter = ListTextFilter.createPrefixFilter();
 
-    private DaggerItem<V> selectedItem;
+    private MenuItem<V> selectedItem;
 
     public ComboBox() {
         final ArtaFlowPanel root = new ArtaFlowPanel();
@@ -103,16 +103,16 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
 
         EventBus listBus = new SimpleEventBus();
 
-        daggerList = new DaggerDropDownList<V>();
+        daggerList = new DropDownList<V>();
         daggerList.setLeftRightNavigation(false);
         daggerList.setFilter(filter);
         daggerList.addAutoHidePartner(getElement());
 //        list = new DropDownList<V>(this, listBus);
 //        list.setRelativeWidget(this);
 //        list.setFilter(filter);
-        daggerList.addDaggerItemSelectionHandler(new DaggerItemSelectionEvent.Handler<V>() {
+        daggerList.addDaggerItemSelectionHandler(new MenuItemSelection.Handler<V>() {
             @Override
-            public void onDaggerItemSelection(DaggerItemSelectionEvent<V> event) {
+            public void onItemSelection(MenuItemSelection<V> event) {
                 selectItem(event.getItem(), true);
             }
         });
@@ -207,7 +207,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
      * Выбирает элемент списка
      * @param item элемент списка
      */
-    private void selectItem(DaggerItem<V> item) {
+    private void selectItem(MenuItem<V> item) {
         selectItem(item, true);
     }
 
@@ -216,9 +216,12 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
      * @param item элемент списка
      * @param fireEvents создавать ли события о выборе элемента
      */
-    private void selectItem(DaggerItem<V> item, boolean fireEvents) {
+    private void selectItem(MenuItem<V> item, boolean fireEvents) {
         if (item == null) {
             return;
+        }
+        if (selectedItem != null) {
+            selectedItem.setValue(false, false);
         }
         item.setValue(true, false);
         selectedItem = item;
@@ -242,7 +245,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
      * @param text текст элемента
      */
     public void addItem(String text, V value) {
-        daggerList.addItem(new DaggerItem<V>(value, text));
+        daggerList.addItem(new MenuItem<V>(value, text));
     }
 
     /**
@@ -251,7 +254,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
      * @param iconResource иконка элемента в списке
      */
     public void addItem(String text, ImageResource iconResource, V value) {
-        daggerList.addItem(new DaggerItem<V>(value, text, iconResource));
+        daggerList.addItem(new MenuItem<V>(value, text, iconResource));
     }
 
     /**

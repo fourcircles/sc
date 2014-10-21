@@ -1,7 +1,6 @@
 package kz.arta.synergy.components.client.menu.filters;
 
-import kz.arta.synergy.components.client.dagger.DaggerItem;
-import kz.arta.synergy.components.client.menu.DropDownList;
+import kz.arta.synergy.components.client.menu.MenuItem;
 import kz.arta.synergy.components.client.menu.events.HasFilterUpdateHandlers;
 
 /**
@@ -17,7 +16,5 @@ public interface ListFilter extends HasFilterUpdateHandlers{
      * Включать ли элемент в список
      * @param item элемент
      */
-    boolean include(DropDownList.Item item);
-
-    boolean include(DaggerItem<?> item);
+    boolean include(MenuItem<?> item);
 }

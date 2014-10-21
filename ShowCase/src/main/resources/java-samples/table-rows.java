@@ -1,7 +1,6 @@
 import com.google.gwt.user.client.Command;
 import com.google.gwt.view.client.ListDataProvider;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
-import kz.arta.synergy.components.client.menu.ContextMenu;
 import kz.arta.synergy.components.client.table.Pager;
 import kz.arta.synergy.components.client.table.Table;
 import kz.arta.synergy.components.client.table.User;

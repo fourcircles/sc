@@ -1,7 +1,5 @@
 import com.google.gwt.event.shared.SimpleEventBus;
 import kz.arta.synergy.components.client.input.SearchResultInput;
-import kz.arta.synergy.components.client.menu.DropDownList;
-import kz.arta.synergy.components.client.menu.events.SelectionEvent;
 
 public class Sample {
     public static void main(String[] args) {

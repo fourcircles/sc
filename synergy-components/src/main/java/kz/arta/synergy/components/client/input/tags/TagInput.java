@@ -12,13 +12,13 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.SimplePanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
+import kz.arta.synergy.components.client.menu.DropDownListMulti;
+import kz.arta.synergy.components.client.menu.MenuItem;
+import kz.arta.synergy.components.client.menu.events.MenuItemSelection;
 import kz.arta.synergy.components.client.input.InputWithEvents;
 import kz.arta.synergy.components.client.input.events.TextChangedEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
-import kz.arta.synergy.components.client.menu.DropDownList;
-import kz.arta.synergy.components.client.menu.DropDownListMulti;
-import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.Utils;
@@ -32,9 +32,6 @@ import java.util.List;
  * Time: 16:20
  *
  * Поле с тегами
- *
- * Добавление и удаление тегов происходит через соответствующие методы и
- * выбором элементов из списка (при отсутствии списка через поле ввода и enter).
  */
 public class TagInput<V> extends TagsContainer<V> implements HasText,
         TagAddEvent.HasHandler<V>, TagRemoveEvent.HasHandler<V>, HasEnabled {
@@ -76,7 +73,10 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
     /**
      * Выпадающий список для поля
      */
-    protected DropDownListMulti<V> dropDownList;
+    protected DropDownListMulti<Tag<V>> list;
+
+    private boolean listEnabled = false;
+
 
     private ListTextFilter filter = ListTextFilter.createPrefixFilter();
 
@@ -141,8 +141,8 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
                         keyEnter();
                         break;
                     case KeyCodes.KEY_DOWN:
-                        if (dropDownList != null && !dropDownList.isShowing()) {
-                            dropDownList.show();
+                        if (listEnabled && !list.isShowing()) {
+                            list.showUnder(TagInput.this);
                         }
                         break;
                     default:
@@ -166,10 +166,6 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
         TagRemoveEvent.register(innerBus, new TagRemoveEvent.Handler<V>() {
             @Override
             public void onTagRemove(TagRemoveEvent<V> event) {
-                Tag<V> tag = event.getTag();
-                if (!tag.isDummy() && dropDownList.contains(tag.getValue())) {
-                    ((DropDownListMulti.Item) dropDownList.get(tag.getValue())).setSelected(false, false);
-                }
                 new Timer() {
                     @Override
                     public void run() {
@@ -179,15 +175,20 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
             }
         });
 
+        list = new DropDownListMulti<Tag<V>>();
+        list.setLeftRightNavigation(false);
+        list.setFilter(filter);
+
+        list.removeAutoHidePartner(this.getElement());
+        if (hasButton) {
+            list.addAutoHidePartner(mainButton.getElement());
+        }
+
         //Выбор элемента в списке
-        ListSelectionEvent.register(innerBus, new ListSelectionEvent.Handler<V>() {
+        list.addDaggerItemSelectionHandler(new MenuItemSelection.Handler<Tag<V>>() {
             @Override
-            public void onSelection(final ListSelectionEvent<V> selectionEvent) {
-                onListSelection(selectionEvent.getItem(), true);
-            }
-            @Override
-            public void onDeselection(ListSelectionEvent<V> event) {
-                onListSelection(event.getItem(), false);
+            public void onItemSelection(MenuItemSelection<Tag<V>> event) {
+                onListSelection(event.getItem(), event.isSelected());
             }
         });
     }
@@ -211,45 +212,67 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
         if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
             return;
         }
-        if (dropDownList != null) {
-            if (dropDownList.isShowing()) {
-                dropDownList.hide();
+        if (listEnabled) {
+            if (list.isShowing()) {
+                list.hide();
             } else {
-                dropDownList.show();
+                list.showUnder(this);
             }
         }
     }
 
-    /**
-     * Вызывается при выборе элемента в выпадающем списке
-     * @param item элемент списка
-     * @param select добавить в таги или убрать
-     */
-    private void onListSelection(DropDownList<V>.Item item, boolean select) {
-        if (select) {
-            Tag<V> tag = new Tag<V>(item.getText(), item.getValue());
-            tag.setBus(innerBus);
+    public void addListItem(V value, String text) {
+        Tag<V> tag = new Tag<V>(text, value);
+        tag.setBus(innerBus);
 
-            addTag(tag);
-
-            input.setText("");
-            dropDownList.noFocused();
-            newListSelection();
-        } else {
-            for (Tag<V> tag : tagsPanel.getTags()) {
-                //noinspection NonJREEmulationClassesInClientCode
-                if (tag.getValue().equals(item.getValue())) {
-                    removeTag(tag);
-                    break;
-                }
+        final MenuItem<Tag<V>> newItem = new MenuItem<Tag<V>>(tag, text);
+        tag.addTagRemoveHandler(new TagRemoveEvent.Handler<V>() {
+            @Override
+            public void onTagRemove(TagRemoveEvent<V> event) {
+                newItem.setValue(false, false);
             }
+        });
+
+        list.addItem(newItem);
+    }
+
+    protected MenuItem<Tag<V>> getListItem(V value) {
+        if (value == null) {
+            return null;
+        }
+        for (int i = 0; i < list.size(); i++) {
+            MenuItem<Tag<V>> listItem = list.getItemAt(i);
+            //noinspection NonJREEmulationClassesInClientCode
+            if (value.equals(listItem.getUserValue().getValue())) {
+                return listItem;
+            }
+        }
+        return null;
+    }
+
+    public void removeListItem(V value) {
+        MenuItem<Tag<V>> item = getListItem(value);
+        if (item != null) {
+            list.removeItem(item);
+        }
+    }
+
+    public void removeListItem(int index) {
+        if (index >= 0 && index < list.size()) {
+            list.removeItem(list.getItemAt(index));
+        }
+    }
+
+    protected void onListSelection(final MenuItem<Tag<V>> item, boolean select) {
+        if (select) {
+            addTag(item.getUserValue());
+            input.setText("");
+            list.noFocused();
+            input.setFocus(true);
+        } else {
+            removeTag(item.getUserValue());
         }
         setInputOffset(tagsPanel.getOffsetWidth());
-    }
-
-    protected void newListSelection() {
-        input.setFocus(true);
-        dropDownList.hide();
     }
 
     protected void tagRemoved() {
@@ -270,7 +293,9 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
 
             input.setText("");
             setInputOffset(tagsPanel.getOffsetWidth());
-            dropDownList.hide();
+            if (listEnabled) {
+                list.hide();
+            }
         }
     }
 
@@ -295,8 +320,8 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
         setInputOffset(tagsPanel.getOffsetWidth());
         filter.setText(input.getText());
 
-        if (dropDownList != null) {
-            dropDownList.show();
+        if (listEnabled) {
+            list.showUnder(this);
         }
     }
 
@@ -370,21 +395,6 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
         textChanged();
     }
 
-    public DropDownListMulti<V> getDropDownList() {
-        return dropDownList;
-    }
-
-    public void setDropDownList(final DropDownListMulti<V> dropDownList) {
-        this.dropDownList = dropDownList;
-        dropDownList.setFilter(filter);
-
-        dropDownList.removeAutoHidePartner(this.getElement());
-        if (hasButton) {
-            dropDownList.addAutoHidePartner(mainButton.getElement());
-        }
-        dropDownList.setBus(innerBus);
-    }
-
     @Override
     public boolean isEnabled() {
         return input.isEnabled();
@@ -416,11 +426,16 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
 
     public void setListFilter(ListTextFilter filter) {
         this.filter = filter;
-        if (dropDownList != null) {
-            dropDownList.setFilter(filter);
+        if (list != null) {
+            list.setFilter(filter);
         }
         if (filter != null) {
             filter.setText(getText());
         }
     }
+
+    public void setListEnabled(boolean listEnabled) {
+        this.listEnabled = listEnabled;
+    }
+
 }

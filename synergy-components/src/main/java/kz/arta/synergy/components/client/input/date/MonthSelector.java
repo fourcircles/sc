@@ -13,8 +13,8 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.DropDownList;
-import kz.arta.synergy.components.client.menu.FixedWidthList;
-import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
+import kz.arta.synergy.components.client.menu.MenuItem;
+import kz.arta.synergy.components.client.menu.events.MenuItemSelection;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.util.DateUtil;
@@ -55,12 +55,12 @@ public class MonthSelector extends Composite {
     /**
      * Список годов
      */
-    FixedWidthList<Integer> yearsList;
+    DropDownList<Integer> yearsList;
 
     /**
      * Список месяцев  (0 - январь .. 11 - декабрь)
      */
-    FixedWidthList<Integer> monthList;
+    DropDownList<Integer> monthList;
 
     ArtaDatePicker picker;
 
@@ -92,27 +92,27 @@ public class MonthSelector extends Composite {
         } else {
             monthLabel.getElement().getStyle().setPaddingRight(5, Style.Unit.PX);
         }
+
         EventBus monthBus = new SimpleEventBus();
-        monthList = new FixedWidthList<Integer>(monthLabel, monthBus);
-        monthList.setWidth(Constants.yearListWidth());
-        monthList.setBorderTop(true);
-        ListSelectionEvent.register(monthBus, new ListSelectionEvent.Handler<Integer>() {
+
+        monthList = new DropDownList<Integer>();
+        monthList.setMinWidth(Constants.YEAR_LIST_WIDTH);
+        monthList.addAutoHidePartner(monthLabel.getElement());
+
+        monthList.addDaggerItemSelectionHandler(new MenuItemSelection.Handler<Integer>() {
             @Override
-            public void onSelection(ListSelectionEvent<Integer> event) {
-                monthList.setSelectedValue(event.getItem().getValue());
+            public void onItemSelection(MenuItemSelection<Integer> event) {
                 Date month = new Date(picker.currentDate.getTime());
-                month.setMonth(event.getItem().getValue());
+                month.setMonth(event.getItem().getUserValue());
                 picker.setCurrentDate(month, false);
-                monthLabel.setText(DateUtil.getMonth(event.getItem().getValue()));
+                monthLabel.setText(DateUtil.getMonth(event.getItem().getUserValue()));
                 monthList.hide();
             }
         });
         for (int i = 0; i < 12; i++) {
-            DropDownList.Item item = monthList.addItem(DateUtil.getMonth(i), i);
-            if ((Integer)item.getValue() == DateUtil.getCurrentDate().getMonth()) {
-                monthList.setSelectedValue((Integer)item.getValue());
-            }
+            monthList.addItem(new MenuItem<Integer>(i, DateUtil.getMonth(i)));
         }
+        monthList.selectItem(monthList.get(DateUtil.getCurrentDate().getMonth()), true, false);
 
         monthLabel.addClickHandler(new ClickHandler() {
             @Override
@@ -122,7 +122,7 @@ public class MonthSelector extends Composite {
                 if (monthList.isShowing()) {
                     monthList.hide();
                 } else {
-                    monthList.show(monthList.getSelectedItem());
+                    monthList.showUnder(monthLabel, true);
                 }
             }
         });
@@ -131,27 +131,28 @@ public class MonthSelector extends Composite {
         yearLabel.setText((DateUtil.getCurrentDate().getYear() + DateUtil.YEAR_OFFSET) + "");
         yearLabel.setStyleName(SynergyComponents.getResources().cssComponents().bigText());
         yearLabel.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+
+
         EventBus bus = new SimpleEventBus();
-        yearsList = new FixedWidthList<Integer>(yearLabel, bus);
-        yearsList.setWidth(Constants.yearListWidth());
-        yearsList.setBorderTop(true);
-        ListSelectionEvent.register(bus, new ListSelectionEvent.Handler<Integer>() {
+        yearsList = new DropDownList<Integer>();
+        yearsList.setMinWidth(Constants.YEAR_LIST_WIDTH);
+        yearsList.addAutoHidePartner(yearLabel.getElement());
+
+        yearsList.addDaggerItemSelectionHandler(new MenuItemSelection.Handler<Integer>() {
             @Override
-            public void onSelection(ListSelectionEvent<Integer> event) {
-                yearsList.setSelectedValue(event.getItem().getValue());
-                yearLabel.setText(event.getItem().getValue() + "");
+            public void onItemSelection(MenuItemSelection<Integer> event) {
+                yearLabel.setText(event.getItem().getUserValue() + "");
                 yearsList.hide();
                 Date year = new Date(picker.currentDate.getTime());
-                year.setYear(event.getItem().getValue() - DateUtil.YEAR_OFFSET);
+                year.setYear(event.getItem().getUserValue() - DateUtil.YEAR_OFFSET);
                 picker.setCurrentDate(year, false);
             }
         });
+
         for (int i = DateUtil.getCurrentDate().getYear() - 90; i < DateUtil.getCurrentDate().getYear() + 10; i++) {
-            DropDownList.Item item = yearsList.addItem((i + DateUtil.YEAR_OFFSET) + "", (i + DateUtil.YEAR_OFFSET));
-            if ((Integer)item.getValue() == DateUtil.getCurrentDate().getYear() + DateUtil.YEAR_OFFSET) {
-                yearsList.setSelectedValue((Integer)item.getValue());
-            }
+            yearsList.addItem(new MenuItem<Integer>(i + DateUtil.YEAR_OFFSET, (i + DateUtil.YEAR_OFFSET) + ""));
         }
+        yearsList.selectItem(yearsList.get(DateUtil.getCurrentDate().getYear() + DateUtil.YEAR_OFFSET), true, false);
 
         yearLabel.addClickHandler(new ClickHandler() {
             @Override
@@ -161,7 +162,7 @@ public class MonthSelector extends Composite {
                 if (yearsList.isShowing()) {
                     yearsList.hide();
                 } else {
-                    yearsList.show(yearsList.getSelectedItem());
+                    yearsList.showUnder(yearLabel, true);
                 }
             }
         });

@@ -31,8 +31,10 @@ import kz.arta.synergy.components.client.checkbox.ArtaCheckBox;
 import kz.arta.synergy.components.client.checkbox.ArtaRadioButton;
 import kz.arta.synergy.components.client.collapsing.CollapsingPanel;
 import kz.arta.synergy.components.client.comments.*;
-import kz.arta.synergy.components.client.dagger.DaggerContextMenu;
-import kz.arta.synergy.components.client.dagger.DaggerItem;
+import kz.arta.synergy.components.client.menu.ContextMenu;
+import kz.arta.synergy.components.client.menu.DropDownList;
+import kz.arta.synergy.components.client.menu.DropDownListMulti;
+import kz.arta.synergy.components.client.menu.MenuItem;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
@@ -49,9 +51,6 @@ import kz.arta.synergy.components.client.input.number.*;
 import kz.arta.synergy.components.client.input.tags.MultiComboBox;
 import kz.arta.synergy.components.client.input.tags.ObjectChooser;
 import kz.arta.synergy.components.client.input.tags.TagInput;
-import kz.arta.synergy.components.client.menu.ContextMenu;
-import kz.arta.synergy.components.client.menu.DropDownList;
-import kz.arta.synergy.components.client.menu.DropDownListMulti;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
@@ -149,37 +148,37 @@ public class ShowCasePanel extends FlowPanel {
                 menu.clear();
                 final TreeItem item = event.getItem();
                 if (item.isSelected()) {
-                    menu.addItem(SCMessages.i18n().tr("Снять выделение"), new Command() {
+                    menu.addItem(new MenuItem<Command>(new Command() {
                         @Override
                         public void execute() {
                             item.setSelected(false);
                         }
-                    });
+                    }, SCMessages.i18n().tr("Снять выделение")));
                 } else {
-                    menu.addItem(SCMessages.i18n().tr("Выделить"), new Command() {
+                    menu.addItem(new MenuItem<Command>(new Command() {
                         @Override
                         public void execute() {
                             item.setSelected(true);
                         }
-                    });
+                    }, SCMessages.i18n().tr("Выделить")));
                 }
 
                 if (item.hasItems()) {
-                    menu.addSeparator();
+                    menu.addSeparator(0);
                     if (item.isOpen()) {
-                        menu.addItem(SCMessages.i18n().tr("Закрыть"), new Command() {
+                        menu.addItem(new MenuItem<Command>(new Command() {
                             @Override
                             public void execute() {
                                 item.setOpen(false);
                             }
-                        });
+                        }, SCMessages.i18n().tr("Закрыть")));
                     } else {
-                        menu.addItem(SCMessages.i18n().tr("Открыть"), new Command() {
+                        menu.addItem(new MenuItem<Command>(new Command() {
                             @Override
                             public void execute() {
                                 item.setOpen(true);
                             }
-                        });
+                        }, SCMessages.i18n().tr("Открыть")));
                     }
                 }
                 menu.show(event.getX(), event.getY());
@@ -718,7 +717,7 @@ public class ShowCasePanel extends FlowPanel {
 
         TreeItem buttons = tree.addItem(basicComponents, SCMessages.i18n().tr("Кнопки"));
 
-        addTreeItem(buttons, new LoadPanel(SCMessages.i18n().tr("Простая кнопка")) {
+        firstTab = addTreeItem(buttons, new LoadPanel(SCMessages.i18n().tr("Простая кнопка")) {
             @Override
             public Widget getContentWidget() {
                 return getSimpleButtonPanel();
@@ -1063,7 +1062,7 @@ public class ShowCasePanel extends FlowPanel {
         scroll.setHeight("100%");
 
         final ContextMenu cellMenu = new ContextMenu();
-        final ContextMenu.ContextMenuItem item = cellMenu.addItem(SCMessages.i18n().tr("Меню для ячейки"), null);
+        final MenuItem<Command> item = new MenuItem<Command>(null, SCMessages.i18n().tr("Меню для ячейки"));
 
         table.getCore().addCellMenuHandler(new TableCellMenuEvent.Handler<User>() {
             @Override
@@ -1080,13 +1079,13 @@ public class ShowCasePanel extends FlowPanel {
             @Override
             public void onTableRowMenu(final TableRowMenuEvent<User> event) {
                 rowMenu.clear();
-                rowMenu.addItem(SCMessages.i18n().tr("Удалить ряд"), new Command() {
+                rowMenu.addItem(new MenuItem<Command>(new Command() {
                     @Override
                     public void execute() {
                         provider.getList().remove(event.getObject());
                         provider.flush();
                     }
-                });
+                }, SCMessages.i18n().tr("Удалить ряд")));
                 rowMenu.show(event.getX(), event.getY());
             }
         });
@@ -1096,12 +1095,12 @@ public class ShowCasePanel extends FlowPanel {
             @Override
             public void onTableHeaderMenu(final TableHeaderMenuEvent<User> event) {
                 headerMenu.clear();
-                headerMenu.addItem(SCMessages.i18n().tr("Отсортировать"), new Command() {
+                headerMenu.addItem(new MenuItem<Command>(new Command() {
                     @Override
                     public void execute() {
                         table.getCore().sort(event.getColumn());
                     }
-                });
+                }, SCMessages.i18n().tr("Отсортировать")));
                 headerMenu.show(event.getX(), event.getY());
             }
         });
@@ -1633,25 +1632,34 @@ public class ShowCasePanel extends FlowPanel {
         return names;
     }
 
-    private DropDownList<String> createList(Widget relativeWidget) {
-        DropDownList<String> list = new DropDownList<String>(relativeWidget, new SimpleEventBus());
-
+    private DropDownList<String> createList() {
+        DropDownList<String> list = new DropDownList<String>();
         for (String name : createShuffledNames()) {
-            list.addItem(name, name);
+            list.addItem(new MenuItem<String>(name, name));
         }
 
         return list;
     }
 
-    private DropDownListMulti<String> createMultiList(Widget parent) {
-        DropDownListMulti<String> multiList = new DropDownListMulti<String>(parent, new SimpleEventBus());
+//    private DropDownListMulti<String> createMultiList(Widget parent) {
+//        DropDownListMulti<String> multiList = new DropDownListMulti<String>(parent, new SimpleEventBus());
+//
+//        String[] names = createShuffledNames();
+//        for (String name : names) {
+//            multiList.addItem(name, name);
+//        }
+//
+//        return multiList;
+//    }
 
+    private DropDownListMulti<String> createMultiList(Widget parent) {
+        DropDownListMulti<String> list = new DropDownListMulti<String>();
         String[] names = createShuffledNames();
         for (String name : names) {
-            multiList.addItem(name, name);
+            list.addItem(new MenuItem<String>(name, name));
         }
 
-        return multiList;
+        return list;
     }
 
     private static InlineLabel createLabel(String text) {
@@ -1727,7 +1735,11 @@ public class ShowCasePanel extends FlowPanel {
         addCodeSample(hasListHasIndicator, SCMessages.i18n().tr("Поле с тэгами"), ShowCase.SC_RESOURCES.tagInputList().getText());
         setMarginLeft(hasListHasIndicator, 20);
         hasListHasIndicator.setWidth(300);
-        hasListHasIndicator.setDropDownList(createMultiList(hasListHasIndicator));
+        for (String name : createShuffledNames()) {
+            hasListHasIndicator.addListItem(name, name);
+        }
+        hasListHasIndicator.setListEnabled(true);
+//        hasListHasIndicator.setDropDownList(createMultiList(hasListHasIndicator));
 
         hasListHasIndicator.setTitle(SCMessages.i18n().tr("Фильтрация списка по вхождению текста"));
         hasListHasIndicator.setListFilter(ListTextFilter.createPrefixFilter());
@@ -1750,7 +1762,13 @@ public class ShowCasePanel extends FlowPanel {
         addCodeSample(hasListNoButton, SCMessages.i18n().tr("Поле с тэгами без кнопки"),
                 ShowCase.SC_RESOURCES.tagInputNoButton().getText());
         hasListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        hasListNoButton.setDropDownList(createMultiList(hasListNoButton));
+
+        for (String name : createShuffledNames()) {
+            hasListNoButton.addListItem(name, name);
+        }
+        hasListNoButton.setListEnabled(true);
+//        hasListNoButton.setDropDownList(createMultiList(hasListNoButton));
+
         hasListNoButton.setTitle(SCMessages.i18n().tr("Префиксный выбор из списка"));
         rows[currentRow].add(hasListNoButton);
         enabledWidgets.add(hasListNoButton);
@@ -1766,7 +1784,7 @@ public class ShowCasePanel extends FlowPanel {
         String[] comboNames = createShuffledNames();
 
         for (String name : comboNames) {
-            multiComboBox.addItem(name, name);
+            multiComboBox.addListItem(name, name);
         }
         multiComboBox.select(comboNames[0]);
         multiComboBox.select(comboNames[1]);
@@ -1858,8 +1876,8 @@ public class ShowCasePanel extends FlowPanel {
         SearchResultInput<String> searchEnabledWithButton = new SearchResultInput<String>(true);
         addCodeSample(searchEnabledWithButton, SCMessages.i18n().tr("Поле поиска"), ShowCase.SC_RESOURCES.search().getText());
 
-        DropDownList<String> list = createList(searchEnabledWithButton);
-        for (DropDownList.Item item : list.getItems()) {
+        DropDownList<String> list = createList();
+        for (MenuItem<String> item : list.getItems()) {
             item.setIcon(ImageResources.IMPL.magzhan());
         }
         searchEnabledWithButton.setList(list);
@@ -1867,8 +1885,8 @@ public class ShowCasePanel extends FlowPanel {
 
         SearchResultInput<String> searchDisabledWithButton = new SearchResultInput<String>(true);
         setMarginLeft(searchDisabledWithButton, 20);
-        DropDownList<String> list2 = createList(searchDisabledWithButton);
-        for (DropDownList.Item item : list2.getItems()) {
+        DropDownList<String> list2 = createList();
+        for (MenuItem<String> item : list2.getItems()) {
             item.setIcon(ImageResources.IMPL.magzhan());
         }
         searchDisabledWithButton.setList(list2);
@@ -1877,7 +1895,7 @@ public class ShowCasePanel extends FlowPanel {
 
         SearchResultInput<String> searchNoButton = new SearchResultInput<String>(false);
         setMarginLeft(searchNoButton, 10);
-        DropDownList<String> list3 = createList(searchNoButton);
+        DropDownList<String> list3 = createList();
         searchNoButton.setList(list3);
         root.add(searchNoButton);
 
@@ -2007,14 +2025,13 @@ public class ShowCasePanel extends FlowPanel {
             }
         });
 
-        DaggerContextMenu daggerMenu = new DaggerContextMenu();
+        ContextMenu menu = new ContextMenu();
 
-        daggerMenu.addItem(new DaggerItem<Command>(null, "Zoom", ImageResources.IMPL.zoom()));
-        daggerMenu.addItem(new DaggerItem<Command>(null, "Left", ImageResources.IMPL.navigationLeft()));
-        daggerMenu.addItem(new DaggerItem<Command>(null, "Right", ImageResources.IMPL.navigationRight()));
-        daggerMenu.addSeparator(1);
+        menu.addItem(new MenuItem<Command>(null, "Zoom", ImageResources.IMPL.zoom()));
+        menu.addItem(new MenuItem<Command>(null, "Left", ImageResources.IMPL.navigationLeft()));
+        menu.addItem(new MenuItem<Command>(null, "Right", ImageResources.IMPL.navigationRight()));
+        menu.addSeparator(1);
 
-//        ContextMenu menuForSimple = createSimpleMenu();
         ContextMenuButton simpleButton4 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"));
         addCodeSample(simpleButton4, simpleButton4.getText(), ShowCase.SC_RESOURCES.simpleButtonMenu().getText());
         simpleButton4.addClickHandler(new ClickHandler() {
@@ -2028,8 +2045,10 @@ public class ShowCasePanel extends FlowPanel {
         setMarginLeft(simpleButton4, horizontalMargin);
         simpleButtonPanel.add(simpleButton4);
 
-        simpleButton4.setDaggerMenu(daggerMenu);
-//        simpleButton4.setContextMenu(menuForSimple);
+        simpleButton4.setContextMenu(menu);
+
+        ArtaDatePicker picker = new ArtaDatePicker();
+        simpleButtonPanel.add(picker);
 
         return simpleButtonPanel;
     }
@@ -2209,8 +2228,9 @@ public class ShowCasePanel extends FlowPanel {
         });
         colorButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(colorButton7, horizontalMargin);
+
         ContextMenu menu3 = createSimpleMenu();
-        menu3.addItem(SCMessages.i18n().tr("Очень-очень длинный текст"), null);
+        menu3.addItem(new MenuItem<Command>(null, SCMessages.i18n().tr("Очень-очень длинный текст")));
         colorButton7.setContextMenu(menu3);
 
         ArtaScrollPanel scroll = new ArtaScrollPanel();
@@ -2386,10 +2406,10 @@ public class ShowCasePanel extends FlowPanel {
 
     private ContextMenu createSimpleMenu() {
         ContextMenu menu = new ContextMenu();
-        menu.addItem("Zoom", ImageResources.IMPL.zoom(), null);
-        menu.addItem("Left", ImageResources.IMPL.navigationLeft(), null);
-        menu.addSeparator();
-        menu.addItem("Right", ImageResources.IMPL.navigationRight(), null);
+        menu.addItem(new MenuItem<Command>(null, "Zoom", ImageResources.IMPL.zoom()));
+        menu.addItem(new MenuItem<Command>(null, "Left", ImageResources.IMPL.navigationLeft()));
+        menu.addItem(new MenuItem<Command>(null, "Right", ImageResources.IMPL.navigationRight()));
+        menu.addSeparator(1);
         return menu;
     }
 

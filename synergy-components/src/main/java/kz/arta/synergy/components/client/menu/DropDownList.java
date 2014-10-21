@@ -1,396 +1,90 @@
-    package kz.arta.synergy.components.client.menu;
+package kz.arta.synergy.components.client.menu;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.MouseWheelEvent;
-import com.google.gwt.event.dom.client.MouseWheelHandler;
-import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.menu.events.MenuItemSelection;
 import kz.arta.synergy.components.client.menu.events.FilterUpdateEvent;
-import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
 import kz.arta.synergy.components.client.menu.filters.ListFilter;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
-import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * User: vsl
- * Date: 28.07.14
- * Time: 13:27
+ * Date: 20.10.14
+ * Time: 11:34
  *
- * Выпадающий список.
- * Когда показывать и скрывать список решает пользователь.
- *
- * При открытом списке нажатия клавиш навигации перехватываются.
- *
- * При попытке добавления значения, которое уже присутствует в списке
- * уже существующий элемент списка с данным значением будет заменен на новый.
- * Таким образом гарантируется, что в списке нет элементов с одинаковыми значениями.
+ * Выпадающий список. Скролл есть только вертикальный.
  */
-public class DropDownList<V> extends MenuBase {
-    protected EventBus bus;
-
+public class DropDownList<V> extends Menu<V> {
     /**
-     * Список добавленных элементов меню
+     * Выбранный элемент
      */
-    protected List<Item> items;
-
+    private MenuItem<V> selectedItem;
     /**
-     * Панель с вертикальным скроллом
+     * Хэндлер на выбор элемента
      */
-    private ArtaScrollPanel scroll;
+    protected ValueChangeHandler<Boolean> selectionHandler;
 
     /**
-     * Фильтр примененный к списку
+     * Фильтр
      */
     private ListFilter filter;
+    /**
+     * Регистрация текущего фильтра
+     */
     private HandlerRegistration filterRegistration;
-
     /**
-     * Отключены ли кнопки "влево" "вправо".
+     * Скролл
      */
-    private boolean leftRightEnabled;
+    private final ArtaScrollPanel scroll;
 
-    /**
-     * Элемент который представляет уже выбранный элемент
-     */
-    private Item selectedItem;
-
-    /**
-     * При использовании этого конструктора необходимо присвоить relativeWidget после создания
-     */
-    protected DropDownList() {
+    public DropDownList() {
         super();
-        scroll = new ArtaScrollPanel(root);
-        popup.setWidget(scroll);
-        popup.getElement().getStyle().setProperty("maxHeight", Constants.listMaxHeight());
 
-        items = new ArrayList<Item>();
+        scroll = new ArtaScrollPanel();
+        scroll.setWidget(root);
+        popup.setWidget(scroll);
 
         popup.setStyleName(SynergyComponents.getResources().cssComponents().contextMenu());
+    }
 
-        if (LocaleInfo.getCurrentLocale().isRTL()) {
-            root.getElement().getStyle().setPosition(Style.Position.RELATIVE);
-            // вроде как не происходит сдвига для стандартного скрываемого скролла
-            if (Navigator.isChrome()) {
-                root.getElement().getStyle().setRight(-15, Style.Unit.PX);
-            }
-        }
-
-        root.sinkEvents(Event.ONMOUSEWHEEL);
-        root.addDomHandler(new MouseWheelHandler() {
-            @Override
-            public void onMouseWheel(MouseWheelEvent event) {
-                event.stopPropagation();
-                event.preventDefault();
-
-                if (event.getDeltaY() > 0) {
-                    int next = getNext();
-                    focus(next, false);
-                } else {
-                    int previous = getPrevious();
-                    focus(previous, true);
+    @Override
+    protected ValueChangeHandler<Boolean> getSelectionHandler(MenuItem<V> newItem) {
+        if (selectionHandler == null) {
+            selectionHandler = new ValueChangeHandler<Boolean>() {
+                @Override
+                @SuppressWarnings({"unchecked"})
+                public void onValueChange(ValueChangeEvent<Boolean> event) {
+                    MenuItem<V> item = (MenuItem) event.getSource();
+                    hide();
+                    selectItem(item, event.getValue(), true);
                 }
+            };
+        }
+        return selectionHandler;
+    }
+
+    /**
+     * Выбирает элемент. Может быть выбран только один элемент.
+     * @param item элемент
+     * @param value true - выбирается, false - снимается выделение
+     * @param fireEvents создавать ли события
+     */
+    public void selectItem(MenuItem<V> item, boolean value, boolean fireEvents) {
+        item.setValue(true, false);
+
+        if (item != selectedItem) {
+            if (selectedItem != null) {
+                selectedItem.setValue(false, false);
             }
-        }, MouseWheelEvent.getType());
-    }
-
-    public DropDownList(Widget relativeWidget, EventBus bus) {
-        this();
-        this.bus = bus;
-        setRelativeWidget(relativeWidget);
-    }
-
-    /**
-     * Возвращает выбранный элемент
-     */
-    public Item getFocusedItem() {
-        if (focusedIndex != -1) {
-            return items.get(focusedIndex);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Сфокусировать элемент с заданным значением
-     * @param value значение
-     */
-    public void focusValue(V value) {
-        if (contains(value)) {
-            Item item = get(value);
-            focusedIndex = items.indexOf(item);
-            item.focus();
-        }
-    }
-
-    /**
-     * Выделяет элемент с заданным значением
-     * @param value значение
-     */
-    public void selectValue(V value) {
-        if (contains(value)) {
-            get(value).select();
-        }
-    }
-
-    /**
-     * Выделяет элемент с заданным значением как уже выбранный
-     * @param value значение
-     */
-    public void setSelectedValue(V value) {
-        if (contains(value)) {
-            if (getSelectedItem() != null) {
-                getSelectedItem().removeStyleName(SynergyComponents.getResources().cssComponents().selected());
-            }
-            selectedItem = get(value);
-            selectedItem.addStyleName(SynergyComponents.getResources().cssComponents().selected());
-        }
-    }
-
-    /**
-     * Возвращает элемент списка выделенный как уже выбранный
-     * @return элемент списка
-     */
-    public Item getSelectedItem() {
-        return selectedItem;
-    }
-
-    /**
-     * Возвращает список добавленных элементов
-     * @return список
-     */
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public Item get(int index) {
-        if (index >= 0 && index < items.size()) {
-            return items.get(index);
-        }
-        return null;
-    }
-
-    /**
-     * Возвращает элемент с заданным значением
-     * @param value значение
-     * @return элемент
-     */
-    @SuppressWarnings("NonJREEmulationClassesInClientCode")
-    public Item get(V value) {
-        for (Item item : items) {
-            if (item.getValue() == null) {
-                if (value == null) {
-                    return item;
-                }
-            } else if (item.getValue().equals(value)) {
-                return item;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Удаляет элемент из списка с заданным значением
-     * @param value значение
-     */
-    public void remove(V value) {
-        Item item = get(value);
-        if (item != null) {
-            items.remove(item);
-            root.remove(item);
-        }
-    }
-
-    /**
-     * Удаляет элемент на заданной позиции
-     * @param index позиция
-     */
-    public void remove(int index) {
-        root.remove(items.get(index));
-        items.remove(index);
-    }
-
-
-    @SuppressWarnings("NonJREEmulationClassesInClientCode")
-    public boolean contains(V value) {
-        for (Item item : items) {
-            if (item.getValue() == null) {
-                if (value == null) {
-                    return true;
-                }
-            } else if (item.getValue().equals(value)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean contains(Item item) {
-        return items.contains(item);
-    }
-
-    /**
-     * Создает элемент меню с текстом, добавляет его в список и возращает его.
-     */
-    public Item addItem(String text, V value) {
-        if (contains(value)) {
-            remove(value);
-        }
-
-        Item item = new Item();
-        item.setText(text);
-        item.setValue(value);
-        items.add(item);
-
-        addItem(item);
-
-        return item;
-    }
-
-    public Item addItem(String text, ImageResource icon, V value) {
-        if (contains(value)) {
-            remove(value);
-        }
-
-        Item item = new Item();
-        item.setText(text);
-        item.setValue(value);
-        item.setIcon(icon);
-        items.add(item);
-
-        addItem(item);
-
-        return item;
-    }
-
-    /**
-     * В выпадающем списке только один элемент может быть сфокусирован.
-     * @param index позиция
-     */
-    @Override
-    protected void focus(int index) {
-        noFocused();
-        super.focus(index);
-    }
-
-    /**
-     * Фокусирует элемент на позиции и
-     * @param index позиция
-     * @param scroll скроллить ли к элементу
-     */
-    private void focus(int index, boolean scroll) {
-        focus(index);
-        if (scroll) {
-            ensureVisible(items.get(index));
-        }
-    }
-
-
-    public void setLeftRightKeysEnabled(boolean enabled) {
-        leftRightEnabled = enabled;
-    }
-
-    /**
-     * Клавиша "вниз". При предпросмотре события оно отменяется.
-     */
-    @Override
-    protected void keyDown(Event.NativePreviewEvent event) {
-        event.cancel();
-        focus(getNext(), true);
-    }
-
-    /**
-     * Клавиша "вверх"
-     */
-    @Override
-    protected void keyUp(Event.NativePreviewEvent event) {
-        event.cancel();
-        focus(getPrevious(), true);
-    }
-
-    /**
-     * Клавиша "влево"
-     */
-    @Override
-    protected void keyLeft(Event.NativePreviewEvent event) {
-        if (leftRightEnabled) {
-            event.cancel();
-            focus(getFirst(), true);
-        }
-    }
-
-    /**
-     * Клавиша "вправо"
-     */
-    @Override
-    protected void keyRight(Event.NativePreviewEvent event) {
-        if (leftRightEnabled) {
-            event.cancel();
-            focus(getLast(), true);
-        }
-    }
-
-    /**
-     * Клавиша "Enter"
-     */
-    @Override
-    protected void keyEnter(Event.NativePreviewEvent event) {
-        event.cancel();
-        if (focusedIndex != -1) {
-            getFocusedItem().select();
-        }
-    }
-
-
-    /**
-     * Показывает список под элементом указанным при создании
-     */
-    public void show() {
-        noFocused();
-        if (selectedItem != null) {
-            selectedItem.removeStyleName(SynergyComponents.getResources().cssComponents().selected());
-        }
-
-        popup.setHeight(getHeight() + "px");
-
-        popup.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2 + "px");
-        root.getElement().getStyle().setProperty("maxWidth", relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2 + "px");
-
-        super.showUnderParent();
-        if (focusedIndex != -1) {
-            scroll.ensureVisible(getFocusedItem());
-        }
-    }
-
-    /**
-     * Показывает список, выделяет элемент на указанной позиции как уже выбранный
-     * @param selectedIndex позиция уже выбранного элемента
-     */
-    public void show(int selectedIndex) {
-        show(items.get(selectedIndex));
-    }
-
-    /**
-     * Тоже самое, что и show(int)
-     * @param item уже выбранный элемент
-     */
-    public void show(Item item) {
-        show();
-        if (item != null && items.contains(item) && (filter == null || filter.include(item))) {
             selectedItem = item;
-            item.addStyleName(SynergyComponents.getResources().cssComponents().selected());
-            scroll.ensureVisible(item);
-
-            //навигация клавиатурой при уже выбранном значении начинается с него
-            focusedIndex = items.indexOf(item);
+            if (fireEvents) {
+                fireEvent(new MenuItemSelection<V>(selectedItem, true));
+            }
         }
     }
 
@@ -413,16 +107,36 @@ public class DropDownList<V> extends MenuBase {
     }
 
     /**
+     * Определяет высоту из количества добавленых элементов
+     * @return высота
+     */
+    protected int getHeight() {
+        int cnt = root.getWidgetCount();
+        return Math.min(cnt * 32 + Math.max(cnt - 1, 0) * 2, Constants.LIST_MAX_HEIGHT);
+    }
+
+    /**
      * Применяет заданный фильтр
      */
     private void applyFilter() {
-        root.clear();
-        for (Item item: items) {
-            if (filter == null || filter.include(item)) {
-                root.add(item.asWidget());
+        if (filter != null) {
+            for (MenuItem<V> item : items) {
+                if (filter.include(item)) {
+                    root.add(item);
+                } else {
+                    root.remove(item);
+                }
+            }
+        } else {
+            for (MenuItem<V> item : items) {
+                root.add(item);
             }
         }
-        popup.setHeight(getHeight() + "px");
+        // сфокусированный элемент должен быть виден всегда
+        scrollToFocused();
+
+        // высота может измениться
+        popup.getElement().getStyle().setHeight(getHeight(), Style.Unit.PX);
     }
 
     /**
@@ -437,82 +151,133 @@ public class DropDownList<V> extends MenuBase {
         applyFilter();
     }
 
-    public void setWidth(String width) {
-        popup.setWidth(width);
+    @Override
+    protected void setPopupBeforeShow(Widget relativeWidget, boolean showBorders) {
+        super.setPopupBeforeShow(relativeWidget, showBorders);
+
+        int width = Math.max(minWidth, relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2);
+
+        root.getElement().getStyle().setProperty("maxWidth", width + "px");
+        scroll.getElement().getStyle().setProperty("maxWidth", width + "px");
+
+        scroll.getElement().getStyle().setHeight(getHeight(), Style.Unit.PX);
+        popup.getElement().getStyle().setHeight(getHeight(), Style.Unit.PX);
+
+        if (selectedItem != null) {
+            selectedItem.getElement().scrollIntoView();
+        }
     }
 
     /**
-     * Показывать ли верхнюю границу
-     * @param setBorder  true/false
+     * Возвращает следующий элемент в отфильтрованном списке.
+     * Поиск начинается с позиции start + 1 и заканчивается на start.
      */
-    public void setBorderTop(boolean setBorder) {
-        if (setBorder) {
-            popup.getElement().getStyle().setProperty("borderTop", "");
-            popup.getElement().getStyle().setPadding(0, Style.Unit.PX);
+    private MenuItem<V> nextIncluded(int start) {
+        int index = start + 1;
+        while (index < items.size() && !isIncluded(index)) {
+            index++;
+        }
+
+        if (index < items.size()) {
+            return items.get(index);
         } else {
-            popup.getElement().getStyle().setProperty("borderTop", "0px");
-        }
-    }
-
-
-    /**
-     * Элемент списка
-     */
-    public class Item extends MenuItem {
-        /**
-         * Значение элемента
-         */
-        private V value;
-
-        public V getValue() {
-            return value;
-        }
-
-        protected void setValue(V value) {
-            this.value = value;
-        }
-
-        @Override
-        public void focus() {
-            noFocused();
-            focusedIndex = items.indexOf(this);
-            super.focus();
-        }
-
-        @Override
-        protected void select() {
-            if (bus != null) {
-                bus.fireEventFromSource(new ListSelectionEvent<V>(this), DropDownList.this);
+            index = 0;
+            while (index <= start && index < items.size() && !isIncluded(index)) {
+                index++;
+            }
+            if (index <= start && index < items.size()) {
+                return items.get(index);
+            } else {
+                return null;
             }
         }
+    }
 
-        @Override
-        public boolean shouldBeSkipped() {
-            return super.shouldBeSkipped() || (filter != null && !filter.include(this));
+    /**
+     * Возвращает предыдущий элемент в отфильтрованном списке.
+     * Поиск начинается с позиции start - 1 и заканчивается на start.
+     */
+    private MenuItem<V> previousIncluded(int start) {
+        int index = start - 1;
+        while (index >= 0 && !isIncluded(index)) {
+            index--;
+        }
+        if (index >= 0) {
+            return items.get(index);
+        } else {
+            index = items.size() - 1;
+            while (index >= start && index >= 0 && !isIncluded(index)) {
+                index--;
+            }
+            if (index >= start && index >= 0) {
+                return items.get(index);
+            } else {
+                return null;
+            }
         }
     }
 
+    private boolean isIncluded(int index) {
+        return filter.include(items.get(index));
+    }
+
+    @Override
+    protected void focusNext() {
+        MenuItem<V> nextItem;
+        if (focusedIndex == -1) {
+            if (selectedItem != null) {
+                nextItem = nextIncluded(items.indexOf(selectedItem));
+            } else {
+                nextItem = nextIncluded(-1);
+            }
+        } else {
+            nextItem = nextIncluded(focusedIndex);
+        }
+        nextItem.setFocused(true, true);
+        scrollToFocused();
+    }
+
+    @Override
+    protected void focusPrevious() {
+        MenuItem<V> previousItem;
+        if (focusedIndex == -1) {
+            if (selectedItem != null) {
+                previousItem = previousIncluded(items.indexOf(selectedItem));
+            } else {
+                previousItem = previousIncluded(items.size());
+            }
+        } else {
+            previousItem = previousIncluded(focusedIndex);
+        }
+        previousItem.setFocused(true, true);
+        scrollToFocused();
+    }
+
+    @Override
+    protected void focusFirst() {
+        MenuItem<V> first = nextIncluded(-1);
+        if (first != null) {
+            first.setFocused(true, true);
+        }
+        scrollToFocused();
+    }
+
+    @Override
+    protected void focusLast() {
+        MenuItem<V> last = previousIncluded(items.size());
+        if (last != null) {
+            last.setFocused(true, true);
+        }
+        scrollToFocused();
+    }
+
     /**
-     * Определяет высоту из количества добавленых элементов
-     * @return высота
+     * Вызывается после изменения сфокусированного элемента.
      */
-    protected int getHeight() {
-        int cnt = root.getWidgetCount();
-        return Math.min(cnt * 32 + Math.max(cnt - 1, 0) * 2, Constants.LIST_MAX_HEIGHT);
+    private void scrollToFocused() {
+        if (focusedIndex != -1) {
+            items.get(focusedIndex).getElement().scrollIntoView();
+        }
     }
 
-    public EventBus getBus() {
-        return bus;
-    }
-
-    /**
-     * Задает EventBus на который будут публиковаться события выбора
-     */
-    public void setBus(EventBus bus) {
-        this.bus = bus;
-    }
-
-    public void ensureVisible(Item item) {
-        scroll.ensureVisible(item);
-    }
 }

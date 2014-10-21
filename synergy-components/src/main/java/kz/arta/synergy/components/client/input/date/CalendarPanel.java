@@ -169,8 +169,8 @@ public class CalendarPanel extends Composite {
         }
         datePicker.monthSelector.yearLabel.setText((datePicker.currentDate.getYear() + DateUtil.YEAR_OFFSET) + "");
         datePicker.monthSelector.monthLabel.setText(DateUtil.getMonth(datePicker.currentDate.getMonth()));
-        datePicker.monthSelector.monthList.setSelectedValue(datePicker.currentDate.getMonth());
-        datePicker.monthSelector.yearsList.setSelectedValue(datePicker.currentDate.getYear() + DateUtil.YEAR_OFFSET);
+        datePicker.monthSelector.monthList.selectItem(datePicker.monthSelector.monthList.get(datePicker.currentDate.getMonth()), true, false);
+        datePicker.monthSelector.yearsList.selectItem(datePicker.monthSelector.yearsList.get(datePicker.currentDate.getYear() + DateUtil.YEAR_OFFSET), true, false);
         if (selectDay) {
             if (fireChange) {
                 ValueChangeEvent.fire(datePicker, date);

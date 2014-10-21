@@ -1,6 +1,5 @@
 import com.google.gwt.event.shared.SimpleEventBus;
 import kz.arta.synergy.components.client.input.tags.TagInput;
-import kz.arta.synergy.components.client.menu.DropDownListMulti;
 
 public class Sample {
     public static void main(String[] args) {

@@ -1,20 +1,22 @@
-package kz.arta.synergy.components.client.dagger;
+package kz.arta.synergy.components.client.menu;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.client.dagger.events.DaggerFocusEvent;
-import kz.arta.synergy.components.client.dagger.events.DaggerItemSelectionEvent;
+import kz.arta.synergy.components.client.menu.events.MenuFocusEvent;
+import kz.arta.synergy.components.client.menu.events.MenuItemSelection;
 import kz.arta.synergy.components.client.util.ThickMouseMoveHandler;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -30,7 +32,9 @@ import java.util.Set;
  *
  * Базовый класс для меню, выпадающего списка и мультисписка (можно выбирать несколько значений).
  */
-public abstract class DaggerMenu<V> extends Composite {
+public abstract class Menu<V> {
+
+    protected EventBus bus = new SimpleEventBus();
 
     /**
      * При изменении размеров окна открытое меню немедленно закрывается
@@ -55,7 +59,7 @@ public abstract class DaggerMenu<V> extends Composite {
     /**
      * Список добавленных элементов
      */
-    protected List<DaggerItem<V>> items;
+    protected List<MenuItem<V>> items;
 
     /**
      * Попап в котором находится меню
@@ -76,22 +80,23 @@ public abstract class DaggerMenu<V> extends Composite {
     /**
      * Разделители
      */
-    private Set<DaggerItem> separators = new HashSet<DaggerItem>();
+    private Set<MenuItem> separators = new HashSet<MenuItem>();
 
     /**
      * Разрешена ли навигация влево-вправо (в конец-начало списка)
      */
     private boolean leftRightNavigation = true;
+    protected int minWidth = Integer.MIN_VALUE;
 
-    public DaggerMenu() {
+    public Menu() {
         root = new FlowPanel();
 
-        items = new ArrayList<DaggerItem<V>>();
+        items = new ArrayList<MenuItem<V>>();
 
         popup = new PopupPanel(true) {
             @Override
             protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
-                DaggerMenu.this.onPreview(event);
+                Menu.this.onPreview(event);
             }
             @Override
             public void hide(boolean auto) {
@@ -154,8 +159,8 @@ public abstract class DaggerMenu<V> extends Composite {
     /**
      * Убирает состояния фокусировани у всех элементов, кроме заданного
      */
-    public void noFocused(DaggerItem<V> onlyFocusedItem) {
-        for (DaggerItem<V> item : items) {
+    public void noFocused(MenuItem<V> onlyFocusedItem) {
+        for (MenuItem<V> item : items) {
             if (item != onlyFocusedItem) {
                 item.setFocused(false, false);
             }
@@ -227,7 +232,7 @@ public abstract class DaggerMenu<V> extends Composite {
         }
     }
 
-    public DaggerItem<V> getFocused() {
+    public MenuItem<V> getFocused() {
         if (focusedIndex >= 0 && focusedIndex < items.size()) {
             return items.get(focusedIndex);
         } else {
@@ -276,7 +281,7 @@ public abstract class DaggerMenu<V> extends Composite {
         return items.size();
     }
 
-    public DaggerItem<V> getItemAt(int index) {
+    public MenuItem<V> getItemAt(int index) {
         if (index >= 0 && index < items.size()) {
             return items.get(index);
         }
@@ -287,8 +292,8 @@ public abstract class DaggerMenu<V> extends Composite {
      * Возвращает первый элемент меню с заданным значением
      */
     @SuppressWarnings("NonJREEmulationClassesInClientCode")
-    public DaggerItem<V> get(V value) {
-        for (DaggerItem<V> item : items) {
+    public MenuItem<V> get(V value) {
+        for (MenuItem<V> item : items) {
 
             if (value == null) {
                 if (item.getUserValue() == null) {
@@ -305,7 +310,7 @@ public abstract class DaggerMenu<V> extends Composite {
      * Удаляет первый элемент в заданным значением
      */
     public void remove(V value) {
-        DaggerItem<V> item = get(value);
+        MenuItem<V> item = get(value);
         if (item != null) {
             removeItem(item);
         }
@@ -326,19 +331,19 @@ public abstract class DaggerMenu<V> extends Composite {
      * @param newItem выбранный элемент меню
      * @return хэндлер
      */
-    protected abstract ValueChangeHandler<Boolean> getSelectionHandler(DaggerItem<V> newItem);
+    protected abstract ValueChangeHandler<Boolean> getSelectionHandler(MenuItem<V> newItem);
 
     /**
      * Добавляет элемент в меню. Создание этого элемента оставляется на пользователя
      * @param item новый элемент
      */
-    public void addItem(DaggerItem<V> item) {
+    public void addItem(MenuItem<V> item) {
         if (items.contains(item)) {
             return;
         }
-        item.addFocusHandler(new DaggerFocusEvent.Handler<V>() {
+        item.addFocusHandler(new MenuFocusEvent.Handler<V>() {
             @Override
-            public void onDaggerFocus(DaggerFocusEvent<V> event) {
+            public void onFocus(MenuFocusEvent<V> event) {
                 noFocused(event.getItem());
                 if (items.contains(event.getItem())) {
                     focusedIndex = items.indexOf(event.getItem());
@@ -353,7 +358,7 @@ public abstract class DaggerMenu<V> extends Composite {
     /**
      * Удаляет элемент
      */
-    public void removeItem(DaggerItem<V> item) {
+    public void removeItem(MenuItem<V> item) {
         if (!items.contains(item)) {
             return;
         }
@@ -372,6 +377,10 @@ public abstract class DaggerMenu<V> extends Composite {
         items.remove(item);
     }
 
+    public List<MenuItem<V>> getItems() {
+        return items;
+    }
+
     /**
      * Видно ли меню
      */
@@ -379,14 +388,22 @@ public abstract class DaggerMenu<V> extends Composite {
         return popup.isShowing();
     }
 
+    public void setMinWidth(int width) {
+        minWidth = width;
+    }
+
     /**
      * Задание позиции и размеров меню перед тем, как показать его
      */
-    protected void setPopupBeforeShow(Widget relativeWidget) {
-        popup.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2 + "px");
-        root.getElement().getStyle().setProperty("minWidth", relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2 + "px");
+    protected void setPopupBeforeShow(Widget relativeWidget, boolean showBorder) {
+        int width = Math.max(minWidth, relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2);
 
-        popup.getElement().getStyle().setProperty("borderTop", "0");
+        popup.getElement().getStyle().setProperty("minWidth", width + "px");
+        root.getElement().getStyle().setProperty("minWidth", width + "px");
+
+        if (!showBorder) {
+            popup.getElement().getStyle().setProperty("borderTop", "0");
+        }
 
         int x = relativeWidget.getAbsoluteLeft() + Constants.BORDER_RADIUS;
         int y = relativeWidget.getAbsoluteTop() + relativeWidget.getOffsetHeight();
@@ -398,10 +415,14 @@ public abstract class DaggerMenu<V> extends Composite {
      * Показать меню под элементом интерфейса.
      */
     public void showUnder(final Widget relativeWidget) {
+        showUnder(relativeWidget, false);
+    }
+
+    public void showUnder(final Widget relativeWidget, final boolean showBorder) {
         popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
             @Override
             public void setPosition(int offsetWidth, int offsetHeight) {
-                setPopupBeforeShow(relativeWidget);
+                setPopupBeforeShow(relativeWidget, showBorder);
             }
         });
     }
@@ -437,7 +458,7 @@ public abstract class DaggerMenu<V> extends Composite {
      */
     public void addSeparator(int index) {
         if (index > 0 && index < items.size() - 1) {
-            DaggerItem<V> item = items.get(index);
+            MenuItem<V> item = items.get(index);
             separators.add(item);
             item.addStyleName(SynergyComponents.getResources().cssComponents().menuSeparator());
         }
@@ -446,7 +467,7 @@ public abstract class DaggerMenu<V> extends Composite {
     /**
      * Добавляет разделитель к заданному элементу
      */
-    public void addSeparator(DaggerItem<V> item) {
+    public void addSeparator(MenuItem<V> item) {
         if (items.contains(item) && !separators.contains(item)) {
             addSeparator(items.indexOf(item));
         }
@@ -455,11 +476,23 @@ public abstract class DaggerMenu<V> extends Composite {
     /**
      * Добавляет хэндлер на выделение или снятие выделения с элементов меню
      */
-    public HandlerRegistration addDaggerItemSelectionHandler(DaggerItemSelectionEvent.Handler<V> handler) {
-        return addHandler(handler, DaggerItemSelectionEvent.TYPE);
+    public HandlerRegistration addDaggerItemSelectionHandler(MenuItemSelection.Handler<V> handler) {
+        return bus.addHandlerToSource(MenuItemSelection.TYPE, this, handler);
+    }
+
+    protected void fireEvent(GwtEvent<?> event) {
+        bus.fireEventFromSource(event, this);
     }
 
     public void setLeftRightNavigation(boolean leftRightNavigation) {
         this.leftRightNavigation = leftRightNavigation;
+    }
+
+    public void addStyleName(String styleName) {
+        popup.addStyleName(styleName);
+    }
+
+    public void removeStyleName(String styleName) {
+        popup.removeStyleName(styleName);
     }
 }

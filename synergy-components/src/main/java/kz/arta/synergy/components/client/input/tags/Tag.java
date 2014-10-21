@@ -96,7 +96,7 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
             @Override
             public void onClick(ClickEvent event) {
                 if (isEnabled()) {
-                    bus.fireEvent(new TagRemoveEvent(Tag.this));
+                    bus.fireEventFromSource(new TagRemoveEvent<V>(Tag.this), Tag.this);
                 }
             }
         });

@@ -16,18 +16,15 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.comments.events.InputChangeEvent;
-import kz.arta.synergy.components.client.input.events.TextChangedEvent;
 import kz.arta.synergy.components.client.menu.DropDownList;
-import kz.arta.synergy.components.client.menu.events.HasSelectionEventHandlers;
-import kz.arta.synergy.components.client.menu.events.ListSelectionEvent;
-import kz.arta.synergy.components.client.menu.events.SelectionEvent;
+import kz.arta.synergy.components.client.menu.MenuItem;
+import kz.arta.synergy.components.client.menu.events.MenuItemSelection;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.resources.Messages;
 import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
 
-//todo убрать innerbus
 //todo написать тесты
 
 /**
@@ -37,7 +34,7 @@ import kz.arta.synergy.components.style.client.Constants;
  *
  * Поле с результатами поиска
  */
-public class SearchResultInput<V> extends Composite implements HasSelectionEventHandlers<V>, HasClickHandlers, HasValue<V>{
+public class SearchResultInput<V> extends Composite implements HasClickHandlers, HasValue<V>{
     private final String placeholderText = Messages.i18n().tr("Поиск");
 
     /**
@@ -68,9 +65,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
     /**
      * Выбранный элемент списка
      */
-    private DropDownList<V>.Item selectedItem;
-
-    private EventBus innerBus;
+    private MenuItem<V> selectedItem;
 
     public SearchResultInput() {
         this(true);
@@ -80,7 +75,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
      * @param hasButton есть ли индикатор
      */
     public SearchResultInput(boolean hasButton) {
-        innerBus = new SimpleEventBus();
+        EventBus innerBus = new SimpleEventBus();
 
         FlowPanel root = new FlowPanel();
         initWidget(root);
@@ -110,34 +105,12 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
             root.add(button);
         }
 
-        //Выбор элемента списка
-        ListSelectionEvent.register(innerBus, new ListSelectionEvent.Handler<V>() {
-            @Override
-            public void onSelection(final ListSelectionEvent<V> event) {
-                input.setFocus(true);
-                selectedItem = event.getItem();
-                if (Navigator.isIE()) {
-                    new Timer() {
-                        @Override
-                        public void run() {
-                            input.setText(event.getItem().getText());
-                            list.hide();
-                        }
-                    }.schedule(50);
-                } else {
-                    input.setText(event.getItem().getText());
-                    list.hide();
-                }
-                ValueChangeEvent.fire(SearchResultInput.this, event.getItem().getValue());
-            }
-        });
-
         InputChangeEvent.addInputHandler(input.getElement(), new InputChangeEvent.Handler() {
             @Override
             public void onInputChange(InputChangeEvent event) {
                 filter.setText(input.getValue());
-                if (!list.isShowing()) {
-                    list.show(selectedItem);
+                if (list.isShowing()) {
+                    list.showUnder(SearchResultInput.this);
                 }
             }
         });
@@ -150,7 +123,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
             public void onKeyUp(KeyUpEvent event) {
                 if (event.getNativeKeyCode() == KeyCodes.KEY_DOWN && !list.isShowing()) {
                     filter.setText("");
-                    list.show(selectedItem);
+                    list.showUnder(SearchResultInput.this);
                 }
             }
         });
@@ -184,11 +157,30 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
      * Задает список
      * @param list список
      */
-    public void setList(DropDownList<V> list) {
+    public void setList(final DropDownList<V> list) {
         this.list = list;
-        list.setBus(innerBus);
         list.setFilter(filter);
-        list.setRelativeWidget(this);
+
+        list.addDaggerItemSelectionHandler(new MenuItemSelection.Handler<V>() {
+            @Override
+            public void onItemSelection(final MenuItemSelection<V> event) {
+                input.setFocus(true);
+                selectedItem = event.getItem();
+                if (Navigator.isIE()) {
+                    new Timer() {
+                        @Override
+                        public void run() {
+                            input.setText(event.getItem().getText());
+                            list.hide();
+                        }
+                    }.schedule(50);
+                } else {
+                    input.setText(event.getItem().getText());
+                    list.hide();
+                }
+                ValueChangeEvent.fire(SearchResultInput.this, event.getItem().getUserValue());
+            }
+        });
     }
 
     /**
@@ -228,15 +220,6 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
         }
     }
 
-    public V getSelectedValue() {
-        return selectedItem == null ? null : selectedItem.getValue();
-    }
-
-    @Override
-    public HandlerRegistration addSelectionHandler(SelectionEvent.Handler<V> handler) {
-        return innerBus.addHandlerToSource(SelectionEvent.TYPE, this, handler);
-    }
-
     @Override
     public HandlerRegistration addClickHandler(ClickHandler handler) {
         return button.addClickHandler(handler);
@@ -245,7 +228,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
     @Override
     public V getValue() {
         if (selectedItem != null) {
-            return selectedItem.getValue();
+            return selectedItem.getUserValue();
         }
         return null;
     }
@@ -255,10 +238,15 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
         setValue(value, true);
     }
 
-    // todo wtf to do with this
     @Override
     public void setValue(V value, boolean fireEvents) {
-        list.setSelectedValue(value);
+        MenuItem<V> item = list.get(value);
+        if (fireEvents) {
+            item.setValue(true, true);
+        } else {
+            item.setValue(true, false);
+            input.setText(item.getText());
+        }
     }
 
     @Override

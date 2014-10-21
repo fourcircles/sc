@@ -1,21 +1,30 @@
-package kz.arta.synergy.components.client.dagger.events;
+package kz.arta.synergy.components.client.menu.events;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import kz.arta.synergy.components.client.dagger.DaggerItem;
+import kz.arta.synergy.components.client.menu.MenuItem;
 
 /**
  * User: vsl
  * Date: 20.10.14
  * Time: 11:13
+ *
+ * Событие выбора элемента в списке
  */
-public class DaggerItemSelectionEvent<V> extends GwtEvent<DaggerItemSelectionEvent.Handler<V>> {
+public class MenuItemSelection<V> extends GwtEvent<MenuItemSelection.Handler<V>> {
     public static final Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
-    private DaggerItem<V> item;
+    /**
+     * Элемент
+     */
+    private MenuItem<V> item;
+
+    /**
+     * Выбран или наоборот
+     */
     private boolean isSelected;
 
-    public DaggerItemSelectionEvent(DaggerItem<V> item, boolean isSelected) {
+    public MenuItemSelection(MenuItem<V> item, boolean isSelected) {
         this.item = item;
         this.isSelected = isSelected;
     }
@@ -24,7 +33,7 @@ public class DaggerItemSelectionEvent<V> extends GwtEvent<DaggerItemSelectionEve
         return isSelected;
     }
 
-    public DaggerItem<V> getItem() {
+    public MenuItem<V> getItem() {
         return item;
     }
 
@@ -34,10 +43,10 @@ public class DaggerItemSelectionEvent<V> extends GwtEvent<DaggerItemSelectionEve
     }
 
     protected void dispatch(Handler<V> handler) {
-        handler.onDaggerItemSelection(this);
+        handler.onItemSelection(this);
     }
 
     public static interface Handler<T> extends EventHandler {
-        void onDaggerItemSelection(DaggerItemSelectionEvent<T> event);
+        void onItemSelection(MenuItemSelection<T> event);
     }
 }

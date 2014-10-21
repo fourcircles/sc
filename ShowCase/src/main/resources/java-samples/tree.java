@@ -1,6 +1,5 @@
 import com.google.gwt.user.client.Command;
 import kz.arta.sc3.showcase.client.resources.SCMessages;
-import kz.arta.synergy.components.client.menu.ContextMenu;
 import kz.arta.synergy.components.client.tree.Tree;
 import kz.arta.synergy.components.client.tree.TreeItem;
 import kz.arta.synergy.components.client.tree.events.TreeItemContextMenuEvent;

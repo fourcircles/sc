@@ -1,24 +1,29 @@
-package kz.arta.synergy.components.client.dagger.events;
+package kz.arta.synergy.components.client.menu.events;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import kz.arta.synergy.components.client.dagger.DaggerItem;
+import kz.arta.synergy.components.client.menu.MenuItem;
 
 /**
  * User: vsl
  * Date: 17.10.14
  * Time: 18:10
+ *
+ * Событие фокусировки элемента
  */
-public class DaggerFocusEvent<V> extends GwtEvent<DaggerFocusEvent.Handler<V>> {
+public class MenuFocusEvent<V> extends GwtEvent<MenuFocusEvent.Handler<V>> {
     public static final Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
-    private DaggerItem<V> item;
+    /**
+     * Элемент
+     */
+    private MenuItem<V> item;
 
-    public DaggerFocusEvent(DaggerItem<V> item) {
+    public MenuFocusEvent(MenuItem<V> item) {
         this.item = item;
     }
 
-    public DaggerItem<V> getItem() {
+    public MenuItem<V> getItem() {
         return item;
     }
 
@@ -28,10 +33,10 @@ public class DaggerFocusEvent<V> extends GwtEvent<DaggerFocusEvent.Handler<V>> {
     }
 
     protected void dispatch(Handler<V> handler) {
-        handler.onDaggerFocus(this);
+        handler.onFocus(this);
     }
 
     public static interface Handler<T> extends EventHandler {
-        void onDaggerFocus(DaggerFocusEvent<T> event);
+        void onFocus(MenuFocusEvent<T> event);
     }
 }

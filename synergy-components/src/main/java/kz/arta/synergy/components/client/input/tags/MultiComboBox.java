@@ -1,11 +1,10 @@
 package kz.arta.synergy.components.client.input.tags;
 
-import kz.arta.synergy.components.client.menu.DropDownList;
-import kz.arta.synergy.components.client.menu.DropDownListMulti;
+import kz.arta.synergy.components.client.menu.MenuItem;
 import kz.arta.synergy.components.client.resources.ImageResources;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 // todo test
 /**
  * User: vsl
@@ -15,15 +14,9 @@ import java.util.List;
 public class MultiComboBox<V> extends TagInput<V> {
     public MultiComboBox() {
         super(true);
-        DropDownListMulti<V> newList = new DropDownListMulti<V>(this, null);
-        setDropDownList(newList);
 
+        setListEnabled(true);
         mainButton.setIcon(ImageResources.IMPL.comboBoxDropDown());
-    }
-
-    @Override
-    protected void newListSelection() {
-        input.setText("");
     }
 
     @Override
@@ -37,37 +30,32 @@ public class MultiComboBox<V> extends TagInput<V> {
      */
     @Override
     protected void keyEnter() {
+        // nope
     }
 
     public void select(V value) {
-        dropDownList.selectValue(value);
+        MenuItem<Tag<V>> item = getListItem(value);
+        if (item != null) {
+            item.setValue(true, true);
+        }
     }
 
     public void deselect(V value) {
-        if (dropDownList.contains(value) && contains(value)) {
-            ((DropDownListMulti.Item) dropDownList.get(value)).setSelected(false, true);
+        MenuItem<Tag<V>> item = getListItem(value);
+        if (item != null) {
+            item.setValue(false, true);
         }
     }
 
-    public void addItem(String text, V value) {
-        dropDownList.addItem(text, value);
-    }
+    public Set<V> getSelectedValues() {
+        Set<V> selected = new HashSet<V>();
 
-    public void removeItem(V value) {
-        Tag<V> tag = getTag(value);
-        if (tag != null) {
-            removeTag(getTag(value));
-        }
-    }
-
-    public List<V> getSelectedValues() {
-        ArrayList<V> result = new ArrayList<V>();
-        for (DropDownList<V>.Item item : dropDownList.getItems()) {
-            if (((DropDownListMulti.Item) item).isSelected()) {
-                result.add(item.getValue());
+        for (int i = 0; i < list.size(); i++) {
+            MenuItem<Tag<V>> item = list.getItemAt(i);
+            if (item.isSelected()) {
+                selected.add(item.getUserValue().getValue());
             }
         }
-
-        return result;
+        return selected;
     }
 }

@@ -265,6 +265,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
      * @param hasScroll отображен ли скролл
      */
     private void updateOffsetForScroll(boolean hasScroll) {
+        this.hasScroll = hasScroll;
         int imageMargin = 0;
         //ширина иконки
         int sideTextPadding = Constants.STD_ICON_WIDTH + Constants.COMMON_INPUT_PADDING * 2;
@@ -326,7 +327,9 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
             scroll.getElement().getStyle().setHeight(Constants.COMMENT_INPUT_LINE_HEIGHT +
                     Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
             maybeUpdateTextIE();
-
+            if (hasScroll) {
+                updateOffsetForScroll(false);
+            }
         } else {
             textArea.getElement().getStyle().clearLineHeight();
             maybeUpdateTextIE();
@@ -334,7 +337,6 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
             if (lines <= MAX_LINES) {
                 if (this.hasScroll) {
                     //случай, когда скролл надо убрать
-                    hasScroll = false;
                     updateOffsetForScroll(false);
                     textChanged();
                 }
@@ -343,7 +345,6 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
             } else {
                 if (!this.hasScroll) {
                     //случай, когда скролл надо добавить
-                    hasScroll = true;
                     updateOffsetForScroll(true);
                     textChanged();
                 }

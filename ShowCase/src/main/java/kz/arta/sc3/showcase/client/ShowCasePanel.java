@@ -717,7 +717,7 @@ public class ShowCasePanel extends FlowPanel {
 
         TreeItem buttons = tree.addItem(basicComponents, SCMessages.i18n().tr("Кнопки"));
 
-        firstTab = addTreeItem(buttons, new LoadPanel(SCMessages.i18n().tr("Простая кнопка")) {
+        addTreeItem(buttons, new LoadPanel(SCMessages.i18n().tr("Простая кнопка")) {
             @Override
             public Widget getContentWidget() {
                 return getSimpleButtonPanel();
@@ -2046,9 +2046,6 @@ public class ShowCasePanel extends FlowPanel {
         simpleButtonPanel.add(simpleButton4);
 
         simpleButton4.setContextMenu(menu);
-
-        ArtaDatePicker picker = new ArtaDatePicker();
-        simpleButtonPanel.add(picker);
 
         return simpleButtonPanel;
     }

@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.dagger.DaggerContextMenu;
 import kz.arta.synergy.components.client.menu.ContextMenu;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.style.client.Constants;
@@ -28,6 +29,7 @@ public class ContextMenuButton extends SimpleButton {
      * Контекстное меню
      */
     private ContextMenu contextMenu;
+    private DaggerContextMenu daggerMenu;
 
     public ContextMenuButton() {
     }
@@ -66,13 +68,20 @@ public class ContextMenuButton extends SimpleButton {
             @Override
             public void onClick(ClickEvent event) {
                 event.stopPropagation();
-                if (contextMenu != null) {
-                    if (contextMenu.isShowing()) {
-                        contextMenu.hide();
+                if (daggerMenu != null) {
+                    if (daggerMenu.isShowing()) {
+                        daggerMenu.hide();
                     } else {
-                        contextMenu.show();
+                        daggerMenu.showUnder(ContextMenuButton.this);
                     }
                 }
+//                if (contextMenu != null) {
+//                    if (contextMenu.isShowing()) {
+//                        contextMenu.hide();
+//                    } else {
+//                        contextMenu.show();
+//                    }
+//                }
             }
         };
         contextButton.addDomHandler(down, MouseDownEvent.getType());
@@ -137,6 +146,10 @@ public class ContextMenuButton extends SimpleButton {
         this.contextMenu = contextMenu;
     }
 
+    public void setDaggerMenu(DaggerContextMenu daggerMenu) {
+        daggerMenu.addAutoHidePartner(this.getElement());
+        this.daggerMenu = daggerMenu;
+    }
 
     @Override
     protected void buildButton() {

@@ -3,6 +3,7 @@ package kz.arta.synergy.components.client.menu.filters;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import kz.arta.synergy.components.client.dagger.DaggerItem;
 import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.events.FilterUpdateEvent;
 
@@ -30,6 +31,7 @@ abstract public class ListTextFilter implements ListFilter {
         this.text = text;
     }
 
+    //todo remove old list
     /**
      * Создает фильтр, который проверяет начинается ли текст элемента списка с заданного текста
      */
@@ -37,6 +39,20 @@ abstract public class ListTextFilter implements ListFilter {
         return new ListTextFilter() {
             @Override
             public boolean include(DropDownList.Item item) {
+                if (this.text == null ||
+                        (this.text.isEmpty() && item.getText() != null)) {
+                    return true;
+                }
+                String itemText = item.getText();
+                if (itemText == null || this.text.length() > itemText.length()) {
+                    return false;
+                }
+                //noinspection NonJREEmulationClassesInClientCode
+                return itemText.substring(0, this.text.length()).equalsIgnoreCase(this.text.toLowerCase());
+            }
+
+            @Override
+            public boolean include(DaggerItem<?> item) {
                 if (this.text == null ||
                         (this.text.isEmpty() && item.getText() != null)) {
                     return true;
@@ -67,7 +83,20 @@ abstract public class ListTextFilter implements ListFilter {
                 }
                 return item.getText().toLowerCase().contains(this.text.toLowerCase());
             }
+
+            @Override
+            public boolean include(DaggerItem<?> item) {
+                if (this.text == null ||
+                        (this.text.isEmpty() && item.getText() != null)) {
+                    return true;
+                }
+                if (item.getText() == null) {
+                    return false;
+                }
+                return item.getText().toLowerCase().contains(this.text.toLowerCase());
+            }
         };
+
     }
     
     public String getText() {

@@ -1,6 +1,8 @@
-package kz.arta.synergy.components.client.menu;
+    package kz.arta.synergy.components.client.menu;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.LocaleInfo;
@@ -32,7 +34,7 @@ import java.util.List;
  * уже существующий элемент списка с данным значением будет заменен на новый.
  * Таким образом гарантируется, что в списке нет элементов с одинаковыми значениями.
  */
-public class DropDownList<V> extends MenuBase{
+public class DropDownList<V> extends MenuBase {
     protected EventBus bus;
 
     /**
@@ -81,6 +83,23 @@ public class DropDownList<V> extends MenuBase{
                 root.getElement().getStyle().setRight(-15, Style.Unit.PX);
             }
         }
+
+        root.sinkEvents(Event.ONMOUSEWHEEL);
+        root.addDomHandler(new MouseWheelHandler() {
+            @Override
+            public void onMouseWheel(MouseWheelEvent event) {
+                event.stopPropagation();
+                event.preventDefault();
+
+                if (event.getDeltaY() > 0) {
+                    int next = getNext();
+                    focus(next, false);
+                } else {
+                    int previous = getPrevious();
+                    focus(previous, true);
+                }
+            }
+        }, MouseWheelEvent.getType());
     }
 
     public DropDownList(Widget relativeWidget, EventBus bus) {

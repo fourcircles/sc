@@ -31,6 +31,8 @@ import kz.arta.synergy.components.client.checkbox.ArtaCheckBox;
 import kz.arta.synergy.components.client.checkbox.ArtaRadioButton;
 import kz.arta.synergy.components.client.collapsing.CollapsingPanel;
 import kz.arta.synergy.components.client.comments.*;
+import kz.arta.synergy.components.client.dagger.DaggerContextMenu;
+import kz.arta.synergy.components.client.dagger.DaggerItem;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
@@ -2005,7 +2007,14 @@ public class ShowCasePanel extends FlowPanel {
             }
         });
 
-        ContextMenu menuForSimple = createSimpleMenu();
+        DaggerContextMenu daggerMenu = new DaggerContextMenu();
+
+        daggerMenu.addItem(new DaggerItem<Command>(null, "Zoom", ImageResources.IMPL.zoom()));
+        daggerMenu.addItem(new DaggerItem<Command>(null, "Left", ImageResources.IMPL.navigationLeft()));
+        daggerMenu.addItem(new DaggerItem<Command>(null, "Right", ImageResources.IMPL.navigationRight()));
+        daggerMenu.addSeparator(1);
+
+//        ContextMenu menuForSimple = createSimpleMenu();
         ContextMenuButton simpleButton4 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"));
         addCodeSample(simpleButton4, simpleButton4.getText(), ShowCase.SC_RESOURCES.simpleButtonMenu().getText());
         simpleButton4.addClickHandler(new ClickHandler() {
@@ -2018,7 +2027,9 @@ public class ShowCasePanel extends FlowPanel {
         simpleButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(simpleButton4, horizontalMargin);
         simpleButtonPanel.add(simpleButton4);
-        simpleButton4.setContextMenu(menuForSimple);
+
+        simpleButton4.setDaggerMenu(daggerMenu);
+//        simpleButton4.setContextMenu(menuForSimple);
 
         return simpleButtonPanel;
     }

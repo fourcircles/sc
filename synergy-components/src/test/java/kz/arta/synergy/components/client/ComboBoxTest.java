@@ -76,7 +76,7 @@ public class ComboBoxTest {
     }
 
     @Test
-    public void testSelectionEvent() {
+    public void testSelection() {
         combo.addItem("zero", 0);
         combo.addItem("three", 3);
 
@@ -86,9 +86,6 @@ public class ComboBoxTest {
         combo.selectValue(3, true);
         combo.selectValue(42, true);
 
-        ArgumentCaptor<ValueChangeEvent> arg = ArgumentCaptor.forClass(ValueChangeEvent.class);
-
-        verify(handler, times(1)).onValueChange(arg.capture());
-        assertEquals(3, arg.getValue().getValue());
+        assertEquals(Integer.valueOf(3), combo.getSelectedValue());
     }
 }

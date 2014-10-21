@@ -623,6 +623,11 @@ code, pre {
 .contextMenuItem img {
     margin-right: 10px;
 }
+.contextMenuItem > div {
+    display: inline-block;
+    cursor: default;
+    word-break: break-all;
+}
 .contextMenuItem > * {
     vertical-align: middle;
 }
@@ -668,16 +673,22 @@ code, pre {
     border-color: approveButtonBG4;
 }
 
-.menuSeparator {
-    background-color: tabBg2;
-    height : 1px;
-    margin-left: 10px;
-    margin-right: 10px;
+.contextMenuItem.menuSeparator {
+    border-bottom: 1px solid tabBg2;
 }
+.contextMenuItem.green.menuSeparator {
+    border-bottom: 1px solid approveButtonBG3;
+}
+/*.menuSeparator {*/
+    /*background-color: tabBg2;*/
+    /*height : 1px;*/
+    /*margin-left: 10px;*/
+    /*margin-right: 10px;*/
+/*}*/
 
-.green .menuSeparator {
-    background-color: approveButtonBG3;
-}
+/*.green .menuSeparator {*/
+    /*background-color: approveButtonBG3;*/
+/*}*/
 
 
 @eval commonInputPadding kz.arta.synergy.components.style.client.Constants.commonInputPadding();

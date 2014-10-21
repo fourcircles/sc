@@ -9,6 +9,7 @@ import kz.arta.synergy.components.client.input.tags.Tag;
  * Time: 16:39
  *
  * Событие для удаления тега
+ * //todo we probably don't need tag here
  */
 public class TagRemoveEvent<V> extends GwtEvent<TagRemoveEvent.Handler<V>> {
     public static final Type<Handler<?>> TYPE = new Type<Handler<?>>();

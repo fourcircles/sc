@@ -2,6 +2,8 @@ package kz.arta.synergy.components.client.input;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -9,9 +11,11 @@ import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.SimplePanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
+import kz.arta.synergy.components.client.comments.events.InputChangeEvent;
 import kz.arta.synergy.components.client.input.events.TextChangedEvent;
 import kz.arta.synergy.components.client.menu.DropDownList;
 import kz.arta.synergy.components.client.menu.events.HasSelectionEventHandlers;
@@ -33,10 +37,9 @@ import kz.arta.synergy.components.style.client.Constants;
  *
  * Поле с результатами поиска
  */
-public class SearchResultInput<V> extends Composite implements HasSelectionEventHandlers<V>, HasClickHandlers{
+public class SearchResultInput<V> extends Composite implements HasSelectionEventHandlers<V>, HasClickHandlers, HasValue<V>{
     private final String placeholderText = Messages.i18n().tr("Поиск");
 
-    private EventBus innerBus;
     /**
      * Кнопка
      */
@@ -50,7 +53,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
     /**
      * Поле ввода
      */
-    private InputWithEvents input;
+    private TextInput input;
 
     /**
      * Список
@@ -67,6 +70,8 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
      */
     private DropDownList<V>.Item selectedItem;
 
+    private EventBus innerBus;
+
     public SearchResultInput() {
         this(true);
     }
@@ -75,15 +80,15 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
      * @param hasButton есть ли индикатор
      */
     public SearchResultInput(boolean hasButton) {
+        innerBus = new SimpleEventBus();
+
         FlowPanel root = new FlowPanel();
         initWidget(root);
 
         setStyleName(SynergyComponents.getResources().cssComponents().searchResult());
         addStyleName(SynergyComponents.getResources().cssComponents().mainText());
 
-        innerBus = new SimpleEventBus();
-
-        input = new InputWithEvents(innerBus);
+        input = new TextInput();
         inputContainer = new SimplePanel(input);
         inputContainer.getElement().getStyle().setPaddingLeft(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
         inputContainer.getElement().getStyle().setPaddingRight(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
@@ -123,14 +128,14 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
                     input.setText(event.getItem().getText());
                     list.hide();
                 }
+                ValueChangeEvent.fire(SearchResultInput.this, event.getItem().getValue());
             }
         });
 
-        //Ввод текста
-        TextChangedEvent.register(innerBus, new TextChangedEvent.Handler() {
+        InputChangeEvent.addInputHandler(input.getElement(), new InputChangeEvent.Handler() {
             @Override
-            public void onTextChanged(TextChangedEvent event) {
-                filter.setText(event.getNewText());
+            public void onInputChange(InputChangeEvent event) {
+                filter.setText(input.getValue());
                 if (!list.isShowing()) {
                     list.show(selectedItem);
                 }
@@ -138,7 +143,7 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
         });
 
         input.addStyleName(SynergyComponents.getResources().cssComponents().placeHolder());
-        input.setText(Messages.i18n().tr("Поиск"), false);
+        input.setValue(Messages.i18n().tr("Поиск"), false);
 
         input.addKeyUpHandler(new KeyUpHandler() {
             @Override
@@ -154,9 +159,9 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
             @Override
             public void onBlur(BlurEvent event) {
                 if (selectedItem != null) {
-                    input.setText(selectedItem.getText(), false);
+                    input.setValue(selectedItem.getText(), false);
                 } else {
-                    input.setText(placeholderText, false);
+                    input.setValue(placeholderText, false);
                     input.addStyleName(SynergyComponents.getResources().cssComponents().placeHolder());
                 }
             }
@@ -235,5 +240,29 @@ public class SearchResultInput<V> extends Composite implements HasSelectionEvent
     @Override
     public HandlerRegistration addClickHandler(ClickHandler handler) {
         return button.addClickHandler(handler);
+    }
+
+    @Override
+    public V getValue() {
+        if (selectedItem != null) {
+            return selectedItem.getValue();
+        }
+        return null;
+    }
+
+    @Override
+    public void setValue(V value) {
+        setValue(value, true);
+    }
+
+    // todo wtf to do with this
+    @Override
+    public void setValue(V value, boolean fireEvents) {
+        list.setSelectedValue(value);
+    }
+
+    @Override
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<V> handler) {
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 }

@@ -185,7 +185,7 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
         }
 
         //Выбор элемента в списке
-        list.addDaggerItemSelectionHandler(new MenuItemSelection.Handler<Tag<V>>() {
+        list.addItemSelectionHandler(new MenuItemSelection.Handler<Tag<V>>() {
             @Override
             public void onItemSelection(MenuItemSelection<Tag<V>> event) {
                 onListSelection(event.getItem(), event.isSelected());

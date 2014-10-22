@@ -1641,17 +1641,6 @@ public class ShowCasePanel extends FlowPanel {
         return list;
     }
 
-//    private DropDownListMulti<String> createMultiList(Widget parent) {
-//        DropDownListMulti<String> multiList = new DropDownListMulti<String>(parent, new SimpleEventBus());
-//
-//        String[] names = createShuffledNames();
-//        for (String name : names) {
-//            multiList.addItem(name, name);
-//        }
-//
-//        return multiList;
-//    }
-
     private DropDownListMulti<String> createMultiList(Widget parent) {
         DropDownListMulti<String> list = new DropDownListMulti<String>();
         String[] names = createShuffledNames();
@@ -1739,7 +1728,6 @@ public class ShowCasePanel extends FlowPanel {
             hasListHasIndicator.addListItem(name, name);
         }
         hasListHasIndicator.setListEnabled(true);
-//        hasListHasIndicator.setDropDownList(createMultiList(hasListHasIndicator));
 
         hasListHasIndicator.setTitle(SCMessages.i18n().tr("Фильтрация списка по вхождению текста"));
         hasListHasIndicator.setListFilter(ListTextFilter.createPrefixFilter());
@@ -1767,7 +1755,6 @@ public class ShowCasePanel extends FlowPanel {
             hasListNoButton.addListItem(name, name);
         }
         hasListNoButton.setListEnabled(true);
-//        hasListNoButton.setDropDownList(createMultiList(hasListNoButton));
 
         hasListNoButton.setTitle(SCMessages.i18n().tr("Префиксный выбор из списка"));
         rows[currentRow].add(hasListNoButton);

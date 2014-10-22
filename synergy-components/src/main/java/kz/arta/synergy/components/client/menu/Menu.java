@@ -33,9 +33,9 @@ import java.util.Set;
  * Базовый класс для меню, выпадающего списка и мультисписка (можно выбирать несколько значений).
  */
 public abstract class Menu<V> {
+    private static final String MIN_WIDTH_PROPERTY = "minWidth";
 
     protected EventBus bus = new SimpleEventBus();
-
     /**
      * При изменении размеров окна открытое меню немедленно закрывается
      */
@@ -198,40 +198,66 @@ public abstract class Menu<V> {
         } else if (nativeEvent.getTypeInt() == Event.ONKEYDOWN) {
             switch (nativeEvent.getKeyCode()) {
                 case KeyCodes.KEY_DOWN:
-                    keyboardNavigation = true;
-                    focusNext();
+                    keyDown();
                     event.cancel();
                     break;
                 case KeyCodes.KEY_UP:
-                    keyboardNavigation = true;
-                    focusPrevious();
+                    keyUp();
                     event.cancel();
                     break;
                 case KeyCodes.KEY_LEFT:
-                    if (leftRightNavigation) {
-                        keyboardNavigation = true;
-                        event.cancel();
-                        focusFirst();
-                    }
+                    keyLeft(event);
                     break;
                 case KeyCodes.KEY_RIGHT:
-                    if (leftRightNavigation) {
-                        keyboardNavigation = true;
-                        event.cancel();
-                        focusLast();
-                    }
+                    keyRight(event);
                     break;
                 case KeyCodes.KEY_ENTER:
-                    if (focusedIndex != -1 && focusedIndex < items.size()) {
-                        items.get(focusedIndex).setValue(true, true);
-                    }
-                    event.cancel();
+                    keyEnter(event);
                     break;
                 default:
             }
         }
     }
 
+    /**
+     * Нажатие Enter
+     */
+    private void keyEnter(Event.NativePreviewEvent event) {
+        if (focusedIndex != -1 && focusedIndex < items.size()) {
+            items.get(focusedIndex).setValue(true, true);
+        }
+        event.cancel();
+    }
+
+    private void keyRight(Event.NativePreviewEvent event) {
+        if (leftRightNavigation) {
+            keyboardNavigation = true;
+            event.cancel();
+            focusLast();
+        }
+    }
+
+    private void keyLeft(Event.NativePreviewEvent event) {
+        if (leftRightNavigation) {
+            keyboardNavigation = true;
+            event.cancel();
+            focusFirst();
+        }
+    }
+
+    private void keyUp() {
+        keyboardNavigation = true;
+        focusPrevious();
+    }
+
+    private void keyDown() {
+        keyboardNavigation = true;
+        focusNext();
+    }
+
+    /**
+     * Возвращает сфокусированный элемент или null, если его нет
+     */
     public MenuItem<V> getFocused() {
         if (focusedIndex >= 0 && focusedIndex < items.size()) {
             return items.get(focusedIndex);
@@ -281,6 +307,10 @@ public abstract class Menu<V> {
         return items.size();
     }
 
+    /**
+     * @param index позиция
+     * @return элемент меню на позиции index
+     */
     public MenuItem<V> getItemAt(int index) {
         if (index >= 0 && index < items.size()) {
             return items.get(index);
@@ -398,8 +428,8 @@ public abstract class Menu<V> {
     protected void setPopupBeforeShow(Widget relativeWidget, boolean showBorder) {
         int width = Math.max(minWidth, relativeWidget.getOffsetWidth() - Constants.BORDER_RADIUS * 2);
 
-        popup.getElement().getStyle().setProperty("minWidth", width + "px");
-        root.getElement().getStyle().setProperty("minWidth", width + "px");
+        popup.getElement().getStyle().setProperty(MIN_WIDTH_PROPERTY, width + "px");
+        root.getElement().getStyle().setProperty(MIN_WIDTH_PROPERTY, width + "px");
 
         if (!showBorder) {
             popup.getElement().getStyle().setProperty("borderTop", "0");
@@ -432,8 +462,8 @@ public abstract class Menu<V> {
      */
     public void show(int x, int y) {
         popup.getElement().getStyle().clearProperty("borderTop");
-        popup.getElement().getStyle().clearProperty("minWidth");
-        root.getElement().getStyle().clearProperty("minWidth");
+        popup.getElement().getStyle().clearProperty(MIN_WIDTH_PROPERTY);
+        root.getElement().getStyle().clearProperty(MIN_WIDTH_PROPERTY);
 
         popup.setPopupPosition(x, y);
         popup.show();
@@ -476,7 +506,7 @@ public abstract class Menu<V> {
     /**
      * Добавляет хэндлер на выделение или снятие выделения с элементов меню
      */
-    public HandlerRegistration addDaggerItemSelectionHandler(MenuItemSelection.Handler<V> handler) {
+    public HandlerRegistration addItemSelectionHandler(MenuItemSelection.Handler<V> handler) {
         return bus.addHandlerToSource(MenuItemSelection.TYPE, this, handler);
     }
 

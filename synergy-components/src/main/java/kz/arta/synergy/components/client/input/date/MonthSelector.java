@@ -93,13 +93,11 @@ public class MonthSelector extends Composite {
             monthLabel.getElement().getStyle().setPaddingRight(5, Style.Unit.PX);
         }
 
-        EventBus monthBus = new SimpleEventBus();
-
         monthList = new DropDownList<Integer>();
         monthList.setMinWidth(Constants.YEAR_LIST_WIDTH);
         monthList.addAutoHidePartner(monthLabel.getElement());
 
-        monthList.addDaggerItemSelectionHandler(new MenuItemSelection.Handler<Integer>() {
+        monthList.addItemSelectionHandler(new MenuItemSelection.Handler<Integer>() {
             @Override
             public void onItemSelection(MenuItemSelection<Integer> event) {
                 Date month = new Date(picker.currentDate.getTime());
@@ -132,13 +130,11 @@ public class MonthSelector extends Composite {
         yearLabel.setStyleName(SynergyComponents.getResources().cssComponents().bigText());
         yearLabel.getElement().getStyle().setCursor(Style.Cursor.POINTER);
 
-
-        EventBus bus = new SimpleEventBus();
         yearsList = new DropDownList<Integer>();
         yearsList.setMinWidth(Constants.YEAR_LIST_WIDTH);
         yearsList.addAutoHidePartner(yearLabel.getElement());
 
-        yearsList.addDaggerItemSelectionHandler(new MenuItemSelection.Handler<Integer>() {
+        yearsList.addItemSelectionHandler(new MenuItemSelection.Handler<Integer>() {
             @Override
             public void onItemSelection(MenuItemSelection<Integer> event) {
                 yearLabel.setText(event.getItem().getUserValue() + "");

@@ -30,10 +30,6 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
      * Значение элемента меню
      */
     private V userValue;
-    /**
-     * Картинка иконки
-     */
-    private ImageResource iconResource;
 
     /**
      * Выбран ли элемент

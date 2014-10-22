@@ -148,14 +148,14 @@ public class ShowCasePanel extends FlowPanel {
                 menu.clear();
                 final TreeItem item = event.getItem();
                 if (item.isSelected()) {
-                    menu.addItem(new MenuItem<Command>(new Command() {
+                    menu.add(new MenuItem<Command>(new Command() {
                         @Override
                         public void execute() {
                             item.setSelected(false);
                         }
                     }, SCMessages.i18n().tr("Снять выделение")));
                 } else {
-                    menu.addItem(new MenuItem<Command>(new Command() {
+                    menu.add(new MenuItem<Command>(new Command() {
                         @Override
                         public void execute() {
                             item.setSelected(true);
@@ -166,14 +166,14 @@ public class ShowCasePanel extends FlowPanel {
                 if (item.hasItems()) {
                     menu.addSeparator(0);
                     if (item.isOpen()) {
-                        menu.addItem(new MenuItem<Command>(new Command() {
+                        menu.add(new MenuItem<Command>(new Command() {
                             @Override
                             public void execute() {
                                 item.setOpen(false);
                             }
                         }, SCMessages.i18n().tr("Закрыть")));
                     } else {
-                        menu.addItem(new MenuItem<Command>(new Command() {
+                        menu.add(new MenuItem<Command>(new Command() {
                             @Override
                             public void execute() {
                                 item.setOpen(true);
@@ -1079,7 +1079,7 @@ public class ShowCasePanel extends FlowPanel {
             @Override
             public void onTableRowMenu(final TableRowMenuEvent<User> event) {
                 rowMenu.clear();
-                rowMenu.addItem(new MenuItem<Command>(new Command() {
+                rowMenu.add(new MenuItem<Command>(new Command() {
                     @Override
                     public void execute() {
                         provider.getList().remove(event.getObject());
@@ -1095,7 +1095,7 @@ public class ShowCasePanel extends FlowPanel {
             @Override
             public void onTableHeaderMenu(final TableHeaderMenuEvent<User> event) {
                 headerMenu.clear();
-                headerMenu.addItem(new MenuItem<Command>(new Command() {
+                headerMenu.add(new MenuItem<Command>(new Command() {
                     @Override
                     public void execute() {
                         table.getCore().sort(event.getColumn());
@@ -1635,7 +1635,7 @@ public class ShowCasePanel extends FlowPanel {
     private DropDownList<String> createList() {
         DropDownList<String> list = new DropDownList<String>();
         for (String name : createShuffledNames()) {
-            list.addItem(new MenuItem<String>(name, name));
+            list.add(new MenuItem<String>(name, name));
         }
 
         return list;
@@ -1645,7 +1645,7 @@ public class ShowCasePanel extends FlowPanel {
         DropDownListMulti<String> list = new DropDownListMulti<String>();
         String[] names = createShuffledNames();
         for (String name : names) {
-            list.addItem(new MenuItem<String>(name, name));
+            list.add(new MenuItem<String>(name, name));
         }
 
         return list;
@@ -2014,9 +2014,9 @@ public class ShowCasePanel extends FlowPanel {
 
         ContextMenu menu = new ContextMenu();
 
-        menu.addItem(new MenuItem<Command>(null, "Zoom", ImageResources.IMPL.zoom()));
-        menu.addItem(new MenuItem<Command>(null, "Left", ImageResources.IMPL.navigationLeft()));
-        menu.addItem(new MenuItem<Command>(null, "Right", ImageResources.IMPL.navigationRight()));
+        menu.add(new MenuItem<Command>(null, "Zoom", ImageResources.IMPL.zoom()));
+        menu.add(new MenuItem<Command>(null, "Left", ImageResources.IMPL.navigationLeft()));
+        menu.add(new MenuItem<Command>(null, "Right", ImageResources.IMPL.navigationRight()));
         menu.addSeparator(1);
 
         ContextMenuButton simpleButton4 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"));
@@ -2214,7 +2214,7 @@ public class ShowCasePanel extends FlowPanel {
         setMarginLeft(colorButton7, horizontalMargin);
 
         ContextMenu menu3 = createSimpleMenu();
-        menu3.addItem(new MenuItem<Command>(null, SCMessages.i18n().tr("Очень-очень длинный текст")));
+        menu3.add(new MenuItem<Command>(null, SCMessages.i18n().tr("Очень-очень длинный текст")));
         colorButton7.setContextMenu(menu3);
 
         ArtaScrollPanel scroll = new ArtaScrollPanel();
@@ -2390,9 +2390,9 @@ public class ShowCasePanel extends FlowPanel {
 
     private ContextMenu createSimpleMenu() {
         ContextMenu menu = new ContextMenu();
-        menu.addItem(new MenuItem<Command>(null, "Zoom", ImageResources.IMPL.zoom()));
-        menu.addItem(new MenuItem<Command>(null, "Left", ImageResources.IMPL.navigationLeft()));
-        menu.addItem(new MenuItem<Command>(null, "Right", ImageResources.IMPL.navigationRight()));
+        menu.add(new MenuItem<Command>(null, "Zoom", ImageResources.IMPL.zoom()));
+        menu.add(new MenuItem<Command>(null, "Left", ImageResources.IMPL.navigationLeft()));
+        menu.add(new MenuItem<Command>(null, "Right", ImageResources.IMPL.navigationRight()));
         menu.addSeparator(1);
         return menu;
     }

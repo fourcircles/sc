@@ -30,7 +30,6 @@ abstract public class ListTextFilter implements ListFilter {
         this.text = text;
     }
 
-    //todo remove old list
     /**
      * Создает фильтр, который проверяет начинается ли текст элемента списка с заданного текста
      */

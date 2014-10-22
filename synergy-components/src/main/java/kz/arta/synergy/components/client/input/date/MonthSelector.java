@@ -4,8 +4,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -108,7 +106,7 @@ public class MonthSelector extends Composite {
             }
         });
         for (int i = 0; i < 12; i++) {
-            monthList.addItem(new MenuItem<Integer>(i, DateUtil.getMonth(i)));
+            monthList.add(new MenuItem<Integer>(i, DateUtil.getMonth(i)));
         }
         monthList.selectItem(monthList.get(DateUtil.getCurrentDate().getMonth()), true, false);
 
@@ -146,7 +144,7 @@ public class MonthSelector extends Composite {
         });
 
         for (int i = DateUtil.getCurrentDate().getYear() - 90; i < DateUtil.getCurrentDate().getYear() + 10; i++) {
-            yearsList.addItem(new MenuItem<Integer>(i + DateUtil.YEAR_OFFSET, (i + DateUtil.YEAR_OFFSET) + ""));
+            yearsList.add(new MenuItem<Integer>(i + DateUtil.YEAR_OFFSET, (i + DateUtil.YEAR_OFFSET) + ""));
         }
         yearsList.selectItem(yearsList.get(DateUtil.getCurrentDate().getYear() + DateUtil.YEAR_OFFSET), true, false);
 

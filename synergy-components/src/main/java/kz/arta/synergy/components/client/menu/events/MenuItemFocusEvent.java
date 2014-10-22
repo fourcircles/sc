@@ -11,7 +11,7 @@ import kz.arta.synergy.components.client.menu.MenuItem;
  *
  * Событие фокусировки элемента
  */
-public class MenuFocusEvent<V> extends GwtEvent<MenuFocusEvent.Handler<V>> {
+public class MenuItemFocusEvent<V> extends GwtEvent<MenuItemFocusEvent.Handler<V>> {
     public static final Type<Handler<?>> TYPE = new Type<Handler<?>>();
 
     /**
@@ -19,7 +19,7 @@ public class MenuFocusEvent<V> extends GwtEvent<MenuFocusEvent.Handler<V>> {
      */
     private MenuItem<V> item;
 
-    public MenuFocusEvent(MenuItem<V> item) {
+    public MenuItemFocusEvent(MenuItem<V> item) {
         this.item = item;
     }
 
@@ -37,6 +37,6 @@ public class MenuFocusEvent<V> extends GwtEvent<MenuFocusEvent.Handler<V>> {
     }
 
     public static interface Handler<T> extends EventHandler {
-        void onFocus(MenuFocusEvent<T> event);
+        void onFocus(MenuItemFocusEvent<T> event);
     }
 }

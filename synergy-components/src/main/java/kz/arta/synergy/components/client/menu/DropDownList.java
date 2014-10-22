@@ -69,22 +69,47 @@ public class DropDownList<V> extends Menu<V> {
     }
 
     /**
+     * @return значение выбранного элемента
+     */
+    public V getSelectedValue() {
+        return selectedItem.getUserValue();
+    }
+
+    /**
+     * @return выбранный элемент меню
+     */
+    public MenuItem<V> getSelectedItem() {
+        return selectedItem;
+    }
+
+    /**
      * Выбирает элемент. Может быть выбран только один элемент.
      * @param item элемент
      * @param value true - выбирается, false - снимается выделение
      * @param fireEvents создавать ли события
      */
     public void selectItem(MenuItem<V> item, boolean value, boolean fireEvents) {
-        item.setValue(true, false);
+        boolean changed = false;
 
-        if (item != selectedItem) {
-            if (selectedItem != null) {
-                selectedItem.setValue(false, false);
+        if (!value) {
+            if (selectedItem != null && selectedItem == item) {
+                item.setValue(false, false);
+                selectedItem = null;
+                changed = true;
             }
-            selectedItem = item;
-            if (fireEvents) {
-                fireEvent(new MenuItemSelection<V>(selectedItem, true));
+        } else {
+            item.setValue(true, false);
+
+            if (item != selectedItem) {
+                if (selectedItem != null) {
+                    selectedItem.setValue(false, false);
+                }
+                selectedItem = item;
+                changed = true;
             }
+        }
+        if (fireEvents && changed) {
+            fireEvent(new MenuItemSelection<V>(selectedItem, value));
         }
     }
 
@@ -111,8 +136,8 @@ public class DropDownList<V> extends Menu<V> {
      * @return высота
      */
     protected int getHeight() {
-        int cnt = root.getWidgetCount();
-        return Math.min(cnt * 32 + Math.max(cnt - 1, 0) * 2, Constants.LIST_MAX_HEIGHT);
+        int widgetCount = root.getWidgetCount();
+        return Math.min(widgetCount * 32 + Math.max(widgetCount - 1, 0) * 2, Constants.LIST_MAX_HEIGHT);
     }
 
     /**
@@ -233,8 +258,10 @@ public class DropDownList<V> extends Menu<V> {
         } else {
             nextItem = nextIncluded(focusedIndex);
         }
-        nextItem.setFocused(true, true);
-        scrollToFocused();
+        if (nextItem != null) {
+            nextItem.setFocused(true, true);
+            scrollToFocused();
+        }
     }
 
     @Override

@@ -23,7 +23,7 @@ public abstract class ThickMouseMoveHandler implements MouseMoveHandler {
     private int threshold;
 
     /**
-     * Заданы ли начальная позиция мыши
+     * Задана ли начальная позиция мыши
      */
     private boolean started = false;
 
@@ -42,10 +42,10 @@ public abstract class ThickMouseMoveHandler implements MouseMoveHandler {
     }
 
     /**
-     * Показывает преодолела ли мышь необходимое расстояния с предыдущего события
+     * Показывает преодолела ли мышь необходимое расстояние с предыдущего события
      * @param event события движения
      */
-    protected boolean over(MouseMoveEvent event) {
+    protected boolean overThreshold(MouseMoveEvent event) {
         if (!started) {
             oldX = event.getClientX();
             oldY = event.getClientY();

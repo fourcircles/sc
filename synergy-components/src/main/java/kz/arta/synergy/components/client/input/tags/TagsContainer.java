@@ -27,6 +27,11 @@ public abstract class TagsContainer<V> extends Composite {
 
     public abstract List<Tag<V>> getTags();
 
+    /**
+     * Возвращает первый тег с данным значением
+     * @param value значение
+     * @return тег
+     */
     public Tag<V> getTag(V value) {
         for (Tag<V> tag : getTags()) {
             //noinspection NonJREEmulationClassesInClientCode
@@ -41,6 +46,11 @@ public abstract class TagsContainer<V> extends Composite {
         innerBus.fireEventFromSource(new TagRemoveEvent<V>(tag), this);
     }
 
+    /**
+     * Добавляет тег, которого нет в списке.
+     * @param tag новый тег
+     * @see {@link kz.arta.synergy.components.client.input.tags.TagInput#addListItem(Object, String)}
+     */
     public void addTag(Tag<V> tag) {
         innerBus.fireEventFromSource(new TagAddEvent<V>(tag), this);
     }

@@ -221,6 +221,11 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
         }
     }
 
+    /**
+     * Добавляет новое значение в список
+     * @param value значение
+     * @param text текст для тега и элемента в списке
+     */
     public void addListItem(V value, String text) {
         Tag<V> tag = new Tag<V>(text, value);
         tag.setBus(innerBus);
@@ -233,7 +238,7 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
             }
         });
 
-        list.addItem(newItem);
+        list.add(newItem);
     }
 
     protected MenuItem<Tag<V>> getListItem(V value) {
@@ -250,19 +255,32 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
         return null;
     }
 
+    /**
+     * Удаляет из списка элемент с заданным значением
+     * @param value значение
+     */
     public void removeListItem(V value) {
         MenuItem<Tag<V>> item = getListItem(value);
         if (item != null) {
-            list.removeItem(item);
+            list.remove(item);
         }
     }
 
+    /**
+     * Удаляет из списка элемент на заданной позиции
+     * @param index позиция
+     */
     public void removeListItem(int index) {
         if (index >= 0 && index < list.size()) {
-            list.removeItem(list.getItemAt(index));
+            list.remove(list.getItemAt(index));
         }
     }
 
+    /**
+     * Действие при клике по элементу списка
+     * @param item элемент списка
+     * @param select true - выбор, false - наоборот
+     */
     protected void onListSelection(final MenuItem<Tag<V>> item, boolean select) {
         if (select) {
             addTag(item.getUserValue());
@@ -275,6 +293,9 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
         setInputOffset(tagsPanel.getOffsetWidth());
     }
 
+    /**
+     * Действие при удалении тега
+     */
     protected void tagRemoved() {
         input.setText("");
         setInputOffset(tagsPanel.getOffsetWidth());
@@ -283,10 +304,10 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
 
     /**
      * Действия при нажатии клавиши "Enter".
-     * Добавляется dummy тег.
+     * Тег добавляется только при отключенном списке.
      */
     protected void keyEnter() {
-        if (!getText().isEmpty()) {
+        if (!getText().isEmpty() && !listEnabled) {
             Tag<V> tag = Tag.createDummy(input.getText());
             tag.setBus(innerBus);
             addTag(tag);
@@ -352,6 +373,9 @@ public class TagInput<V> extends TagsContainer<V> implements HasText,
         inputBox.setWidth(inputWidth + "px");
     }
 
+    /**
+     * Возвращает список добавленных тегов
+     */
     public List<Tag<V>> getTags() {
         return tagsPanel.getTags();
     }

@@ -6,12 +6,15 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.client.menu.events.MenuFocusEvent;
+import kz.arta.synergy.components.client.menu.events.MenuItemFocusEvent;
 import kz.arta.synergy.components.client.util.Selection;
 import kz.arta.synergy.components.client.util.ThickMouseMoveHandler;
 
@@ -30,7 +33,6 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
      * Значение элемента меню
      */
     private V userValue;
-
     /**
      * Выбран ли элемент
      */
@@ -46,7 +48,13 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
     /**
      * Элемент текста
      */
-    private Label label;
+    Label label;
+
+    /**
+     * Бас для внешних событий.
+     * Можно и без него, но для так удобнее для тестирования.
+     */
+    private EventBus bus = new SimpleEventBus();
 
     public MenuItem(V userValue, String text, ImageResource iconResource) {
         FlowPanel root = new FlowPanel();
@@ -64,35 +72,37 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
         Selection.disableTextSelectInternal(label.getElement());
         root.add(label);
 
+        root.sinkEvents(Event.ONCLICK |
+                Event.ONMOUSEMOVE |
+                Event.ONMOUSEOVER |
+                Event.ONMOUSEOUT);
+
         // не регистрируем незначительные дерганья мыши
-        root.sinkEvents(Event.ONMOUSEMOVE);
-        root.addDomHandler(new ThickMouseMoveHandler() {
+        bus.addHandlerToSource(MouseMoveEvent.getType(), this, new ThickMouseMoveHandler() {
             @Override
             public void onMouseMove(MouseMoveEvent event) {
-                if (over(event)) {
+                if (overThreshold(event)) {
                     setFocused(true, true);
                 }
             }
-        }, MouseMoveEvent.getType());
+        });
 
         // из-за того, что мы не следим за небольшими движениями мыши
-        // надо также следить за событием MOUSEOVER, иначе будет некрасиво
-        root.sinkEvents(Event.ONMOUSEOVER);
-        root.addDomHandler(new MouseOverHandler() {
+        // надо также следить за событием MOUSEOVER, иначе иногда будет некрасиво
+        bus.addHandlerToSource(MouseOverEvent.getType(), this, new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
                 setFocused(true, true);
             }
-        }, MouseOverEvent.getType());
+        });
 
         // клик по пункту выбирает его
-        root.sinkEvents(Event.ONCLICK);
-        root.addDomHandler(new ClickHandler() {
+        bus.addHandlerToSource(ClickEvent.getType(), this, new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 setValue(!isSelected(), true);
             }
-        }, ClickEvent.getType());
+        });
     }
 
     public MenuItem(V value, String text) {
@@ -131,7 +141,7 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
             }
         }
         if (changed && isFocused && fireEvents) {
-            fireEvent(new MenuFocusEvent<V>(this));
+            fireEvent(new MenuItemFocusEvent<V>(this));
         }
     }
 
@@ -173,21 +183,30 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
         return userValue;
     }
 
+
+    @Override
+    public void fireEvent(GwtEvent<?> event) {
+        bus.fireEventFromSource(event, this);
+    }
+
     /**
      * Добавляет хэндлер на изменение "выбранности" элемента
      */
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Boolean> handler) {
-        return addHandler(handler, ValueChangeEvent.getType());
+        return bus.addHandlerToSource(ValueChangeEvent.getType(), this, handler);
     }
 
     /**
      * Добавляет хендлер на фокусировку
      */
-    public HandlerRegistration addFocusHandler(MenuFocusEvent.Handler<V> handler) {
-        return addHandler(handler, MenuFocusEvent.TYPE);
+    public HandlerRegistration addFocusHandler(MenuItemFocusEvent.Handler<V> handler) {
+        return bus.addHandlerToSource(MenuItemFocusEvent.TYPE, this, handler);
     }
 
+    /**
+     * Для дебага
+     */
     @Override
     public String toString() {
         return label.getText();

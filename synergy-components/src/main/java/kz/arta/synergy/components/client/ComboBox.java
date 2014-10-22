@@ -219,7 +219,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
      * @param text текст элемента
      */
     public void addItem(String text, V value) {
-        list.addItem(new MenuItem<V>(value, text));
+        list.add(new MenuItem<V>(value, text));
     }
 
     /**
@@ -228,7 +228,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
      * @param iconResource иконка элемента в списке
      */
     public void addItem(String text, ImageResource iconResource, V value) {
-        list.addItem(new MenuItem<V>(value, text, iconResource));
+        list.add(new MenuItem<V>(value, text, iconResource));
     }
 
     /**

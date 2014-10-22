@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.client.menu.events.MenuFocusEvent;
+import kz.arta.synergy.components.client.menu.events.MenuItemFocusEvent;
 import kz.arta.synergy.components.client.menu.events.MenuItemSelection;
 import kz.arta.synergy.components.client.util.ThickMouseMoveHandler;
 import kz.arta.synergy.components.style.client.Constants;
@@ -89,7 +89,12 @@ public abstract class Menu<V> {
     protected int minWidth = Integer.MIN_VALUE;
 
     public Menu() {
-        root = new FlowPanel();
+        root = new FlowPanel() {
+            @Override
+            public void fireEvent(GwtEvent<?> event) {
+                bus.fireEventFromSource(event, this);
+            }
+        };
 
         items = new ArrayList<MenuItem<V>>();
 
@@ -110,34 +115,33 @@ public abstract class Menu<V> {
             }
         };
 
-        // этот хэндлера включает события мыши обратно после навигации клавиатурой
-        root.sinkEvents(Event.ONMOUSEMOVE);
-        root.addDomHandler(new ThickMouseMoveHandler() {
+        root.sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEOUT);
+
+        // этот хэндлер включает события мыши обратно после навигации клавиатурой
+        bus.addHandlerToSource(MouseMoveEvent.getType(), root, new ThickMouseMoveHandler() {
             @Override
             public void onMouseMove(MouseMoveEvent event) {
-                if (over(event)) {
+                if (overThreshold(event)) {
                     keyboardNavigation = false;
                 }
             }
-        }, MouseMoveEvent.getType());
+        });
 
-        root.sinkEvents(Event.ONMOUSEOVER);
-        root.addDomHandler(new MouseOverHandler() {
+        bus.addHandlerToSource(MouseOverEvent.getType(), root, new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
                 mouseOver = true;
             }
-        }, MouseOverEvent.getType());
+        });
 
-        root.sinkEvents(Event.ONMOUSEOUT);
-        root.addDomHandler(new MouseOutHandler() {
+        bus.addHandlerToSource(MouseOutEvent.getType(), root, new MouseOutHandler() {
             @Override
             public void onMouseOut(MouseOutEvent event) {
                 mouseOver = false;
                 // если мышь вне открытого меню - ничего не сфокусировано
                 noFocused();
             }
-        }, MouseOutEvent.getType());
+        });
 
 
         resizeHandler = new ResizeHandler() {
@@ -222,35 +226,41 @@ public abstract class Menu<V> {
     /**
      * Нажатие Enter
      */
-    private void keyEnter(Event.NativePreviewEvent event) {
+    void keyEnter(Event.NativePreviewEvent event) {
         if (focusedIndex != -1 && focusedIndex < items.size()) {
             items.get(focusedIndex).setValue(true, true);
         }
-        event.cancel();
+        if (event != null) {
+            event.cancel();
+        }
     }
 
-    private void keyRight(Event.NativePreviewEvent event) {
+    void keyRight(Event.NativePreviewEvent event) {
         if (leftRightNavigation) {
             keyboardNavigation = true;
-            event.cancel();
+            if (event != null) {
+                event.cancel();
+            }
             focusLast();
         }
     }
 
-    private void keyLeft(Event.NativePreviewEvent event) {
+    void keyLeft(Event.NativePreviewEvent event) {
         if (leftRightNavigation) {
             keyboardNavigation = true;
-            event.cancel();
+            if (event != null) {
+                event.cancel();
+            }
             focusFirst();
         }
     }
 
-    private void keyUp() {
+    void keyUp() {
         keyboardNavigation = true;
         focusPrevious();
     }
 
-    private void keyDown() {
+    void keyDown() {
         keyboardNavigation = true;
         focusNext();
     }
@@ -258,7 +268,7 @@ public abstract class Menu<V> {
     /**
      * Возвращает сфокусированный элемент или null, если его нет
      */
-    public MenuItem<V> getFocused() {
+    public MenuItem<V> getFocusedItem() {
         if (focusedIndex >= 0 && focusedIndex < items.size()) {
             return items.get(focusedIndex);
         } else {
@@ -342,7 +352,7 @@ public abstract class Menu<V> {
     public void remove(V value) {
         MenuItem<V> item = get(value);
         if (item != null) {
-            removeItem(item);
+            remove(item);
         }
     }
 
@@ -367,17 +377,15 @@ public abstract class Menu<V> {
      * Добавляет элемент в меню. Создание этого элемента оставляется на пользователя
      * @param item новый элемент
      */
-    public void addItem(MenuItem<V> item) {
+    public void add(final MenuItem<V> item) {
         if (items.contains(item)) {
             return;
         }
-        item.addFocusHandler(new MenuFocusEvent.Handler<V>() {
+        item.addFocusHandler(new MenuItemFocusEvent.Handler<V>() {
             @Override
-            public void onFocus(MenuFocusEvent<V> event) {
+            public void onFocus(MenuItemFocusEvent<V> event) {
                 noFocused(event.getItem());
-                if (items.contains(event.getItem())) {
-                    focusedIndex = items.indexOf(event.getItem());
-                }
+                focusedIndex = items.indexOf(item);
             }
         });
         item.addValueChangeHandler(getSelectionHandler(item));
@@ -388,7 +396,7 @@ public abstract class Menu<V> {
     /**
      * Удаляет элемент
      */
-    public void removeItem(MenuItem<V> item) {
+    public void remove(MenuItem<V> item) {
         if (!items.contains(item)) {
             return;
         }
@@ -487,7 +495,7 @@ public abstract class Menu<V> {
      * @param index позиция
      */
     public void addSeparator(int index) {
-        if (index > 0 && index < items.size() - 1) {
+        if (index >= 0 && index < items.size() - 1) {
             MenuItem<V> item = items.get(index);
             separators.add(item);
             item.addStyleName(SynergyComponents.getResources().cssComponents().menuSeparator());

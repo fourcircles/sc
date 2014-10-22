@@ -5,7 +5,6 @@ import kz.arta.synergy.components.client.resources.ImageResources;
 
 import java.util.HashSet;
 import java.util.Set;
-// todo test
 /**
  * User: vsl
  * Date: 18.08.14

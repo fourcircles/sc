@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.input;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -22,8 +23,6 @@ import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.resources.Messages;
 import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
-
-//todo написать тесты
 
 /**
  * User: vsl
@@ -48,7 +47,7 @@ public class SearchResultInput<V> extends Composite implements HasClickHandlers,
     /**
      * Поле ввода
      */
-    private TextInput input;
+    TextInput input;
 
     /**
      * Список
@@ -79,7 +78,7 @@ public class SearchResultInput<V> extends Composite implements HasClickHandlers,
         setStyleName(SynergyComponents.getResources().cssComponents().searchResult());
         addStyleName(SynergyComponents.getResources().cssComponents().mainText());
 
-        input = new TextInput();
+        input = GWT.create(TextInput.class);
         inputContainer = new SimplePanel(input);
         inputContainer.getElement().getStyle().setPaddingLeft(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);
         inputContainer.getElement().getStyle().setPaddingRight(Constants.COMMON_INPUT_PADDING, Style.Unit.PX);

@@ -56,7 +56,7 @@ jar {
 }
 
 gwt {
-    gwtVersion='2.6.1'
+    gwtVersion="2.6.1";
     minHeapSize = "512M";
     maxHeapSize = "1024M";
 

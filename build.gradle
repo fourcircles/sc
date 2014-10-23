@@ -1,0 +1,44 @@
+apply plugin: 'sonar-runner'
+
+version='3.0'
+
+task wrapper(type: Wrapper) {
+  gradleVersion = "2.2-20140930220016+0000"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url 'http://192.168.1.30:8081/artifactory/synergy-libs'
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+	classpath 'org.ajoberstar:gradle-jacoco:0.1.0' 
+    }
+}
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+sonarRunner {
+    sonarProperties {
+        property "sonar.projectName", "SC3"
+        property "sonar.projectKey", "kz.arta:sc3"
+        property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+        property "sonar.host.url", "http://sonar.lan.arta.kz"
+        property "sonar.jdbc.url", "jdbc:mysql://sonar.lan.arta.kz:3306/sonar?useUnicode=true&amp;characterEncoding=utf8"
+        property "sonar.jdbc.driverClassName", "com.mysql.jdbc.Driver"
+        property "sonar.jdbc.username", "sonar"
+        property "sonar.jdbc.password", "sonar"
+        property "sonar.sourceEncoding", "UTF-8"
+    }
+}

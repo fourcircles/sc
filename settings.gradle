@@ -1,0 +1,5 @@
+rootProject.name = 'sc3'
+
+include 'component-style'
+include 'synergy-components'
+include 'ShowCase'

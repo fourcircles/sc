@@ -37,7 +37,7 @@ dependencies {
     providedCompile 'com.google.gwt:gwt-dev:2.6.1'
     providedCompile 'com.google.gwt:gwt-user:2.6.1'
     compile files('../synergy-components/build/libs/synergy-components-3.0.jar')
-    compile files('../synergy-components/component-style/build/libs/component-style-3.0.jar')
+    compile files('../component-style/build/libs/component-style-3.0.jar')
     compile(group: 'kz.arta', name: 'arta-i18n', version: '1.0')
     compile(group: 'kz.arta', name: 'synergy-messages', version: '3.0', changing: true)
 }
@@ -73,7 +73,7 @@ processResources {
     }
     new File('build/resources/main/droid').mkdirs();
     copy {
-        from '../synergy-components/component-style/src/main/resources/css/droid'
+        from '../component-style/src/main/resources/css/droid'
         into 'build/resources/main/droid'
     }
 }

@@ -3,5 +3,6 @@ rootProject.name = 'ShowCase'
 include '../synergy-components'
 project(":../synergy-components").name = "synergy-components"
 
-include '../synergy-components/component-style'
-project(":../synergy-components/component-style").name = "component-style"
+include '../component-style'
+project(":../component-style").name = "component-style"
+

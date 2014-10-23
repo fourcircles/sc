@@ -7,15 +7,13 @@ public class Sample {
         String[] comboNames = createShuffledNames();
         for (String name : comboNames) {
             // добавление элемента в комбобокс
-            multiComboBox.addItem(name, name);
+            multiComboBox.addListItem(name, name);
         }
 
         // выделение некоторых элементов
         multiComboBox.select(comboNames[0]);
         multiComboBox.select(comboNames[1]);
         multiComboBox.select(comboNames[comboNames.length - 1]);
-
-        multiComboBox.setWidth(300);
 
         for (String name : multiComboBox.getSelectedValues()) {
             // выбранные значения

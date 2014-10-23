@@ -40,10 +40,8 @@ sourceSets {
 }
 
 dependencies {
-    providedCompile 'com.google.gwt:gwt-dev:2.6.1'
-    providedCompile 'com.google.gwt:gwt-user:2.6.1'
-    providedCompile files('../synergy-components/src/main/java')
-    providedCompile files('../component-style/src/main/java')
+    compile 'com.google.gwt:gwt-dev:2.6.1'
+    compile 'com.google.gwt:gwt-user:2.6.1'
     compile project(':synergy-components')
     compile project(':component-style')
     compile(group: 'kz.arta', name: 'arta-i18n', version: '1.0')

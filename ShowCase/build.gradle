@@ -5,7 +5,6 @@ apply plugin: 'gwt'
 apply plugin: 'artifactory-publish'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
-apply plugin: 'sonar-runner'
 
 repositories {
     mavenLocal()

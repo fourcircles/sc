@@ -70,14 +70,6 @@ dependencies {
     compile(group: 'kz.arta', name: 'synergy-messages', version: '3.0', changing: true)
 }
 
-gwt {
-    gwtVersion="2.6.1";
-    minHeapSize = "512M";
-    maxHeapSize = "1024M";
-
-    modules 'kz.arta.synergy.components.SynergyComponents'
-}
-
 artifactory {
     contextUrl = 'http://192.168.1.30:8081/artifactory'
     //The base Artifactory URL if not overridden by the publisher/resolver

@@ -1,9 +1,9 @@
 apply plugin: 'java'
 apply plugin: 'war'
-apply plugin: 'gwt'
 apply plugin: 'artifactory-publish'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
+apply plugin: 'jacoco'
 
 version='3.0'
 
@@ -38,13 +38,6 @@ sourceSets {
             srcDir 'src/main/resources'
         }
     }
-}
-
-gwt {
-    minHeapSize = "512M";
-    maxHeapSize = "1024M";
-
-    modules 'kz.arta.synergy.components.SynergyComponents'
 }
 
 dependencies {

@@ -1,9 +1,9 @@
 apply plugin: 'java'
 apply plugin: 'war'
-apply plugin: 'gwt'
 apply plugin: 'artifactory-publish'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
+apply plugin: 'jacoco'
 
 version='3.0'
 
@@ -55,16 +55,6 @@ jar {
     from 'src/main/java'
 }
 
-gwt {
-    gwtVersion="2.6.1";
-    minHeapSize = "512M";
-    maxHeapSize = "1024M";
-
-    modules 'kz.arta.synergy.components.style.ComponentStyle'
-}
-
-
-
 artifactory {
     contextUrl = 'http://192.168.1.30:8081/artifactory'
     //The base Artifactory URL if not overridden by the publisher/resolver
@@ -95,3 +85,4 @@ publishing {
         }
     }
 }
+

@@ -1,7 +1,6 @@
 apply plugin: 'sonar-runner'
 
 version='3.0'
-
 task wrapper(type: Wrapper) {
   gradleVersion = "2.2-20140930220016+0000"
 }
@@ -31,8 +30,8 @@ configurations.all {
 
 sonarRunner {
     sonarProperties {
-        property "sonar.projectName", "SC3"
-        property "sonar.projectKey", "kz.arta:sc3"
+        property "sonar.projectName", "Synergy Components"
+        property "sonar.projectKey", "kz.arta.synergy.components"
         property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
         property "sonar.host.url", "http://sonar.lan.arta.kz"
         property "sonar.jdbc.url", "jdbc:mysql://sonar.lan.arta.kz:3306/sonar?useUnicode=true&amp;characterEncoding=utf8"
@@ -42,3 +41,4 @@ sonarRunner {
         property "sonar.sourceEncoding", "UTF-8"
     }
 }
+

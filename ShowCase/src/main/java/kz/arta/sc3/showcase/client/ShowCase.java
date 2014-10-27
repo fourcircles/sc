@@ -18,7 +18,7 @@ import kz.arta.synergy.components.client.SynergyComponents;
 public class ShowCase implements EntryPoint {
 
     public static final SCResources SC_RESOURCES = GWT.create(SCResources.class);
-    public static final SCImageResources SC_IMAGES = com.google.gwt.core.client.GWT.create(SCImageResources.class);
+    public static final SCImageResources SC_IMAGES = GWT.create(SCImageResources.class);
 
     @Override
     public void onModuleLoad() {

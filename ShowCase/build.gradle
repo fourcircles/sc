@@ -1,10 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'gwt'
-//todo разобраться почему это здесь нужно
-apply plugin: 'artifactory-publish'
-apply plugin: 'maven-publish'
-apply plugin: 'maven'
 
 repositories {
     mavenLocal()
@@ -17,25 +13,13 @@ repositories {
 buildscript {
     repositories {
         maven {
-            url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/'
+            url 'http://dl.bintray.com/steffenschaefer/maven'
         }
         mavenCentral()
         jcenter()
     }
     dependencies {
-        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
-        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.4')
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir 'src/main/java'
-        }
-        resources {
-            srcDir 'src/main/resources'
-        }
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.5'
     }
 }
 
@@ -54,40 +38,21 @@ gwt {
     maxHeapSize = "1024M";
 
     modules 'kz.arta.sc3.showcase.ShowCase'
-}
 
-project.webAppDirName = 'build/resources/main'
+    superDev {
+        // это нужно для того, чтобы superDevMode понимал, что ресурсы есть
+        useClasspathForSrc = true
+    }
+}
 
 configurations.all {
     // check for updates every build
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
-import org.apache.tools.ant.filters.*
-processResources {
-    ext.env = System.getenv()
-    ext.buildNumber = '1.0.'+env.BUILD_NUMBER?.toInteger()
-    ext.fullrev = ''
-    ant.loadfile(srcFile: "../.git/refs/remotes/origin/master", property: ext.fullrev)
-    ant.properties[ext.buildNumber] = '1.0.'+env.BUILD_NUMBER?.toInteger()
-    from(sourceSets.main.resources.srcDirs) {
-        include 'ShowCase.html'
-        filter(ReplaceTokens, tokens: [build_stamp: new Date().format('yyyy.MM.dd HH:mm'),
-                                       revision: ant.properties[ext.fullrev].substring(0,10),
-                                       version: ant.properties[ext.buildNumber]
-        ])
-    }
-    new File('build/resources/main/droid').mkdirs();
-    copy {
-        from '../component-style/src/main/resources/css/droid'
-        into 'build/resources/main/droid'
-    }
-
-}
-
 sonarRunner {
     sonarProperties {
-	property "sonar.sources", "src/main/java"
+	    property "sonar.sources", "src/main/java"
     }
 }
 

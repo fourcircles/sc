@@ -8,7 +8,7 @@ import com.google.gwt.resources.client.ImageResource;
  * Date: 26.06.14
  * Time: 17:20
  */
-public interface SCImageResources extends ClientBundle {
+public interface ImageResources extends ClientBundle {
 
     @Source("images/zoom-original.16.png")
     ImageResource zoom();

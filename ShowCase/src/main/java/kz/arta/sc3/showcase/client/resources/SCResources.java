@@ -22,6 +22,9 @@ public interface SCResources extends ClientBundle {
     @CssResource.NotStrict
     CssResource gitHub();
 
+    @ClientBundle.Source("css/showcase.css")
+    CssResources css();
+
     @ClientBundle.Source("java-samples/buttons/simple-button.java")
     TextResource simpleButton();
     @ClientBundle.Source("java-samples/buttons/simple-button-click.java")

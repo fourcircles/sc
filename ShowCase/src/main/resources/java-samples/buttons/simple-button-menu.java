@@ -1,6 +1,6 @@
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.sc3.showcase.client.resources.Messages;
 import kz.arta.synergy.components.client.button.ContextMenuButton;
 import kz.arta.synergy.components.client.button.SimpleButton;
 import kz.arta.synergy.components.client.resources.ImageResources;
@@ -16,7 +16,7 @@ public class Sample {
         menu.addSeparator();
         menu.addItem("Right", ImageResources.IMPL.navigationRight(), null);
 
-        ContextMenuButton simpleButton4 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"));
+        ContextMenuButton simpleButton4 = new ContextMenuButton(Messages.i18n().tr("Кнопка с меню"));
         simpleButton4.setContextMenu(menu);
 
         simpleButton4.addClickHandler(new ClickHandler() {

@@ -1,7 +1,7 @@
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.RowCountChangeEvent;
-import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.sc3.showcase.client.resources.Messages;
 import kz.arta.synergy.components.client.table.Table;
 import kz.arta.synergy.components.client.table.TreeTableProvider;
 import kz.arta.synergy.components.client.table.UserTree;
@@ -20,7 +20,7 @@ public class Sample {
         });
         table.getCore().setOnlyRows(true);
         table.enableHat(true);
-        table.getHat().setName(SCMessages.i18n().tr("Дерево-таблица"));
+        table.getHat().setName(Messages.i18n().tr("Дерево-таблица"));
         table.getHat().enableAddButton(true);
 
         // позиция таблицы может быть задана относительно родителя
@@ -61,7 +61,7 @@ public class Sample {
         };
         table.addColumn(treeColumn);
 
-        ArtaTextColumn<UserTree> lastNameColumn = new ArtaTextColumn<UserTree>(SCMessages.i18n().tr("Фамилия")) {
+        ArtaTextColumn<UserTree> lastNameColumn = new ArtaTextColumn<UserTree>(Messages.i18n().tr("Фамилия")) {
             @Override
             public String getValue(UserTree object) {
                 return object.getLastName();
@@ -69,7 +69,7 @@ public class Sample {
         };
         table.addColumn(lastNameColumn);
 
-        ArtaTextColumn<UserTree> addressColumn = new ArtaTextColumn<UserTree>(SCMessages.i18n().tr("Адрес")) {
+        ArtaTextColumn<UserTree> addressColumn = new ArtaTextColumn<UserTree>(Messages.i18n().tr("Адрес")) {
             @Override
             public String getValue(UserTree object) {
                 return object.getAddress();

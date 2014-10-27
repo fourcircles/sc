@@ -1,9 +1,4 @@
-import com.google.gwt.event.shared.SimpleEventBus;
-import kz.arta.sc3.showcase.client.ShowCase;
-import kz.arta.sc3.showcase.client.resources.SCMessages;
 import kz.arta.synergy.components.client.input.tags.TagInput;
-import kz.arta.synergy.components.client.menu.DropDownListMulti;
-import kz.arta.synergy.components.client.menu.MenuItem;
 
 public class Sample {
     public static void main(String[] args) {

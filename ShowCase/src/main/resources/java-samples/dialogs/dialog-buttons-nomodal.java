@@ -2,7 +2,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
-import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.sc3.showcase.client.resources.Messages;
 import kz.arta.synergy.components.client.button.SimpleButton;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.input.TextInput;
@@ -12,7 +12,7 @@ public class Sample {
         final TextInput input = new TextInput();
         input.setAllowEmpty(false);
 
-        final SimpleButton newDialog = new SimpleButton(SCMessages.i18n().tr("Добавить новый диалог"));
+        final SimpleButton newDialog = new SimpleButton(Messages.i18n().tr("Добавить новый диалог"));
         newDialog.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

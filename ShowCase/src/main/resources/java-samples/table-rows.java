@@ -1,6 +1,6 @@
 import com.google.gwt.user.client.Command;
 import com.google.gwt.view.client.ListDataProvider;
-import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.sc3.showcase.client.resources.Messages;
 import kz.arta.synergy.components.client.table.Pager;
 import kz.arta.synergy.components.client.table.Table;
 import kz.arta.synergy.components.client.table.User;
@@ -20,7 +20,7 @@ public class Sample {
         // шапка
         table.enableHat(true);
         // название таблицы
-        table.getHat().setName(SCMessages.i18n().tr("Таблица"));
+        table.getHat().setName(Messages.i18n().tr("Таблица"));
         // есть ли кнопка "добавить"
         table.getHat().enableAddButton(true);
         // показывать ли пагинатор всегда
@@ -49,7 +49,7 @@ public class Sample {
         idColumn.setSortable(true);
         table.addColumn(idColumn);
 
-        final ArtaEditableTextColumn<User> firstNameColumn = new ArtaEditableTextColumn<User>(SCMessages.i18n().tr("Имя")) {
+        final ArtaEditableTextColumn<User> firstNameColumn = new ArtaEditableTextColumn<User>(Messages.i18n().tr("Имя")) {
             @Override
             public String getValue(User value) {
                 return value.getFirstName();
@@ -63,7 +63,7 @@ public class Sample {
         firstNameColumn.setSortable(true);
         table.addColumn(firstNameColumn);
 
-        final ArtaEditableTextColumn<User> lastNameColumn = new ArtaEditableTextColumn<User>(SCMessages.i18n().tr("Фамилия")) {
+        final ArtaEditableTextColumn<User> lastNameColumn = new ArtaEditableTextColumn<User>(Messages.i18n().tr("Фамилия")) {
             @Override
             public String getValue(User value) {
                 return value.getLastName();
@@ -138,7 +138,7 @@ public class Sample {
             @Override
             public void onTableRowMenu(final TableRowMenuEvent<User> event) {
                 rowMenu.clear();
-                rowMenu.addItem(SCMessages.i18n().tr("Удалить ряд"), new Command() {
+                rowMenu.addItem(Messages.i18n().tr("Удалить ряд"), new Command() {
                     @Override
                     public void execute() {
                         // event.getObject() - объект в ряду, для которого вызвано меню
@@ -161,7 +161,7 @@ public class Sample {
             @Override
             public void onTableHeaderMenu(final TableHeaderMenuEvent<User> event) {
                 headerMenu.clear();
-                headerMenu.addItem(SCMessages.i18n().tr("Отсортировать"), new Command() {
+                headerMenu.addItem(Messages.i18n().tr("Отсортировать"), new Command() {
                     @Override
                     public void execute() {
                         // сортируем по столбцу, для которого было вызвано меню

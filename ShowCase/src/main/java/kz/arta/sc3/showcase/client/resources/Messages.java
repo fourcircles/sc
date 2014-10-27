@@ -8,12 +8,12 @@ import org.xnap.commons.i18n.I18n;
  * Date: 26.06.14
  * Time: 15:47
  */
-public class SCMessages {
+public class Messages {
     private static final I18n I_18_N = I18nFactory.getI18n();
 
     public static final String SIZE = "Размер";
 
-    private SCMessages() {
+    private Messages() {
     }
 
     public static I18n i18n() {

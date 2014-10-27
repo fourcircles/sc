@@ -1,5 +1,5 @@
 import com.google.gwt.user.client.Command;
-import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.sc3.showcase.client.resources.Messages;
 import kz.arta.synergy.components.client.tree.Tree;
 import kz.arta.synergy.components.client.tree.TreeItem;
 import kz.arta.synergy.components.client.tree.events.TreeItemContextMenuEvent;
@@ -37,14 +37,14 @@ public class Sample {
                 menu.clear();
                 final TreeItem item = event.getItem();
                 if (item.isSelected()) {
-                    menu.addItem(SCMessages.i18n().tr("Снять выделение"), new Command() {
+                    menu.addItem(Messages.i18n().tr("Снять выделение"), new Command() {
                         @Override
                         public void execute() {
                             item.setSelected(false);
                         }
                     });
                 } else {
-                    menu.addItem(SCMessages.i18n().tr("Выделить"), new Command() {
+                    menu.addItem(Messages.i18n().tr("Выделить"), new Command() {
                         @Override
                         public void execute() {
                             item.setSelected(true);
@@ -55,14 +55,14 @@ public class Sample {
                 if (item.hasItems()) {
                     menu.addSeparator();
                     if (item.isOpen()) {
-                        menu.addItem(SCMessages.i18n().tr("Закрыть"), new Command() {
+                        menu.addItem(Messages.i18n().tr("Закрыть"), new Command() {
                             @Override
                             public void execute() {
                                 item.setOpen(false);
                             }
                         });
                     } else {
-                        menu.addItem(SCMessages.i18n().tr("Открыть"), new Command() {
+                        menu.addItem(Messages.i18n().tr("Открыть"), new Command() {
                             @Override
                             public void execute() {
                                 item.setOpen(true);
@@ -81,20 +81,20 @@ public class Sample {
      * Заполняет дерево
      */
     private void fillTree(Tree tree) {
-        TreeItem basicComponents = tree.addItem(SCMessages.i18n().tr("Базовые компоненты"));
+        TreeItem basicComponents = tree.addItem(Messages.i18n().tr("Базовые компоненты"));
 
-        TreeItem buttons = tree.addItem(basicComponents, SCMessages.i18n().tr("Кнопки"));
+        TreeItem buttons = tree.addItem(basicComponents, Messages.i18n().tr("Кнопки"));
 
-        TreeItem simpleButtons = tree.addItem(buttons, SCMessages.i18n().tr("Простые кнопки"));
+        TreeItem simpleButtons = tree.addItem(buttons, Messages.i18n().tr("Простые кнопки"));
         simpleButtons.setUserObject(getSimpleButtonsPanel());
 
-        TreeItem iconButtons = tree.addItem(buttons, SCMessages.i18n().tr("Кнопка с иконкой"));
+        TreeItem iconButtons = tree.addItem(buttons, Messages.i18n().tr("Кнопка с иконкой"));
         iconButtons.setUserObject(getIconButtonsPanel());
 
-        TreeItem colorButtons = tree.addItem(buttons, SCMessages.i18n().tr("Цветные кнопки"));
+        TreeItem colorButtons = tree.addItem(buttons, Messages.i18n().tr("Цветные кнопки"));
         colorButtons.setUserObject(getColorButtonsPanel());
 
-        TreeItem groupButtons = tree.addItem(buttons, SCMessages.i18n().tr("Групповые кнопки"));
+        TreeItem groupButtons = tree.addItem(buttons, Messages.i18n().tr("Групповые кнопки"));
         groupButtons.setUserObject(getGroupButtonsPanel());
     }
 

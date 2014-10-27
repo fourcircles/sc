@@ -1,4 +1,4 @@
-import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.sc3.showcase.client.resources.Messages;
 import kz.arta.synergy.components.client.input.number.InputConstraint;
 import kz.arta.synergy.components.client.input.number.MaxNumberConstraint;
 import kz.arta.synergy.components.client.input.number.NumberInput;
@@ -15,7 +15,7 @@ public class Sample {
         max200.add(new MaxNumberConstraint(200));
         NumberInput maxInput = new NumberInput(max200);
 
-        maxInput.setPlaceHolder(SCMessages.i18n().tr("Максимально 200"));
+        maxInput.setPlaceHolder(Messages.i18n().tr("Максимально 200"));
     }
 }
 

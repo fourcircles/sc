@@ -305,7 +305,7 @@ public class ShowCasePanel extends FlowPanel {
         root.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         Label version = new Label("Version: \t" +
-                (properties.keySet().contains("vision") ? properties.get("vision") : "unknown"));
+                (properties.keySet().contains("version") ? properties.get("version") : "unknown"));
         Label revision = new Label("Revision: \t" +
                 (properties.keySet().contains("revision") ? properties.get("revision") : "unknown"));
         Label stamp = new Label("Build stamp: \t" +

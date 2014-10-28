@@ -42,7 +42,6 @@ gwt {
     modules 'kz.arta.sc3.showcase.ShowCase'
 
     superDev {
-        // это нужно для того, чтобы superDevMode понимал, что ресурсы есть
         useClasspathForSrc = true
     }
 }
@@ -58,18 +57,30 @@ sonarRunner {
     }
 }
 
-processResources {
+war {
     ext.env = System.getenv()
     ext.buildNumber = '1.0.'+env.BUILD_NUMBER?.toInteger()
     ext.fullrev = ''
     ant.loadfile(srcFile: "../.git/refs/remotes/origin/master", property: ext.fullrev)
     ant.properties[ext.buildNumber] = '1.0.'+env.BUILD_NUMBER?.toInteger()
-    from(sourceSets.main.resources.srcDirs) {
+
+    filter(ReplaceTokens, tokens: [build_stamp: new Date().format('yyyy.MM.dd HH:mm'),
+                                   revision   : ant.properties[ext.fullrev].substring(0, 10),
+                                   version    : ant.properties[ext.buildNumber]
+    ])
+}
+
+draftWar {
+    ext.env = System.getenv()
+    ext.buildNumber = '1.0.'+env.BUILD_NUMBER?.toInteger()
+    ext.fullrev = ''
+    ant.loadfile(srcFile: "../.git/refs/remotes/origin/master", property: ext.fullrev)
+    ant.properties[ext.buildNumber] = '1.0.'+env.BUILD_NUMBER?.toInteger()
+    from(project.webAppDir) {
         include 'ShowCase.html'
         filter(ReplaceTokens, tokens: [build_stamp: new Date().format('yyyy.MM.dd HH:mm'),
-                                       revision: ant.properties[ext.fullrev].substring(0,10),
-                                       version: ant.properties[ext.buildNumber]
+                                       revision   : ant.properties[ext.fullrev].substring(0, 10),
+                                       version    : ant.properties[ext.buildNumber]
         ])
     }
 }
-

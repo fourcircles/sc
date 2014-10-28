@@ -22,7 +22,7 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.RowCountChangeEvent;
-import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.sc3.showcase.client.resources.Messages;
 import kz.arta.synergy.components.client.ComboBox;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ButtonBase;
@@ -153,14 +153,14 @@ public class ShowCasePanel extends FlowPanel {
                         public void execute() {
                             item.setSelected(false);
                         }
-                    }, SCMessages.i18n().tr("Снять выделение")));
+                    }, Messages.i18n().tr("Снять выделение")));
                 } else {
                     menu.add(new MenuItem<Command>(new Command() {
                         @Override
                         public void execute() {
                             item.setSelected(true);
                         }
-                    }, SCMessages.i18n().tr("Выделить")));
+                    }, Messages.i18n().tr("Выделить")));
                 }
 
                 if (item.hasItems()) {
@@ -171,14 +171,14 @@ public class ShowCasePanel extends FlowPanel {
                             public void execute() {
                                 item.setOpen(false);
                             }
-                        }, SCMessages.i18n().tr("Закрыть")));
+                        }, Messages.i18n().tr("Закрыть")));
                     } else {
                         menu.add(new MenuItem<Command>(new Command() {
                             @Override
                             public void execute() {
                                 item.setOpen(true);
                             }
-                        }, SCMessages.i18n().tr("Открыть")));
+                        }, Messages.i18n().tr("Открыть")));
                     }
                 }
                 menu.show(event.getX(), event.getY());
@@ -188,13 +188,21 @@ public class ShowCasePanel extends FlowPanel {
         final Dictionary theme = Dictionary.getDictionary("properties");
 
         SimpleButton about = new SimpleButton("About");
+        final DialogSimple aboutDialog = createAboutDialog();
         about.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                Window.alert("About: \nSynergy components ShowCase\n\nVersion: " + theme.get("version") +
-                        "\nRevision: " + theme.get("revision") + "\nBuild stamp: " + theme.get("build_stamp"));
+                aboutDialog.center();
+                aboutDialog.show();
             }
         });
+//        about.addClickHandler(new ClickHandler() {
+//            @Override
+//            public void onClick(ClickEvent event) {
+//                Window.alert("About: \nSynergy components ShowCase\n\nVersion: " + theme.get("version") +
+//                        "\nRevision: " + theme.get("revision") + "\nBuild stamp: " + theme.get("build_stamp"));
+//            }
+//        });
         titlePanel.add(about);
 
 
@@ -287,6 +295,38 @@ public class ShowCasePanel extends FlowPanel {
         });
     }
 
+    private DialogSimple createAboutDialog() {
+        DialogSimple about = new DialogSimple(true);
+        about.setText("About");
+
+        final Dictionary properties = Dictionary.getDictionary("properties");
+
+        FlowPanel root = new FlowPanel();
+        root.getElement().getStyle().setPadding(10, Style.Unit.PX);
+
+        Label version = new Label("Version: \t" +
+                (properties.keySet().contains("vision") ? properties.get("vision") : "unknown"));
+        Label revision = new Label("Revision: \t" +
+                (properties.keySet().contains("revision") ? properties.get("revision") : "unknown"));
+        Label stamp = new Label("Build stamp: \t" +
+                (properties.keySet().contains("build_stamp") ? properties.get("build_stamp") : "unknown"));
+
+        root.add(version);
+        root.add(revision);
+        root.add(stamp);
+
+        for (int i = 0; i < root.getWidgetCount(); i++) {
+            root.getWidget(i).setStyleName(SynergyComponents.getResources().cssComponents().mainText());
+            root.getWidget(i).addStyleName(ShowCase.RESOURCES.css().aboutDialogItem());
+        }
+
+        about.setContent(root);
+        about.getContent().getElement().getStyle().setHeight(110, Style.Unit.PX);
+        about.getContent().getElement().getStyle().setWidth(300, Style.Unit.PX);
+
+        return about;
+    }
+
     private void hideCode() {
         codePanel.getElement().getStyle().setDisplay(Style.Display.NONE);
         tabPanel.getElement().getStyle().clearBottom();
@@ -376,7 +416,7 @@ public class ShowCasePanel extends FlowPanel {
 
     private Image createCodeOpenButton() {
         codeOpenButton = new Image();
-        codeOpenButton.setResource(ShowCase.SC_IMAGES.code());
+        codeOpenButton.setResource(ShowCase.IMAGES.code());
 
         Style style = codeOpenButton.getElement().getStyle();
         style.setPosition(Style.Position.FIXED);
@@ -467,14 +507,14 @@ public class ShowCasePanel extends FlowPanel {
     private Panel createDialogsWithButtonsPanel() {
         final FlowPanel root = new FlowPanel();
 
-        final SimpleButton showTiny = new SimpleButton(SCMessages.i18n().tr("Показать небольшой диалог"));
+        final SimpleButton showTiny = new SimpleButton(Messages.i18n().tr("Показать небольшой диалог"));
         showTiny.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         showTiny.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         showTiny.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 Dialog dialog = new Dialog();
-                initDialog(dialog, 116, 84, SCMessages.i18n().tr("Небольшой диалог"), true);
+                initDialog(dialog, 116, 84, Messages.i18n().tr("Небольшой диалог"), true);
                 initButtonDialog(dialog, false, true);
                 dialog.center();
                 dialog.show();
@@ -482,14 +522,14 @@ public class ShowCasePanel extends FlowPanel {
         });
         root.add(showTiny);
 
-        final SimpleButton showMedium = new SimpleButton(SCMessages.i18n().tr("Показать небольшой диалог"));
+        final SimpleButton showMedium = new SimpleButton(Messages.i18n().tr("Показать небольшой диалог"));
         showMedium.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         showMedium.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         showMedium.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 Dialog dialog = new Dialog();
-                initDialog(dialog, 400, 400, SCMessages.i18n().tr("Средний диалог"), true);
+                initDialog(dialog, 400, 400, Messages.i18n().tr("Средний диалог"), true);
                 initButtonDialog(dialog, true, true);
                 dialog.center();
                 dialog.show();
@@ -505,8 +545,8 @@ public class ShowCasePanel extends FlowPanel {
         input.setAllowEmpty(false);
         root.add(input);
 
-        final SimpleButton newDialog = new SimpleButton(SCMessages.i18n().tr("Добавить новый диалог"));
-        addCodeSample(newDialog, SCMessages.i18n().tr("Диалог с кнопками"), ShowCase.SC_RESOURCES.dialogButtons().getText());
+        final SimpleButton newDialog = new SimpleButton(Messages.i18n().tr("Добавить новый диалог"));
+        addCodeSample(newDialog, Messages.i18n().tr("Диалог с кнопками"), ShowCase.RESOURCES.dialogButtons().getText());
         setMarginLeft(newDialog, 20);
         newDialog.addClickHandler(new ClickHandler() {
             @Override
@@ -529,38 +569,38 @@ public class ShowCasePanel extends FlowPanel {
     private Panel createDialogsPanel() {
         FlowPanel root = new FlowPanel();
 
-        final SimpleButton showTiny = new SimpleButton(SCMessages.i18n().tr("Показать небольшой диалог"));
-        addCodeSample(showTiny, SCMessages.i18n().tr("Небольшой диалог"), ShowCase.SC_RESOURCES.dialogModalSmall().getText());
+        final SimpleButton showTiny = new SimpleButton(Messages.i18n().tr("Показать небольшой диалог"));
+        addCodeSample(showTiny, Messages.i18n().tr("Небольшой диалог"), ShowCase.RESOURCES.dialogModalSmall().getText());
         setMarginLeft(showTiny, 20);
         showTiny.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         showTiny.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 DialogSimple dialog = new DialogSimple();
-                initDialog(dialog, 116, 84, SCMessages.i18n().tr("Небольшой диалог"), true);
+                initDialog(dialog, 116, 84, Messages.i18n().tr("Небольшой диалог"), true);
                 dialog.center();
                 dialog.show();
             }
         });
         root.add(showTiny);
 
-        final SimpleButton showMedium = new SimpleButton(SCMessages.i18n().tr("Показать средний диалог"));
-        addCodeSample(showMedium, SCMessages.i18n().tr("Средний диалог"), ShowCase.SC_RESOURCES.dialogModalMedium().getText());
+        final SimpleButton showMedium = new SimpleButton(Messages.i18n().tr("Показать средний диалог"));
+        addCodeSample(showMedium, Messages.i18n().tr("Средний диалог"), ShowCase.RESOURCES.dialogModalMedium().getText());
         showMedium.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         setMarginLeft(showMedium, 20);
         showMedium.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 DialogSimple dialog = new DialogSimple();
-                initDialog(dialog, 400, 400, SCMessages.i18n().tr("Средний диалог"), true);
+                initDialog(dialog, 400, 400, Messages.i18n().tr("Средний диалог"), true);
                 dialog.center();
                 dialog.show();
             }
         });
         root.add(showMedium);
 
-        SimpleButton newDialog = new SimpleButton(SCMessages.i18n().tr("Добавить новый диалог"));
-        addCodeSample(newDialog, SCMessages.i18n().tr("Диалог"), ShowCase.SC_RESOURCES.dialog().getText());
+        SimpleButton newDialog = new SimpleButton(Messages.i18n().tr("Добавить новый диалог"));
+        addCodeSample(newDialog, Messages.i18n().tr("Диалог"), ShowCase.RESOURCES.dialog().getText());
         newDialog.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         setMarginLeft(newDialog, 20);
         newDialog.addClickHandler(new ClickHandler() {
@@ -569,7 +609,7 @@ public class ShowCasePanel extends FlowPanel {
                 DialogSimple dialog = new DialogSimple();
 
                 randomizePosition(dialog);
-                initDialog(dialog, 400, 400, SCMessages.i18n().tr("Диалог #") + dialogsCount++, false);
+                initDialog(dialog, 400, 400, Messages.i18n().tr("Диалог #") + dialogsCount++, false);
                 taskBar.addItem(dialog);
             }
         });
@@ -579,13 +619,13 @@ public class ShowCasePanel extends FlowPanel {
     }
 
     private void fillComboBox(ComboBox<String> comboBox) {
-        comboBox.addItem(SCMessages.i18n().tr("Приблизить"), ImageResources.IMPL.zoom(), SCMessages.i18n().tr("Приблизить"));
-        comboBox.addItem(SCMessages.i18n().tr("Налево"), ImageResources.IMPL.navigationLeft(), SCMessages.i18n().tr("Налево"));
-        comboBox.addItem(SCMessages.i18n().tr("Направо"), ImageResources.IMPL.navigationRight(), SCMessages.i18n().tr("Направо"));
-        comboBox.addItem(SCMessages.i18n().tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"),
-                SCMessages.i18n().tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"));
+        comboBox.addItem(Messages.i18n().tr("Приблизить"), ImageResources.IMPL.zoom(), Messages.i18n().tr("Приблизить"));
+        comboBox.addItem(Messages.i18n().tr("Налево"), ImageResources.IMPL.navigationLeft(), Messages.i18n().tr("Налево"));
+        comboBox.addItem(Messages.i18n().tr("Направо"), ImageResources.IMPL.navigationRight(), Messages.i18n().tr("Направо"));
+        comboBox.addItem(Messages.i18n().tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"),
+                Messages.i18n().tr("Простооченьдлинныйпунктменю,чтобыпосмотретьчтопроисходит"));
         for (int i = 1; i < 30; i++) {
-            comboBox.addItem(SCMessages.i18n().tr("Пункт меню ") + i, SCMessages.i18n().tr("Пункт меню ") + i);
+            comboBox.addItem(Messages.i18n().tr("Пункт меню ") + i, Messages.i18n().tr("Пункт меню ") + i);
         }
     }
 
@@ -594,22 +634,22 @@ public class ShowCasePanel extends FlowPanel {
         comboBoxPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         final ComboBox<String> combo = new ComboBox<String>();
-        addCodeSample(combo, SCMessages.i18n().tr("Комбобокс"), ShowCase.SC_RESOURCES.combobox().getText());
+        addCodeSample(combo, Messages.i18n().tr("Комбобокс"), ShowCase.RESOURCES.combobox().getText());
 
         fillComboBox(combo);
         combo.setReadOnly(false);
         comboBoxPanel.add(combo);
 
         ComboBox<Integer> statesCombo = new ComboBox<Integer>();
-        addCodeSample(statesCombo, SCMessages.i18n().tr("Комбобокс"), ShowCase.SC_RESOURCES.combobox().getText());
+        addCodeSample(statesCombo, Messages.i18n().tr("Комбобокс"), ShowCase.RESOURCES.combobox().getText());
         setMarginLeft(statesCombo, 20);
         comboBoxPanel.add(statesCombo);
 
         statesCombo.setReadOnly(true);
 
-        statesCombo.addItem(SCMessages.i18n().tr("Включен, изменяем"), 1);
-        statesCombo.addItem(SCMessages.i18n().tr("Включен, неизменяем"), 2);
-        statesCombo.addItem(SCMessages.i18n().tr("Выключен"), 3);
+        statesCombo.addItem(Messages.i18n().tr("Включен, изменяем"), 1);
+        statesCombo.addItem(Messages.i18n().tr("Включен, неизменяем"), 2);
+        statesCombo.addItem(Messages.i18n().tr("Выключен"), 3);
 
         statesCombo.selectValue(1, false);
 
@@ -640,21 +680,21 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel root = new FlowPanel();
         root.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
-        SimpleButton addTab = new SimpleButton(SCMessages.i18n().tr("Добавить вкладку"));
+        SimpleButton addTab = new SimpleButton(Messages.i18n().tr("Добавить вкладку"));
 
         root.add(addTab);
 
         final TabPanel localTabPanel = new TabPanel();
-        addCodeSample(localTabPanel, SCMessages.i18n().tr("Панель вкладок"), ShowCase.SC_RESOURCES.tabs().getText());
+        addCodeSample(localTabPanel, Messages.i18n().tr("Панель вкладок"), ShowCase.RESOURCES.tabs().getText());
         localTabPanel.getElement().getStyle().setPosition(Style.Position.RELATIVE);
         localTabPanel.setWidth("450px");
         localTabPanel.setHeight("300px");
 
         root.add(localTabPanel);
 
-        addSimpleTab(localTabPanel, SCMessages.i18n().tr("Вкладка") + " 1");
-        addSimpleTab(localTabPanel, SCMessages.i18n().tr("Вкладка") + " 2");
-        addSimpleTab(localTabPanel, SCMessages.i18n().tr("Вкладка") + " 3");
+        addSimpleTab(localTabPanel, Messages.i18n().tr("Вкладка") + " 1");
+        addSimpleTab(localTabPanel, Messages.i18n().tr("Вкладка") + " 2");
+        addSimpleTab(localTabPanel, Messages.i18n().tr("Вкладка") + " 3");
 
         localTabPanel.selectTab(1);
 
@@ -662,7 +702,7 @@ public class ShowCasePanel extends FlowPanel {
             private int tabCount = 3;
             @Override
             public void onClick(ClickEvent event) {
-                addSimpleTab(localTabPanel, SCMessages.i18n().tr("Вкладка") + " " + ++tabCount);
+                addSimpleTab(localTabPanel, Messages.i18n().tr("Вкладка") + " " + ++tabCount);
             }
         });
 
@@ -713,129 +753,129 @@ public class ShowCasePanel extends FlowPanel {
 
     private void treeSetUp() {
         tree.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
-        TreeItem basicComponents = tree.addItem(SCMessages.i18n().tr("Базовые компоненты"));
+        TreeItem basicComponents = tree.addItem(Messages.i18n().tr("Базовые компоненты"));
 
-        TreeItem buttons = tree.addItem(basicComponents, SCMessages.i18n().tr("Кнопки"));
+        TreeItem buttons = tree.addItem(basicComponents, Messages.i18n().tr("Кнопки"));
 
-        addTreeItem(buttons, new LoadPanel(SCMessages.i18n().tr("Простая кнопка")) {
+        addTreeItem(buttons, new LoadPanel(Messages.i18n().tr("Простая кнопка")) {
             @Override
             public Widget getContentWidget() {
                 return getSimpleButtonPanel();
             }
         });
-        addTreeItem(buttons, new LoadPanel(SCMessages.i18n().tr("Кнопка с иконкой")) {
+        addTreeItem(buttons, new LoadPanel(Messages.i18n().tr("Кнопка с иконкой")) {
             @Override
             public Widget getContentWidget() {
                 return getIconButtonPanel();
             }
         });
-        addTreeItem(buttons, new LoadPanel(SCMessages.i18n().tr("Цветные кнопки")) {
+        addTreeItem(buttons, new LoadPanel(Messages.i18n().tr("Цветные кнопки")) {
             @Override
             public Widget getContentWidget() {
                 return getColorButtonPanel();
             }
         });
-        addTreeItem(buttons, new LoadPanel(SCMessages.i18n().tr("Групповые кнопки")) {
+        addTreeItem(buttons, new LoadPanel(Messages.i18n().tr("Групповые кнопки")) {
             @Override
             public Widget getContentWidget() {
                 return getGroupButton();
             }
         });
 
-        TreeItem fields = tree.addItem(basicComponents, SCMessages.i18n().tr("Поля"));
+        TreeItem fields = tree.addItem(basicComponents, Messages.i18n().tr("Поля"));
 
-        addTreeItem(fields, new LoadPanel(SCMessages.i18n().tr("Поле ввода текста")) {
+        addTreeItem(fields, new LoadPanel(Messages.i18n().tr("Поле ввода текста")) {
             @Override
             public Widget getContentWidget() {
                 return getTextInputs();
             }
         });
-        addTreeItem(fields, new LoadPanel(SCMessages.i18n().tr("Поле с тегами")) {
+        addTreeItem(fields, new LoadPanel(Messages.i18n().tr("Поле с тегами")) {
             @Override
             public Widget getContentWidget() {
                 return getTagInputs();
             }
         });
-        addTreeItem(fields, new LoadPanel(SCMessages.i18n().tr("Комбобокс")) {
+        addTreeItem(fields, new LoadPanel(Messages.i18n().tr("Комбобокс")) {
             @Override
             public Widget getContentWidget() {
                 return getComboBoxPanel();
             }
         });
-        addTreeItem(fields, new LoadPanel(SCMessages.i18n().tr("Компонент повторения")) {
+        addTreeItem(fields, new LoadPanel(Messages.i18n().tr("Компонент повторения")) {
             @Override
             public Widget getContentWidget() {
                 return getPeriodInputs();
             }
         });
 
-        addTreeItem(basicComponents, new LoadPanel(SCMessages.i18n().tr("Коллапсинг-панели")) {
+        addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Коллапсинг-панели")) {
             @Override
             public Widget getContentWidget() {
                 return getCollapsingPanel();
             }
         });
-        addTreeItem(basicComponents, new LoadPanel(SCMessages.i18n().tr("Вкладки")) {
+        addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Вкладки")) {
             @Override
             public Widget getContentWidget() {
                 return getTabsPanel();
             }
         });
-        addTreeItem(basicComponents, new LoadPanel(SCMessages.i18n().tr("Чекбоксы и радиокнопки")) {
+        addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Чекбоксы и радиокнопки")) {
             @Override
             public Widget getContentWidget() {
                 return getCheckBoxPanel();
             }
         });
-        addTreeItem(basicComponents, new LoadPanel(SCMessages.i18n().tr("Дерево")) {
+        addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Дерево")) {
             @Override
             public Widget getContentWidget() {
                 return getTreePanel();
             }
         });
-        TreeItem table = tree.addItem(basicComponents, SCMessages.i18n().tr("Таблица"));
-        addTreeItem(table, new LoadPanel(SCMessages.i18n().tr("Таблица - ряды")) {
+        TreeItem table = tree.addItem(basicComponents, Messages.i18n().tr("Таблица"));
+        addTreeItem(table, new LoadPanel(Messages.i18n().tr("Таблица - ряды")) {
             @Override
             public Widget getContentWidget() {
                 return getTablePanel(true);
             }
         });
-        addTreeItem(table, new LoadPanel(SCMessages.i18n().tr("Таблица - ячейки")) {
+        addTreeItem(table, new LoadPanel(Messages.i18n().tr("Таблица - ячейки")) {
             @Override
             public Widget getContentWidget() {
                 return getTablePanel(false);
             }
         });
 
-        addTreeItem(basicComponents, new LoadPanel(SCMessages.i18n().tr("Дерево-таблица")) {
+        addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Дерево-таблица")) {
             @Override
             public Widget getContentWidget() {
                 return getTreeTable();
             }
         });
 
-        TreeItem complexComponents = tree.addItem(SCMessages.i18n().tr("Сложные компоненты"));
-        addTreeItem(complexComponents, new LoadPanel(SCMessages.i18n().tr("Дата/время")) {
+        TreeItem complexComponents = tree.addItem(Messages.i18n().tr("Сложные компоненты"));
+        addTreeItem(complexComponents, new LoadPanel(Messages.i18n().tr("Дата/время")) {
             @Override
             public Widget getContentWidget() {
                 return getDateInputs();
             }
         });
-        addTreeItem(complexComponents, new LoadPanel(SCMessages.i18n().tr("Панель комментариев")) {
+        addTreeItem(complexComponents, new LoadPanel(Messages.i18n().tr("Панель комментариев")) {
             @Override
             public Widget getContentWidget() {
                 return getCommentsPanel();
             }
         });
 
-        TreeItem shell = tree.addItem(SCMessages.i18n().tr("Оболочка интерфейса"));
-        addTreeItem(shell, new LoadPanel(SCMessages.i18n().tr("Диалог без кнопок")) {
+        TreeItem shell = tree.addItem(Messages.i18n().tr("Оболочка интерфейса"));
+        addTreeItem(shell, new LoadPanel(Messages.i18n().tr("Диалог без кнопок")) {
             @Override
             public Widget getContentWidget() {
                 return createDialogsPanel();
             }
         });
-        addTreeItem(shell, new LoadPanel(SCMessages.i18n().tr("Диалог с кнопками")) {
+        addTreeItem(shell, new LoadPanel(Messages.i18n().tr("Диалог с кнопками")) {
             @Override
             public Widget getContentWidget() {
                 return createDialogsWithButtonsPanel();
@@ -889,7 +929,7 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel root = new FlowPanel();
 
         kz.arta.synergy.components.client.tree.Tree localTree = copyTree(tree);
-        addCodeSample(localTree, SCMessages.i18n().tr("Дерево"), ShowCase.SC_RESOURCES.tree().getText());
+        addCodeSample(localTree, Messages.i18n().tr("Дерево"), ShowCase.RESOURCES.tree().getText());
 
         localTree.getElement().getStyle().setHeight(LOCAL_TREE_SIZE, Style.Unit.PX);
         localTree.getElement().getStyle().setWidth(LOCAL_TREE_SIZE, Style.Unit.PX);
@@ -922,12 +962,12 @@ public class ShowCasePanel extends FlowPanel {
 
         final Table<User> table = new Table<User>(29);
         if (onlyRows) {
-            addCodeSample(table, SCMessages.i18n().tr("Таблица с выбором рядом"), ShowCase.SC_RESOURCES.tableRows().getText());
+            addCodeSample(table, Messages.i18n().tr("Таблица с выбором рядом"), ShowCase.RESOURCES.tableRows().getText());
         } else {
-            addCodeSample(table, SCMessages.i18n().tr("Таблица с выбором ячеек"), ShowCase.SC_RESOURCES.tableCells().getText());
+            addCodeSample(table, Messages.i18n().tr("Таблица с выбором ячеек"), ShowCase.RESOURCES.tableCells().getText());
         }
         table.enableHat(true);
-        table.getHat().setName(SCMessages.i18n().tr("Таблица"));
+        table.getHat().setName(Messages.i18n().tr("Таблица"));
         table.getHat().enableAddButton(true);
         table.getHat().enablePagerAlways(true);
         table.getHat().enablePager(true);
@@ -947,7 +987,7 @@ public class ShowCasePanel extends FlowPanel {
         idColumn.setSortable(true);
         table.addColumn(idColumn);
 
-        final ArtaEditableTextColumn<User> firstNameColumn = new ArtaEditableTextColumn<User>(SCMessages.i18n().tr("Имя")) {
+        final ArtaEditableTextColumn<User> firstNameColumn = new ArtaEditableTextColumn<User>(Messages.i18n().tr("Имя")) {
             @Override
             public String getValue(User value) {
                 return value.getFirstName();
@@ -961,7 +1001,7 @@ public class ShowCasePanel extends FlowPanel {
         firstNameColumn.setSortable(true);
         table.addColumn(firstNameColumn);
 
-        final ArtaEditableTextColumn<User> lastNameColumn = new ArtaEditableTextColumn<User>(SCMessages.i18n().tr("Фамилия")) {
+        final ArtaEditableTextColumn<User> lastNameColumn = new ArtaEditableTextColumn<User>(Messages.i18n().tr("Фамилия")) {
             @Override
             public String getValue(User value) {
                 return value.getLastName();
@@ -975,7 +1015,7 @@ public class ShowCasePanel extends FlowPanel {
         lastNameColumn.setSortable(true);
         table.addColumn(lastNameColumn);
 
-        ArtaEditableTextColumn<User> addressColumn = new ArtaEditableTextColumn<User>(SCMessages.i18n().tr("Почтовый индекс")) {
+        ArtaEditableTextColumn<User> addressColumn = new ArtaEditableTextColumn<User>(Messages.i18n().tr("Почтовый индекс")) {
             @Override
             public String getValue(User value) {
                 return value.getAddress();
@@ -1062,14 +1102,14 @@ public class ShowCasePanel extends FlowPanel {
         scroll.setHeight("100%");
 
         final ContextMenu cellMenu = new ContextMenu();
-        final MenuItem<Command> item = new MenuItem<Command>(null, SCMessages.i18n().tr("Меню для ячейки"));
+        final MenuItem<Command> item = new MenuItem<Command>(null, Messages.i18n().tr("Меню для ячейки"));
 
         table.getCore().addCellMenuHandler(new TableCellMenuEvent.Handler<User>() {
             @Override
             public void onTableCellMenu(TableCellMenuEvent<User> event) {
                 int row = provider.getList().indexOf(event.getObject()) - table.getCore().getVisibleRange().getStart();
                 int column = table.getCore().getColumns().indexOf(event.getColumn());
-                item.setText(SCMessages.i18n().tr("Меню для ячейки") + " " + row + " " + column);
+                item.setText(Messages.i18n().tr("Меню для ячейки") + " " + row + " " + column);
                 cellMenu.show(event.getX(), event.getY());
             }
         });
@@ -1085,7 +1125,7 @@ public class ShowCasePanel extends FlowPanel {
                         provider.getList().remove(event.getObject());
                         provider.flush();
                     }
-                }, SCMessages.i18n().tr("Удалить ряд")));
+                }, Messages.i18n().tr("Удалить ряд")));
                 rowMenu.show(event.getX(), event.getY());
             }
         });
@@ -1100,7 +1140,7 @@ public class ShowCasePanel extends FlowPanel {
                     public void execute() {
                         table.getCore().sort(event.getColumn());
                     }
-                }, SCMessages.i18n().tr("Отсортировать")));
+                }, Messages.i18n().tr("Отсортировать")));
                 headerMenu.show(event.getX(), event.getY());
             }
         });
@@ -1117,7 +1157,7 @@ public class ShowCasePanel extends FlowPanel {
                 return item.getKey();
             }
         });
-        addCodeSample(table, SCMessages.i18n().tr("Дерево-таблица"), ShowCase.SC_RESOURCES.treetable().getText());
+        addCodeSample(table, Messages.i18n().tr("Дерево-таблица"), ShowCase.RESOURCES.treetable().getText());
         Style tableStyle = table.getElement().getStyle();
         tableStyle.setPosition(Style.Position.ABSOLUTE);
         tableStyle.setBottom(20, Style.Unit.PX);
@@ -1134,7 +1174,7 @@ public class ShowCasePanel extends FlowPanel {
 
         table.getCore().setOnlyRows(true);
         table.enableHat(true);
-        table.getHat().setName(SCMessages.i18n().tr("Дерево-таблица"));
+        table.getHat().setName(Messages.i18n().tr("Дерево-таблица"));
         table.getHat().enableAddButton(true);
 
         ArtaTextColumn<UserTree> idColumn = new ArtaTextColumn<UserTree>("id") {
@@ -1153,7 +1193,7 @@ public class ShowCasePanel extends FlowPanel {
         };
         table.addColumn(treeColumn);
 
-        ArtaTextColumn<UserTree> lastNameColumn = new ArtaTextColumn<UserTree>(SCMessages.i18n().tr("Фамилия")) {
+        ArtaTextColumn<UserTree> lastNameColumn = new ArtaTextColumn<UserTree>(Messages.i18n().tr("Фамилия")) {
             @Override
             public String getValue(UserTree object) {
                 return object.getLastName();
@@ -1161,7 +1201,7 @@ public class ShowCasePanel extends FlowPanel {
         };
         table.addColumn(lastNameColumn);
 
-        ArtaTextColumn<UserTree> addressColumn = new ArtaTextColumn<UserTree>(SCMessages.i18n().tr("Адрес")) {
+        ArtaTextColumn<UserTree> addressColumn = new ArtaTextColumn<UserTree>(Messages.i18n().tr("Адрес")) {
             @Override
             public String getValue(UserTree object) {
                 return object.getAddress();
@@ -1206,16 +1246,16 @@ public class ShowCasePanel extends FlowPanel {
         PPanel firstRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
         FlowPanel firstRowPanel = new FlowPanel();
         firstRow.setWidget(firstRowPanel);
-        firstRowPanel.add(createLabel(SCMessages.i18n().tr("Поле время: "), width));
+        firstRowPanel.add(createLabel(Messages.i18n().tr("Поле время: "), width));
         TimeInput timeInputNotAllowEmpty = new TimeInput();
-        timeInputNotAllowEmpty.setTitle(SCMessages.i18n().tr("Обязательное поле ввода"));
+        timeInputNotAllowEmpty.setTitle(Messages.i18n().tr("Обязательное поле ввода"));
         firstRowPanel.add(timeInputNotAllowEmpty);
         TimeInput timeInputAllowEmpty = new TimeInput(true);
-        timeInputAllowEmpty.setTitle(SCMessages.i18n().tr("Необязательное поле ввода"));
+        timeInputAllowEmpty.setTitle(Messages.i18n().tr("Необязательное поле ввода"));
         timeInputAllowEmpty.setTime(12, 12);
         firstRowPanel.add(timeInputAllowEmpty);
         TimeInput timeInput = new TimeInput();
-        timeInput.setTitle(SCMessages.i18n().tr("Неактивное поле ввода"));
+        timeInput.setTitle(Messages.i18n().tr("Неактивное поле ввода"));
         timeInput.setEnabled(false);
         firstRowPanel.add(timeInput);
         panel.add(firstRow);
@@ -1223,23 +1263,23 @@ public class ShowCasePanel extends FlowPanel {
         for (int i = 1; i < firstRowPanel.getWidgetCount(); i++) {
             Widget widget = firstRowPanel.getWidget(i);
             setMarginLeft(widget, 20);
-            addCodeSample(widget, SCMessages.i18n().tr("Поле ввода времени"), ShowCase.SC_RESOURCES.timeInput().getText());
+            addCodeSample(widget, Messages.i18n().tr("Поле ввода времени"), ShowCase.RESOURCES.timeInput().getText());
         }
 
         PPanel secondRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
         FlowPanel secondRowPanel = new FlowPanel();
         secondRow.setWidget(secondRowPanel);
-        secondRowPanel.add(createLabel(SCMessages.i18n().tr("Поле дата - режим выбора день: "), width));
+        secondRowPanel.add(createLabel(Messages.i18n().tr("Поле дата - режим выбора день: "), width));
         DateInput dateInput= new DateInput();
-        dateInput.setTitle(SCMessages.i18n().tr("Обязательное поле ввода"));
+        dateInput.setTitle(Messages.i18n().tr("Обязательное поле ввода"));
         secondRowPanel.add(dateInput);
         DateInput dateInput1 = new DateInput(true);
-        dateInput1.setTitle(SCMessages.i18n().tr("Необязательное поле ввода"));
+        dateInput1.setTitle(Messages.i18n().tr("Необязательное поле ввода"));
         secondRowPanel.add(dateInput1);
         dateInput1.setDate(new Date());
 
         DateInput dateInput2 = new DateInput();
-        dateInput2.setTitle(SCMessages.i18n().tr("Неактивное поле ввода"));
+        dateInput2.setTitle(Messages.i18n().tr("Неактивное поле ввода"));
         dateInput2.setEnabled(false);
         secondRowPanel.add(dateInput2);
         panel.add(secondRow);
@@ -1247,24 +1287,24 @@ public class ShowCasePanel extends FlowPanel {
         for (int i = 1; i < secondRowPanel.getWidgetCount(); i++) {
             Widget widget = secondRowPanel.getWidget(i);
             setMarginLeft(widget, 20);
-            addCodeSample(widget, SCMessages.i18n().tr("Поле ввода даты"), ShowCase.SC_RESOURCES.dateInput().getText());
+            addCodeSample(widget, Messages.i18n().tr("Поле ввода даты"), ShowCase.RESOURCES.dateInput().getText());
         }
 
         PPanel thirdRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
         FlowPanel thirdRowPanel = new FlowPanel();
         thirdRow.setWidget(thirdRowPanel);
-        thirdRowPanel.add(createLabel(SCMessages.i18n().tr("Поле дата - режим выбора неделя и месяц: "), width));
+        thirdRowPanel.add(createLabel(Messages.i18n().tr("Поле дата - режим выбора неделя и месяц: "), width));
         DateInput dateInputWeek = new DateInput(ArtaDatePicker.CalendarMode.WEEK);
-        addCodeSample(dateInputWeek, SCMessages.i18n().tr("Поле ввода даты (режим выбора - неделя)"), ShowCase.SC_RESOURCES.dateInputWeek().getText());
-        dateInputWeek.setTitle(SCMessages.i18n().tr("Неделя"));
+        addCodeSample(dateInputWeek, Messages.i18n().tr("Поле ввода даты (режим выбора - неделя)"), ShowCase.RESOURCES.dateInputWeek().getText());
+        dateInputWeek.setTitle(Messages.i18n().tr("Неделя"));
         thirdRowPanel.add(dateInputWeek);
         DateInput dateInputMonth = new DateInput(ArtaDatePicker.CalendarMode.MONTH);
-        addCodeSample(dateInputMonth, SCMessages.i18n().tr("Поле ввода даты (режим выбора - месяц)"), ShowCase.SC_RESOURCES.dateInputMonth().getText());
-        dateInputMonth.setTitle(SCMessages.i18n().tr("Месяц"));
+        addCodeSample(dateInputMonth, Messages.i18n().tr("Поле ввода даты (режим выбора - месяц)"), ShowCase.RESOURCES.dateInputMonth().getText());
+        dateInputMonth.setTitle(Messages.i18n().tr("Месяц"));
         thirdRowPanel.add(dateInputMonth);
         DateInput dateInputMonthDisabled = new DateInput(ArtaDatePicker.CalendarMode.MONTH);
         dateInputMonthDisabled.setEnabled(false);
-        dateInputMonthDisabled.setTitle(SCMessages.i18n().tr("Неактивное поле ввода"));
+        dateInputMonthDisabled.setTitle(Messages.i18n().tr("Неактивное поле ввода"));
         thirdRowPanel.add(dateInputMonthDisabled);
         panel.add(thirdRow);
         thirdRow.getElement().getStyle().setPadding(5, Style.Unit.PX);
@@ -1275,19 +1315,19 @@ public class ShowCasePanel extends FlowPanel {
         PPanel fourthRow = new PPanel(Constants.BUTTON_HEIGHT + Constants.BORDER_WIDTH);
         FlowPanel fourthRowPanel = new FlowPanel();
         fourthRow.setWidget(fourthRowPanel);
-        fourthRowPanel.add(createLabel(SCMessages.i18n().tr("Поле ввода даты/времени: "), width));
+        fourthRowPanel.add(createLabel(Messages.i18n().tr("Поле ввода даты/времени: "), width));
         DateTimeInput dateTimeInput = new DateTimeInput();
-        addCodeSample(dateTimeInput, SCMessages.i18n().tr("Поле ввода даты-время"), ShowCase.SC_RESOURCES.dateTimeInput().getText());
-        dateTimeInput.setTitle(SCMessages.i18n().tr("Обязательное поле ввода"));
+        addCodeSample(dateTimeInput, Messages.i18n().tr("Поле ввода даты-время"), ShowCase.RESOURCES.dateTimeInput().getText());
+        dateTimeInput.setTitle(Messages.i18n().tr("Обязательное поле ввода"));
         fourthRowPanel.add(dateTimeInput);
 
         DateTimeInput dateTimeInput1 = new DateTimeInput(true);
-        addCodeSample(dateTimeInput1, SCMessages.i18n().tr("Поле ввода даты-время"), ShowCase.SC_RESOURCES.dateTimeInput().getText());
-        dateTimeInput1.setTitle(SCMessages.i18n().tr("Необязательное поле ввода"));
+        addCodeSample(dateTimeInput1, Messages.i18n().tr("Поле ввода даты-время"), ShowCase.RESOURCES.dateTimeInput().getText());
+        dateTimeInput1.setTitle(Messages.i18n().tr("Необязательное поле ввода"));
         fourthRowPanel.add(dateTimeInput1);
 
         DateTimeInput dateTimeInput2 = new DateTimeInput(true);
-        dateTimeInput2.setTitle(SCMessages.i18n().tr("Неактивное поле ввода"));
+        dateTimeInput2.setTitle(Messages.i18n().tr("Неактивное поле ввода"));
         dateTimeInput2.setEnabled(false);
         fourthRowPanel.add(dateTimeInput2);
         panel.add(fourthRow);
@@ -1298,10 +1338,10 @@ public class ShowCasePanel extends FlowPanel {
 
         FlowPanel datePickerPanel = new FlowPanel();
         ArtaDatePicker pickerDay = new ArtaDatePicker();
-        addCodeSample(pickerDay, SCMessages.i18n().tr("Календарь (режим выбора - день)"), ShowCase.SC_RESOURCES.datePickerDay().getText());
+        addCodeSample(pickerDay, Messages.i18n().tr("Календарь (режим выбора - день)"), ShowCase.RESOURCES.datePickerDay().getText());
         datePickerPanel.add(pickerDay);
         ArtaDatePicker pickerDayDark = new ArtaDatePicker(ColorType.BLACK);
-        addCodeSample(pickerDayDark, SCMessages.i18n().tr("Календарь (режим выбора - день)"), ShowCase.SC_RESOURCES.datePickerDay().getText());
+        addCodeSample(pickerDayDark, Messages.i18n().tr("Календарь (режим выбора - день)"), ShowCase.RESOURCES.datePickerDay().getText());
         datePickerPanel.add(pickerDayDark);
         setMarginLeft(datePickerPanel.getWidget(0), 20);
         setMarginLeft(datePickerPanel.getWidget(1), 20);
@@ -1310,10 +1350,10 @@ public class ShowCasePanel extends FlowPanel {
 
         FlowPanel datePickerPanel1 = new FlowPanel();
         ArtaDatePicker pickerWeek = new ArtaDatePicker(ArtaDatePicker.CalendarMode.WEEK);
-        addCodeSample(pickerWeek, SCMessages.i18n().tr("Календарь (режим выбора - неделя)"), ShowCase.SC_RESOURCES.datePickerWeek().getText());
+        addCodeSample(pickerWeek, Messages.i18n().tr("Календарь (режим выбора - неделя)"), ShowCase.RESOURCES.datePickerWeek().getText());
         datePickerPanel1.add(pickerWeek);
         ArtaDatePicker pickerWeekDark = new ArtaDatePicker(ArtaDatePicker.CalendarMode.WEEK, ColorType.BLACK);
-        addCodeSample(pickerWeekDark, SCMessages.i18n().tr("Календарь (режим выбора - неделя)"), ShowCase.SC_RESOURCES.datePickerWeek().getText());
+        addCodeSample(pickerWeekDark, Messages.i18n().tr("Календарь (режим выбора - неделя)"), ShowCase.RESOURCES.datePickerWeek().getText());
         datePickerPanel1.add(pickerWeekDark);
         setMarginLeft(datePickerPanel1.getWidget(0), 20);
         setMarginLeft(datePickerPanel1.getWidget(1), 20);
@@ -1322,10 +1362,10 @@ public class ShowCasePanel extends FlowPanel {
 
         FlowPanel datePickerPanel2 = new FlowPanel();
         ArtaDatePicker pickerMonth = new ArtaDatePicker(ArtaDatePicker.CalendarMode.MONTH);
-        addCodeSample(pickerMonth, SCMessages.i18n().tr("Календарь (режим выбора - месяц)"), ShowCase.SC_RESOURCES.datePickerMonth().getText());
+        addCodeSample(pickerMonth, Messages.i18n().tr("Календарь (режим выбора - месяц)"), ShowCase.RESOURCES.datePickerMonth().getText());
         datePickerPanel2.add(pickerMonth);
         ArtaDatePicker pickerMonthDark = new ArtaDatePicker(ArtaDatePicker.CalendarMode.MONTH, ColorType.BLACK);
-        addCodeSample(pickerMonthDark, SCMessages.i18n().tr("Календарь (режим выбора - месяц)"), ShowCase.SC_RESOURCES.datePickerMonth().getText());
+        addCodeSample(pickerMonthDark, Messages.i18n().tr("Календарь (режим выбора - месяц)"), ShowCase.RESOURCES.datePickerMonth().getText());
         datePickerPanel2.add(pickerMonthDark);
         setMarginLeft(datePickerPanel2.getWidget(0), 20);
         setMarginLeft(datePickerPanel2.getWidget(1), 20);
@@ -1377,37 +1417,37 @@ public class ShowCasePanel extends FlowPanel {
 
         FlowPanel collapsingPanels = new FlowPanel();
 
-        CollapsingPanel meta = new CollapsingPanel(SCMessages.i18n().tr("Метаданные"));
-        addCodeSample(meta, SCMessages.i18n().tr("Коллапсинг-панель"), ShowCase.SC_RESOURCES.collapsingPanel().getText());
+        CollapsingPanel meta = new CollapsingPanel(Messages.i18n().tr("Метаданные"));
+        addCodeSample(meta, Messages.i18n().tr("Коллапсинг-панель"), ShowCase.RESOURCES.collapsingPanel().getText());
         meta.setWidth("500px");
         meta.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         meta.getPanel().getElement().getStyle().setPadding(18, Style.Unit.PX);
 
-        meta.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n().tr("Дата публикации"), 200, 264, true));
-        meta.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n().tr("Название"), 200, 264, false));
-        meta.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n().tr("Создатель"), 200, 264, false));
-        meta.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n().tr("Тема"), 200, 264, false));
-        meta.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n().tr("Описание"), 200, 264, false));
+        meta.getPanel().add(makeLineForCollapsingPanel(Messages.i18n().tr("Дата публикации"), 200, 264, true));
+        meta.getPanel().add(makeLineForCollapsingPanel(Messages.i18n().tr("Название"), 200, 264, false));
+        meta.getPanel().add(makeLineForCollapsingPanel(Messages.i18n().tr("Создатель"), 200, 264, false));
+        meta.getPanel().add(makeLineForCollapsingPanel(Messages.i18n().tr("Тема"), 200, 264, false));
+        meta.getPanel().add(makeLineForCollapsingPanel(Messages.i18n().tr("Описание"), 200, 264, false));
 
         collapsingPanels.add(meta);
 
-        CollapsingPanel classifier = new CollapsingPanel(SCMessages.i18n().tr("Классификатор"));
+        CollapsingPanel classifier = new CollapsingPanel(Messages.i18n().tr("Классификатор"));
         classifier.setWidth("500px");
         classifier.getPanel().getElement().getStyle().setPadding(18, Style.Unit.PX);
 
-        classifier.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n().tr("Дата публикации"), 200, 264, true));
-        classifier.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n().tr("Название"), 200, 264, false));
-        classifier.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n().tr("Создатель"), 200, 264, false));
-        classifier.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n().tr("Тема"), 200, 264, false));
-        classifier.getPanel().add(makeLineForCollapsingPanel(SCMessages.i18n().tr("Описание"), 200, 264, false));
+        classifier.getPanel().add(makeLineForCollapsingPanel(Messages.i18n().tr("Дата публикации"), 200, 264, true));
+        classifier.getPanel().add(makeLineForCollapsingPanel(Messages.i18n().tr("Название"), 200, 264, false));
+        classifier.getPanel().add(makeLineForCollapsingPanel(Messages.i18n().tr("Создатель"), 200, 264, false));
+        classifier.getPanel().add(makeLineForCollapsingPanel(Messages.i18n().tr("Тема"), 200, 264, false));
+        classifier.getPanel().add(makeLineForCollapsingPanel(Messages.i18n().tr("Описание"), 200, 264, false));
         collapsingPanels.add(classifier);
         root.add(collapsingPanels);
 
         final StackPanel stacks = new StackPanel(Arrays.asList(
-                new SingleStack(SCMessages.i18n().tr("Первая")),
-                new SingleStack(SCMessages.i18n().tr("Вторая")),
-                new SingleStack(SCMessages.i18n().tr("Третья")),
-                new SingleStack(SCMessages.i18n().tr("Четвертая"))), 500);
+                new SingleStack(Messages.i18n().tr("Первая")),
+                new SingleStack(Messages.i18n().tr("Вторая")),
+                new SingleStack(Messages.i18n().tr("Третья")),
+                new SingleStack(Messages.i18n().tr("Четвертая"))), 500);
         stacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
         ArtaScrollPanel scroll1 = new ArtaScrollPanel(ColorType.BLACK);
@@ -1426,7 +1466,7 @@ public class ShowCasePanel extends FlowPanel {
         stacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
 
 
-        SingleStack stackWhite = new SingleStack(SCMessages.i18n().tr("Первая"));
+        SingleStack stackWhite = new SingleStack(Messages.i18n().tr("Первая"));
         ArtaScrollPanel scroll2 = new ArtaScrollPanel();
         FlowPanel colorButtonPanel2 = new FlowPanel();
         colorButtonPanel2.setPixelSize(500, 1000);
@@ -1434,9 +1474,9 @@ public class ShowCasePanel extends FlowPanel {
         scroll2.setHeight("100%");
         stackWhite.getPanel().add(scroll2);
         final StackPanel whiteStacks = new StackPanel(Arrays.asList(stackWhite,
-                new SingleStack(SCMessages.i18n().tr("Вторая")),
-                new SingleStack(SCMessages.i18n().tr("Третья")),
-                new SingleStack(SCMessages.i18n().tr("Четвертая"))), 500, ColorType.WHITE);
+                new SingleStack(Messages.i18n().tr("Вторая")),
+                new SingleStack(Messages.i18n().tr("Третья")),
+                new SingleStack(Messages.i18n().tr("Четвертая"))), 500, ColorType.WHITE);
         whiteStacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         whiteStacks.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         whiteStacks.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
@@ -1545,7 +1585,7 @@ public class ShowCasePanel extends FlowPanel {
             }
         });
 
-        addCodeSample(whiteStacks, SCMessages.i18n().tr("Стек-панель"), ShowCase.SC_RESOURCES.stackPanel().getText());
+        addCodeSample(whiteStacks, Messages.i18n().tr("Стек-панель"), ShowCase.RESOURCES.stackPanel().getText());
 
         ArtaScrollPanel scroll = new ArtaScrollPanel(root);
         scroll.setHeight("100%");
@@ -1556,7 +1596,7 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel root = new FlowPanel();
 
         ArtaCheckBox checkbox1 = new ArtaCheckBox();
-        addCodeSample(checkbox1, SCMessages.i18n().tr("Чекбокс"), ShowCase.SC_RESOURCES.checkbox().getText());
+        addCodeSample(checkbox1, Messages.i18n().tr("Чекбокс"), ShowCase.RESOURCES.checkbox().getText());
         checkbox1.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         setMarginLeft(checkbox1, 20);
         root.add(checkbox1);
@@ -1568,7 +1608,7 @@ public class ShowCasePanel extends FlowPanel {
         root.add(checkbox2);
 
         ArtaCheckBox checkbox3 = new ArtaCheckBox();
-        addCodeSample(checkbox3, SCMessages.i18n().tr("Неактивный чекбокс"), ShowCase.SC_RESOURCES.checkboxDisabled().getText());
+        addCodeSample(checkbox3, Messages.i18n().tr("Неактивный чекбокс"), ShowCase.RESOURCES.checkboxDisabled().getText());
         checkbox3.setValue(true, false);
         checkbox3.setEnabled(false);
         checkbox3.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
@@ -1583,7 +1623,7 @@ public class ShowCasePanel extends FlowPanel {
                 new ArtaRadioButton("showCaseRadio2")
         };
 
-        addCodeSample(radios[0], SCMessages.i18n().tr("Радио-кнопка"), ShowCase.SC_RESOURCES.radiobutton().getText());
+        addCodeSample(radios[0], Messages.i18n().tr("Радио-кнопка"), ShowCase.RESOURCES.radiobutton().getText());
 
         radios[3].setEnabled(false);
         radios[4].setValue(true);
@@ -1656,7 +1696,7 @@ public class ShowCasePanel extends FlowPanel {
     }
 
     private static InlineLabel createLabel(String text, int width) {
-        InlineLabel label = new InlineLabel(SCMessages.i18n().tr(text));
+        InlineLabel label = new InlineLabel(Messages.i18n().tr(text));
         label.setStyleName(SynergyComponents.getResources().cssComponents().mainText());
         label.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
         label.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
@@ -1675,7 +1715,7 @@ public class ShowCasePanel extends FlowPanel {
         root.add(box);
 
         final FullRepeatChooser chooser = new FullRepeatChooser();
-        addCodeSample(chooser, SCMessages.i18n().tr("Компонент повторения"), ShowCase.SC_RESOURCES.periodInput().getText());
+        addCodeSample(chooser, Messages.i18n().tr("Компонент повторения"), ShowCase.RESOURCES.periodInput().getText());
         chooser.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         chooser.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         chooser.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
@@ -1713,7 +1753,7 @@ public class ShowCasePanel extends FlowPanel {
         rows[currentRow].add(createLabel("Поля с индикаторами: "));
 
         final TagInput noListHasIndicator = new TagInput();
-        addCodeSample(noListHasIndicator, SCMessages.i18n().tr("Поле с тэгами без списка"), ShowCase.SC_RESOURCES.tagInput().getText());
+        addCodeSample(noListHasIndicator, Messages.i18n().tr("Поле с тэгами без списка"), ShowCase.RESOURCES.tagInput().getText());
         setMarginLeft(noListHasIndicator, 10);
         noListHasIndicator.setWidth(350);
 
@@ -1721,7 +1761,7 @@ public class ShowCasePanel extends FlowPanel {
         enabledWidgets.add(noListHasIndicator);
 
         final TagInput<String> hasListHasIndicator = new TagInput<String>();
-        addCodeSample(hasListHasIndicator, SCMessages.i18n().tr("Поле с тэгами"), ShowCase.SC_RESOURCES.tagInputList().getText());
+        addCodeSample(hasListHasIndicator, Messages.i18n().tr("Поле с тэгами"), ShowCase.RESOURCES.tagInputList().getText());
         setMarginLeft(hasListHasIndicator, 20);
         hasListHasIndicator.setWidth(300);
         for (String name : createShuffledNames()) {
@@ -1729,7 +1769,7 @@ public class ShowCasePanel extends FlowPanel {
         }
         hasListHasIndicator.setListEnabled(true);
 
-        hasListHasIndicator.setTitle(SCMessages.i18n().tr("Фильтрация списка по вхождению текста"));
+        hasListHasIndicator.setTitle(Messages.i18n().tr("Фильтрация списка по вхождению текста"));
         hasListHasIndicator.setListFilter(ListTextFilter.createPrefixFilter());
 
         rows[currentRow].add(hasListHasIndicator);
@@ -1747,8 +1787,8 @@ public class ShowCasePanel extends FlowPanel {
         enabledWidgets.add(noListNoButton);
 
         TagInput<String> hasListNoButton = new TagInput<String>(false);
-        addCodeSample(hasListNoButton, SCMessages.i18n().tr("Поле с тэгами без кнопки"),
-                ShowCase.SC_RESOURCES.tagInputNoButton().getText());
+        addCodeSample(hasListNoButton, Messages.i18n().tr("Поле с тэгами без кнопки"),
+                ShowCase.RESOURCES.tagInputNoButton().getText());
         hasListNoButton.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         for (String name : createShuffledNames()) {
@@ -1756,7 +1796,7 @@ public class ShowCasePanel extends FlowPanel {
         }
         hasListNoButton.setListEnabled(true);
 
-        hasListNoButton.setTitle(SCMessages.i18n().tr("Префиксный выбор из списка"));
+        hasListNoButton.setTitle(Messages.i18n().tr("Префиксный выбор из списка"));
         rows[currentRow].add(hasListNoButton);
         enabledWidgets.add(hasListNoButton);
 
@@ -1767,7 +1807,7 @@ public class ShowCasePanel extends FlowPanel {
         rows[currentRow].add(createLabel("Мультикомбобокс"));
 
         MultiComboBox<String> multiComboBox = new MultiComboBox<String>();
-        addCodeSample(multiComboBox, SCMessages.i18n().tr("Комбобокс"), ShowCase.SC_RESOURCES.multiComboBox().getText());
+        addCodeSample(multiComboBox, Messages.i18n().tr("Комбобокс"), ShowCase.RESOURCES.multiComboBox().getText());
         String[] comboNames = createShuffledNames();
 
         for (String name : comboNames) {
@@ -1796,7 +1836,7 @@ public class ShowCasePanel extends FlowPanel {
         currentRow++;
         rows[currentRow] = new FlowPanel();
 
-        SimpleButton button = new SimpleButton(SCMessages.i18n().tr("Включить/выключить"));
+        SimpleButton button = new SimpleButton(Messages.i18n().tr("Включить/выключить"));
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -1824,44 +1864,44 @@ public class ShowCasePanel extends FlowPanel {
         root.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         final TextInput textInput = new TextInput();
-        addCodeSample(textInput, SCMessages.i18n().tr("Текстовое поле"), ShowCase.SC_RESOURCES.textInput().getText());
+        addCodeSample(textInput, Messages.i18n().tr("Текстовое поле"), ShowCase.RESOURCES.textInput().getText());
         textInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         root.add(textInput);
-        textInput.setPlaceHolder(SCMessages.i18n().tr("Необязательное поле"));
+        textInput.setPlaceHolder(Messages.i18n().tr("Необязательное поле"));
 
         final TextInput input = new TextInput();
-        addCodeSample(input, SCMessages.i18n().tr("Отключенное текстовое поле"), ShowCase.SC_RESOURCES.textInputDisabled().getText());
+        addCodeSample(input, Messages.i18n().tr("Отключенное текстовое поле"), ShowCase.RESOURCES.textInputDisabled().getText());
         input.setEnabled(false);
         root.add(input);
         input.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(input, 20);
-        input.setPlaceHolder(SCMessages.i18n().tr("Неактивное поле"));
+        input.setPlaceHolder(Messages.i18n().tr("Неактивное поле"));
 
         final TextInput inputAllow = new TextInput(false);
-        addCodeSample(inputAllow, SCMessages.i18n().tr("Обязательное текстовое поле"), ShowCase.SC_RESOURCES.textInputNonEmpty().getText());
+        addCodeSample(inputAllow, Messages.i18n().tr("Обязательное текстовое поле"), ShowCase.RESOURCES.textInputNonEmpty().getText());
         root.add(inputAllow);
         inputAllow.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(inputAllow, 20);
-        inputAllow.setPlaceHolder(SCMessages.i18n().tr("Обязательное поле"));
+        inputAllow.setPlaceHolder(Messages.i18n().tr("Обязательное поле"));
 
         final TextInput widthInput = new TextInput(false);
         root.add(widthInput);
         widthInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(widthInput, 20);
-        widthInput.setPlaceHolder(SCMessages.i18n().tr("Широкое поле ввода"));
+        widthInput.setPlaceHolder(Messages.i18n().tr("Широкое поле ввода"));
         widthInput.setWidth("300px");
 
         final TextInput smallWidthInput = new TextInput(false);
         root.add(smallWidthInput);
         smallWidthInput.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(smallWidthInput, 10);
-        smallWidthInput.setPlaceHolder(SCMessages.i18n().tr("Маленькое поле ввода"));
+        smallWidthInput.setPlaceHolder(Messages.i18n().tr("Маленькое поле ввода"));
         smallWidthInput.setWidth("100px");
 
         root.add(new Br());
 
         SearchResultInput<String> searchEnabledWithButton = new SearchResultInput<String>(true);
-        addCodeSample(searchEnabledWithButton, SCMessages.i18n().tr("Поле поиска"), ShowCase.SC_RESOURCES.search().getText());
+        addCodeSample(searchEnabledWithButton, Messages.i18n().tr("Поле поиска"), ShowCase.RESOURCES.search().getText());
 
         DropDownList<String> list = createList();
         for (MenuItem<String> item : list.getItems()) {
@@ -1889,16 +1929,16 @@ public class ShowCasePanel extends FlowPanel {
         root.add(new Br());
 
         NumberInput integersInput = new NumberInput();
-        addCodeSample(integersInput, SCMessages.i18n().tr("Числовое поле (целые)"), ShowCase.SC_RESOURCES.numberInputInteger().getText());
-        integersInput.setPlaceHolder(SCMessages.i18n().tr("Только цифры"));
+        addCodeSample(integersInput, Messages.i18n().tr("Числовое поле (целые)"), ShowCase.RESOURCES.numberInputInteger().getText());
+        integersInput.setPlaceHolder(Messages.i18n().tr("Только цифры"));
         root.add(integersInput);
 
         List<InputConstraint> constraintsForDouble = new ArrayList<InputConstraint>();
         constraintsForDouble.add(DoubleConstraint.getInstance());
         NumberInput doublesInput = new NumberInput(constraintsForDouble);
-        addCodeSample(doublesInput, SCMessages.i18n().tr("Числовое поле (дробные)"), ShowCase.SC_RESOURCES.numberInputDouble().getText());
+        addCodeSample(doublesInput, Messages.i18n().tr("Числовое поле (дробные)"), ShowCase.RESOURCES.numberInputDouble().getText());
 
-        doublesInput.setPlaceHolder(SCMessages.i18n().tr("Дробные"));
+        doublesInput.setPlaceHolder(Messages.i18n().tr("Дробные"));
         setMarginLeft(doublesInput, 20);
         root.add(doublesInput);
 
@@ -1906,46 +1946,46 @@ public class ShowCasePanel extends FlowPanel {
         max200.add(OnlyDigitsConstraint.getInstance());
         max200.add(new MaxNumberConstraint(200));
         NumberInput maxInput = new NumberInput(max200);
-        addCodeSample(maxInput, SCMessages.i18n().tr("Числовое поле (целые, ограничены сверху)"),
-                ShowCase.SC_RESOURCES.numberInputMax().getText());
+        addCodeSample(maxInput, Messages.i18n().tr("Числовое поле (целые, ограничены сверху)"),
+                ShowCase.RESOURCES.numberInputMax().getText());
         setMarginLeft(maxInput, 20);
-        maxInput.setPlaceHolder(SCMessages.i18n().tr("Максимально 200"));
+        maxInput.setPlaceHolder(Messages.i18n().tr("Максимально 200"));
         root.add(maxInput);
 
         root.add(new Br());
 
         final ArtaTextArea textArea = new ArtaTextArea();
-        textArea.setPlaceHolder(SCMessages.i18n().tr("Многострочное поле ввода"));
+        textArea.setPlaceHolder(Messages.i18n().tr("Многострочное поле ввода"));
         root.add(textArea);
 
         final ArtaTextArea disableTextArea = new ArtaTextArea(false);
         setMarginLeft(disableTextArea, 10);
-        disableTextArea.setPlaceHolder(SCMessages.i18n().tr("Неактивное многострочное поле ввода"));
+        disableTextArea.setPlaceHolder(Messages.i18n().tr("Неактивное многострочное поле ввода"));
         disableTextArea.setEnabled(false);
         root.add(disableTextArea);
 
         final ArtaTextArea textAreaEmpty = new ArtaTextArea(false);
         setMarginLeft(textAreaEmpty, 10);
-        textAreaEmpty.setPlaceHolder(SCMessages.i18n().tr("Обязательное многострочное поле ввода"));
+        textAreaEmpty.setPlaceHolder(Messages.i18n().tr("Обязательное многострочное поле ввода"));
         root.add(textAreaEmpty);
 
         root.add(new Br());
 
         final ArtaTextArea textAreaSize = new ArtaTextArea(false);
-        addCodeSample(textAreaSize, SCMessages.i18n().tr("Многострочное поле ввода"), ShowCase.SC_RESOURCES.textarea().getText());
-        textAreaSize.setPlaceHolder(SCMessages.i18n().tr("Многострочное поле ввода с заданным размером"));
+        addCodeSample(textAreaSize, Messages.i18n().tr("Многострочное поле ввода"), ShowCase.RESOURCES.textarea().getText());
+        textAreaSize.setPlaceHolder(Messages.i18n().tr("Многострочное поле ввода с заданным размером"));
         textAreaSize.setPixelSize(300, 300);
         root.add(textAreaSize);
 
         final ArtaTextArea textAreaWidth = new ArtaTextArea(false);
         setMarginLeft(textAreaWidth, 20);
-        textAreaWidth.setPlaceHolder(SCMessages.i18n().tr("Многострочное поле ввода с заданной шириной"));
+        textAreaWidth.setPlaceHolder(Messages.i18n().tr("Многострочное поле ввода с заданной шириной"));
         textAreaWidth.setWidth("500px");
         root.add(textAreaWidth);
 
         root.add(new Br());
 
-        SimpleButton button = new SimpleButton(SCMessages.i18n().tr("Валидация полей"), SimpleButton.Type.APPROVE);
+        SimpleButton button = new SimpleButton(Messages.i18n().tr("Валидация полей"), SimpleButton.Type.APPROVE);
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -1987,28 +2027,28 @@ public class ShowCasePanel extends FlowPanel {
 
         simpleButtonPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
-        final SimpleButton simpleButton = new SimpleButton(SCMessages.i18n().tr("Простая кнопка"));
-        addCodeSample(simpleButton, simpleButton.getText(), ShowCase.SC_RESOURCES.simpleButton().getText());
+        final SimpleButton simpleButton = new SimpleButton(Messages.i18n().tr("Простая кнопка"));
+        addCodeSample(simpleButton, simpleButton.getText(), ShowCase.RESOURCES.simpleButton().getText());
         simpleButton.setWidth("140px");
         simpleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         simpleButtonPanel.add(simpleButton);
 
-        SimpleButton simpleButton1 = new SimpleButton(SCMessages.i18n().tr("Неактивная кнопка"));
-        addCodeSample(simpleButton1, simpleButton1.getText(), ShowCase.SC_RESOURCES.simpleButtonDisabled().getText());
+        SimpleButton simpleButton1 = new SimpleButton(Messages.i18n().tr("Неактивная кнопка"));
+        addCodeSample(simpleButton1, simpleButton1.getText(), ShowCase.RESOURCES.simpleButtonDisabled().getText());
         simpleButton1.setEnabled(false);
         simpleButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(simpleButton1, horizontalMargin);
         simpleButtonPanel.add(simpleButton1);
 
-        SimpleButton simpleButton2 = new SimpleButton(SCMessages.i18n().tr("Кнопка с кликом"));
-        addCodeSample(simpleButton2, simpleButton2.getText(), ShowCase.SC_RESOURCES.simpleButtonClick().getText());
+        SimpleButton simpleButton2 = new SimpleButton(Messages.i18n().tr("Кнопка с кликом"));
+        addCodeSample(simpleButton2, simpleButton2.getText(), ShowCase.RESOURCES.simpleButtonClick().getText());
         simpleButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(simpleButton2, horizontalMargin);
         simpleButtonPanel.add(simpleButton2);
         simpleButton2.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                Window.alert(SCMessages.i18n().tr("Кнопка была нажата!"));
+                Window.alert(Messages.i18n().tr("Кнопка была нажата!"));
             }
         });
 
@@ -2019,12 +2059,12 @@ public class ShowCasePanel extends FlowPanel {
         menu.add(new MenuItem<Command>(null, "Right", ImageResources.IMPL.navigationRight()));
         menu.addSeparator(1);
 
-        ContextMenuButton simpleButton4 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"));
-        addCodeSample(simpleButton4, simpleButton4.getText(), ShowCase.SC_RESOURCES.simpleButtonMenu().getText());
+        ContextMenuButton simpleButton4 = new ContextMenuButton(Messages.i18n().tr("Кнопка с меню"));
+        addCodeSample(simpleButton4, simpleButton4.getText(), ShowCase.RESOURCES.simpleButtonMenu().getText());
         simpleButton4.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                Window.alert(SCMessages.i18n().tr("Кнопка с меню была нажата!"));
+                Window.alert(Messages.i18n().tr("Кнопка с меню была нажата!"));
             }
         });
         simpleButton4.setWidth("140px");
@@ -2041,7 +2081,7 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel root = new FlowPanel();
 
         CommentsPanel commentsPanel = new CommentsPanel();
-        addCodeSample(commentsPanel, SCMessages.i18n().tr("Панель комментариев"), ShowCase.SC_RESOURCES.comments().getText());
+        addCodeSample(commentsPanel, Messages.i18n().tr("Панель комментариев"), ShowCase.RESOURCES.comments().getText());
         Style style = commentsPanel.getElement().getStyle();
         style.setPosition(Style.Position.ABSOLUTE);
         style.setTop(20, Style.Unit.PX);
@@ -2065,7 +2105,7 @@ public class ShowCasePanel extends FlowPanel {
         commentsPanel.getComments().addComment(fileComment);
 
         CommentsPanel darkCommentsPanel = new CommentsPanel(true);
-        addCodeSample(darkCommentsPanel, SCMessages.i18n().tr("Панель заметок"), ShowCase.SC_RESOURCES.commentsDark().getText());
+        addCodeSample(darkCommentsPanel, Messages.i18n().tr("Панель заметок"), ShowCase.RESOURCES.commentsDark().getText());
         Style darkStyle = darkCommentsPanel.getElement().getStyle();
         darkStyle.setPosition(Style.Position.ABSOLUTE);
         darkStyle.setTop(20, Style.Unit.PX);
@@ -2088,44 +2128,44 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel iconButtonPanel = new FlowPanel();
         iconButtonPanel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
-        SimpleButton iconButton = new SimpleButton(SCMessages.i18n().tr("Кнопка с иконкой"), ShowCase.SC_IMAGES.zoom());
-        addCodeSample(iconButton, iconButton.getText(), ShowCase.SC_RESOURCES.iconButton().getText());
+        SimpleButton iconButton = new SimpleButton(Messages.i18n().tr("Кнопка с иконкой"), ShowCase.IMAGES.zoom());
+        addCodeSample(iconButton, iconButton.getText(), ShowCase.RESOURCES.iconButton().getText());
         iconButtonPanel.add(iconButton);
         iconButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
 
-        SimpleButton iconButton1 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), ShowCase.SC_IMAGES.zoom());
+        SimpleButton iconButton1 = new SimpleButton(Messages.i18n().tr("Кнопка с длинным текстом"), ShowCase.IMAGES.zoom());
         iconButtonPanel.add(iconButton1);
         iconButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(iconButton1, horizontalMargin);
 
-        SimpleButton iconButton2 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), ShowCase.SC_IMAGES.zoom(), ButtonBase.IconPosition.RIGHT);
-        addCodeSample(iconButton2, SCMessages.i18n().tr("Кнопка с иконкой справа"), ShowCase.SC_RESOURCES.iconButtonRight().getText());
+        SimpleButton iconButton2 = new SimpleButton(Messages.i18n().tr("Кнопка с длинным текстом"), ShowCase.IMAGES.zoom(), ButtonBase.IconPosition.RIGHT);
+        addCodeSample(iconButton2, Messages.i18n().tr("Кнопка с иконкой справа"), ShowCase.RESOURCES.iconButtonRight().getText());
         iconButton2.setWidth("150px");
         iconButtonPanel.add(iconButton2);
         iconButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(iconButton2, horizontalMargin);
 
-        SimpleButton iconButton3 = new SimpleButton(SCMessages.i18n().tr("Кнопка неактивная"), ShowCase.SC_IMAGES.zoom());
+        SimpleButton iconButton3 = new SimpleButton(Messages.i18n().tr("Кнопка неактивная"), ShowCase.IMAGES.zoom());
         iconButton3.setWidth("200px");
         iconButtonPanel.add(iconButton3);
         iconButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(iconButton3, 10);
         iconButton3.setEnabled(false);
 
-        ImageButton iconButton4 = new ImageButton(ShowCase.SC_IMAGES.zoom());
-        addCodeSample(iconButton4, SCMessages.i18n().tr("Кнопка только с иконкой"), ShowCase.SC_RESOURCES.onlyIconButton().getText());
+        ImageButton iconButton4 = new ImageButton(ShowCase.IMAGES.zoom());
+        addCodeSample(iconButton4, Messages.i18n().tr("Кнопка только с иконкой"), ShowCase.RESOURCES.onlyIconButton().getText());
         iconButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(iconButton4, horizontalMargin);
         iconButtonPanel.add(iconButton4);
 
-        ImageButton iconButton5 = new ImageButton(ShowCase.SC_IMAGES.zoom());
+        ImageButton iconButton5 = new ImageButton(ShowCase.IMAGES.zoom());
         iconButton5.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(iconButton5, horizontalMargin);
         iconButton5.setEnabled(false);
         iconButtonPanel.add(iconButton5);
 
         ContextMenu menu2 = createSimpleMenu();
-        ContextMenuButton iconButton6 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"), ShowCase.SC_IMAGES.zoom());
+        ContextMenuButton iconButton6 = new ContextMenuButton(Messages.i18n().tr("Кнопка с меню"), ShowCase.IMAGES.zoom());
         iconButton6.setWidth("150px");
         iconButtonPanel.add(iconButton6);
         iconButton6.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
@@ -2133,7 +2173,7 @@ public class ShowCasePanel extends FlowPanel {
         iconButton6.setContextMenu(menu2);
 
         ContextMenu menu4 = createSimpleMenu();
-        ContextMenuButton iconButton7 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"), ShowCase.SC_IMAGES.zoom(), ButtonBase.IconPosition.RIGHT);
+        ContextMenuButton iconButton7 = new ContextMenuButton(Messages.i18n().tr("Кнопка с меню"), ShowCase.IMAGES.zoom(), ButtonBase.IconPosition.RIGHT);
         iconButton7.setWidth("150px");
         iconButtonPanel.add(iconButton7);
         iconButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
@@ -2141,8 +2181,8 @@ public class ShowCasePanel extends FlowPanel {
         iconButton7.setContextMenu(menu4);
 
         ContextMenu menu5 = createSimpleMenu();
-        ContextMenuButton iconButton8 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"), ShowCase.SC_IMAGES.zoom(), ButtonBase.IconPosition.RIGHT);
-        addCodeSample(iconButton8, SCMessages.i18n().tr("Широкая кнопка с меню и иконкой справа"), ShowCase.SC_RESOURCES.iconButtonMenuWide().getText());
+        ContextMenuButton iconButton8 = new ContextMenuButton(Messages.i18n().tr("Кнопка с меню"), ShowCase.IMAGES.zoom(), ButtonBase.IconPosition.RIGHT);
+        addCodeSample(iconButton8, Messages.i18n().tr("Широкая кнопка с меню и иконкой справа"), ShowCase.RESOURCES.iconButtonMenuWide().getText());
         iconButton8.setWidth("400px");
         iconButtonPanel.add(iconButton8);
         iconButton8.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
@@ -2161,60 +2201,60 @@ public class ShowCasePanel extends FlowPanel {
         colorButtonPanel.setHeight("2000px");
         colorButtonPanel.setWidth("2000px");
 
-        SimpleButton colorButton = new SimpleButton((SCMessages.i18n().tr("Создать")), SimpleButton.Type.APPROVE);
-        addCodeSample(colorButton, SCMessages.i18n().tr("Кнопка подтверждения"), ShowCase.SC_RESOURCES.acceptButton().getText());
+        SimpleButton colorButton = new SimpleButton((Messages.i18n().tr("Создать")), SimpleButton.Type.APPROVE);
+        addCodeSample(colorButton, Messages.i18n().tr("Кнопка подтверждения"), ShowCase.RESOURCES.acceptButton().getText());
         colorButtonPanel.add(colorButton);
         colorButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
 
-        SimpleButton colorButton1 = new SimpleButton(SCMessages.i18n().tr("Удалить"), SimpleButton.Type.DECLINE);
-        addCodeSample(colorButton1, SCMessages.i18n().tr("Кнопка отклонения"), ShowCase.SC_RESOURCES.acceptButton().getText());
+        SimpleButton colorButton1 = new SimpleButton(Messages.i18n().tr("Удалить"), SimpleButton.Type.DECLINE);
+        addCodeSample(colorButton1, Messages.i18n().tr("Кнопка отклонения"), ShowCase.RESOURCES.acceptButton().getText());
         colorButtonPanel.add(colorButton1);
         colorButton1.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(colorButton1, horizontalMargin);
 
-        SimpleButton colorButton2 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), SimpleButton.Type.DECLINE);
+        SimpleButton colorButton2 = new SimpleButton(Messages.i18n().tr("Кнопка с длинным текстом"), SimpleButton.Type.DECLINE);
         colorButtonPanel.add(colorButton2);
         colorButton2.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(colorButton2, horizontalMargin);
 
-        SimpleButton colorButton3 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), SimpleButton.Type.DECLINE);
+        SimpleButton colorButton3 = new SimpleButton(Messages.i18n().tr("Кнопка с длинным текстом"), SimpleButton.Type.DECLINE);
         colorButton3.setWidth("100px");
         colorButtonPanel.add(colorButton3);
         colorButton3.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(colorButton3, horizontalMargin);
 
-        SimpleButton colorButton4 = new SimpleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"), SimpleButton.Type.APPROVE);
+        SimpleButton colorButton4 = new SimpleButton(Messages.i18n().tr("Кнопка с длинным текстом"), SimpleButton.Type.APPROVE);
         colorButton4.setWidth("100px");
         colorButtonPanel.add(colorButton4);
         colorButton4.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(colorButton4, horizontalMargin);
 
-        SimpleButton colorButton5 = new SimpleButton(SCMessages.i18n().tr("Кнопка неактивная"), SimpleButton.Type.APPROVE);
+        SimpleButton colorButton5 = new SimpleButton(Messages.i18n().tr("Кнопка неактивная"), SimpleButton.Type.APPROVE);
         colorButton5.setEnabled(false);
         colorButtonPanel.add(colorButton5);
         colorButton5.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(colorButton5, horizontalMargin);
 
-        SimpleButton colorButton6 = new SimpleButton(SCMessages.i18n().tr("Кнопка неактивная"), SimpleButton.Type.DECLINE);
+        SimpleButton colorButton6 = new SimpleButton(Messages.i18n().tr("Кнопка неактивная"), SimpleButton.Type.DECLINE);
         colorButton6.setEnabled(false);
         colorButtonPanel.add(colorButton6);
         colorButton6.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(colorButton6, horizontalMargin);
 
-        ContextMenuButton colorButton7 = new ContextMenuButton(SCMessages.i18n().tr("Кнопка с меню"), SimpleButton.Type.APPROVE);
-        addCodeSample(colorButton7, SCMessages.i18n().tr("Кнопка подтверждения с меню"), ShowCase.SC_RESOURCES.acceptButtonMenu().getText());
+        ContextMenuButton colorButton7 = new ContextMenuButton(Messages.i18n().tr("Кнопка с меню"), SimpleButton.Type.APPROVE);
+        addCodeSample(colorButton7, Messages.i18n().tr("Кнопка подтверждения с меню"), ShowCase.RESOURCES.acceptButtonMenu().getText());
         colorButtonPanel.add(colorButton7);
         colorButton7.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                Window.alert(SCMessages.i18n().tr("Кнопка с меню была нажата!"));
+                Window.alert(Messages.i18n().tr("Кнопка с меню была нажата!"));
             }
         });
         colorButton7.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         setMarginLeft(colorButton7, horizontalMargin);
 
         ContextMenu menu3 = createSimpleMenu();
-        menu3.add(new MenuItem<Command>(null, SCMessages.i18n().tr("Очень-очень длинный текст")));
+        menu3.add(new MenuItem<Command>(null, Messages.i18n().tr("Очень-очень длинный текст")));
         colorButton7.setContextMenu(menu3);
 
         ArtaScrollPanel scroll = new ArtaScrollPanel();
@@ -2232,20 +2272,20 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel panel = new FlowPanel();
         panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
-        final SimpleToggleButton toggleButton = new SimpleToggleButton(SCMessages.i18n().tr("Кнопка с длинным текстом"));
-        addCodeSample(toggleButton, SCMessages.i18n().tr("Групповая кнопка"), ShowCase.SC_RESOURCES.toggleButton().getText());
+        final SimpleToggleButton toggleButton = new SimpleToggleButton(Messages.i18n().tr("Кнопка с длинным текстом"));
+        addCodeSample(toggleButton, Messages.i18n().tr("Групповая кнопка"), ShowCase.RESOURCES.toggleButton().getText());
         setMarginLeft(toggleButton, horizontalMargin);
         toggleButton.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
         panel.add(toggleButton);
 
-        final SimpleToggleButton toggleButton1 = new SimpleToggleButton(SCMessages.i18n().tr("Не нажата"));
+        final SimpleToggleButton toggleButton1 = new SimpleToggleButton(Messages.i18n().tr("Не нажата"));
         toggleButton1.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 if (toggleButton1.isPressed()) {
-                    toggleButton1.setText(SCMessages.i18n().tr("Нажата"));
+                    toggleButton1.setText(Messages.i18n().tr("Нажата"));
                 } else {
-                    toggleButton1.setText(SCMessages.i18n().tr("Не нажата"));
+                    toggleButton1.setText(Messages.i18n().tr("Не нажата"));
                 }
             }
         });
@@ -2255,29 +2295,29 @@ public class ShowCasePanel extends FlowPanel {
 
 
         GroupButtonPanel groupButtonPanel = new GroupButtonPanel(true);
-        addCodeSample(groupButtonPanel, SCMessages.i18n().tr("Группа кнопок"), ShowCase.SC_RESOURCES.buttonGroupToggle().getText());
-        groupButtonPanel.addButton(SCMessages.i18n().tr("Первая кнопка длинная"), new ClickHandler() {
+        addCodeSample(groupButtonPanel, Messages.i18n().tr("Группа кнопок"), ShowCase.RESOURCES.buttonGroupToggle().getText());
+        groupButtonPanel.addButton(Messages.i18n().tr("Первая кнопка длинная"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
             }
         });
-        groupButtonPanel.addButton(SCMessages.i18n().tr("Вторая"), new ClickHandler() {
+        groupButtonPanel.addButton(Messages.i18n().tr("Вторая"), new ClickHandler() {
             @Override
                 public void onClick(ClickEvent event) {
                 if (((SimpleToggleButton) event.getSource()).isPressed()) {
-                    ((SimpleToggleButton) event.getSource()).setText(SCMessages.i18n().tr("Вторая нажата"));
+                    ((SimpleToggleButton) event.getSource()).setText(Messages.i18n().tr("Вторая нажата"));
                 } else {
-                    ((SimpleToggleButton) event.getSource()).setText(SCMessages.i18n().tr("Вторая"));
+                    ((SimpleToggleButton) event.getSource()).setText(Messages.i18n().tr("Вторая"));
                 }
             }
         });
-        groupButtonPanel.addButton(SCMessages.i18n().tr("Третья"), new ClickHandler() {
+        groupButtonPanel.addButton(Messages.i18n().tr("Третья"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 if (((SimpleToggleButton) event.getSource()).isPressed()) {
-                    ((SimpleToggleButton) event.getSource()).setText(SCMessages.i18n().tr("Третья нажата"));
+                    ((SimpleToggleButton) event.getSource()).setText(Messages.i18n().tr("Третья нажата"));
                 } else {
-                    ((SimpleToggleButton) event.getSource()).setText(SCMessages.i18n().tr("Третья"));
+                    ((SimpleToggleButton) event.getSource()).setText(Messages.i18n().tr("Третья"));
                 }
             }
         });
@@ -2287,20 +2327,20 @@ public class ShowCasePanel extends FlowPanel {
         panel.add(groupButtonPanel);
 
         GroupButtonPanel groupButtonPanel1 = new GroupButtonPanel(true, true);
-        addCodeSample(groupButtonPanel1, SCMessages.i18n().tr("Группа кнопок"), ShowCase.SC_RESOURCES.buttonGroupMultiToggle().getText());
-        groupButtonPanel1.addButton(SCMessages.i18n().tr("Первая"), new ClickHandler() {
+        addCodeSample(groupButtonPanel1, Messages.i18n().tr("Группа кнопок"), ShowCase.RESOURCES.buttonGroupMultiToggle().getText());
+        groupButtonPanel1.addButton(Messages.i18n().tr("Первая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel1.addButton(SCMessages.i18n().tr("Вторая"), new ClickHandler() {
+        groupButtonPanel1.addButton(Messages.i18n().tr("Вторая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel1.addButton(SCMessages.i18n().tr("Третья"), new ClickHandler() {
+        groupButtonPanel1.addButton(Messages.i18n().tr("Третья"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
@@ -2313,19 +2353,19 @@ public class ShowCasePanel extends FlowPanel {
 
         GroupButtonPanel groupButtonPanel2 = new GroupButtonPanel(true);
         groupButtonPanel2.setAllowEmptyToggle(false);
-        groupButtonPanel2.addButton(SCMessages.i18n().tr("Первая"), new ClickHandler() {
+        groupButtonPanel2.addButton(Messages.i18n().tr("Первая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel2.addButton(SCMessages.i18n().tr("Вторая"), new ClickHandler() {
+        groupButtonPanel2.addButton(Messages.i18n().tr("Вторая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel2.addButton(SCMessages.i18n().tr("Третья"), new ClickHandler() {
+        groupButtonPanel2.addButton(Messages.i18n().tr("Третья"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
@@ -2337,19 +2377,19 @@ public class ShowCasePanel extends FlowPanel {
         panel.add(groupButtonPanel2);
 
         GroupButtonPanel groupButtonPanel3 = new GroupButtonPanel(true, true);
-        groupButtonPanel3.addButton(SCMessages.i18n().tr("Первая"), new ClickHandler() {
+        groupButtonPanel3.addButton(Messages.i18n().tr("Первая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel3.addButton(SCMessages.i18n().tr("Вторая"), new ClickHandler() {
+        groupButtonPanel3.addButton(Messages.i18n().tr("Вторая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel3.addButton(SCMessages.i18n().tr("Третья"), new ClickHandler() {
+        groupButtonPanel3.addButton(Messages.i18n().tr("Третья"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
@@ -2361,20 +2401,20 @@ public class ShowCasePanel extends FlowPanel {
         panel.add(groupButtonPanel3);
 
         GroupButtonPanel groupButtonPanel4 = new GroupButtonPanel();
-        addCodeSample(groupButtonPanel4, SCMessages.i18n().tr("Группа кнопок"), ShowCase.SC_RESOURCES.buttonGroup().getText());
-        groupButtonPanel4.addButton(SCMessages.i18n().tr("Первая"), new ClickHandler() {
+        addCodeSample(groupButtonPanel4, Messages.i18n().tr("Группа кнопок"), ShowCase.RESOURCES.buttonGroup().getText());
+        groupButtonPanel4.addButton(Messages.i18n().tr("Первая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel4.addButton(SCMessages.i18n().tr("Вторая"), new ClickHandler() {
+        groupButtonPanel4.addButton(Messages.i18n().tr("Вторая"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 
             }
         });
-        groupButtonPanel4.addButton(SCMessages.i18n().tr("Третья"), new ClickHandler() {
+        groupButtonPanel4.addButton(Messages.i18n().tr("Третья"), new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
 

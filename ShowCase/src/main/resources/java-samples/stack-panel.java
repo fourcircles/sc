@@ -2,7 +2,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
-import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.sc3.showcase.client.resources.Messages;
 import kz.arta.synergy.components.client.checkbox.ArtaCheckBox;
 import kz.arta.synergy.components.client.checkbox.ArtaRadioButton;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
@@ -17,10 +17,10 @@ import java.util.List;
 public class Sample {
     public static void main(String[] args) {
         final StackPanel stacks = new StackPanel(Arrays.asList(
-                new SingleStack(SCMessages.i18n().tr("Первая")),
-                new SingleStack(SCMessages.i18n().tr("Вторая")),
-                new SingleStack(SCMessages.i18n().tr("Третья")),
-                new SingleStack(SCMessages.i18n().tr("Четвертая"))), 500);
+                new SingleStack(Messages.i18n().tr("Первая")),
+                new SingleStack(Messages.i18n().tr("Вторая")),
+                new SingleStack(Messages.i18n().tr("Третья")),
+                new SingleStack(Messages.i18n().tr("Четвертая"))), 500);
         stacks.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
 
         // создание панели большого размера для отображения скролла

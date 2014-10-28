@@ -1,6 +1,6 @@
 import com.google.gwt.user.client.Command;
 import com.google.gwt.view.client.ListDataProvider;
-import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.sc3.showcase.client.resources.Messages;
 import kz.arta.synergy.components.client.table.Pager;
 import kz.arta.synergy.components.client.table.Table;
 import kz.arta.synergy.components.client.table.User;
@@ -19,7 +19,7 @@ public class Sample {
         // шапка
         table.enableHat(true);
         // название таблицы
-        table.getHat().setName(SCMessages.i18n().tr("Таблица"));
+        table.getHat().setName(Messages.i18n().tr("Таблица"));
         // есть ли кнопка "добавить"
         table.getHat().enableAddButton(true);
         // показывать ли пагинатор всегда
@@ -49,7 +49,7 @@ public class Sample {
         idColumn.setSortable(true);
         table.addColumn(idColumn);
 
-        final ArtaEditableTextColumn<User> firstNameColumn = new ArtaEditableTextColumn<User>(SCMessages.i18n().tr("Имя")) {
+        final ArtaEditableTextColumn<User> firstNameColumn = new ArtaEditableTextColumn<User>(Messages.i18n().tr("Имя")) {
             @Override
             public String getValue(User value) {
                 return value.getFirstName();
@@ -63,7 +63,7 @@ public class Sample {
         firstNameColumn.setSortable(true);
         table.addColumn(firstNameColumn);
 
-        final ArtaEditableTextColumn<User> lastNameColumn = new ArtaEditableTextColumn<User>(SCMessages.i18n().tr("Фамилия")) {
+        final ArtaEditableTextColumn<User> lastNameColumn = new ArtaEditableTextColumn<User>(Messages.i18n().tr("Фамилия")) {
             @Override
             public String getValue(User value) {
                 return value.getLastName();
@@ -133,14 +133,14 @@ public class Sample {
      */
     private void setUpCellMenu(Table<User> table, ListDataProvider<User> provider) {
         final ContextMenu cellMenu = new ContextMenu();
-        final ContextMenu.ContextMenuItem item = cellMenu.addItem(SCMessages.i18n().tr("Меню для ячейки"), null);
+        final ContextMenu.ContextMenuItem item = cellMenu.addItem(Messages.i18n().tr("Меню для ячейки"), null);
 
         table.getCore().addCellMenuHandler(new TableCellMenuEvent.Handler<User>() {
             @Override
             public void onTableCellMenu(TableCellMenuEvent<User> event) {
                 int row = provider.getList().indexOf(event.getObject()) - table.getCore().getVisibleRange().getStart();
                 int column = table.getCore().getColumns().indexOf(event.getColumn());
-                item.setText(SCMessages.i18n().tr("Меню для ячейки") + " " + row + " " + column);
+                item.setText(Messages.i18n().tr("Меню для ячейки") + " " + row + " " + column);
                 cellMenu.show(event.getX(), event.getY());
             }
         });
@@ -157,7 +157,7 @@ public class Sample {
             @Override
             public void onTableHeaderMenu(final TableHeaderMenuEvent<User> event) {
                 headerMenu.clear();
-                headerMenu.addItem(SCMessages.i18n().tr("Отсортировать"), new Command() {
+                headerMenu.addItem(Messages.i18n().tr("Отсортировать"), new Command() {
                     @Override
                     public void execute() {
                         // сортируем по столбцу, для которого было вызвано меню

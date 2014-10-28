@@ -121,7 +121,9 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
 
         setPreviewingAllNativeEvents(true);
 
-        getGlassElement().getStyle().setZIndex(1000);
+        if (getGlassElement() != null) {
+            getGlassElement().getStyle().setZIndex(1000);
+        }
         getElement().getStyle().setZIndex(2000);
     }
 

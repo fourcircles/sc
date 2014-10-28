@@ -1,7 +1,7 @@
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
-import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.sc3.showcase.client.resources.Messages;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.collapsing.CollapsingPanel;
 import kz.arta.synergy.components.client.input.TextInput;
@@ -9,7 +9,7 @@ import kz.arta.synergy.components.style.client.Constants;
 
 public class Sample {
     public static void main(String[] args) {
-        CollapsingPanel meta = new CollapsingPanel(SCMessages.i18n().tr("Метаданные"));
+        CollapsingPanel meta = new CollapsingPanel(Messages.i18n().tr("Метаданные"));
         meta.setWidth("500px");
         meta.getPanel().getElement().getStyle().setPadding(18, Style.Unit.PX);
 

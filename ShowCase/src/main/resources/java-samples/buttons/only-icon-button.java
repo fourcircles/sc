@@ -5,7 +5,7 @@ import kz.arta.synergy.components.client.button.ImageButton;
 
 public class Sample {
     public static void main(String[] args) {
-        ImageButton iconButton = new ImageButton(ShowCase.SC_IMAGES.zoom());
+        ImageButton iconButton = new ImageButton(ShowCase.IMAGES.zoom());
 
         iconButton.addClickHandler(new ClickHandler() {
             @Override

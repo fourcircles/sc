@@ -1,4 +1,4 @@
-import kz.arta.sc3.showcase.client.resources.SCMessages;
+import kz.arta.sc3.showcase.client.resources.Messages;
 import kz.arta.synergy.components.client.input.number.DoubleConstraint;
 import kz.arta.synergy.components.client.input.number.InputConstraint;
 import kz.arta.synergy.components.client.input.number.NumberInput;
@@ -12,7 +12,7 @@ public class Sample {
         constraintsForDouble.add(DoubleConstraint.getInstance());
 
         NumberInput doublesInput = new NumberInput(constraintsForDouble);
-        doublesInput.setPlaceHolder(SCMessages.i18n().tr("Дробные"));
+        doublesInput.setPlaceHolder(Messages.i18n().tr("Дробные"));
     }
 }
 

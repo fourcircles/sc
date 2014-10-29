@@ -64,11 +64,13 @@ war {
     ext.fullrev = ''
     ant.loadfile(srcFile: "../.git/refs/remotes/origin/master", property: ext.fullrev)
     ant.properties[ext.buildNumber] = '1.0.'+env.BUILD_NUMBER?.toInteger()
-
-    filter(ReplaceTokens, tokens: [build_stamp: new Date().format('yyyy.MM.dd HH:mm'),
-                                   revision   : ant.properties[ext.fullrev].substring(0, 10),
-                                   version    : ant.properties[ext.buildNumber]
-    ])
+    from(project.webAppDir) {
+        include 'ShowCase.html'
+        filter(ReplaceTokens, tokens: [build_stamp: new Date().format('yyyy.MM.dd HH:mm'),
+                                       revision   : ant.properties[ext.fullrev].substring(0, 10),
+                                       version    : ant.properties[ext.buildNumber]
+        ])
+    }
 }
 
 draftWar {

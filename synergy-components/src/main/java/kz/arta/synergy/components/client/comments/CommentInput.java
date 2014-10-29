@@ -302,9 +302,12 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
 
         mirror.getElement().getStyle().setWidth(width, Style.Unit.PX);
 
+        mirror.setValue(",");
+        int lineHeight = mirror.getElement().getScrollHeight();
+
         /* ie11 при наличии в тексте только whitespace (например пяти \n) считает, что scrollHeight = 0 */
         if (Window.Navigator.getAppVersion().contains("Trident") && textArea.getValue().trim().isEmpty()) {
-            mirror.setValue("," + textArea.getValue());
+            mirror.setValue("." + textArea.getValue());
         } else {
             mirror.setValue(textArea.getValue(), false);
         }
@@ -312,7 +315,14 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
         int height = mirror.getElement().getScrollHeight();
 
         int oldHeight = textArea.getOffsetHeight() - Constants.COMMON_INPUT_PADDING * 2;
-        int lines = height / Constants.COMMENT_INPUT_LINE_HEIGHT;
+
+        /* если высота textarea c одной строкой текста в IE, например 19px, то высота
+         * с двумя - 38px, тремя - 57px, но 4 строки - уже 75px (не 76), а 10 - 188px.
+         */
+        if (Navigator.isIE11() || Navigator.isIE()) {
+            height += 2;
+        }
+        int lines = (height + 2) / lineHeight;
 
         /* Браузеры по-разному считают line-height для разных размеров текста. Поэтому
         * фиксированное значение line-height в нашем случае не подойдет (иначе в каком-то браузере
@@ -349,7 +359,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
                     textChanged();
                 }
                 textArea.getElement().getStyle().setHeight(height + Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
-                scroll.getElement().getStyle().setHeight(MAX_LINES * Constants.COMMENT_INPUT_LINE_HEIGHT + Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
+                scroll.getElement().getStyle().setHeight(MAX_LINES * lineHeight + Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
             }
         }
 

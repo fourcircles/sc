@@ -8,7 +8,7 @@ import java.util.List;
  * Date: 23.09.14
  * Time: 15:06
  */
-public class TestUtils {
+public class TableTestUtils {
     public static User createUser(int i) {
         return new User("jon" + i, "jones" + i, "" + (85281 + i));
     }

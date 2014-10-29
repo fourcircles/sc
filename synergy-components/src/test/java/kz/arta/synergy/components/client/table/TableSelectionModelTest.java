@@ -49,7 +49,7 @@ public class TableSelectionModelTest {
         SelectionChangeEvent.Handler handler = mock(SelectionChangeEvent.Handler.class);
         model.addSelectionChangeHandler(handler);
 
-        User user = TestUtils.createUser(0);
+        User user = TableTestUtils.createUser(0);
         model.setSelected(user, true);
         verify(handler, times(1)).onSelectionChange(any(SelectionChangeEvent.class));
         assertEquals(user, model.getSelectedObject());
@@ -60,7 +60,7 @@ public class TableSelectionModelTest {
         SelectionChangeEvent.Handler handler = mock(SelectionChangeEvent.Handler.class);
         model.addSelectionChangeHandler(handler);
 
-        User user = TestUtils.createUser(0);
+        User user = TableTestUtils.createUser(0);
         model.setSelected(user, null, true, false); //выделение без события
         model.setSelected(user, null, true, true); //повторное выделение - события нет
 
@@ -73,7 +73,7 @@ public class TableSelectionModelTest {
         SelectionChangeEvent.Handler handler = mock(SelectionChangeEvent.Handler.class);
         model.addSelectionChangeHandler(handler);
 
-        User user = TestUtils.createUser(0);
+        User user = TableTestUtils.createUser(0);
         model.setSelected(user, null, true, false); //выделение без события
         model.setSelected(user, null, false, true); //снятие выделения
 
@@ -86,7 +86,7 @@ public class TableSelectionModelTest {
         SelectionChangeEvent.Handler handler = mock(SelectionChangeEvent.Handler.class);
         model.addSelectionChangeHandler(handler);
 
-        User user = TestUtils.createUser(0);
+        User user = TableTestUtils.createUser(0);
         ArtaColumn column1 = mock(ArtaColumn.class);
         ArtaColumn column2 = mock(ArtaColumn.class);
 
@@ -105,7 +105,7 @@ public class TableSelectionModelTest {
         SelectionChangeEvent.Handler handler = mock(SelectionChangeEvent.Handler.class);
         model.addSelectionChangeHandler(handler);
 
-        User user = TestUtils.createUser(0);
+        User user = TableTestUtils.createUser(0);
         ArtaColumn column = mock(ArtaColumn.class);
 
         model.setSelected(user, column, true, false);

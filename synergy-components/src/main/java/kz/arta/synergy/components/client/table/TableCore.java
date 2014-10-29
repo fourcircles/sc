@@ -206,10 +206,14 @@ public class TableCore<T> extends Composite implements HasData<T> {
         int column = TableCellElement.as(td).getCellIndex();
 
         T object = objects.get(start + row);
+
+
         if (onlyRows) {
+            select(objects.get(start + row), null);
             bus.fireEventFromSource(new TableRowMenuEvent<T>(object,
                     event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), this);
         } else {
+            select(objects.get(start + row), columns.get(column));
             bus.fireEventFromSource(new TableCellMenuEvent<T>(object, columns.get(column),
                     event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), this);
         }

@@ -43,20 +43,25 @@ public abstract class ThickMouseMoveHandler implements MouseMoveHandler {
 
     /**
      * Показывает преодолела ли мышь необходимое расстояние с предыдущего события
-     * @param event события движения
+     * @param x координата мыши
+     * @param y координата мыши
      */
-    protected boolean overThreshold(MouseMoveEvent event) {
+    protected boolean overThreshold(int x, int y) {
         if (!started) {
-            oldX = event.getClientX();
-            oldY = event.getClientY();
+            oldX = x;
+            oldY = y;
             started = true;
         }
-        int distance = Math.abs(oldX - event.getClientX()) +
-                Math.abs(oldY - event.getClientY());
+        int distance = Math.abs(oldX - x) +
+                Math.abs(oldY - y);
         if (distance > threshold) {
             started = false;
             return true;
         }
         return false;
     }
+    private static class Move extends MouseMoveEvent {
+
+    }
 }
+

@@ -1111,14 +1111,15 @@ public class ShowCasePanel extends FlowPanel {
         scroll.setHeight("100%");
 
         final ContextMenu cellMenu = new ContextMenu();
-        final MenuItem<Command> item = new MenuItem<Command>(null, Messages.i18n().tr("Меню для ячейки"));
+        final MenuItem<Command> cellMenuItem = new MenuItem<Command>(null, Messages.i18n().tr("Меню для ячейки"));
+        cellMenu.add(cellMenuItem);
 
         table.getCore().addCellMenuHandler(new TableCellMenuEvent.Handler<User>() {
             @Override
             public void onTableCellMenu(TableCellMenuEvent<User> event) {
                 int row = provider.getList().indexOf(event.getObject()) - table.getCore().getVisibleRange().getStart();
                 int column = table.getCore().getColumns().indexOf(event.getColumn());
-                item.setText(Messages.i18n().tr("Меню для ячейки") + " " + row + " " + column);
+                cellMenuItem.setText(Messages.i18n().tr("Меню для ячейки") + " " + row + " " + column);
                 cellMenu.show(event.getX(), event.getY());
             }
         });

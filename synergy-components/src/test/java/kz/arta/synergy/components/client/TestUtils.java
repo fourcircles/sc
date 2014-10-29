@@ -27,7 +27,7 @@ public class TestUtils {
     public static GwtEvent<MouseMoveHandler> createMouseMoveEvent(final MouseMoveEvent moveEvent) {
         return new GwtEvent<MouseMoveHandler>() {
             @Override
-            public Type<MouseMoveHandler> getAssociatedType() {
+            public com.google.gwt.event.shared.GwtEvent.Type<MouseMoveHandler> getAssociatedType() {
                 return MouseMoveEvent.getType();
             }
 

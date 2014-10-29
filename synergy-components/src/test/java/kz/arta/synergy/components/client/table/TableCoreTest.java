@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static kz.arta.synergy.components.client.table.TableTestUtils.*;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -85,7 +86,7 @@ public class TableCoreTest {
         provider.addDataDisplay(table);
 
         User.resetIdCount();
-        provider.getList().addAll(TestUtils.createUserList(50, 0));
+        provider.getList().addAll(createUserList(50, 0));
         provider.flush();
     }
 
@@ -181,7 +182,7 @@ public class TableCoreTest {
         TableCore<User> spy = spy(table);
         doNothing().when(spy).setRow(anyInt(), any(User.class));
 
-        List<User> newUsers = TestUtils.createUserList(10, 500);
+        List<User> newUsers = createUserList(10, 500);
         spy.setRowData(0, newUsers);
 
         assertEquals(spy.objects.subList(0, 10), newUsers);
@@ -193,7 +194,7 @@ public class TableCoreTest {
         TableCore<User> spy = spy(table);
         doNothing().when(spy).setRow(anyInt(), any(User.class));
 
-        List<User> newUsers = TestUtils.createUserList(10, 500);
+        List<User> newUsers = createUserList(10, 500);
         spy.setRowData(15, newUsers);
 
         assertEquals(spy.objects.subList(15, 25), newUsers);
@@ -202,13 +203,13 @@ public class TableCoreTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetRowDataIntersect() {
-        List<User> newUsers = TestUtils.createUserList(10, 500);
+        List<User> newUsers = createUserList(10, 500);
         table.setRowData(45, newUsers);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetRowDataNoIntersect() {
-        List<User> newUsers = TestUtils.createUserList(10, 500);
+        List<User> newUsers = createUserList(10, 500);
         table.setRowData(100, newUsers);
     }
 

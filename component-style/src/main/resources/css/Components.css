@@ -955,9 +955,10 @@ code, pre {
     max-width: tagMaxWidth;
     vertical-align: top;
     white-space: nowrap;
+    color: textColor2;
 }
 
-.tag .gradient {
+.tag .gradient, .path .gradient {
     background: -moz-linear-gradient(left, tagBG_0 0%, tagBG 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,tagBG_0), color-stop(100%,tagBG));
     background: -webkit-linear-gradient(left, tagBG_0 0%,tagBG 100%);
@@ -967,7 +968,7 @@ code, pre {
     filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr=")tagBG_0_ie literal("endColorstr=")tagBG literal(",GradientType=1 )");
 }
 
-*[dir="rtl"] .tag .gradient{
+*[dir="rtl"] .tag .gradient, *[dir="rtl"] .path .gradient{
     background: -moz-linear-gradient(left, tagBG 0%, tagBG_0 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,tagBG), color-stop(100%,tagBG_0));
     background: -webkit-linear-gradient(left, tagBG 0%,tagBG_0 100%);
@@ -2175,4 +2176,62 @@ p {
     margin-right: 6px;
 }
 
+.path > .item {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+    border-radius: 3px;
+    background-color: tagBG;
+    padding: 0 8px;
+    height: tagHeight;
+    max-width: 200px;
+    min-width: 32px;
+    vertical-align: top;
+    white-space: nowrap;
+    cursor: pointer;
+    color: textColor2;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+
+.path > .item > * {
+    display: inline-block;
+    position: absolute;
+}
+.path > .item > img {
+    margin-top: 5px;
+}
+.path > .item > img:first-child {
+    left: 8px;
+}
+.path > .item > img:last-child {
+    right: 8px;
+}
+.path > .item > div {
+    left: 30px;
+    right: 30px;
+    overflow: hidden;
+    vertical-align: top;
+    margin-top: 6px;
+}
+
+.path {
+    border: 1px solid buttonBorder;
+    border-radius: 4px;
+    background-color: #ffffff;
+    height: 32px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    position: relative;
+    padding-right: 35px;
+}
+
+.path > .buttonSimple {
+    position: absolute;
+    right: -1px;
+    top: -1px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
 

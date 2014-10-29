@@ -40,10 +40,9 @@ public class Tree extends Composite implements HasContextMenuHandlers {
      * Внутренние пункты дерева
      */
     List<TreeItem> items;
-    private final ArtaScrollPanel scroll;
 
     public Tree() {
-        scroll = new ArtaScrollPanel();
+        ArtaScrollPanel scroll = new ArtaScrollPanel();
         initWidget(scroll);
         scroll.addStyleName(SynergyComponents.getResources().cssComponents().tree());
 
@@ -57,14 +56,19 @@ public class Tree extends Composite implements HasContextMenuHandlers {
         bus.addHandler(TreeSelectionEvent.getType(), new TreeSelectionEvent.Handler() {
             @Override
             public void onTreeSelection(TreeSelectionEvent event) {
-                if (event.getTreeItem() == selectedItem) {
-                    return;
+                if (event.getTreeItem() != selectedItem) {
+                    if (selectedItem != null) {
+                        selectedItem.setSelected(false, false);
+                    }
+                    selectedItem = event.getTreeItem();
                 }
-                if (selectedItem != null) {
-                    selectedItem.setSelected(false, false);
+                if (selectedItem.indicator != null) {
+                    selectedItem.indicator.getElement().scrollIntoView();
+                } else if (selectedItem.icon != null) {
+                    selectedItem.icon.getElement().scrollIntoView();
+                } else {
+                    selectedItem.label.getElement().scrollIntoView();
                 }
-                selectedItem = event.getTreeItem();
-                selectedItem.asWidget().getElement().scrollIntoView();
             }
         });
     }
@@ -113,5 +117,12 @@ public class Tree extends Composite implements HasContextMenuHandlers {
     @Override
     public HandlerRegistration addContextMenuHandler(ContextMenuHandler handler) {
         return root.addDomHandler(handler, ContextMenuEvent.getType());
+    }
+
+    /**
+     * @return выбранный элемент дерева
+     */
+    public TreeItem getSelectedItem() {
+        return selectedItem;
     }
 }

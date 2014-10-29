@@ -59,6 +59,11 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     @UiField Image icon;
 
     /**
+     * Картинка для иконки
+     */
+    private ImageResource iconImage;
+
+    /**
      * Индикатор открытия/закрытия
      */
     @UiField Image indicator;
@@ -218,6 +223,11 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
             icon.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         }
         icon.setResource(resource);
+        iconImage = resource;
+    }
+
+    public ImageResource getIcon() {
+        return iconImage;
     }
 
     public boolean isOpen() {

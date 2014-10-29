@@ -114,7 +114,7 @@ public interface ImageResources extends ClientBundle {
     ImageResource nodeOpen16();
 
     @Source("images/tree/favourite_icon.png")
-    ImageResource favourite();
+    ImageResource favouriteFolder();
     @Source("images/tree/project_icon.png")
     ImageResource project();
     @Source("images/tree/project_portfolio_icon.png")

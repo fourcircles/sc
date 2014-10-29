@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.label;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -53,6 +54,12 @@ public class GradientLabel2 extends Composite implements ArtaHasText{
                 root.remove(gradient);
             }
         }
+    }
+
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        adjustGradient();
     }
 
     public void setFont(String font) {

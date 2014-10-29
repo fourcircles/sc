@@ -52,6 +52,8 @@ import kz.arta.synergy.components.client.input.tags.MultiComboBox;
 import kz.arta.synergy.components.client.input.tags.ObjectChooser;
 import kz.arta.synergy.components.client.input.tags.TagInput;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
+import kz.arta.synergy.components.client.path.Path;
+import kz.arta.synergy.components.client.path.PathItem;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.stack.SingleStack;
@@ -833,6 +835,7 @@ public class ShowCasePanel extends FlowPanel {
                 return getTreePanel();
             }
         });
+
         TreeItem table = tree.addItem(basicComponents, Messages.i18n().tr("Таблица"));
         addTreeItem(table, new LoadPanel(Messages.i18n().tr("Таблица - ряды")) {
             @Override
@@ -851,6 +854,12 @@ public class ShowCasePanel extends FlowPanel {
             @Override
             public Widget getContentWidget() {
                 return getTreeTable();
+            }
+        });
+        addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Путь")) {
+            @Override
+            public Widget getContentWidget() {
+                return getPathPanel();
             }
         });
 
@@ -937,17 +946,17 @@ public class ShowCasePanel extends FlowPanel {
         localTree.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
         localTree.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
 
-        setTreeIcons(localTree.getItems().get(0).getItems().get(0), ImageResources.IMPL.favourite());
+        setTreeIcons(localTree.getItems().get(0).getItems().get(0), ImageResources.IMPL.favouriteFolder());
         setTreeIcons(localTree.getItems().get(0).getItems().get(1), ImageResources.IMPL.project());
         setTreeIcons(localTree.getItems().get(1), ImageResources.IMPL.portfolio());
         setTreeIcons(localTree.getItems().get(2), ImageResources.IMPL.portfolio());
 
         TreeItem deepestItem = getFirstDeepest(localTree);
-        localTree.addItem(getFirstDeepest(localTree), deepestItem.getText() + " " + deepestItem.getText()).setIcon(ImageResources.IMPL.favourite());
+        localTree.addItem(getFirstDeepest(localTree), deepestItem.getText() + " " + deepestItem.getText()).setIcon(ImageResources.IMPL.favouriteFolder());
         deepestItem = getFirstDeepest(localTree);
-        localTree.addItem(getFirstDeepest(localTree), deepestItem.getText() + " " + deepestItem.getText()).setIcon(ImageResources.IMPL.favourite());
+        localTree.addItem(getFirstDeepest(localTree), deepestItem.getText() + " " + deepestItem.getText()).setIcon(ImageResources.IMPL.favouriteFolder());
         deepestItem = getFirstDeepest(localTree);
-        localTree.addItem(getFirstDeepest(localTree), deepestItem.getText() + " " + deepestItem.getText()).setIcon(ImageResources.IMPL.favourite());
+        localTree.addItem(getFirstDeepest(localTree), deepestItem.getText() + " " + deepestItem.getText()).setIcon(ImageResources.IMPL.favouriteFolder());
 
         root.add(localTree);
 
@@ -1146,6 +1155,73 @@ public class ShowCasePanel extends FlowPanel {
         });
 
         return scroll;
+    }
+
+    private Widget getPathPanel() {
+        FlowPanel root = new FlowPanel();
+        final Tree localTree = copyTree(tree);
+        addCodeSample(localTree, Messages.i18n().tr("Дерево"), ShowCase.RESOURCES.tree().getText());
+
+        localTree.getElement().getStyle().setHeight(LOCAL_TREE_SIZE, Style.Unit.PX);
+        localTree.getElement().getStyle().setWidth(LOCAL_TREE_SIZE, Style.Unit.PX);
+        localTree.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
+
+        localTree.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        localTree.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
+
+        for (TreeItem item : localTree.getItems()) {
+            setTreeIcons(item, ImageResources.IMPL.folder());
+        }
+
+        TreeItem deepestItem = getFirstDeepest(localTree);
+        localTree.addItem(getFirstDeepest(localTree), deepestItem.getText() + " " + deepestItem.getText()).setIcon(ImageResources.IMPL.folder());
+        deepestItem = getFirstDeepest(localTree);
+        localTree.addItem(getFirstDeepest(localTree), deepestItem.getText() + " " + deepestItem.getText()).setIcon(ImageResources.IMPL.folder());
+        deepestItem = getFirstDeepest(localTree);
+        localTree.addItem(getFirstDeepest(localTree), deepestItem.getText() + " " + deepestItem.getText()).setIcon(ImageResources.IMPL.folder());
+
+        final Path path = new Path();
+        path.getElement().getStyle().setWidth(800, Style.Unit.PX);
+        path.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        path.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
+        path.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+
+        path.addButtonClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                TreeItem selectedItem = localTree.getSelectedItem();
+                if (selectedItem != null) {
+                    selectedItem.setIcon(ImageResources.IMPL.favouriteFolder());
+                }
+            }
+        });
+
+        localTree.addTreeSelectionEvent(new TreeSelectionEvent.Handler() {
+            @Override
+            public void onTreeSelection(TreeSelectionEvent event) {
+                TreeItem item = event.getTreeItem();
+                List<PathItem> pathItems = new ArrayList<PathItem>();
+
+                do {
+                    ImageResource icon = item.getIcon();
+                    PathItem pathItem = new PathItem(item.getText(), icon);
+                    final TreeItem finalItem = item;
+                    pathItem.addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            finalItem.setSelected(true, true);
+                        }
+                    });
+                    pathItems.add(0, pathItem);
+                    item = item.getParent();
+                } while (item != null);
+                path.setPath(pathItems);
+            }
+        });
+        root.add(path);
+        root.add(localTree);
+
+        return root;
     }
 
     private Widget getTreeTable() {
@@ -2073,6 +2149,30 @@ public class ShowCasePanel extends FlowPanel {
         simpleButtonPanel.add(simpleButton4);
 
         simpleButton4.setContextMenu(menu);
+
+        final FlowPanel path = new FlowPanel();
+        path.setStyleName(SynergyComponents.getResources().cssComponents().path());
+        final PathItem pathItem = new PathItem("mmmmmmmmmmmmmmmmmmmmmmmmmmmmm", ImageResources.IMPL.portfolio());
+        path.add(pathItem);
+        simpleButtonPanel.add(path);
+
+        SimpleButton button1 = new SimpleButton("80px");
+        button1.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                pathItem.setWidth("80px");
+            }
+        });
+        simpleButtonPanel.add(button1);
+
+        SimpleButton button2 = new SimpleButton("increase");
+        button2.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                pathItem.getElement().getStyle().setWidth(pathItem.getOffsetWidth() + 10, Style.Unit.PX);
+            }
+        });
+        simpleButtonPanel.add(button2);
 
         return simpleButtonPanel;
     }

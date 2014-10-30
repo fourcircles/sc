@@ -15,6 +15,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.events.MenuItemFocusEvent;
+import kz.arta.synergy.components.client.menu.events.MouseThresholdEvent;
 import kz.arta.synergy.components.client.util.Selection;
 import kz.arta.synergy.components.client.util.ThickMouseMoveHandler;
 
@@ -78,31 +79,41 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
                 Event.ONMOUSEOUT);
 
         // не регистрируем незначительные дерганья мыши
-        bus.addHandlerToSource(MouseMoveEvent.getType(), this, new ThickMouseMoveHandler() {
+        MouseThresholdEvent.register(bus, this, new MouseThresholdEvent.Handler() {
             @Override
-            public void onMouseMove(MouseMoveEvent event) {
-                if (overThreshold(event)) {
-                    setFocused(true, true);
-                }
+            public void onMouseThreshold(MouseThresholdEvent event) {
+                setFocused(true, true);
             }
         });
 
         // из-за того, что мы не следим за небольшими движениями мыши
         // надо также следить за событием MOUSEOVER, иначе иногда будет некрасиво
-        bus.addHandlerToSource(MouseOverEvent.getType(), this, new MouseOverHandler() {
+//        bus.addHandlerToSource(MouseOverEvent.getType(), this, new MouseOverHandler() {
+//            @Override
+//            public void onMouseOver(MouseOverEvent event) {
+//                setFocused(true, true);
+//            }
+//        });
+        root.addDomHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
                 setFocused(true, true);
             }
-        });
+        }, MouseOverEvent.getType());
 
         // клик по пункту выбирает его
-        bus.addHandlerToSource(ClickEvent.getType(), this, new ClickHandler() {
+//        bus.addHandlerToSource(ClickEvent.getType(), this, new ClickHandler() {
+//            @Override
+//            public void onClick(ClickEvent event) {
+//                setValue(!isSelected(), true);
+//            }
+//        });
+        root.addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 setValue(!isSelected(), true);
             }
-        });
+        }, ClickEvent.getType());
     }
 
     public MenuItem(V value, String text) {
@@ -184,9 +195,12 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
     }
 
 
+
     @Override
     public void fireEvent(GwtEvent<?> event) {
-        bus.fireEventFromSource(event, this);
+        super.fireEvent(event);
+//        if (event.)
+//        bus.fireEventFromSource(event, this);
     }
 
     /**
@@ -194,14 +208,16 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
      */
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Boolean> handler) {
-        return bus.addHandlerToSource(ValueChangeEvent.getType(), this, handler);
+//        return bus.addHandlerToSource(ValueChangeEvent.getType(), this, handler);
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 
     /**
      * Добавляет хендлер на фокусировку
      */
     public HandlerRegistration addFocusHandler(MenuItemFocusEvent.Handler<V> handler) {
-        return bus.addHandlerToSource(MenuItemFocusEvent.TYPE, this, handler);
+        return addHandler(handler, MenuItemFocusEvent.TYPE);
+//        return bus.addHandlerToSource(MenuItemFocusEvent.TYPE, this, handler);
     }
 
     /**

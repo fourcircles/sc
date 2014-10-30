@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.events.MenuItemFocusEvent;
 import kz.arta.synergy.components.client.menu.events.MenuItemSelection;
+import kz.arta.synergy.components.client.menu.events.MouseThresholdEvent;
 import kz.arta.synergy.components.client.util.ThickMouseMoveHandler;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -118,14 +119,20 @@ public abstract class Menu<V> {
         root.sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEOUT);
 
         // этот хэндлер включает события мыши обратно после навигации клавиатурой
-        bus.addHandlerToSource(MouseMoveEvent.getType(), root, new ThickMouseMoveHandler() {
+        MouseThresholdEvent.register(bus, root, new MouseThresholdEvent.Handler() {
             @Override
-            public void onMouseMove(MouseMoveEvent event) {
-                if (overThreshold(event)) {
-                    keyboardNavigation = false;
-                }
+            public void onMouseThreshold(MouseThresholdEvent event) {
+                keyboardNavigation = false;
             }
         });
+//        bus.addHandlerToSource(MouseMoveEvent.getType(), root, new ThickMouseMoveHandler() {
+//            @Override
+//            public void onMouseMove(MouseMoveEvent event) {
+//                if (overThreshold(event.getClientX(), event.getClientY())) {
+//                    keyboardNavigation = false;
+//                }
+//            }
+//        });
 
         bus.addHandlerToSource(MouseOverEvent.getType(), root, new MouseOverHandler() {
             @Override

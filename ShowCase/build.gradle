@@ -34,13 +34,23 @@ dependencies {
     compile(group: 'kz.arta', name: 'synergy-messages', version: '3.0', changing: true)
 }
 
+compileGwt{
+    modules = ['kz.arta.sc3.showcase.ShowCase',
+            'kz.arta.synergy.components.style.ComponentStyle',
+            'kz.arta.synergy.components.SynergyComponents']
+}
+
 gwt {
     gwtVersion="2.6.1";
     minHeapSize = "512M";
     maxHeapSize = "1024M";
 
-    modules 'kz.arta.sc3.showcase.ShowCase'
-
+    modules = ['kz.arta.sc3.showcase.ShowCase',
+               'kz.arta.synergy.components.style.ComponentStyle',
+               'kz.arta.synergy.components.SynergyComponents']
+    devModules = ['kz.arta.sc3.showcase.ShowCase',
+               'kz.arta.synergy.components.style.ComponentStyle',
+               'kz.arta.synergy.components.SynergyComponents']
     superDev {
         useClasspathForSrc = true
         noPrecompile = true
@@ -52,11 +62,11 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
-sonarRunner {
-    sonarProperties {
-	    property "sonar.sources", "src/main/java"
-    }
-}
+//sonarRunner {
+//    sonarProperties {
+//	    property "sonar.sources", "src/main/java"
+//    }
+//}
 
 war {
     ext.env = System.getenv()

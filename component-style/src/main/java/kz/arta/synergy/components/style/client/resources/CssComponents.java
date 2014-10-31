@@ -209,4 +209,6 @@ public interface CssComponents extends CssResource {
     String treeTableItem();
 
     String path();
+
+    String notifier();
 }

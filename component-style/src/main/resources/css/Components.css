@@ -98,6 +98,8 @@
 
 @def searchBG #424b5c;
 
+@def stackPanelMarker1 #c23b3b;
+
 code, pre {
     margin: 0;
     padding: 0;
@@ -2235,3 +2237,11 @@ p {
     border-bottom-left-radius: 0;
 }
 
+.notifier {
+    background-color: stackPanelMarker1;
+    border-radius: 12px;
+    padding: 0 4px;
+    color: white;
+    font-size: 13px;
+    font-family: DroidSans;
+}

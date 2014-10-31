@@ -24,6 +24,7 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import kz.arta.sc3.showcase.client.resources.Messages;
 import kz.arta.synergy.components.client.ComboBox;
+import kz.arta.synergy.components.client.Indicator;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.*;
@@ -2150,30 +2151,6 @@ public class ShowCasePanel extends FlowPanel {
         simpleButtonPanel.add(simpleButton4);
 
         simpleButton4.setContextMenu(menu);
-
-        final FlowPanel path = new FlowPanel();
-        path.setStyleName(SynergyComponents.getResources().cssComponents().path());
-        final PathItem pathItem = new PathItem("mmmmmmmmmmmmmmmmmmmmmmmmmmmmm", ImageResources.IMPL.portfolio());
-        path.add(pathItem);
-        simpleButtonPanel.add(path);
-
-        SimpleButton button1 = new SimpleButton("80px");
-        button1.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                pathItem.setWidth("80px");
-            }
-        });
-        simpleButtonPanel.add(button1);
-
-        SimpleButton button2 = new SimpleButton("increase");
-        button2.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                pathItem.getElement().getStyle().setWidth(pathItem.getOffsetWidth() + 10, Style.Unit.PX);
-            }
-        });
-        simpleButtonPanel.add(button2);
 
         return simpleButtonPanel;
     }

@@ -10,15 +10,15 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.menu.events.MenuItemFocusEvent;
 import kz.arta.synergy.components.client.menu.events.MenuItemSelection;
-import kz.arta.synergy.components.client.menu.events.MouseThresholdEvent;
-import kz.arta.synergy.components.client.util.ThickMouseMoveHandler;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.ArrayList;
@@ -33,8 +33,9 @@ import java.util.Set;
  *
  * Базовый класс для меню, выпадающего списка и мультисписка (можно выбирать несколько значений).
  */
-public abstract class Menu<V> {
+public abstract class Menu<V> extends Composite implements HasMouseMoveHandlers {
     private static final String MIN_WIDTH_PROPERTY = "minWidth";
+    private static final int DELAY = 500;
 
     protected EventBus bus = new SimpleEventBus();
     /**
@@ -89,13 +90,15 @@ public abstract class Menu<V> {
     private boolean leftRightNavigation = true;
     protected int minWidth = Integer.MIN_VALUE;
 
+    /**
+     * Таймер включения событий mousemove. При навигации клавиатурой они отключаются
+     * для того, чтобы пункт меню под мышью не фокусировался.
+     */
+    private Timer keyboardOn;
+
     public Menu() {
-        root = new FlowPanel() {
-            @Override
-            public void fireEvent(GwtEvent<?> event) {
-                bus.fireEventFromSource(event, this);
-            }
-        };
+        root = new FlowPanel();
+        initWidget(root);
 
         items = new ArrayList<MenuItem<V>>();
 
@@ -104,6 +107,7 @@ public abstract class Menu<V> {
             protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
                 Menu.this.onPreview(event);
             }
+
             @Override
             public void hide(boolean auto) {
                 if (resizeRegistration != null) {
@@ -116,32 +120,16 @@ public abstract class Menu<V> {
             }
         };
 
-        root.sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEOUT);
+        sinkEvents(Event.ONMOUSEMOVE | Event.ONMOUSEOVER | Event.ONMOUSEOUT);
 
-        // этот хэндлер включает события мыши обратно после навигации клавиатурой
-        MouseThresholdEvent.register(bus, root, new MouseThresholdEvent.Handler() {
-            @Override
-            public void onMouseThreshold(MouseThresholdEvent event) {
-                keyboardNavigation = false;
-            }
-        });
-//        bus.addHandlerToSource(MouseMoveEvent.getType(), root, new ThickMouseMoveHandler() {
-//            @Override
-//            public void onMouseMove(MouseMoveEvent event) {
-//                if (overThreshold(event.getClientX(), event.getClientY())) {
-//                    keyboardNavigation = false;
-//                }
-//            }
-//        });
-
-        bus.addHandlerToSource(MouseOverEvent.getType(), root, new MouseOverHandler() {
+        bus.addHandlerToSource(MouseOverEvent.getType(), this, new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
                 mouseOver = true;
             }
         });
 
-        bus.addHandlerToSource(MouseOutEvent.getType(), root, new MouseOutHandler() {
+        bus.addHandlerToSource(MouseOutEvent.getType(), this, new MouseOutHandler() {
             @Override
             public void onMouseOut(MouseOutEvent event) {
                 mouseOver = false;
@@ -158,7 +146,14 @@ public abstract class Menu<V> {
             }
         };
 
+        keyboardOn = new Timer() {
+            @Override
+            public void run() {
+                keyboardNavigation = false;
+            }
+        };
     }
+
 
     /**
      * Убирает состояние фокусирования у всех элементов
@@ -198,7 +193,7 @@ public abstract class Menu<V> {
     private void onPreview(Event.NativePreviewEvent event) {
         Event nativeEvent = Event.as(event.getNativeEvent());
 
-        if (keyboardNavigation && nativeEvent.getTypeInt() == Event.ONMOUSEOVER) {
+        if (event.getTypeInt() == Event.ONMOUSEMOVE && keyboardNavigation) {
             event.cancel();
         }
 
@@ -249,6 +244,7 @@ public abstract class Menu<V> {
                 event.cancel();
             }
             focusLast();
+            keyboardOn.schedule(DELAY);
         }
     }
 
@@ -259,17 +255,20 @@ public abstract class Menu<V> {
                 event.cancel();
             }
             focusFirst();
+            keyboardOn.schedule(DELAY);
         }
     }
 
     void keyUp() {
         keyboardNavigation = true;
         focusPrevious();
+        keyboardOn.schedule(DELAY);
     }
 
     void keyDown() {
         keyboardNavigation = true;
         focusNext();
+        keyboardOn.schedule(DELAY);
     }
 
     /**
@@ -391,7 +390,7 @@ public abstract class Menu<V> {
         item.addFocusHandler(new MenuItemFocusEvent.Handler<V>() {
             @Override
             public void onFocus(MenuItemFocusEvent<V> event) {
-                noFocused(event.getItem());
+                noFocused(item);
                 focusedIndex = items.indexOf(item);
             }
         });
@@ -525,8 +524,12 @@ public abstract class Menu<V> {
         return bus.addHandlerToSource(MenuItemSelection.TYPE, this, handler);
     }
 
-    protected void fireEvent(GwtEvent<?> event) {
-        bus.fireEventFromSource(event, this);
+    public void fireEvent(GwtEvent<?> event) {
+        if (event instanceof MouseMoveEvent) {
+            super.fireEvent(event);
+        } else {
+            bus.fireEventFromSource(event, this);
+        }
     }
 
     public void setLeftRightNavigation(boolean leftRightNavigation) {
@@ -539,5 +542,10 @@ public abstract class Menu<V> {
 
     public void removeStyleName(String styleName) {
         popup.removeStyleName(styleName);
+    }
+
+    @Override
+    public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler) {
+        return bus.addHandlerToSource(MouseMoveEvent.getType(), this, handler);
     }
 }

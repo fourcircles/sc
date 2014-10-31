@@ -50,6 +50,16 @@ public class TestUtils {
         return createMouseMoveEvent(moveEvent);
     }
 
+    public static GwtEvent<MouseMoveHandler> createMouseMoveEvent(Object source,
+                                                                  final int x,
+                                                                  final int y) {
+        final MouseMoveEvent moveEvent = mock(MouseMoveEvent.class);
+        when(moveEvent.getClientX()).thenReturn(x);
+        when(moveEvent.getClientY()).thenReturn(y);
+        when(moveEvent.getSource()).thenReturn(source);
+        return createMouseMoveEvent(moveEvent);
+    }
+
     /**
      * Создает мок события клика мыши.
      * @param clickEvent мок события клика, который передается хэндлерам

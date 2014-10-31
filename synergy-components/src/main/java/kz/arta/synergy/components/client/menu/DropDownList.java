@@ -46,7 +46,7 @@ public class DropDownList<V> extends Menu<V> {
         super();
 
         scroll = new ArtaScrollPanel();
-        scroll.setWidget(root);
+        scroll.setWidget(this);
         popup.setWidget(scroll);
 
         popup.setStyleName(SynergyComponents.getResources().cssComponents().contextMenu());

@@ -1,7 +1,9 @@
 package kz.arta.synergy.components.client.menu;
 
+import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -69,17 +71,6 @@ public class MenuItemTest {
     }
 
     /**
-     * Движение мыши больше лимита - фокус есть.
-     */
-    @Test
-    public void testThickMove() {
-        item.fireEvent(TestUtils.createMouseMoveEvent(10, 10));
-        item.fireEvent(TestUtils.createMouseMoveEvent(30, 30));
-
-        assertTrue(item.isFocused());
-    }
-
-    /**
      * Небольшое движение мыши - фокуса нет.
      */
     @Test
@@ -97,12 +88,6 @@ public class MenuItemTest {
 
         item.fireEvent(TestUtils.createClickEvent(null));
         assertEquals(false, item.getValue());
-    }
-
-    @Test
-    public void testMouseOver() {
-        item.fireEvent(TestUtils.createMouseOverEvent(null));
-        assertTrue(item.isFocused());
     }
 
     @Test

@@ -17,7 +17,7 @@ public class ContextMenu extends Menu<Command> {
 
     public ContextMenu() {
         super();
-        popup.setWidget(root);
+        popup.setWidget(this);
 
         popup.setStyleName(SynergyComponents.getResources().cssComponents().contextMenu());
         selectionHandler = new ValueChangeHandler<Boolean>() {

@@ -174,7 +174,7 @@ public class MenuTest {
         items.get(1).setFocused(true, true);
         assertTrue(menu.getFocusedItem() != null);
 
-        menu.root.fireEvent(TestUtils.createMouseOutEvent(menu.root));
+        menu.fireEvent(TestUtils.createMouseOutEvent(menu));
 
         assertTrue(menu.getFocusedItem() == null);
     }

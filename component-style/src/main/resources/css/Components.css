@@ -99,6 +99,8 @@
 @def searchBG #424b5c;
 
 @def stackPanelMarker1 #c23b3b;
+@def progressOptional #ffe465;
+@def progressNormal #b3e062;
 
 code, pre {
     margin: 0;
@@ -2238,10 +2240,106 @@ p {
 }
 
 .notifier {
+    display: inline-block;
     background-color: stackPanelMarker1;
     border-radius: 12px;
     padding: 0 4px;
     color: white;
     font-size: 13px;
     font-family: DroidSans;
+}
+
+.slider {
+    min-width: 100px;
+    height: 6px;
+    position: relative;
+    background-color: buttonBG;
+    border-radius: 3px;
+}
+
+.sliderLine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 3px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.slider .sliderLine:first-child {
+    background-color: progressOptional;
+}
+
+.slider .sliderLine + .sliderLine {
+    background-color: progressNormal;
+}
+.slider.decline .sliderLine + .sliderLine {
+    background-color: declineButtonBG2;
+}
+
+
+.sliderCircle {
+    position: absolute;
+    cursor:pointer;
+}
+.sliderCircle:before {
+    position: absolute;
+    content: " ";
+    height: 0;
+    width: 0;
+    top: -6px;
+
+    border: 9px solid white;
+    border-radius: 9px;
+}
+.sliderCircle:after {
+    position: absolute;
+    content: " ";
+    height: 0;
+    width: 0;
+    top: -4px;
+    left: 2px;
+
+    border: 7px solid progressNormal;
+    border-radius: 7px;
+}
+.slider.decline .sliderCircle:after {
+    border-color: declineButtonBG2;
+}
+
+.progressBar {
+    position: relative;
+    min-width: 102px;
+    height: 20px;
+    background-color: buttonBG;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 2px;
+}
+
+.progressBarLine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+}
+.progressBar .progressBarLine:first-child {
+    background-color: progressOptional;
+}
+
+.progressBar .progressBarLine + .progressBarLine {
+    background-color: progressNormal;
+}
+.progressBar.decline .progressBarLine + .progressBarLine {
+    background-color: declineButtonBG2;
+}
+
+.progressBar span {
+    position: absolute;
+    display: inline-block;
+    text-align: center;
+    left: 0;
+    top: 2px;
+    width: 100%;
 }

@@ -211,4 +211,10 @@ public interface CssComponents extends CssResource {
     String path();
 
     String notifier();
+    String slider();
+    String sliderCircle();
+    String sliderLine();
+
+    String progressBar();
+    String progressBarLine();
 }

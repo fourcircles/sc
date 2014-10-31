@@ -23,8 +23,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import kz.arta.sc3.showcase.client.resources.Messages;
-import kz.arta.synergy.components.client.ComboBox;
-import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.*;
 import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.*;
 import kz.arta.synergy.components.client.checkbox.ArtaCheckBox;
@@ -860,6 +859,12 @@ public class ShowCasePanel extends FlowPanel {
             @Override
             public Widget getContentWidget() {
                 return getPathPanel();
+            }
+        });
+        addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Индикаторы и слайдеры")) {
+            @Override
+            public Widget getContentWidget() {
+                return getIndicatorsPanel();
             }
         });
 
@@ -2152,6 +2157,97 @@ public class ShowCasePanel extends FlowPanel {
         simpleButton4.setContextMenu(menu);
 
         return simpleButtonPanel;
+    }
+
+    private Widget getIndicatorsPanel() {
+        FlowPanel root = new FlowPanel();
+
+        final Slider slider1 = new Slider(true);
+        slider1.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
+        slider1.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        slider1.getElement().getStyle().setWidth(120, Style.Unit.PX);
+        slider1.getElement().getStyle().setMarginTop(25, Style.Unit.PX);
+        slider1.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        root.add(slider1);
+
+        final Indicator indicator1 = new Indicator(" ");
+        indicator1.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
+        indicator1.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
+        indicator1.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        root.add(indicator1);
+
+        root.add(new Br());
+
+        final ProgressBar progress1 = new ProgressBar(true);
+        progress1.getElement().getStyle().setWidth(150, Style.Unit.PX);
+        progress1.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
+        progress1.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        progress1.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        root.add(progress1);
+
+        slider1.addValueChangeHandler(new ValueChangeHandler<Double>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Double> event) {
+                indicator1.setText(Integer.toString((int) (event.getValue() * 100)));
+            }
+        });
+        slider1.addCircleMouseUpHandler(new MouseUpHandler() {
+            @Override
+            public void onMouseUp(MouseUpEvent event) {
+                progress1.setValue(slider1.getValue());
+            }
+        });
+
+        slider1.setOptionalValue(0.5);
+        slider1.setValue(0.66);
+        progress1.setOptionalValue(0.5);
+        progress1.setOptionalValue(0.66);
+
+        root.add(new Br());
+
+        final Slider slider2 = new Slider(false);
+        slider2.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
+        slider2.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        slider2.getElement().getStyle().setWidth(120, Style.Unit.PX);
+        slider2.getElement().getStyle().setMarginTop(25, Style.Unit.PX);
+        slider2.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+
+        root.add(slider2);
+
+        final Indicator indicator2 = new Indicator(" ");
+        indicator2.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
+        indicator2.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
+        indicator2.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        root.add(indicator2);
+
+
+        root.add(new Br());
+        final ProgressBar progress2 = new ProgressBar(false);
+        progress2.getElement().getStyle().setWidth(150, Style.Unit.PX);
+        progress2.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
+        progress2.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        progress2.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        root.add(progress2);
+
+        slider2.addValueChangeHandler(new ValueChangeHandler<Double>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Double> event) {
+                indicator2.setText(Integer.toString((int) (event.getValue() * 100)));
+            }
+        });
+        slider2.addCircleMouseUpHandler(new MouseUpHandler() {
+            @Override
+            public void onMouseUp(MouseUpEvent event) {
+                progress2.setValue(slider2.getValue());
+            }
+        });
+
+        slider2.setOptionalValue(0.66);
+        slider2.setValue(0.33);
+        progress2.setOptionalValue(0.66);
+        progress2.setValue(0.33);
+
+        return root;
     }
 
     private Widget getCommentsPanel() {

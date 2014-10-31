@@ -97,6 +97,8 @@ public class Constants {
 
     public static final int LINE_HEIGHT = 19;
 
+    public static final int SLIDER_OUTERCIRCLE_RADIUS = 9;
+
     public static String borderWidth() {
         return BORDER_WIDTH + "px";
     }

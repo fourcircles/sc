@@ -374,7 +374,7 @@ public class ShowCasePanel extends FlowPanel {
         }
     }
 
-    private void addCodeSample(final Widget widget, final String name, final String text) {
+    private void addCodeSample(final Widget widget, final String name, final String sampleCode) {
         if (codeOpenButton == null) {
             codeOpenButton = createCodeOpenButton();
             RootPanel.get().add(codeOpenButton);
@@ -397,7 +397,7 @@ public class ShowCasePanel extends FlowPanel {
             public void onMouseOver(MouseOverEvent event) {
                 codeSampleTimer.cancel();
                 componentName = name;
-                codeText = text;
+                codeText = sampleCode;
                 Style widgetStyle = codeOpenButton.getElement().getStyle();
                 widgetStyle.setTop(widget.getAbsoluteTop(), Style.Unit.PX);
                 widgetStyle.setLeft(widget.getAbsoluteLeft() + widget.getOffsetWidth() + 3, Style.Unit.PX);
@@ -2163,6 +2163,7 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel root = new FlowPanel();
 
         final Slider slider1 = new Slider(true);
+        addCodeSample(slider1, Messages.i18n().tr("Слайдер"), ShowCase.RESOURCES.slider().getText());
         slider1.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         slider1.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         slider1.getElement().getStyle().setWidth(120, Style.Unit.PX);
@@ -2206,6 +2207,7 @@ public class ShowCasePanel extends FlowPanel {
         root.add(new Br());
 
         final Slider slider2 = new Slider(false);
+        addCodeSample(slider2, Messages.i18n().tr("Слайдер (красный)"), ShowCase.RESOURCES.sliderRed().getText());
         slider2.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         slider2.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         slider2.getElement().getStyle().setWidth(120, Style.Unit.PX);

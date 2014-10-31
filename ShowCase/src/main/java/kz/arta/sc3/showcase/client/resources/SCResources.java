@@ -141,4 +141,9 @@ public interface SCResources extends ClientBundle {
     @ClientBundle.Source("java-samples/date/time-input.java")
     TextResource timeInput();
 
+    @ClientBundle.Source("java-samples/slider.java")
+    TextResource slider();
+    @ClientBundle.Source("java-samples/slider-red.java")
+    TextResource sliderRed();
+
 }

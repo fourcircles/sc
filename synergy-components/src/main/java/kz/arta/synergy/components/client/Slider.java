@@ -27,7 +27,7 @@ public class Slider extends Composite implements HasValue<Double> {
     /**
      * Перетаскивается ли круг. Если нет -- не реагируем на mouseover на нем.
      */
-    private boolean dragging;
+    boolean dragging;
 
     /**
      * Координата клика по кругу при начале перетаскивания.
@@ -47,7 +47,7 @@ public class Slider extends Composite implements HasValue<Double> {
     /**
      * Линия значения
      */
-    private final SimplePanel valueLine;
+    SimplePanel valueLine;
 
     /**
      * Линия опционального значения
@@ -116,7 +116,7 @@ public class Slider extends Composite implements HasValue<Double> {
     /**
      * Клик
      */
-    private void click(ClickEvent event) {
+    void click(ClickEvent event) {
         int x = event.getClientX() - getAbsoluteLeft();
         setValue((double) x / getOffsetWidth(), true);
     }
@@ -150,7 +150,7 @@ public class Slider extends Composite implements HasValue<Double> {
     /**
      * mousemove при перетаскивании круга
      */
-    private void circleMouseMove(MouseMoveEvent event) {
+    void circleMouseMove(MouseMoveEvent event) {
         if (!dragging) {
             return;
         }
@@ -177,6 +177,7 @@ public class Slider extends Composite implements HasValue<Double> {
         trueValue = Math.min(trueValue, 1);
 
         this.value = trueValue;
+
         setCirclePosition(this.value);
         valueLine.getElement().getStyle().setWidth(this.value * 100, Style.Unit.PCT);
 
@@ -206,9 +207,7 @@ public class Slider extends Composite implements HasValue<Double> {
      * @param value значение
      */
     private void setCirclePosition(double value) {
-        double sliderWidth = Utils.impl().getPreciseWidth(getElement());
-
-        circle.getElement().getStyle().setLeft(sliderWidth * value - Constants.SLIDER_OUTERCIRCLE_RADIUS, Style.Unit.PX);
+        circle.getElement().getStyle().setLeft(getOffsetWidth() * value - Constants.SLIDER_OUTERCIRCLE_RADIUS, Style.Unit.PX);
     }
 
     @Override

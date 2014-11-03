@@ -684,8 +684,11 @@ public class ShowCasePanel extends FlowPanel {
         root.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         SimpleButton addTab = new SimpleButton(Messages.i18n().tr("Добавить вкладку"));
-
         root.add(addTab);
+
+        SimpleButton addNonclosingTab = new SimpleButton(Messages.i18n().tr("Добавить незакрывающуюся вкладку"));
+        addNonclosingTab.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        root.add(addNonclosingTab);
 
         final TabPanel localTabPanel = new TabPanel();
         addCodeSample(localTabPanel, Messages.i18n().tr("Панель вкладок"), ShowCase.RESOURCES.tabs().getText());
@@ -709,16 +712,27 @@ public class ShowCasePanel extends FlowPanel {
             }
         });
 
+        addNonclosingTab.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                addSimpleTab(localTabPanel, Messages.i18n().tr("Вкладка"), false);
+            }
+        });
+
         return root;
     }
 
     private void addSimpleTab(TabPanel tabPanel, String text) {
+        addSimpleTab(tabPanel, text, true);
+    }
+
+    private void addSimpleTab(TabPanel tabPanel, String text, boolean closable) {
         Label label = new Label(text);
         label.setStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
         SimplePanel panel = new SimplePanel(label);
         panel.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
-        tabPanel.addTab(text, panel);
+        tabPanel.addTab(text, panel, closable);
     }
 
     private abstract class LoadPanel implements Command {

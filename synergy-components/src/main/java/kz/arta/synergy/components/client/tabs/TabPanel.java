@@ -77,6 +77,15 @@ public class TabPanel extends Composite implements HasTabHandlers {
     }
 
     /**
+     * {@link #addTab(String, com.google.gwt.user.client.ui.IsWidget)}
+     * @param closable может ли пользователь закрыть эту вкладку
+     */
+    public void addTab(String text, IsWidget content, boolean closable) {
+        Tab tab = tabs.addTab(text, content);
+        tab.setHasCloseButton(closable);
+    }
+
+    /**
      * Выбрать вкладку с заданным содержимым
      * @param content содержимое
      */

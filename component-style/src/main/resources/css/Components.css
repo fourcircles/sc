@@ -2343,3 +2343,41 @@ p {
     top: 2px;
     width: 100%;
 }
+
+.filesPanel {
+    position: relative;
+    border: 1px solid buttonBorder;
+}
+
+.filesPanel .buttonSimple {
+    position: absolute;
+    border-radius: 0;
+}
+.filesPanel input + .buttonSimple {
+    left: -1px;
+    top: -1px;
+    right: 30px;
+}
+.filesPanel .buttonSimple + .buttonSimple {
+    right: -1px;
+    top: -1px;
+}
+
+.file {
+    white-space: nowrap;
+}
+.file > * {
+    vertical-align: top;
+}
+.file img {
+    margin-top: 1px;
+    margin-right: 12px;
+}
+.file + .file {
+    margin-top: 13px;
+}
+
+.files {
+    color: textColor1;
+    padding: 16px;
+}

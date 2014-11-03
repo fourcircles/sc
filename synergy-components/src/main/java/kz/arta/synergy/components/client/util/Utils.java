@@ -100,4 +100,9 @@ public class Utils {
             return _link.outerHTML;
         });
     }-*/;
+
+    public native void click(Element element) /*-{
+        element.click();
+    }-*/;
+
 }

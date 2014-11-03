@@ -33,6 +33,7 @@ import kz.arta.synergy.components.client.comments.*;
 import kz.arta.synergy.components.client.dialog.Dialog;
 import kz.arta.synergy.components.client.dialog.DialogSimple;
 import kz.arta.synergy.components.client.input.ArtaTextArea;
+import kz.arta.synergy.components.client.input.FilesPanel;
 import kz.arta.synergy.components.client.input.SearchResultInput;
 import kz.arta.synergy.components.client.input.TextInput;
 import kz.arta.synergy.components.client.input.date.ArtaDatePicker;
@@ -42,6 +43,7 @@ import kz.arta.synergy.components.client.input.date.TimeInput;
 import kz.arta.synergy.components.client.input.date.repeat.FullRepeatChooser;
 import kz.arta.synergy.components.client.input.date.repeat.RepeatChooser;
 import kz.arta.synergy.components.client.input.date.repeat.RepeatDate;
+import kz.arta.synergy.components.client.input.events.NewFilesEvent;
 import kz.arta.synergy.components.client.input.number.*;
 import kz.arta.synergy.components.client.input.tags.MultiComboBox;
 import kz.arta.synergy.components.client.input.tags.ObjectChooser;
@@ -879,6 +881,12 @@ public class ShowCasePanel extends FlowPanel {
             @Override
             public Widget getContentWidget() {
                 return getCommentsPanel();
+            }
+        });
+        addTreeItem(complexComponents, new LoadPanel(Messages.i18n().tr("Панель файлов")) {
+            @Override
+            public Widget getContentWidget() {
+                return getFilesPanelPanel();
             }
         });
 
@@ -2157,6 +2165,27 @@ public class ShowCasePanel extends FlowPanel {
         simpleButton4.setContextMenu(menu);
 
         return simpleButtonPanel;
+    }
+
+    /**
+     * @return панель панели файлов
+     */
+    private Widget getFilesPanelPanel() {
+        FlowPanel root = new FlowPanel();
+
+        FilesPanel files = new FilesPanel();
+        files.getElement().getStyle().setWidth(400, Style.Unit.PX);
+        files.getElement().getStyle().setHeight(400, Style.Unit.PX);
+        root.add(files);
+
+        files.addNewFilesHandler(new NewFilesEvent.Handler() {
+            @Override
+            public void onNewFiles(NewFilesEvent event) {
+                System.out.println("new files");
+            }
+        });
+
+        return root;
     }
 
     private Widget getIndicatorsPanel() {

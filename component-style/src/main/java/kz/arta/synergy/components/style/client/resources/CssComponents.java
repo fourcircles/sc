@@ -217,4 +217,8 @@ public interface CssComponents extends CssResource {
 
     String progressBar();
     String progressBarLine();
+
+    String filesPanel();
+    String file();
+    String files();
 }

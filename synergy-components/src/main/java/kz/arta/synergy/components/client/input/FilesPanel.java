@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.input;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -62,7 +63,7 @@ public class FilesPanel extends Composite {
         root.setStyleName(SynergyComponents.getResources().cssComponents().filesPanel());
         root.addStyleName(SynergyComponents.getResources().cssComponents().mainText());
 
-        upload = new FileUpload();
+        upload = GWT.create(FileUpload.class);
         upload.getElement().getStyle().setDisplay(Style.Display.NONE);
         upload.getElement().setAttribute("multiple", "true");
         root.add(upload);

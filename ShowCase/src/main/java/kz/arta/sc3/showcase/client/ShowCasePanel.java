@@ -2188,6 +2188,8 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel root = new FlowPanel();
 
         FilesPanel files = new FilesPanel();
+        files.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        files.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
         files.getElement().getStyle().setWidth(400, Style.Unit.PX);
         files.getElement().getStyle().setHeight(400, Style.Unit.PX);
         root.add(files);

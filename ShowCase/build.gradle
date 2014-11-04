@@ -34,39 +34,16 @@ dependencies {
     compile(group: 'kz.arta', name: 'synergy-messages', version: '3.0', changing: true)
 }
 
-compileGwt{
-    modules = ['kz.arta.sc3.showcase.ShowCase',
-            'kz.arta.synergy.components.style.ComponentStyle',
-            'kz.arta.synergy.components.SynergyComponents']
-}
-
 gwt {
     gwtVersion="2.6.1";
     minHeapSize = "512M";
     maxHeapSize = "1024M";
 
-    modules = ['kz.arta.sc3.showcase.ShowCase',
-               'kz.arta.synergy.components.style.ComponentStyle',
-               'kz.arta.synergy.components.SynergyComponents']
-    devModules = ['kz.arta.sc3.showcase.ShowCase',
-               'kz.arta.synergy.components.style.ComponentStyle',
-               'kz.arta.synergy.components.SynergyComponents']
-    superDev {
-        useClasspathForSrc = true
-        noPrecompile = true
-    }
+    modules = ['kz.arta.sc3.showcase.ShowCase']
+    src = files('src/main/java', 'build/resources/main',
+            '../synergy-components/src/main/java', '../synergy-components/build/resources/main',
+            '../component-style/src/main/java', '../component-style/build/resources/main')
 }
-
-configurations.all {
-    // check for updates every build
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
-//sonarRunner {
-//    sonarProperties {
-//	    property "sonar.sources", "src/main/java"
-//    }
-//}
 
 war {
     ext.env = System.getenv()
@@ -96,4 +73,8 @@ draftWar {
                                        version    : ant.properties[ext.buildNumber]
         ])
     }
+}
+
+task show << {
+    println gwtSuperDev.src.getFiles()
 }

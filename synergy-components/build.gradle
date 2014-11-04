@@ -34,10 +34,6 @@ jar {
     from 'src/main/java'
 }
 
-configurations.all {
-    // check for updates every build
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
 dependencies {
     compile(group: 'kz.arta', name: 'synergy-messages', version: '3.0', changing: true)
 }

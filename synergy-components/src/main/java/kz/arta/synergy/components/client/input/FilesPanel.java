@@ -140,7 +140,7 @@ public class FilesPanel extends Composite {
     /**
      * Действия при выборе новых файлов пользователем
      */
-    private void filesSelected() {
+    void filesSelected() {
         boolean newFiles = false;
         for (String fileName : getSelectedFiles()) {
             if (!addedFiles.contains(fileName)) {
@@ -164,11 +164,12 @@ public class FilesPanel extends Composite {
         FlowPanel filePanel = new FlowPanel();
         filePanel.setStyleName(SynergyComponents.getResources().cssComponents().file());
 
-        Image icon = new Image();
+        // пока что иконка всегда одинаковая
+        Image icon = GWT.create(Image.class);
         icon.setResource(ImageResources.IMPL.folder());
         filePanel.add(icon);
 
-        InlineLabel fileNameElement = new InlineLabel();
+        InlineLabel fileNameElement = GWT.create(InlineLabel.class);
         fileNameElement.setText(fileName);
         filePanel.add(fileNameElement);
 
@@ -180,18 +181,18 @@ public class FilesPanel extends Composite {
      * @return непосредственное имя файла без пути
      */
     @SuppressWarnings("NonJREEmulationClassesInClientCode")
-    private String getFileName(String fullName) {
+    String getFileName(String fullName) {
         if (fullName.contains(":")) {
-            return fullName.substring(fullName.lastIndexOf("/") + 1);
-        } else {
             return fullName.substring(fullName.lastIndexOf("\\") + 1);
+        } else {
+            return fullName.substring(fullName.lastIndexOf("/") + 1);
         }
     }
 
     /**
      * @return выбранные пользователем файлы
      */
-    private List<String> getSelectedFiles() {
+    List<String> getSelectedFiles() {
         if (Navigator.isIE()) {
             return Arrays.asList(getFileName(upload.getFilename()));
         } else {

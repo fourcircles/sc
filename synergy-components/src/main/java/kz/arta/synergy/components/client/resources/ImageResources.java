@@ -183,4 +183,12 @@ public interface ImageResources extends ClientBundle {
     @ClientBundle.Source("images/checkbox/checkbox_on_disabled.png")
     ImageResource checkboxOnDisabled();
 
+    @ClientBundle.Source("images/notifications/failure.png")
+    ImageResource notificationFailure();
+    @ClientBundle.Source("images/notifications/question.png")
+    ImageResource notificationQuestion();
+    @ClientBundle.Source("images/notifications/yellow_question.png")
+    ImageResource notificationYellowQuestion();
+    @ClientBundle.Source("images/notifications/success.png")
+    ImageResource notificationSuccess();
 }

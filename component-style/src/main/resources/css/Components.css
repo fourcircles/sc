@@ -102,6 +102,11 @@
 @def progressOptional #ffe465;
 @def progressNormal #b3e062;
 
+@def positiveColor #729b28;
+@def negativeColor #a33c3c;
+@def warningColor #ac9733;
+
+
 code, pre {
     margin: 0;
     padding: 0;
@@ -2380,4 +2385,62 @@ p {
 .files {
     color: textColor1;
     padding: 16px;
+}
+
+@eval notificationOffset kz.arta.synergy.components.style.client.Constants.notificationOffset();
+@eval notificationIconSize kz.arta.synergy.components.style.client.Constants.notificationIconSize();
+.notification {
+    position: relative;
+    max-width: 400px;
+    padding: notificationOffset;
+
+    border: 1px solid buttonBorder;
+    border-radius: 4px;
+    color: stackPanelText2;
+    box-shadow: 2px 2px 5px -1px rgba(0, 0, 0, 0.15);
+    background-color: white;
+}
+.notification img {
+    height: notificationIconSize;
+    width: notificationIconSize;
+    vertical-align: top;
+}
+
+.notification .notificationText {
+    display: inline-block;
+    max-width: 350px;
+    margin-left: notificationOffset;
+    vertical-align: top;
+    word-break: break-word;
+}
+.notificationText ul {
+    margin: 0;
+    padding: 0;
+    list-style-position: inside;
+}
+.notification span {
+    word-break: break-word;
+}
+
+.notification.success {
+    color: positiveColor;
+}
+.notification.warning {
+    color: warningColor;
+}
+.notification.failure {
+    color: negativeColor;
+}
+.notification .approveButton,
+.notification .declineButton,
+.notification .buttonSimple {
+    min-width: 111px;
+    width: 111px;
+}
+
+.notification .declineButton {
+    margin-left: notificationOffset;
+}
+.notification .buttonSimple {
+    margin-left: notificationOffset;
 }

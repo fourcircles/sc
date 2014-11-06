@@ -880,7 +880,7 @@ public class ShowCasePanel extends FlowPanel {
         addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Индикаторы и слайдеры")) {
             @Override
             public Widget getContentWidget() {
-                return getIndicatorsPanel();
+                return getSlidersPanel();
             }
         });
 
@@ -903,6 +903,13 @@ public class ShowCasePanel extends FlowPanel {
                 return getFilesPanelPanel();
             }
         });
+        firstTab = addTreeItem(complexComponents, new LoadPanel(Messages.i18n().tr("Уведомления")) {
+            @Override
+            public Widget getContentWidget() {
+                return getNotificationsPanel();
+            }
+        });
+
 
         TreeItem shell = tree.addItem(Messages.i18n().tr("Оболочка интерфейса"));
         addTreeItem(shell, new LoadPanel(Messages.i18n().tr("Диалог без кнопок")) {
@@ -2181,6 +2188,172 @@ public class ShowCasePanel extends FlowPanel {
         return simpleButtonPanel;
     }
 
+
+    private int notificationsDelay = 1000;
+
+    private ClickHandler createClickHandlerForNotification(final Notification notification, final ArtaCheckBox checkBox) {
+        return new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (notification.isShowing()) {
+                    notification.hide();
+                } else {
+                    notification.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+                        @Override
+                        public void setPosition(int offsetWidth, int offsetHeight) {
+                            int left = (Window.getClientWidth() - offsetWidth) / 2;
+                            notification.setPopupPosition(left, 40);
+                        }
+                    });
+                }
+
+                if (checkBox.getValue()) {
+                    new Timer() {
+                        @Override
+                        public void run() {
+                            notification.hide();
+                        }
+                    }.schedule(notificationsDelay);
+                }
+            }
+        };
+    }
+
+    private ClickHandler createClickHandlerForNotification(final Notification notification, final boolean hide) {
+        return new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (notification.isShowing()) {
+                    notification.hide();
+                } else {
+                    notification.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+                        @Override
+                        public void setPosition(int offsetWidth, int offsetHeight) {
+                            int left = (Window.getClientWidth() - offsetWidth) / 2;
+                            notification.setPopupPosition(left, 40);
+                        }
+                    });
+                }
+
+                if (hide) {
+                    new Timer() {
+                        @Override
+                        public void run() {
+                            notification.hide();
+                        }
+                    }.schedule(notificationsDelay);
+                }
+            }
+        };
+    }
+
+    private Widget getNotificationsPanel() {
+        FlowPanel root = new FlowPanel();
+        root.addStyleName(SynergyComponents.getResources().cssComponents().mainText());
+
+        final ArtaCheckBox hideCheckbox = new ArtaCheckBox();
+        hideCheckbox.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        hideCheckbox.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
+        hideCheckbox.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        hideCheckbox.setValue(true, false);
+        final Label hideLabel = new Label(Messages.i18n().tr("Скрывать ли уведомления:"));
+        hideLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        hideLabel.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
+        hideLabel.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+        final Label delayLabel = new Label("Delay: ");
+        delayLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        delayLabel.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
+        delayLabel.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+
+        final NumberInput delayInput = new NumberInput(Arrays.<InputConstraint>asList(OnlyDigitsConstraint.getInstance()));
+        delayInput.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        delayInput.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
+        delayInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        delayInput.setText(Integer.toString(notificationsDelay));
+
+        root.add(hideLabel);
+        root.add(hideCheckbox);
+        root.add(delayLabel);
+        root.add(delayInput);
+
+        hideCheckbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                if (event.getValue()) {
+                    delayInput.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+                    delayLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+                } else {
+                    delayInput.getElement().getStyle().setDisplay(Style.Display.NONE);
+                    delayLabel.getElement().getStyle().setDisplay(Style.Display.NONE);
+                }
+            }
+        });
+
+        delayInput.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                notificationsDelay = delayInput.getIntegerValue();
+            }
+        });
+
+        root.add(new Br());
+        final SimpleButton success = new SimpleButton(Messages.i18n().tr("Успех"));
+        success.getElement().getStyle().setMarginLeft(30, Style.Unit.PX);
+        success.getElement().getStyle().setMarginTop(30, Style.Unit.PX);
+
+        final Notification successNotification = new Notification(Messages.i18n().tr("Успех"), Notification.Type.SUCCESS);
+        success.addClickHandler(createClickHandlerForNotification(successNotification, hideCheckbox));
+        root.add(success);
+
+        final SimpleButton failure = new SimpleButton(Messages.i18n().tr("Ошибка"));
+        failure.getElement().getStyle().setMarginLeft(30, Style.Unit.PX);
+        failure.getElement().getStyle().setMarginTop(30, Style.Unit.PX);
+        final Notification failureNotification = new Notification(Messages.i18n().tr("Ошибка"),
+                Arrays.asList(Messages.i18n().tr("Первая ошибка в уведомлении"),
+                        Messages.i18n().tr("Вторая ошибка в уведомлении"),
+                        Messages.i18n().tr("Ошибка в классе kz.arta.synergy.components.client.delayInput.date.repeat.MonthlyRepeatChooser")),
+                Notification.Type.FAILURE);
+        failure.addClickHandler(createClickHandlerForNotification(failureNotification, hideCheckbox));
+        root.add(failure);
+
+        SimpleButton question = new SimpleButton(Messages.i18n().tr("Вопрос"));
+        question.getElement().getStyle().setMarginLeft(30, Style.Unit.PX);
+        question.getElement().getStyle().setMarginTop(30, Style.Unit.PX);
+        final NotificationWithResponse neutralQuestionNotification = new NotificationWithResponse(
+                Messages.i18n().tr("Сохранить внесенные изменения?"),
+                Notification.Type.QUESTION,
+                false);
+        neutralQuestionNotification.addYesClickHandler(createHideNotificationHandler(neutralQuestionNotification));
+        neutralQuestionNotification.addNoClickHandler(createHideNotificationHandler(neutralQuestionNotification));
+        question.addClickHandler(createClickHandlerForNotification(neutralQuestionNotification, false));
+        root.add(question);
+
+        SimpleButton warning = new SimpleButton(Messages.i18n().tr("Предупреждение"));
+        warning.getElement().getStyle().setMarginLeft(30, Style.Unit.PX);
+        warning.getElement().getStyle().setMarginTop(30, Style.Unit.PX);
+        final NotificationWithResponse warningNotification = new NotificationWithResponse(
+                Messages.i18n().tr("Сохранить внесенные изменения?"),
+                Notification.Type.WARNING,
+                true);
+        warningNotification.addYesClickHandler(createHideNotificationHandler(warningNotification));
+        warningNotification.addNoClickHandler(createHideNotificationHandler(warningNotification));
+        warningNotification.addCancelHandler(createHideNotificationHandler(warningNotification));
+        warning.addClickHandler(createClickHandlerForNotification(warningNotification, false));
+        root.add(warning);
+
+        return root;
+    }
+
+    private ClickHandler createHideNotificationHandler(final NotificationWithResponse neutralQuestionNotification) {
+        return new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                neutralQuestionNotification.hide();
+            }
+        };
+    }
+
     /**
      * @return панель панели файлов
      */
@@ -2204,7 +2377,7 @@ public class ShowCasePanel extends FlowPanel {
         return root;
     }
 
-    private Widget getIndicatorsPanel() {
+    private Widget getSlidersPanel() {
         FlowPanel root = new FlowPanel();
 
         final Slider slider1 = new Slider(true);
@@ -2219,7 +2392,7 @@ public class ShowCasePanel extends FlowPanel {
         final Indicator indicator1 = new Indicator(" ");
         indicator1.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         indicator1.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
-        indicator1.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        indicator1.getElement().getStyle().setMarginLeft(40, Style.Unit.PX);
         root.add(indicator1);
 
         root.add(new Br());
@@ -2264,7 +2437,7 @@ public class ShowCasePanel extends FlowPanel {
         final Indicator indicator2 = new Indicator(" ");
         indicator2.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         indicator2.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
-        indicator2.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        indicator2.getElement().getStyle().setMarginLeft(40, Style.Unit.PX);
         root.add(indicator2);
 
 

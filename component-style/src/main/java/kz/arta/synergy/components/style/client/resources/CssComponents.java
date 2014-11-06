@@ -221,4 +221,11 @@ public interface CssComponents extends CssResource {
     String filesPanel();
     String file();
     String files();
+
+    String notification();
+    String warning();
+    String failure();
+    String success();
+    String notificationText();
+
 }

@@ -6,6 +6,8 @@ package kz.arta.synergy.components.style.client;
  * Time: 9:48
  */
 public class Constants {
+    private static final String PX = "px";
+
     public static final int BORDER_WIDTH = 1;
     public static final int BORDER_RADIUS = 4;
     public static final int STD_SCROLL_WIDTH = 17;
@@ -99,155 +101,166 @@ public class Constants {
 
     public static final int SLIDER_OUTERCIRCLE_RADIUS = 9;
 
+    public static final int NOTIFICATION_ICON_SIZE = 26;
+    public static final int NOTIFICATION_OFFSET = 16;
+
     public static String borderWidth() {
-        return BORDER_WIDTH + "px";
+        return BORDER_WIDTH + PX;
     }
     public static String borderRadius() {
-        return BORDER_RADIUS + "px";
+        return BORDER_RADIUS + PX;
     }
 
     public static String buttonHeight() {
-        return BUTTON_HEIGHT + "px";
+        return BUTTON_HEIGHT + PX;
     }
     public static String buttonMinWidth() {
-        return BUTTON_MIN_WIDTH + "px";
+        return BUTTON_MIN_WIDTH + PX;
     }
     public static String buttonApproveMinWidth() {
-        return BUTTON_APPROVE_MIN_WIDTH + "px";
+        return BUTTON_APPROVE_MIN_WIDTH + PX;
     }
     public static String buttonPadding() {
-        return BUTTON_PADDING + "px";
+        return BUTTON_PADDING + PX;
     }
     public static String gradientTopMargin() {
-        return "-" + BUTTON_HEIGHT + "px";
+        return "-" + BUTTON_HEIGHT + PX;
     }
 
 
     public static String dialogNavigationButtonMargin() {
-        return DIALOG_NAV_BUTTON_HMARGIN + "px";
+        return DIALOG_NAV_BUTTON_HMARGIN + PX;
     }
     public static String dialogBorderWidth() {
-        return DIALOG_BORDER_WIDTH + "px";
+        return DIALOG_BORDER_WIDTH + PX;
     }
     public static String dialogButtonPanelHeight() {
-        return DIALOG_BUTTON_PANEL_HEIGHT + "px";
+        return DIALOG_BUTTON_PANEL_HEIGHT + PX;
     }
     public static String dialogNavigationButtonVMargin() {
-        return DIALOG_NAV_BUTTON_VMARGIN + "px";
+        return DIALOG_NAV_BUTTON_VMARGIN + PX;
     }
     public static String dialogTitleHeight() {
-        return DIALOG_TITLE_HEIGHT + "px";
+        return DIALOG_TITLE_HEIGHT + PX;
     }
     public static String dialogCloseButtonSize() {
-        return DIALOG_CLOSE_BUTTON_SIZE + "px";
+        return DIALOG_CLOSE_BUTTON_SIZE + PX;
     }
     public static String dialogCloseButtonPadding() {
-        return DIALOG_CLOSE_BUTTON_PADDING + "px";
+        return DIALOG_CLOSE_BUTTON_PADDING + PX;
     }
     public static String dialogCloseButtonRightMargin() {
-        return DIALOG_CLOSE_BUTTON_RIGHT_MARGIN + "px";
+        return DIALOG_CLOSE_BUTTON_RIGHT_MARGIN + PX;
     }
     public static String dialogTitleLeftMargin() {
-        return DIALOG_TITLE_LEFT_MARGIN + "px";
+        return DIALOG_TITLE_LEFT_MARGIN + PX;
     }
     public static String dialogTitleLabelRightPadding() {
-        return DIALOG_TITLE_LABEL_RIGHT_PADDING + "px";
+        return DIALOG_TITLE_LABEL_RIGHT_PADDING + PX;
     }
     public static String dialogContentPadding() {
-        return DIALOG_CONTENT_PADDING + "px";
+        return DIALOG_CONTENT_PADDING + PX;
     }
     public static String dialogMinWidth() {
-        return DIALOG_MIN_WIDTH + "px";
+        return DIALOG_MIN_WIDTH + PX;
     }
 
     public static String imageButtonWidth() {
-        return IMAGE_BUTTON_WIDTH + "px";
+        return IMAGE_BUTTON_WIDTH + PX;
     }
 
     public static String scrollBarWidth() {
-        return SCROLL_BAR_WIDTH + "px";
+        return SCROLL_BAR_WIDTH + PX;
     }
 
     public static String commonInputPadding() {
-        return COMMON_INPUT_PADDING + "px";
+        return COMMON_INPUT_PADDING + PX;
     }
 
     public static String comboMinWidth() {
-        return FIELD_WITH_BUTTON_MIN_WIDTH + "px";
+        return FIELD_WITH_BUTTON_MIN_WIDTH + PX;
     }
 
     public static String listMaxHeight() {
-        return LIST_MAX_HEIGHT + "px";
+        return LIST_MAX_HEIGHT + PX;
     }
 
     public static String tagHeight() {
-        return TAG_HEIGHT + "px";
+        return TAG_HEIGHT + PX;
     }
     public static String tagMaxWidth() {
-        return TAG_MAX_WIDTH + "px";
+        return TAG_MAX_WIDTH + PX;
     }
     public static String tagInterval() {
-        return TAG_INTERVAL + "px";
+        return TAG_INTERVAL + PX;
     }
     public static String tagIndicatorPadding() {
-        return TAG_INDICATOR_PADDING + "px";
+        return TAG_INDICATOR_PADDING + PX;
     }
 
     public static String dateInputWidth() {
-        return DATE_INPUT_WIDTH + "px";
+        return DATE_INPUT_WIDTH + PX;
     }
 
     public static String yearListWidth() {
-        return YEAR_LIST_WIDTH + "px";
+        return YEAR_LIST_WIDTH + PX;
     }
 
     public static String weekInputWidth() {
-        return WEEK_INPUT_WIDTH + "px";
+        return WEEK_INPUT_WIDTH + PX;
     }
 
     public static String tabMaxWidth() {
-        return TAB_MAX_WIDTH + "px";
+        return TAB_MAX_WIDTH + PX;
     }
     public static String tabHeight() {
-        return TAB_HEIGHT + "px";
+        return TAB_HEIGHT + PX;
     }
     public static String tabScrollButtonWidth() {
-        return TAB_SCROLL_BUTTON_WIDTH + "px";
+        return TAB_SCROLL_BUTTON_WIDTH + PX;
     }
 
     public static String stackHeight() {
-        return STACK_HEIGHT + "px";
+        return STACK_HEIGHT + PX;
     }
 
     public static String tableDividerWidth() {
-        return TABLE_DIVIDER_WIDTH + "px";
+        return TABLE_DIVIDER_WIDTH + PX;
     }
 
     public static String pagerButtonWidth() {
-        return PAGER_BUTTON_WIDTH + "px";
+        return PAGER_BUTTON_WIDTH + PX;
     }
     public static String pagerTextWidth() {
-        return PAGER_TEXT_WIDTH + "px";
+        return PAGER_TEXT_WIDTH + PX;
     }
     public static String pagerTextPadding() {
-        return PAGER_TEXT_PADDING + "px";
+        return PAGER_TEXT_PADDING + PX;
     }
     public static String pagerHeight() {
-        return PAGER_HEIGHT + "px";
+        return PAGER_HEIGHT + PX;
     }
 
     public static String weekdayChooserPadding() {
-        return WEEKDAY_CHOOSER_PADDING + "px";
+        return WEEKDAY_CHOOSER_PADDING + PX;
     }
 
     public static String commentInputCommentLineHeight() {
-        return COMMENT_INPUT_LINE_HEIGHT + "px";
+        return COMMENT_INPUT_LINE_HEIGHT + PX;
     }
 
     public static String taskbarItemPadding() {
-        return TASKBAR_ITEM_PADDING + "px";
+        return TASKBAR_ITEM_PADDING + PX;
     }
     public static String taskbarImageMargin() {
-        return TASKBAR_IMAGE_MARGIN + "px";
+        return TASKBAR_IMAGE_MARGIN + PX;
+    }
+
+    public static String notificationIconSize() {
+        return NOTIFICATION_ICON_SIZE + PX;
+    }
+
+    public static String notificationOffset() {
+        return NOTIFICATION_OFFSET + PX;
     }
 }

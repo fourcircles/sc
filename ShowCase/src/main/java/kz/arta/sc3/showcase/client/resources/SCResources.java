@@ -146,4 +146,12 @@ public interface SCResources extends ClientBundle {
     @ClientBundle.Source("java-samples/slider-red.java")
     TextResource sliderRed();
 
+    @ClientBundle.Source("java-samples/notifications/notification-failure.java")
+    TextResource notificationFailure();
+    @ClientBundle.Source("java-samples/notifications/notification-question.java")
+    TextResource notificationQuestion();
+    @ClientBundle.Source("java-samples/notifications/notification-success.java")
+    TextResource notificationSuccess();
+    @ClientBundle.Source("java-samples/notifications/notification-warning.java")
+    TextResource notificationWarning();
 }

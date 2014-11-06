@@ -98,6 +98,7 @@ public class Notification {
         this(text, null, messages, type);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public Notification(ServerResult result) {
         this(result.getErrorMessage(), result.getComment(), result.getMessages(),
                 result.getErrorCode() == ServerResult.ErrorCode.NO_ERROR ? Type.SUCCESS : Type.FAILURE);
@@ -107,6 +108,7 @@ public class Notification {
      * Преобразовывает {@link kz.arta.synergy.components.client.ServerResult} в safehtml для отображения
      * в уведомлении
      */
+    @SuppressWarnings("UnusedDeclaration")
     private SafeHtml toSafeHtml(ServerResult serverResult) {
         return toSafeHtml(serverResult.getErrorMessage(),
                 serverResult.getComment(),
@@ -116,6 +118,7 @@ public class Notification {
     /**
      * {@link #toSafeHtml(String, String, java.util.List)}
      */
+    @SuppressWarnings("UnusedDeclaration")
     private SafeHtml toSafeHtml(String message) {
         return toSafeHtml(message, null, null);
     }

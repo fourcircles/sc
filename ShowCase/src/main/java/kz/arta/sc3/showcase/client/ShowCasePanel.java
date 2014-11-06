@@ -2299,7 +2299,8 @@ public class ShowCasePanel extends FlowPanel {
 
         root.add(new Br());
         final SimpleButton success = new SimpleButton(Messages.i18n().tr("Успех"));
-        success.getElement().getStyle().setMarginLeft(30, Style.Unit.PX);
+        addCodeSample(success, Messages.i18n().tr("Уведомление об успехе"), ShowCase.RESOURCES.notificationSuccess().getText());
+        success.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         success.getElement().getStyle().setMarginTop(30, Style.Unit.PX);
 
         final Notification successNotification = new Notification(Messages.i18n().tr("Успех"), Notification.Type.SUCCESS);
@@ -2307,6 +2308,7 @@ public class ShowCasePanel extends FlowPanel {
         root.add(success);
 
         final SimpleButton failure = new SimpleButton(Messages.i18n().tr("Ошибка"));
+        addCodeSample(failure, Messages.i18n().tr("Уведомление об ошибке"), ShowCase.RESOURCES.notificationFailure().getText());
         failure.getElement().getStyle().setMarginLeft(30, Style.Unit.PX);
         failure.getElement().getStyle().setMarginTop(30, Style.Unit.PX);
         final Notification failureNotification = new Notification(Messages.i18n().tr("Ошибка"),
@@ -2318,6 +2320,7 @@ public class ShowCasePanel extends FlowPanel {
         root.add(failure);
 
         SimpleButton question = new SimpleButton(Messages.i18n().tr("Вопрос"));
+        addCodeSample(question, Messages.i18n().tr("Уведомление с вопросом"), ShowCase.RESOURCES.notificationQuestion().getText());
         question.getElement().getStyle().setMarginLeft(30, Style.Unit.PX);
         question.getElement().getStyle().setMarginTop(30, Style.Unit.PX);
         final NotificationWithResponse neutralQuestionNotification = new NotificationWithResponse(
@@ -2330,6 +2333,7 @@ public class ShowCasePanel extends FlowPanel {
         root.add(question);
 
         SimpleButton warning = new SimpleButton(Messages.i18n().tr("Предупреждение"));
+        addCodeSample(warning, Messages.i18n().tr("Уведомление-предупреждение"), ShowCase.RESOURCES.notificationWarning().getText());
         warning.getElement().getStyle().setMarginLeft(30, Style.Unit.PX);
         warning.getElement().getStyle().setMarginTop(30, Style.Unit.PX);
         final NotificationWithResponse warningNotification = new NotificationWithResponse(

@@ -80,6 +80,7 @@ import kz.arta.synergy.components.client.tree.events.TreeItemContextMenuEvent;
 import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
 import kz.arta.synergy.components.client.util.Br;
 import kz.arta.synergy.components.client.util.PPanel;
+import kz.arta.synergy.components.style.client.Colors;
 import kz.arta.synergy.components.style.client.Constants;
 
 import java.util.*;
@@ -355,6 +356,7 @@ public class ShowCasePanel extends FlowPanel {
             public void execute() {
                 if (firstTab != null) {
                     firstTab.setSelected(true, true);
+                    firstTab.getParent().setOpen(true, true);
                 }
             }
         });
@@ -903,7 +905,7 @@ public class ShowCasePanel extends FlowPanel {
                 return getFilesPanelPanel();
             }
         });
-        firstTab = addTreeItem(complexComponents, new LoadPanel(Messages.i18n().tr("Уведомления")) {
+        addTreeItem(complexComponents, new LoadPanel(Messages.i18n().tr("Уведомления")) {
             @Override
             public Widget getContentWidget() {
                 return getNotificationsPanel();
@@ -2250,11 +2252,13 @@ public class ShowCasePanel extends FlowPanel {
     private Widget getNotificationsPanel() {
         FlowPanel root = new FlowPanel();
         root.addStyleName(SynergyComponents.getResources().cssComponents().mainText());
+        root.getElement().getStyle().setColor(Colors.textColor2().hex());
 
         final ArtaCheckBox hideCheckbox = new ArtaCheckBox();
         hideCheckbox.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         hideCheckbox.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
         hideCheckbox.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        hideCheckbox.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         hideCheckbox.setValue(true, false);
         final Label hideLabel = new Label(Messages.i18n().tr("Скрывать ли уведомления:"));
         hideLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
@@ -2263,30 +2267,26 @@ public class ShowCasePanel extends FlowPanel {
 
         final Label delayLabel = new Label("Delay: ");
         delayLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
-        delayLabel.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
+        delayLabel.getElement().getStyle().setMarginTop(8, Style.Unit.PX);
         delayLabel.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         final NumberInput delayInput = new NumberInput(Arrays.<InputConstraint>asList(OnlyDigitsConstraint.getInstance()));
         delayInput.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
-        delayInput.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
         delayInput.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
         delayInput.setText(Integer.toString(notificationsDelay));
 
         root.add(hideLabel);
         root.add(hideCheckbox);
+        root.add(new Br());
         root.add(delayLabel);
         root.add(delayInput);
 
         hideCheckbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
-                if (event.getValue()) {
-                    delayInput.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
-                    delayLabel.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
-                } else {
-                    delayInput.getElement().getStyle().setDisplay(Style.Display.NONE);
-                    delayLabel.getElement().getStyle().setDisplay(Style.Display.NONE);
-                }
+                Style.Visibility visibility = event.getValue() ? Style.Visibility.VISIBLE : Style.Visibility.HIDDEN;
+                delayInput.getElement().getStyle().setVisibility(visibility);
+                delayLabel.getElement().getStyle().setVisibility(visibility);
             }
         });
 

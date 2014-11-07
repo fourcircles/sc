@@ -1,9 +1,9 @@
 package kz.arta.synergy.components.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.PopupPanel;
 import kz.arta.synergy.components.client.button.SimpleButton;
 import kz.arta.synergy.components.client.resources.Messages;
 import kz.arta.synergy.components.client.util.Br;
@@ -18,17 +18,16 @@ import kz.arta.synergy.components.style.client.Constants;
  * Предполагается, что две кнопки будут всегда. Кнопка "отмена" опциональна.
  */
 public class NotificationWithResponse extends Notification {
-    private static final int BUTTON_WIDTH = 111;
+    static final int BUTTON_WIDTH = 111;
 
     /**
      * Есть ли кнопка "отмена"
      */
     private final boolean hasCancel;
-
     /**
      * Кнопка "да"
      */
-    private SimpleButton yesButton;
+    SimpleButton yesButton;
     /**
      * Кнопка "нет"
      */
@@ -49,7 +48,7 @@ public class NotificationWithResponse extends Notification {
 
         this.hasCancel = hasCancel;
 
-        root.add(new Br());
+        root.add((Br) GWT.create(Br.class));
         yesButton = new SimpleButton(Messages.i18n().tr("Да"), SimpleButton.Type.APPROVE);
         root.add(yesButton);
         noButton = new SimpleButton(Messages.i18n().tr("Нет"), SimpleButton.Type.DECLINE);
@@ -60,20 +59,20 @@ public class NotificationWithResponse extends Notification {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Центрирует кнопки или текст с иконкой (в зависимости от того, что шире)
+     *
+     * @see {@link Notification#align()}
+     */
     @Override
-    public void setPopupPositionAndShow(PopupPanel.PositionCallback callback) {
-        popup.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
-        popup.center();
-        popup.show();
-        align();
+    protected void align() {
+        super.align();
 
         int buttonsCount = 2;
         if (hasCancel) {
             buttonsCount++;
         }
         int popupWidth = popup.getOffsetWidth();
-        int popupHeight = popup.getOffsetHeight();
 
         int contentWidth = popupWidth - 2 * Constants.BORDER_WIDTH - Constants.NOTIFICATION_OFFSET * 2;
 
@@ -95,9 +94,6 @@ public class NotificationWithResponse extends Notification {
                 contentContainer.getElement().getStyle().setMarginLeft(delta, Style.Unit.PX);
             }
         }
-
-        callback.setPosition(popupWidth, popupHeight);
-        popup.getElement().getStyle().clearVisibility();
     }
 
     /**
@@ -122,6 +118,7 @@ public class NotificationWithResponse extends Notification {
 
     /**
      * Добавляет clickhandler на кнопку "отмена"
+     *
      * @param handler хэндлер
      * @return регистрация хэндлера
      */

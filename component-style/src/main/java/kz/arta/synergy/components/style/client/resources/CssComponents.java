@@ -112,16 +112,6 @@ public interface CssComponents extends CssResource {
 
     String scrollbar();
 
-    String selectColor();
-
-    String stackPanelText2();
-
-    String textColor1();
-
-    String textColor2();
-
-    String textColor3();
-
     String thisMonth();
 
     String vscroll();

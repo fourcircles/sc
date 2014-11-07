@@ -19,13 +19,13 @@ import java.util.List;
  * Уведомление
  */
 public class Notification {
-    private static final int NOTIFICATION_ZINDEX = 500;
+    private static final int NOTIFICATION_Z_INDEX = 500;
 
-    private static final String BR = "<br/>";
-    private static final String LIST_START = "<ul>";
-    private static final String LIST_END = "</ul>";
-    private static final String LIST_ITEM_START = "<li>";
-    private static final String LIST_ITEM_END = "</li>";
+    static final String BR = "<br/>";
+    static final String LIST_START = "<ul>";
+    static final String LIST_END = "</ul>";
+    static final String LIST_ITEM_START = "<li>";
+    static final String LIST_ITEM_END = "</li>";
 
     /**
      * Корневой элемент
@@ -42,7 +42,7 @@ public class Notification {
     /**
      * Попап уведомления
      */
-    protected final PopupPanel popup;
+    protected PopupPanel popup;
 
     /**
      * Текст уведомления
@@ -52,7 +52,7 @@ public class Notification {
     /**
      * Wrapper контента.
      */
-    protected final SimplePanel contentContainer;
+    protected SimplePanel contentContainer;
 
     /**
      * @param text текст
@@ -80,7 +80,7 @@ public class Notification {
         setIcon(type);
         setTextColor(type);
 
-        content = new HTML();
+        content = GWT.create(HTML.class);
         content.setHTML(toSafeHtml(text, comment, messages));
 
         contentContainer = new SimplePanel(content);
@@ -88,7 +88,7 @@ public class Notification {
         root.add(contentContainer);
 
         popup = new PopupPanel(false);
-        popup.getElement().getStyle().setZIndex(NOTIFICATION_ZINDEX);
+        popup.getElement().getStyle().setZIndex(NOTIFICATION_Z_INDEX);
         popup.setStyleName("");
         popup.setModal(false);
         popup.setWidget(root);
@@ -109,7 +109,7 @@ public class Notification {
      * в уведомлении
      */
     @SuppressWarnings("UnusedDeclaration")
-    private SafeHtml toSafeHtml(ServerResult serverResult) {
+    static SafeHtml toSafeHtml(ServerResult serverResult) {
         return toSafeHtml(serverResult.getErrorMessage(),
                 serverResult.getComment(),
                 serverResult.getMessages());
@@ -119,7 +119,7 @@ public class Notification {
      * {@link #toSafeHtml(String, String, java.util.List)}
      */
     @SuppressWarnings("UnusedDeclaration")
-    private SafeHtml toSafeHtml(String message) {
+    static SafeHtml toSafeHtml(String message) {
         return toSafeHtml(message, null, null);
     }
 
@@ -129,7 +129,7 @@ public class Notification {
      * @param messages дополнительные сообщения, которые будут отображены в списке
      * @return safehtml сообщения и списока, который содержит дополнительные сообщения
      */
-    private SafeHtml toSafeHtml(String message, String comment, List<String> messages) {
+    static SafeHtml toSafeHtml(String message, String comment, List<String> messages) {
         SafeHtmlBuilder builder = new SafeHtmlBuilder();
         builder.appendEscaped(message);
 
@@ -239,13 +239,13 @@ public class Notification {
         contentContainer.getElement().getStyle().clearWidth();
         contentContainer.getElement().getStyle().setWidth(content.getOffsetWidth(), Style.Unit.PX);
 
-        alignImageText();
+        verticalAlignImageText();
     }
 
     /**
      * Вертикально выравнивает иконку и текст
      */
-    protected void alignImageText() {
+    protected void verticalAlignImageText() {
         if (!hasIcon) {
             return;
         }

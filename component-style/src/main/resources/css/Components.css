@@ -13,7 +13,7 @@
 @eval buttonBG_0_ie kz.arta.synergy.components.style.client.Colors.buttonBG().alpha0IE();
 
 @def textColor1 #757575;
-@def textColor2 #606060;
+@eval textColor2 kz.arta.synergy.components.style.client.Colors.textColor2().hex();
 @def textColor3 #404040;
 
 @eval border1 kz.arta.synergy.components.style.client.Colors.border1().hex();

@@ -218,4 +218,6 @@ public interface CssComponents extends CssResource {
     String success();
     String notificationText();
 
+    String circularG();
+    String loader();
 }

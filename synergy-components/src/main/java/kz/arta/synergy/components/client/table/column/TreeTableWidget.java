@@ -32,6 +32,8 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
      */
     private static final int INITIAL_PADDING = 12;
 
+    private static final String LOADER_ID = "circularG";
+
     /**
      * Треугольник
      */
@@ -58,9 +60,18 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
      * Столбец
      */
     private TreeColumn<T> column;
+    /**
+     * Лоадер
+     */
+    private FlowPanel loader;
+
+    /**
+     * Корневая панель
+     */
+    private final FlowPanel root;
 
     public TreeTableWidget(T item, TreeColumn<T> column) {
-        FlowPanel root = new FlowPanel();
+        root = new FlowPanel();
         initWidget(root);
 
         root.setStyleName(SynergyComponents.getResources().cssComponents().treeTableItem());
@@ -89,12 +100,70 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
     }
 
     /**
+     * Создает лоадер, который заменяет треугольник
+     *
+     * @return лоадер
+     */
+    private FlowPanel createLoader() {
+        FlowPanel loader = new FlowPanel();
+        loader.setStyleName(SynergyComponents.getResources().cssComponents().loader());
+
+        FlowPanel first = new FlowPanel();
+        first.getElement().setId(LOADER_ID);
+        loader.add(first);
+
+        for (int i = 1; i <= 8; i++) {
+            FlowPanel dot = new FlowPanel();
+            dot.setStyleName(SynergyComponents.getResources().cssComponents().circularG());
+            dot.getElement().setId(LOADER_ID + "_" + i);
+            loader.add(dot);
+        }
+        return loader;
+    }
+
+    /**
+     * Показывает лоадер вместо треугольника
+     */
+    private void showLoader() {
+        if (loader == null) {
+            loader = createLoader();
+        }
+        image.removeFromParent();
+        root.insert(loader, 0);
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            loader.getElement().getStyle().setMarginRight(getMargin(item), Style.Unit.PX);
+        } else {
+            loader.getElement().getStyle().setMarginLeft(getMargin(item), Style.Unit.PX);
+        }
+    }
+
+    /**
+     * Скрывает лоадер
+     */
+    private void hideLoader() {
+        loader.removeFromParent();
+        root.insert(image, 0);
+    }
+
+    /**
      * Клик по треугольнику
      */
     private void imageClick() {
         if (item.isOpen()) {
             item.close();
         } else {
+            showLoader();
+            item.addTreeTableHandler(new TreeTableItemEvent.Handler<T>() {
+                @Override
+                public void onClose(TreeTableItemEvent<T> event) {
+                    // do nothing
+                }
+
+                @Override
+                public void onOpen(TreeTableItemEvent<T> event) {
+                    hideLoader();
+                }
+            });
             item.open();
         }
     }

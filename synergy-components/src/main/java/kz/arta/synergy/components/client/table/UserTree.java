@@ -3,6 +3,7 @@ package kz.arta.synergy.components.client.table;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Timer;
 import kz.arta.synergy.components.client.table.column.TreeTableItem;
 import kz.arta.synergy.components.client.table.events.TreeTableItemEvent;
 
@@ -67,7 +68,13 @@ public class UserTree extends User implements TreeTableItem<UserTree> {
     @Override
     public void open() {
         this.isOpen = true;
-        bus.fireEventFromSource(new TreeTableItemEvent<UserTree>(this, TreeTableItemEvent.EventType.OPEN), this);
+        new Timer() {
+            @Override
+            public void run() {
+                bus.fireEventFromSource(new TreeTableItemEvent<UserTree>(UserTree.this, TreeTableItemEvent.EventType.OPEN), UserTree.this);
+            }
+        }.schedule(1000);
+//        bus.fireEventFromSource(new TreeTableItemEvent<UserTree>(this, TreeTableItemEvent.EventType.OPEN), this);
     }
 
     @Override

@@ -21,6 +21,7 @@ import kz.arta.synergy.components.client.tree.events.TreeOpenEvent;
 import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.Navigator;
+import kz.arta.synergy.components.client.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,8 +128,19 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
                 setSelected(true, true);
             }
         };
+        DoubleClickHandler doubleSelectHandler = new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                event.preventDefault();
+                setOpen(!isOpen());
+            }
+        };
+
+        label.addStyleName(SynergyComponents.getResources().cssComponents().unselectable());
         label.addClickHandler(selectionHandler);
+        label.addDoubleClickHandler(doubleSelectHandler);
         icon.addClickHandler(selectionHandler);
+        icon.addDoubleClickHandler(doubleSelectHandler);
 
         icon.getElement().getStyle().setDisplay(Style.Display.NONE);
 

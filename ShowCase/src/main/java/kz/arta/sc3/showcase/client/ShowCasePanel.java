@@ -74,6 +74,7 @@ import kz.arta.synergy.components.client.taskbar.TaskBar;
 import kz.arta.synergy.components.client.taskbar.events.TaskBarEvent;
 import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.theme.Theme;
+import kz.arta.synergy.components.client.tree.FavoriteTree;
 import kz.arta.synergy.components.client.tree.Tree;
 import kz.arta.synergy.components.client.tree.TreeItem;
 import kz.arta.synergy.components.client.tree.events.TreeItemContextMenuEvent;
@@ -954,7 +955,7 @@ public class ShowCasePanel extends FlowPanel {
     }
 
     private Tree copyTree(Tree tree) {
-        Tree newTree = new Tree();
+        Tree newTree = new Tree(false);
         for (TreeItem item : tree.getItems()) {
             TreeItem newItem = newTree.addItem(item.getText());
             copyTreeItem(newTree, item, newItem);
@@ -1195,16 +1196,25 @@ public class ShowCasePanel extends FlowPanel {
     }
 
     private Widget getPathPanel() {
-        FlowPanel root = new FlowPanel();
+        final FlowPanel root = new FlowPanel();
         final Tree localTree = copyTree(tree);
         addCodeSample(localTree, Messages.i18n().tr("Дерево"), ShowCase.RESOURCES.tree().getText());
 
-        localTree.getElement().getStyle().setHeight(LOCAL_TREE_SIZE, Style.Unit.PX);
-        localTree.getElement().getStyle().setWidth(LOCAL_TREE_SIZE, Style.Unit.PX);
         localTree.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
 
-        localTree.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
-        localTree.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
+        /*дерево с избранным*/
+        final FavoriteTree favoriteTree = new FavoriteTree(localTree);
+        favoriteTree.getElement().getStyle().setWidth(LOCAL_TREE_SIZE, Style.Unit.PX);
+
+        final FlowPanel panel = new FlowPanel();
+        panel.add(favoriteTree);
+        panel.add(localTree);
+
+        ArtaScrollPanel scrollPanel = new ArtaScrollPanel(panel);
+        scrollPanel.setHeight(LOCAL_TREE_SIZE + "px");
+        scrollPanel.setWidth(LOCAL_TREE_SIZE + "px");
+        scrollPanel.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        scrollPanel.addStyleName(SynergyComponents.getResources().cssComponents().tree());
 
         for (TreeItem item : localTree.getItems()) {
             setTreeIcons(item, ImageResources.IMPL.folder());
@@ -1222,13 +1232,25 @@ public class ShowCasePanel extends FlowPanel {
         path.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         path.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
         path.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+        path.getElement().getStyle().setMarginBottom(20, Style.Unit.PX);
 
         path.addButtonClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                TreeItem selectedItem = localTree.getSelectedItem();
-                if (selectedItem != null) {
-                    selectedItem.setIcon(ImageResources.IMPL.favouriteFolder());
+                final TreeItem selectedItem = localTree.getSelectedItem();
+                if (selectedItem != null && !selectedItem.isFavorite()) {
+                    selectedItem.setFavorite(true);
+                    TreeItem favorite = favoriteTree.addItem(favoriteTree.getRootItem(), selectedItem.getText());
+                    favorite.setIcon(ImageResources.IMPL.folder());
+                    favorite.addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            selectedItem.setSelected(true);
+                        }
+                    });
+                    if (!favoriteTree.getRootItem().isOpen()) {
+                        favoriteTree.getRootItem().setOpen(true);
+                    }
                 }
             }
         });
@@ -1256,7 +1278,7 @@ public class ShowCasePanel extends FlowPanel {
             }
         });
         root.add(path);
-        root.add(localTree);
+        root.add(scrollPanel);
 
         return root;
     }

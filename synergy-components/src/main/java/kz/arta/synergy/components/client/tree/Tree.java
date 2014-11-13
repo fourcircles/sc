@@ -41,13 +41,30 @@ public class Tree extends Composite implements HasContextMenuHandlers {
      */
     List<TreeItem> items;
 
+    /**
+     * Создаем дерево (по умолчанию со скроллом)
+     */
     public Tree() {
-        ArtaScrollPanel scroll = new ArtaScrollPanel();
-        initWidget(scroll);
-        scroll.addStyleName(SynergyComponents.getResources().cssComponents().tree());
+        this(true);
+    }
 
-        root = new FlowPanel();
-        scroll.setWidget(root);
+    /**
+     * Создаем дерево с указанием необходимости скролла
+     * @param withScroll true - нужен скролл, false - не нужен. Если false - тогда нужно поместить во внешний скролл
+     */
+    public Tree(boolean withScroll) {
+
+        if (withScroll) {
+            ArtaScrollPanel scroll = new ArtaScrollPanel();
+            initWidget(scroll);
+            scroll.addStyleName(SynergyComponents.getResources().cssComponents().tree());
+
+            root = new FlowPanel();
+            scroll.setWidget(root);
+        } else {
+            root = new FlowPanel();
+            initWidget(root);
+        }
 
 
         bus = new SimpleEventBus();
@@ -94,6 +111,7 @@ public class Tree extends Composite implements HasContextMenuHandlers {
         return item;
     }
 
+    //todo сделать добавление ноды дерева с иконкой
     /**
      * Добавить новый узел дерева в заданный узел
      * @param parentItem родительский узел

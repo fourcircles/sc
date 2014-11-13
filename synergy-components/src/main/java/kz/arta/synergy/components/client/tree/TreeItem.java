@@ -84,6 +84,11 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
      */
     private boolean isOpen = false;
 
+    /**
+     * Является ли узле избранным
+     */
+    private boolean favorite = false;
+
     private EventBus bus;
 
     /**
@@ -222,6 +227,8 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
         content.add(item.asTreeItem());
 
         updateIndicator();
+        updateContentHeight(-getContentHeight());
+        updateContentHeight(content.getElement().getScrollHeight());
     }
 
     /**
@@ -291,6 +298,15 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
             root.addStyleName(SynergyComponents.getResources().cssComponents().selected());
             if (fireEvents) {
                 bus.fireEvent(new TreeSelectionEvent(this));
+            }
+            TreeItem selectedParent = parent;
+            //todo сделать нормальное открытие родительских нод
+            while (selectedParent != null) {
+                if (!selectedParent.isOpen()) {
+                    selectedParent.setOpen(true);
+                }
+                selectedParent = selectedParent.getParent();
+                updateContentHeight(content.getElement().getScrollHeight());
             }
         } else {
             root.removeStyleName(SynergyComponents.getResources().cssComponents().selected());
@@ -416,4 +432,13 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     public HandlerRegistration addTreeContextMenuHandler(TreeItemContextMenuEvent.Handler handler) {
         return bus.addHandlerToSource(TreeItemContextMenuEvent.getType(), this, handler);
     }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
 }

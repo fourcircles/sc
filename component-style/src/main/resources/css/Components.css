@@ -1815,6 +1815,13 @@ p {
     border: 1px solid buttonPressed;
 }
 
+.treeFavorite {
+    border-bottom-color: buttonPressed;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    padding-bottom: 16px;
+}
+
 .treeItem {
     cursor: default;
     color: textColor1;
@@ -1851,6 +1858,10 @@ p {
 }
 .tree > .treeItem:first-child {
     margin-top: 24px;
+}
+
+.tree > .treeItem:last-child {
+    margin-bottom: 24px;
 }
 
 @if !user.agent ie9 {

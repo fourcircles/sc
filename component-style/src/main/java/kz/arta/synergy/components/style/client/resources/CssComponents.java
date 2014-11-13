@@ -170,6 +170,8 @@ public interface CssComponents extends CssResource {
     String multipleLines();
 
     String tree();
+    String treeFavorite();
+
     String treeItem();
     String content();
 

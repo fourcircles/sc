@@ -1320,7 +1320,7 @@ public class ShowCasePanel extends FlowPanel {
         };
         table.addColumn(idColumn);
 
-        TreeColumn<UserTree> treeColumn = new TreeColumn<UserTree>("Название человека") {
+        TreeColumn<UserTree> treeColumn = new TreeColumn<UserTree>("Имя человека") {
             @Override
             public String getText(UserTree object) {
                 return object.getFirstName();
@@ -1352,8 +1352,8 @@ public class ShowCasePanel extends FlowPanel {
         provider.addDataDisplay(table.getCore());
 
         for (int i = 0; i < 15; i++) {
-            String name = "john";
-            String lastName = "jones";
+            String name = "John";
+            String lastName = "Jones";
             String address = "Orinbor";
 
             UserTree user = new UserTree(null, name + i, lastName + i, address + " " + (i + 1));

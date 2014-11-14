@@ -263,6 +263,9 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
             indicator.setResource(ImageResources.IMPL.nodeOpen16());
 
             content.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+            if (parent != null && !parent.isOpen()) {
+                parent.setOpen(true, fireEvents);
+            }
             updateContentHeight(content.getElement().getScrollHeight());
         } else {
             indicator.setResource(ImageResources.IMPL.nodeClosed16());
@@ -300,13 +303,11 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
                 bus.fireEvent(new TreeSelectionEvent(this));
             }
             TreeItem selectedParent = parent;
-            //todo сделать нормальное открытие родительских нод
             while (selectedParent != null) {
                 if (!selectedParent.isOpen()) {
                     selectedParent.setOpen(true);
                 }
                 selectedParent = selectedParent.getParent();
-                updateContentHeight(content.getElement().getScrollHeight());
             }
         } else {
             root.removeStyleName(SynergyComponents.getResources().cssComponents().selected());

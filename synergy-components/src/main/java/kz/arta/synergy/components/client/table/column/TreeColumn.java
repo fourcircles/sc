@@ -10,16 +10,24 @@ import com.google.gwt.user.client.ui.*;
  *
  * Столбец для отображения элементов дерева объекта
  */
-public abstract class TreeColumn<T extends TreeTableItem<T>> extends AbstractArtaColumn<T> {
+public abstract class TreeColumn<T extends TreeTableItem<T>> extends AbstractEditableColumn<T> {
+
+    protected boolean isEditable = false;
 
     public TreeColumn(String headerText) {
         super(headerText);
         isSortable = false;
     }
 
+    public TreeColumn(String headerText, boolean isEditable) {
+        super(headerText);
+        isSortable = false;
+        this.isEditable = isEditable;
+    }
+
     @Override
     public Widget createWidget(T object, EventBus bus) {
-        return new TreeTableWidget<T>(object, this);
+        return new TreeTableWidget<T>(object, this, isEditable, bus);
     }
 
     @SuppressWarnings("unchecked")
@@ -31,7 +39,7 @@ public abstract class TreeColumn<T extends TreeTableItem<T>> extends AbstractArt
 
     @Override
     public boolean isEditable() {
-        return false;
+        return isEditable;
     }
 
     @Override
@@ -44,5 +52,4 @@ public abstract class TreeColumn<T extends TreeTableItem<T>> extends AbstractArt
         return false;
     }
 
-    public abstract String getText(T object);
 }

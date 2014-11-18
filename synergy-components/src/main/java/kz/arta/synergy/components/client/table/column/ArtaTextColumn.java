@@ -19,8 +19,6 @@ public abstract class ArtaTextColumn<T> extends AbstractArtaColumn<T> {
         super(headerText);
     }
 
-    public abstract String getValue(T object);
-
     @Override
     public void updateWidget(Widget widget, T object) {
         ((Label) widget).setText(getValue(object));

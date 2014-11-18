@@ -8,6 +8,7 @@ import kz.arta.synergy.components.client.table.Header;
  * User: vsl
  * Date: 04.09.14
  * Time: 17:41
+ * //todo задокументировать
  */
 public abstract class AbstractArtaColumn<T> implements ArtaColumn<T> {
     protected boolean isSortable = false;
@@ -49,4 +50,6 @@ public abstract class AbstractArtaColumn<T> implements ArtaColumn<T> {
 
     public abstract Widget createWidget(T object, EventBus bus);
     public abstract void updateWidget(Widget widget, T object);
+
+    public abstract String getValue(T object);
 }

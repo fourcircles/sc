@@ -61,9 +61,7 @@ import kz.arta.synergy.components.client.stack.SingleStack;
 import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
 import kz.arta.synergy.components.client.table.*;
-import kz.arta.synergy.components.client.table.column.ArtaEditableTextColumn;
-import kz.arta.synergy.components.client.table.column.ArtaTextColumn;
-import kz.arta.synergy.components.client.table.column.TreeColumn;
+import kz.arta.synergy.components.client.table.column.*;
 import kz.arta.synergy.components.client.table.events.TableCellMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableHeaderMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableRowMenuEvent;
@@ -868,12 +866,20 @@ public class ShowCasePanel extends FlowPanel {
             }
         });
 
-        addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Дерево-таблица")) {
+        TreeItem treeTable = tree.addItem(basicComponents, Messages.i18n().tr("Дерево-таблица"));
+        addTreeItem(treeTable, new LoadPanel(Messages.i18n().tr("Дерево-таблица - ряды")) {
             @Override
             public Widget getContentWidget() {
-                return getTreeTable();
+                return getTreeTable(true);
             }
         });
+        addTreeItem(treeTable, new LoadPanel(Messages.i18n().tr("Дерево-таблица - ячейки")) {
+            @Override
+            public Widget getContentWidget() {
+                return getTreeTable(false);
+            }
+        });
+
         addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Путь")) {
             @Override
             public Widget getContentWidget() {
@@ -954,8 +960,8 @@ public class ShowCasePanel extends FlowPanel {
         }
     }
 
-    private Tree copyTree(Tree tree) {
-        Tree newTree = new Tree(false);
+    private Tree copyTree(Tree tree, boolean withScroll) {
+        Tree newTree = new Tree(withScroll);
         for (TreeItem item : tree.getItems()) {
             TreeItem newItem = newTree.addItem(item.getText());
             copyTreeItem(newTree, item, newItem);
@@ -974,7 +980,7 @@ public class ShowCasePanel extends FlowPanel {
     private Widget getTreePanel() {
         FlowPanel root = new FlowPanel();
 
-        kz.arta.synergy.components.client.tree.Tree localTree = copyTree(tree);
+        kz.arta.synergy.components.client.tree.Tree localTree = copyTree(tree, true);
         addCodeSample(localTree, Messages.i18n().tr("Дерево"), ShowCase.RESOURCES.tree().getText());
 
         localTree.getElement().getStyle().setHeight(LOCAL_TREE_SIZE, Style.Unit.PX);
@@ -1147,16 +1153,21 @@ public class ShowCasePanel extends FlowPanel {
         ArtaScrollPanel scroll = new ArtaScrollPanel(panel);
         scroll.setHeight("100%");
 
-        final ContextMenu cellMenu = new ContextMenu();
-        final MenuItem<Command> cellMenuItem = new MenuItem<Command>(null, Messages.i18n().tr("Меню для ячейки"));
-        cellMenu.add(cellMenuItem);
 
         table.getCore().addCellMenuHandler(new TableCellMenuEvent.Handler<User>() {
             @Override
-            public void onTableCellMenu(TableCellMenuEvent<User> event) {
-                int row = provider.getList().indexOf(event.getObject()) - table.getCore().getVisibleRange().getStart();
-                int column = table.getCore().getColumns().indexOf(event.getColumn());
-                cellMenuItem.setText(Messages.i18n().tr("Меню для ячейки") + " " + row + " " + column);
+            public void onTableCellMenu(final TableCellMenuEvent<User> event) {
+                final int row = provider.getList().indexOf(event.getObject()) - table.getCore().getVisibleRange().getStart();
+                final int column = table.getCore().getColumns().indexOf(event.getColumn());
+                ContextMenu cellMenu = new ContextMenu();
+                MenuItem<Command> cellMenuItem = new MenuItem<Command>(new Command() {
+                    @Override
+                    public void execute() {
+                        ((EditableText)table.getCore().getWidget(row, column)).edit();
+                    }
+                }, Messages.i18n().tr("Редактировать ячейку"));
+                cellMenu.add(cellMenuItem);
+                cellMenuItem.setText(Messages.i18n().tr("Редактировать ячейку") + " " + row + " " + column);
                 cellMenu.show(event.getX(), event.getY());
             }
         });
@@ -1197,7 +1208,7 @@ public class ShowCasePanel extends FlowPanel {
 
     private Widget getPathPanel() {
         final FlowPanel root = new FlowPanel();
-        final Tree localTree = copyTree(tree);
+        final Tree localTree = copyTree(tree, false);
         addCodeSample(localTree, Messages.i18n().tr("Дерево"), ShowCase.RESOURCES.tree().getText());
 
         localTree.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
@@ -1283,7 +1294,7 @@ public class ShowCasePanel extends FlowPanel {
         return root;
     }
 
-    private Widget getTreeTable() {
+    private Widget getTreeTable(boolean onlyRows) {
         FlowPanel root = new FlowPanel();
 
         final Table<UserTree> table = new Table<UserTree>(10, new ProvidesKey<UserTree>() {
@@ -1307,7 +1318,7 @@ public class ShowCasePanel extends FlowPanel {
             }
         });
 
-        table.getCore().setOnlyRows(true);
+        table.getCore().setOnlyRows(onlyRows);
         table.enableHat(true);
         table.getHat().setName(Messages.i18n().tr("Дерево-таблица"));
         table.getHat().enableAddButton(true);
@@ -1320,35 +1331,72 @@ public class ShowCasePanel extends FlowPanel {
         };
         table.addColumn(idColumn);
 
-        TreeColumn<UserTree> treeColumn = new TreeColumn<UserTree>("Имя человека") {
+        TreeColumn<UserTree> treeColumn = new TreeColumn<UserTree>("Имя человека", !onlyRows) {
             @Override
-            public String getText(UserTree object) {
+            public String getValue(UserTree object) {
                 return object.getFirstName();
+            }
+
+            @Override
+            public void setValue(UserTree object, String value) {
+                object.setFirstName(value);
             }
         };
         table.addColumn(treeColumn);
 
-        ArtaTextColumn<UserTree> lastNameColumn = new ArtaTextColumn<UserTree>(Messages.i18n().tr("Фамилия")) {
-            @Override
-            public String getValue(UserTree object) {
-                return object.getLastName();
-            }
-        };
+        AbstractArtaColumn<UserTree> lastNameColumn;
+        if (!onlyRows) {
+            lastNameColumn = new ArtaEditableTextColumn<UserTree>(Messages.i18n().tr("Фамилия")) {
+                @Override
+                public String getValue(UserTree object) {
+                    return object.getLastName();
+                }
+
+                @Override
+                public void setValue(UserTree object, String value) {
+                    object.setLastName(value);
+                }
+            };
+            table.addColumn(lastNameColumn);
+        } else {
+            lastNameColumn = new ArtaTextColumn<UserTree>(Messages.i18n().tr("Фамилия")) {
+                @Override
+                public String getValue(UserTree object) {
+                    return object.getLastName();
+                }
+            };
+
+        }
         table.addColumn(lastNameColumn);
 
-        ArtaTextColumn<UserTree> addressColumn = new ArtaTextColumn<UserTree>(Messages.i18n().tr("Адрес")) {
-            @Override
-            public String getValue(UserTree object) {
-                return object.getAddress();
-            }
-        };
+        AbstractArtaColumn<UserTree> addressColumn;
+        if (!onlyRows) {
+            addressColumn = new ArtaEditableTextColumn<UserTree>(Messages.i18n().tr("Адрес")) {
+                @Override
+                public String getValue(UserTree object) {
+                    return object.getAddress();
+                }
+
+                @Override
+                public void setValue(UserTree object, String value) {
+                    object.setAddress(value);
+                }
+            };
+        } else {
+            addressColumn = new ArtaTextColumn<UserTree>(Messages.i18n().tr("Адрес")) {
+                @Override
+                public String getValue(UserTree object) {
+                    return object.getAddress();
+                }
+            };
+        }
         table.addColumn(addressColumn);
 
         table.getCore().setColumnWidth(idColumn, 65);
         table.getCore().setColumnWidth(lastNameColumn, 150);
         table.getCore().setColumnWidth(addressColumn, 150);
 
-        TreeTableProvider<UserTree> provider = new TreeTableProvider<UserTree>();
+        final TreeTableProvider<UserTree> provider = new TreeTableProvider<UserTree>();
         provider.addDataDisplay(table.getCore());
 
         for (int i = 0; i < 15; i++) {
@@ -1363,6 +1411,60 @@ public class ShowCasePanel extends FlowPanel {
             provider.addItem(user);
         }
         provider.flush();
+
+        final ContextMenu rowMenu = new ContextMenu();
+        table.getCore().addRowMenuHandler(new TableRowMenuEvent.Handler<UserTree>() {
+            @Override
+            public void onTableRowMenu(final TableRowMenuEvent<UserTree> event) {
+                rowMenu.clear();
+                rowMenu.add(new MenuItem<Command>(new Command() {
+                    @Override
+                    public void execute() {
+                        provider.getList().remove(event.getObject());
+                        provider.flush();
+                    }
+                }, Messages.i18n().tr("Удалить ряд")));
+                rowMenu.show(event.getX(), event.getY());
+            }
+        });
+
+        table.getCore().addCellMenuHandler(new TableCellMenuEvent.Handler<UserTree>() {
+            @Override
+            public void onTableCellMenu(final TableCellMenuEvent<UserTree> event) {
+                final int row = provider.getList().indexOf(event.getObject()) - table.getCore().getVisibleRange().getStart();
+                final int column = table.getCore().getColumns().indexOf(event.getColumn());
+                ContextMenu cellMenu = new ContextMenu();
+                MenuItem<Command> cellMenuItem = new MenuItem<Command>(new Command() {
+                    @Override
+                    public void execute() {
+                        ((TreeTableWidget)table.getCore().getWidget(row, column)).edit();
+                    }
+                }, Messages.i18n().tr("Редактировать ячейку"));
+                cellMenu.add(cellMenuItem);
+                cellMenuItem.setText(Messages.i18n().tr("Редактировать ячейку") + " " + row + " " + column);
+                cellMenu.show(event.getX(), event.getY());
+            }
+        });
+
+        final ContextMenu headerMenu = new ContextMenu();
+        table.addHeaderMenuHandler(new TableHeaderMenuEvent.Handler<UserTree>() {
+            @Override
+            public void onTableHeaderMenu(final TableHeaderMenuEvent<UserTree> event) {
+                final String headerText = event.getColumn().getHeader().getText();
+                headerMenu.clear();
+                headerMenu.add(new MenuItem<Command>(new Command() {
+                    @Override
+                    public void execute() {
+                        if (!headerText.contains(Messages.i18n().tr("Изменили"))) {
+                            event.getColumn().getHeader().setText(headerText + " " + Messages.i18n().tr("Изменили"));
+                        } else {
+                            event.getColumn().getHeader().setText(event.getColumn().getHeader().getText().replace(Messages.i18n().tr("Изменили"), ""));
+                        }
+                    }
+                }, !headerText.contains(Messages.i18n().tr("Изменили")) ? Messages.i18n().tr("Изменить текст столбца") : Messages.i18n().tr("Вернуть текст столбца")));
+                headerMenu.show(event.getX(), event.getY());
+            }
+        });
 
         root.add(table);
 

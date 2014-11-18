@@ -1013,4 +1013,14 @@ public class TableCore<T> extends Composite implements HasData<T> {
     public HandlerRegistration addRowMenuHandler(TableRowMenuEvent.Handler<T> handler) {
         return bus.addHandlerToSource(TableRowMenuEvent.TYPE, this, handler);
     }
+
+    /**
+     * Возвращает виджет на указанной строке и столбце
+     * @param row строка
+     * @param col столбец
+     * @return  виджет
+     */
+    public Widget getWidget(int row, int col) {
+        return table.getWidget(row, col);
+    }
 }

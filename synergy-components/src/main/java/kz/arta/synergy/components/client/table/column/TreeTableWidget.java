@@ -1,18 +1,19 @@
 package kz.arta.synergy.components.client.table.column;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.client.table.events.CellEditEvent;
 import kz.arta.synergy.components.client.table.events.TreeTableItemEvent;
 
 /**
@@ -22,7 +23,7 @@ import kz.arta.synergy.components.client.table.events.TreeTableItemEvent;
  *
  * Виджет для ячейки отображающей ячейку дерева таблицы.
 */
-public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
+public class TreeTableWidget<T extends TreeTableItem<T>> extends EditableText<T> {
     /**
      * Отступ для каждого уровня
      */
@@ -41,16 +42,6 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
     private Image image;
 
     /**
-     * Элемент текста
-     */
-    private InlineLabel label;
-
-    /**
-     * Объект, который отображается виджетом
-     */
-    private T item;
-
-    /**
      * При смене объекта хендлер на прежний объект надо удалять,
      * для этого существует это поле
      */
@@ -58,38 +49,35 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
     private TreeTableItemEvent.Handler<T> handler;
 
     /**
-     * Столбец
-     */
-    private TreeColumn<T> column;
-    /**
      * Лоадер
      */
     private FlowPanel loader;
 
+    private final FlowPanel widgets;
+
     /**
-     * Корневая панель
+     * Можно ли редактировать ячейку
      */
-    private final FlowPanel root;
+    private boolean isEditable = false;
 
-    public TreeTableWidget(T item, TreeColumn<T> column) {
-        root = new FlowPanel();
-        initWidget(root);
+    public TreeTableWidget(T object, TreeColumn<T> column, boolean isEditable, EventBus bus) {
+        super(column, object, bus);
 
-        root.setStyleName(SynergyComponents.getResources().cssComponents().treeTableItem());
+        widgets = new FlowPanel();
+        widgets.setStyleName(SynergyComponents.getResources().cssComponents().treeTableItem());
 
-        this.column = column;
+        this.isEditable = isEditable;
 
         image = GWT.create(Image.class);
         image.setResource(ImageResources.IMPL.nodeClosed16());
 
-        label = GWT.create(InlineLabel.class);
-        label.setStyleName(SynergyComponents.getResources().cssComponents().mainText());
-        label.setText("");
+        /*обнуляем здесь, чтобы корректно был создан handler*/
+        this.object = null;
+        update(object);
 
-        update(item);
-
-        root.add(image);
-        root.add(label);
+        root.setWidget(widgets);
+        widgets.add(image);
+        widgets.add(label);
 
         image.addClickHandler(new ClickHandler() {
             @Override
@@ -100,6 +88,33 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
                 event.stopPropagation();
             }
         });
+    }
+
+    @Override
+    public void onBrowserEvent(Event event) {
+        int type = event.getTypeInt();
+        int keyCode = event.getKeyCode();
+        if (isEditable) {
+            if (isEditing) {
+                editEvent(event);
+            } else if (type == Event.ONKEYDOWN && (keyCode == KeyCodes.KEY_ENTER || keyCode == KeyCodes.KEY_F2)) {
+                edit();
+            }
+        }
+    }
+
+    /**
+     * Заменяет элемент ввода на текст
+     */
+    protected void unEdit() {
+        isEditing = false;
+        root.setWidget(widgets);
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            getElement().getStyle().setPaddingRight(14, Style.Unit.PX);
+        } else {
+            getElement().getStyle().setPaddingLeft(14, Style.Unit.PX);
+        }
+        root.setFocus(true);
     }
 
     /**
@@ -132,11 +147,11 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
             loader = createLoader();
         }
         image.removeFromParent();
-        root.insert(loader, 0);
+        widgets.insert(loader, 0);
         if (LocaleInfo.getCurrentLocale().isRTL()) {
-            loader.getElement().getStyle().setMarginRight(getMargin(item), Style.Unit.PX);
+            loader.getElement().getStyle().setMarginRight(getMargin(object), Style.Unit.PX);
         } else {
-            loader.getElement().getStyle().setMarginLeft(getMargin(item), Style.Unit.PX);
+            loader.getElement().getStyle().setMarginLeft(getMargin(object), Style.Unit.PX);
         }
     }
 
@@ -145,18 +160,18 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
      */
     private void hideLoader() {
         loader.removeFromParent();
-        root.insert(image, 0);
+        widgets.insert(image, 0);
     }
 
     /**
      * Клик по треугольнику
      */
     private void imageClick() {
-        if (item.isOpen()) {
-            item.close();
+        if (object.isOpen()) {
+            object.close();
         } else {
             showLoader();
-            item.addTreeTableHandler(new TreeTableItemEvent.Handler<T>() {
+            object.addTreeTableHandler(new TreeTableItemEvent.Handler<T>() {
                 @Override
                 public void onClose(TreeTableItemEvent<T> event) {
                     // do nothing
@@ -167,7 +182,7 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
                     hideLoader();
                 }
             });
-            item.open();
+            object.open();
         }
     }
 
@@ -200,19 +215,19 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
      * Обычно вызывается при смене объекта или при его изменении.
      */
     private void update() {
-        String itemText = column.getText(item);
+        String itemText = column.getValue(object);
         String newText = itemText == null ? "" : itemText;
 
         if (!newText.equals(label.getText())) {
             label.setText(newText);
         }
 
-        if (item.hasChildren()) {
+        if (object.hasChildren()) {
             label.removeStyleName(SynergyComponents.getResources().cssComponents().mainText());
             label.setStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
             image.getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
             image.getElement().getStyle().setCursor(Style.Cursor.POINTER);
-            if (item.isOpen()) {
+            if (object.isOpen()) {
                 image.setResource(ImageResources.IMPL.nodeOpen16());
             } else {
                 image.setResource(ImageResources.IMPL.nodeClosed16());
@@ -224,7 +239,7 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
             image.getElement().getStyle().setCursor(Style.Cursor.DEFAULT);
         }
 
-        int margin = getMargin(item);
+        int margin = getMargin(object);
         if (LocaleInfo.getCurrentLocale().isRTL()) {
             image.getElement().getStyle().setMarginRight(margin, Style.Unit.PX);
         } else {
@@ -256,8 +271,8 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends Composite {
      * @param item новый объект
      */
     public void update(T item) {
-        if (this.item != item) {
-            this.item = item;
+        if (this.object != item) {
+            this.object = item;
             if (handlerRegistration != null) {
                 handlerRegistration.removeHandler();
             }

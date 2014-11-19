@@ -45,7 +45,8 @@ public class NotificationWithResponse extends Notification {
     public NotificationWithResponse(String text, Type type, boolean hasCancel) {
         super(text, type);
         popup.setModal(true);
-
+        popup.setGlassEnabled(true);
+        popup.setGlassStyleName(SynergyComponents.getResources().cssComponents().glass());
         this.hasCancel = hasCancel;
 
         root.add((Br) GWT.create(Br.class));

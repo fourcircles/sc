@@ -222,4 +222,6 @@ public interface CssComponents extends CssResource {
 
     String circularG();
     String loader();
+
+    String glass();
 }

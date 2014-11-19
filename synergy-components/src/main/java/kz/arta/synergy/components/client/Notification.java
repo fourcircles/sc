@@ -19,7 +19,7 @@ import java.util.List;
  * Уведомление
  */
 public class Notification {
-    private static final int NOTIFICATION_Z_INDEX = 500;
+    private static final int NOTIFICATION_Z_INDEX = 1500;
 
     static final String BR = "<br/>";
     static final String LIST_START = "<ul>";

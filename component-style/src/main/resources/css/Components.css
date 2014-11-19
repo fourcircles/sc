@@ -2428,7 +2428,7 @@ p {
     max-width: 350px;
     margin-left: notificationOffset;
     vertical-align: top;
-    word-break: break-word;
+    word-wrap: break-word;
 }
 .notificationText ul {
     margin: 0;
@@ -2436,7 +2436,7 @@ p {
     list-style-position: inside;
 }
 .notification span {
-    word-break: break-word;
+    word-wrap: break-word;
 }
 
 .notification.success {
@@ -2624,6 +2624,12 @@ p {
 
 }
 
+.glass {
+    z-index: 1500;
+    background-color: #000000;
+    opacity: 0.3;
+}
+
 /*.tableLoader {*/
     /*font-size: 0;*/
     /*text-indent: -9999em;*/
@@ -2689,3 +2695,4 @@ p {
         /*transform: rotate(360deg);*/
     /*}*/
 /*}*/
+

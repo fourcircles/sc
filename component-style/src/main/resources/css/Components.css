@@ -2249,6 +2249,7 @@ p {
     -moz-box-sizing: border-box;
     position: relative;
     padding-right: 35px;
+    overflow: hidden;
 }
 
 .path > .buttonSimple {

@@ -1239,7 +1239,7 @@ public class ShowCasePanel extends FlowPanel {
         localTree.addItem(getFirstDeepest(localTree), deepestItem.getText() + " " + deepestItem.getText()).setIcon(ImageResources.IMPL.folder());
 
         final Path path = new Path();
-        path.getElement().getStyle().setWidth(800, Style.Unit.PX);
+        path.getElement().getStyle().setWidth(80, Style.Unit.PCT);
         path.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         path.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
         path.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);

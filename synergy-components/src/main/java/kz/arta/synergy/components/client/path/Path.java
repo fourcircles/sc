@@ -1,10 +1,13 @@
 package kz.arta.synergy.components.client.path;
 
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -33,6 +36,8 @@ public class Path extends Composite {
      */
     ImageButton button;
 
+    List<PathItem> items;
+
     public Path() {
         bus = new SimpleEventBus();
 
@@ -42,6 +47,13 @@ public class Path extends Composite {
 
         button = new ImageButton(ImageResources.IMPL.favouriteFolder());
         root.add(button);
+        ResizeHandler resizeHandler = new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                setPath(items);
+            }
+        };
+        Window.addResizeHandler(resizeHandler);
     }
 
     @Override
@@ -65,6 +77,7 @@ public class Path extends Composite {
      * @param items список элементов пути
      */
     public void setPath(List<PathItem> items) {
+        this.items = items;
         clear();
         root.insert(items.get(items.size() - 1), 0);
         for (int i = items.size() - 2; i >= 0; i--) {

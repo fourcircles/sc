@@ -1,23 +1,31 @@
 package kz.arta.synergy.components.client.input;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.*;
+import kz.arta.synergy.components.client.ArtaFlowPanel;
+import kz.arta.synergy.components.client.Notification;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.button.ImageButton;
 import kz.arta.synergy.components.client.button.SimpleButton;
 import kz.arta.synergy.components.client.input.events.NewFilesEvent;
 import kz.arta.synergy.components.client.menu.ContextMenu;
 import kz.arta.synergy.components.client.menu.MenuItem;
+import kz.arta.synergy.components.client.msg.UserMessage;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.resources.Messages;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+import kz.arta.synergy.components.client.table.column.ArtaColumn;
 import kz.arta.synergy.components.client.util.Navigator;
+import kz.arta.synergy.components.client.util.Selection;
 import kz.arta.synergy.components.client.util.Utils;
 
 import java.util.ArrayList;
@@ -38,9 +46,14 @@ public class FilesPanel extends Composite {
     private final ImageButton downButton;
 
     /**
-     * Контекстное меню. {@link #getMenu()} {@link #setMenu(kz.arta.synergy.components.client.menu.ContextMenu)}
+     * Контекстное меню для кнопки вниз. {@link #getMenu()} {@link #setMenu(kz.arta.synergy.components.client.menu.ContextMenu)}
      */
     private ContextMenu menu;
+
+    /**
+     * Контекстное меню для файлов
+     */
+    private ContextMenu filesMenu;
 
     /**
      * Элемент для аплода файлов
@@ -57,6 +70,8 @@ public class FilesPanel extends Composite {
      */
     private final FlowPanel filesPanel;
 
+    private ArtaFlowPanel selectedFile;
+
     public FilesPanel() {
         FlowPanel root = new FlowPanel();
         initWidget(root);
@@ -68,7 +83,7 @@ public class FilesPanel extends Composite {
         upload.getElement().setAttribute("multiple", "true");
         root.add(upload);
 
-        final SimpleButton button = new SimpleButton(Messages.i18n().tr("Нажмите для добавления файлов"), ImageResources.IMPL.zoom());
+        final SimpleButton button = new SimpleButton(Messages.i18n().tr("Нажмите для добавления файлов"), ImageResources.IMPL.add());
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -85,10 +100,10 @@ public class FilesPanel extends Composite {
         };
 
         menu = new ContextMenu();
-        menu.add(new MenuItem<Command>(null, Messages.i18n().tr("Из хранилища"), ImageResources.IMPL.zoom()));
-        menu.add(new MenuItem<Command>(showUpload, Messages.i18n().tr("Из компьютера"), ImageResources.IMPL.zoom()));
-        menu.add(new MenuItem<Command>(null, Messages.i18n().tr("Создать новый"), ImageResources.IMPL.zoom()));
-        menu.add(new MenuItem<Command>(null, Messages.i18n().tr("Сканировать"), ImageResources.IMPL.zoom()));
+        menu.add(new MenuItem<Command>(null, Messages.i18n().tr("Из хранилища"), ImageResources.IMPL.fromStorage()));
+        menu.add(new MenuItem<Command>(showUpload, Messages.i18n().tr("Из компьютера"), ImageResources.IMPL.fromPC()));
+        menu.add(new MenuItem<Command>(null, Messages.i18n().tr("Создать новый"), ImageResources.IMPL.createNew()));
+        menu.add(new MenuItem<Command>(null, Messages.i18n().tr("Сканировать"), ImageResources.IMPL.scan()));
 
         downButton = new ImageButton(ImageResources.IMPL.whiteButtonDropdown());
         downButton.addClickHandler(new ClickHandler() {
@@ -135,6 +150,57 @@ public class FilesPanel extends Composite {
                 filesSelected();
             }
         });
+
+        MenuItem<Command> download = new MenuItem<Command>(null, Messages.i18n().tr("Скачать"));
+        MenuItem<Command> downLoadPdf = new MenuItem<Command>(null, Messages.i18n().tr("Скачать PDF версию"));
+        MenuItem<Command> makeMain = new MenuItem<Command>(null, Messages.i18n().tr("Сделать основным"));
+        MenuItem<Command> newVersion = new MenuItem<Command>(null, Messages.i18n().tr("Новая версия"));
+        MenuItem<Command> delete = new MenuItem<Command>(null, Messages.i18n().tr("Удалить"));
+
+        filesMenu = new ContextMenu();
+        filesMenu.add(download);
+        filesMenu.add(downLoadPdf);
+        filesMenu.add(makeMain);
+        filesMenu.add(newVersion);
+        filesMenu.add(delete);
+
+        //todo real handler when redesign synergy
+        delete.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                selectedFile.removeFromParent();
+            }
+        });
+
+        newVersion.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.SUCCESS);
+            }
+        });
+
+        makeMain.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.SUCCESS);
+            }
+        });
+
+        downLoadPdf.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.SUCCESS);
+            }
+        });
+
+        download.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.SUCCESS);
+            }
+        });
+
+        Selection.disableTextSelectInternal(getElement());
     }
 
     /**
@@ -161,7 +227,7 @@ public class FilesPanel extends Composite {
     private void addFile(String fileName) {
         addedFiles.add(fileName);
 
-        FlowPanel filePanel = new FlowPanel();
+        final ArtaFlowPanel filePanel = new ArtaFlowPanel();
         filePanel.setStyleName(SynergyComponents.getResources().cssComponents().file());
 
         // пока что иконка всегда одинаковая
@@ -173,6 +239,24 @@ public class FilesPanel extends Composite {
         fileNameElement.setText(fileName);
         filePanel.add(fileNameElement);
 
+        filePanel.addContextMenuHandler(new ContextMenuHandler() {
+            @Override
+            public void onContextMenu(ContextMenuEvent event) {
+                filesMenu.show(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
+            }
+        });
+        filePanel.addMouseDownHandler(new MouseDownHandler() {
+            @Override
+            public void onMouseDown(MouseDownEvent event) {
+                if (event.getNativeEvent().getButton() != NativeEvent.BUTTON_MIDDLE) {
+                    if (selectedFile != null) {
+                        selectedFile.removeStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
+                    }
+                    filePanel.addStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
+                    selectedFile = filePanel;
+                }
+            }
+        });
         filesPanel.add(filePanel);
     }
 
@@ -247,6 +331,21 @@ public class FilesPanel extends Composite {
      */
     public void setMenu(ContextMenu menu) {
         this.menu = menu;
+    }
+
+    /**
+     * @return контекстное меню файла
+     */
+    public ContextMenu getFilesMenu() {
+        return filesMenu;
+    }
+
+    /**
+     * Задает новое меню для файла
+     * @param menu  контекстное меню
+     */
+    public void setFilesMenu(ContextMenu menu) {
+        this.filesMenu = menu;
     }
 
     /**

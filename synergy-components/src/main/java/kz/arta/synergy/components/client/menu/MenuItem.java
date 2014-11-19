@@ -27,7 +27,7 @@ import kz.arta.synergy.components.client.util.Selection;
  * Здесь "значением" для интерфейса {@link com.google.gwt.user.client.ui.HasValue} является факт того,
  * выбран ли элемент или нет.
  */
-public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValueChangeHandlers<Boolean>, HasText, HasMouseMoveHandlers {
+public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValueChangeHandlers<Boolean>, HasText, HasMouseMoveHandlers, HasClickHandlers {
     /**
      * Значение элемента меню
      */
@@ -217,5 +217,10 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
     @Override
     public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler) {
         return bus.addHandlerToSource(MouseMoveEvent.getType(), this, handler);
+    }
+
+    @Override
+    public HandlerRegistration addClickHandler(ClickHandler handler) {
+        return bus.addHandlerToSource(ClickEvent.getType(), this, handler);
     }
 }

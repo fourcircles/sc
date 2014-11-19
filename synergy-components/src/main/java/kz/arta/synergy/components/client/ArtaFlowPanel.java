@@ -15,6 +15,14 @@ public class ArtaFlowPanel extends FlowPanel implements
 
     public ArtaFlowPanel() {
         sinkEvents(Event.ONMOUSEOVER);
+        sinkEvents(Event.ONCONTEXTMENU);
+    }
+
+    public void onBrowserEvent(Event event) {
+        if (event.getTypeInt() == Event.ONCONTEXTMENU) {
+            event.preventDefault();
+        }
+        super.onBrowserEvent(event);
     }
 
     @Override

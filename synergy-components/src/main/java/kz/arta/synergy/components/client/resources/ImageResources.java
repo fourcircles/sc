@@ -191,4 +191,15 @@ public interface ImageResources extends ClientBundle {
     ImageResource notificationYellowQuestion();
     @ClientBundle.Source("images/notifications/success.png")
     ImageResource notificationSuccess();
+
+    @ClientBundle.Source("images/file/from_pc.png")
+    ImageResource fromPC();
+    @ClientBundle.Source("images/file/from_storage.png")
+    ImageResource fromStorage();
+    @ClientBundle.Source("images/file/new.png")
+    ImageResource createNew();
+    @ClientBundle.Source("images/file/scan.png")
+    ImageResource scan();
+    @ClientBundle.Source("images/file/add.png")
+    ImageResource add();
 }

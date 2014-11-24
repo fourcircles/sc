@@ -240,15 +240,15 @@ public class Table<T> extends Composite {
     private void updateHeaderWidth(int index) {
         Style tdstyle = headersTable.getFlexCellFormatter().getElement(0, index).getStyle();
         //ширина элемента td
+        int columnWidth = tableCore.getColumnWidth(index);
         if (tableCore.columnHasWidth(index)) {
-            tdstyle.setWidth(tableCore.getColumnWidth(index), Style.Unit.PX);
+            tdstyle.setWidth(columnWidth, Style.Unit.PX);
         } else {
             tdstyle.clearWidth();
         }
 
         //ширина виджета Header
-        tableCore.getColumns().get(index).getHeader().
-                setWidth(headersTable.getFlexCellFormatter().getElement(0, index).getOffsetWidth());
+        tableCore.getColumns().get(index).getHeader().setWidth(columnWidth);
     }
 
     /**
@@ -334,22 +334,10 @@ public class Table<T> extends Composite {
         int leftWidth = tableCore.getElement(0, leftIndex).getOffsetWidth();
         int rightWidth = tableCore.getElement(0, rightIndex).getOffsetWidth();
 
-        // если один из соседних столбцов - без ширины, то ему не обязательно задавать ширину
-        boolean widthSet = false;
-        if (tableCore.columnHasWidth(leftIndex)) {
-            setColumnWidth(leftIndex, leftWidth + delta);
-            widthSet = true;
-        }
-        if (tableCore.columnHasWidth(rightIndex)) {
-            setColumnWidth(rightIndex, rightWidth - delta);
-            widthSet = true;
-        }
-        if (!widthSet) {
-            // случай, когда у обоих столбцов ширина не проставлена
-            // чтобы зафиксировать изменение левому столбцу указывается
-            // ширина и он больше не растягивается
-            setColumnWidth(leftIndex, leftWidth + delta);
-        }
+        // задавать новую ширину надо обоим столбцам, даже если до этого у них не было ширины
+        setColumnWidth(leftIndex, leftWidth + delta);
+        setColumnWidth(rightIndex, rightWidth - delta);
+
         redrawDividers();
     }
 

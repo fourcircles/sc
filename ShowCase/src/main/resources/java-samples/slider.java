@@ -3,7 +3,7 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import kz.arta.synergy.components.client.Indicator;
-import kz.arta.synergy.components.client.ProgressBar;
+import kz.arta.synergy.components.client.progressbar.ProgressBar;
 import kz.arta.synergy.components.client.Slider;
 
 public class Sample {

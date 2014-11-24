@@ -1,4 +1,4 @@
-package kz.arta.synergy.components.client;
+package kz.arta.synergy.components.client.progressbar;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -8,7 +8,11 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.*;
+import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.Messages;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: vsl
@@ -16,8 +20,40 @@ import kz.arta.synergy.components.client.resources.Messages;
  * Time: 15:20
  *
  * Прогресс бар
+ *
+ * Надписи на прогресс-баре можно задавать с помощью конструктора {@link #ProgressBar(boolean, java.util.List)}.
+ * По умолчанию отображается текущее значение в процентах и надпись "завершено" при завершении.
  */
 public class ProgressBar extends Composite implements HasValue<Double>, HasClickHandlers, HasText {
+    /**
+     * Максимальное значение прогресс бара
+     */
+    private static final double MAX_VALUE = 1.0;
+    /**
+     * Минимальное значение прогресс бара
+     */
+    private static final double MIN_VALUE = 0.0;
+
+    /**
+     * Надпись, отображающая значение в процентах. Добавляется везде последней, как страховка.
+     */
+    public static final ProgressBarCustomLabel PERCENTAGE_LABEL = new ProgressBarCustomLabel() {
+        @Override
+        public String getMessage(double value) {
+            return (int) (value * 100) + "%";
+        }
+
+        @Override
+        public boolean isApplicable(double value) {
+            return true;
+        }
+    };
+
+    /**
+     * Обычная надпись при завершении задания
+     */
+    public static final ProgressBarCustomLabel FINAL_LABEL = new ProgressBarConstraintLabel(1.0, 1.0, Messages.i18n().tr("Завершено"));
+
     /**
      * Значение прогресс-бара
      */
@@ -43,10 +79,20 @@ public class ProgressBar extends Composite implements HasValue<Double>, HasClick
      */
     private final InlineLabel label;
 
+    private List<ProgressBarCustomLabel> customLabels;
+
     /**
      * @param type true - зеленый, false - красный
      */
     public ProgressBar(boolean type) {
+        this(type, null);
+    }
+
+    /**
+     * Здесь задается список надписей. При изменении значения подставляется первая валидная надпись прогресс бара.
+     * @param customLabels список с надписями
+     */
+    public ProgressBar(boolean type, List<ProgressBarCustomLabel> customLabels) {
         FlowPanel root = new FlowPanel();
         initWidget(root);
         root.setStyleName(SynergyComponents.getResources().cssComponents().progressBar());
@@ -68,6 +114,26 @@ public class ProgressBar extends Composite implements HasValue<Double>, HasClick
 
         label = new InlineLabel();
         root.add(label);
+
+        if (customLabels == null) {
+            this.customLabels = new ArrayList<ProgressBarCustomLabel>();
+            this.customLabels.add(FINAL_LABEL);
+        } else {
+            this.customLabels = customLabels;
+        }
+
+        // надпись, которая отображает просто значение в процентах добавляется всегда и всегда
+        // последней, в качестве страховки от случая, когда ни одна надпись не сработает
+        this.customLabels.add(PERCENTAGE_LABEL);
+    }
+
+    /**
+     * Этот метод надо использовать для модификации кастомных надписей уже созданного прогресс-бара
+     * @return список, по которому выбирается надпись при изменении значения
+     */
+    @SuppressWarnings("UnusedDeclaration")
+    public List<ProgressBarCustomLabel> getCustomLabels() {
+        return customLabels;
     }
 
     /**
@@ -85,9 +151,9 @@ public class ProgressBar extends Composite implements HasValue<Double>, HasClick
         return optionalValue;
     }
 
-    private double constraint(double value) {
-        double trueValue = Math.max(value, 0);
-        trueValue = Math.min(trueValue, 1);
+    static double constraint(double value) {
+        double trueValue = Math.max(value, MIN_VALUE);
+        trueValue = Math.min(trueValue, MAX_VALUE);
         return trueValue;
     }
 
@@ -106,11 +172,12 @@ public class ProgressBar extends Composite implements HasValue<Double>, HasClick
         double trueValue = constraint(value);
 
         this.value = trueValue;
-        if (Double.compare(trueValue, 1.0) == 0) {
-            label.setText(Messages.i18n().tr("Завершено"));
-        } else {
-            int intValue = (int) (trueValue * 100);
-            label.setText(intValue + "%");
+
+        for (ProgressBarCustomLabel customLabel : customLabels) {
+            if (customLabel.isApplicable(trueValue)) {
+                label.setText(customLabel.getMessage(trueValue));
+                break;
+            }
         }
 
         valueLine.getElement().getStyle().setWidth(trueValue * 100, Style.Unit.PCT);
@@ -139,4 +206,5 @@ public class ProgressBar extends Composite implements HasValue<Double>, HasClick
     public void setText(String text) {
         label.setText(text);
     }
+
 }

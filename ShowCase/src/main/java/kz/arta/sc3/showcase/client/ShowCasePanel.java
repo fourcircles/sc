@@ -55,6 +55,9 @@ import kz.arta.synergy.components.client.menu.MenuItem;
 import kz.arta.synergy.components.client.menu.filters.ListTextFilter;
 import kz.arta.synergy.components.client.path.Path;
 import kz.arta.synergy.components.client.path.PathItem;
+import kz.arta.synergy.components.client.progressbar.ProgressBar;
+import kz.arta.synergy.components.client.progressbar.ProgressBarConstraintLabel;
+import kz.arta.synergy.components.client.progressbar.ProgressBarCustomLabel;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.stack.SingleStack;
@@ -2548,7 +2551,7 @@ public class ShowCasePanel extends FlowPanel {
         slider1.setOptionalValue(0.5);
         slider1.setValue(0.66);
         progress1.setOptionalValue(0.5);
-        progress1.setOptionalValue(0.66);
+        progress1.setValue(0.66);
 
         root.add(new Br());
 
@@ -2570,7 +2573,15 @@ public class ShowCasePanel extends FlowPanel {
 
 
         root.add(new Br());
-        final ProgressBar progress2 = new ProgressBar(false);
+
+        List<ProgressBarCustomLabel> customLabels = new ArrayList<ProgressBarCustomLabel>();
+        customLabels.add(new ProgressBarConstraintLabel(0, 0, Messages.i18n().tr("Получение")));
+        customLabels.add(new ProgressBarConstraintLabel(1, 1, Messages.i18n().tr("Завершено")));
+        customLabels.add(new ProgressBarConstraintLabel(0, 0.2, Messages.i18n().tr("Подготовка")));
+        customLabels.add(new ProgressBarConstraintLabel(0.2, 0.7, Messages.i18n().tr("Исполнение сложного задания")));
+        customLabels.add(new ProgressBarConstraintLabel(0.7, 1, Messages.i18n().tr("Завершение исполнения сложного задания")));
+
+        final ProgressBar progress2 = new ProgressBar(false, customLabels);
         progress2.getElement().getStyle().setWidth(150, Style.Unit.PX);
         progress2.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         progress2.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);

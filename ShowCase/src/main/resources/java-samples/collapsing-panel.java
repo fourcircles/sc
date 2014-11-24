@@ -1,4 +1,6 @@
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.sc3.showcase.client.resources.Messages;
@@ -30,6 +32,16 @@ public class Sample {
 
         //добавление контента в коллапсинг-панель
         meta.getPanel().add(row);
+
+        // добавление кнопки в коллапсинг панель
+        meta.addButton(Messages.i18n().tr("Кнопка"));
+        meta.showButton();
+        meta.addButtonClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                // click
+            }
+        });
     }
 }
 

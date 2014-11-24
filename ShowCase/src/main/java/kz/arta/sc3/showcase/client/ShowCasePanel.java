@@ -1657,7 +1657,8 @@ public class ShowCasePanel extends FlowPanel {
 
         FlowPanel collapsingPanels = new FlowPanel();
 
-        CollapsingPanel meta = new CollapsingPanel(Messages.i18n().tr("Метаданные"));
+        final CollapsingPanel meta = new CollapsingPanel(Messages.i18n().tr("Метаданные"));
+        meta.addButton(Messages.i18n().tr("Кнопка"));
         addCodeSample(meta, Messages.i18n().tr("Коллапсинг-панель"), ShowCase.RESOURCES.collapsingPanel().getText());
         meta.setWidth("500px");
         meta.getElement().getStyle().setMarginBottom(10, Style.Unit.PX);
@@ -1671,9 +1672,25 @@ public class ShowCasePanel extends FlowPanel {
 
         collapsingPanels.add(meta);
 
-        CollapsingPanel classifier = new CollapsingPanel(Messages.i18n().tr("Классификатор"));
+        final CollapsingPanel classifier = new CollapsingPanel(Messages.i18n().tr("Классификатор"));
+        classifier.addButton(Messages.i18n().tr("Кнопка"));
+        classifier.showButton();
         classifier.setWidth("500px");
         classifier.getPanel().getElement().getStyle().setPadding(18, Style.Unit.PX);
+        classifier.addButtonClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                classifier.hideButton();
+                meta.showButton();
+            }
+        });
+        meta.addButtonClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                classifier.showButton();
+                meta.hideButton();
+            }
+        });
 
         classifier.getPanel().add(makeLineForCollapsingPanel(Messages.i18n().tr("Дата публикации"), 200, 264, true));
         classifier.getPanel().add(makeLineForCollapsingPanel(Messages.i18n().tr("Название"), 200, 264, false));

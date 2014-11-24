@@ -3,10 +3,12 @@ package kz.arta.synergy.components.client.collapsing;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.button.SimpleButton;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.Navigator;
@@ -61,6 +63,16 @@ public class CollapsingPanel extends Composite implements ArtaHasText {
     private CollapsingAnimationIE9 ie9Animation;
 
     /**
+     * Панель для надписи, стерлки и кнопки
+     */
+    private final ArtaFlowPanel title;
+
+    /**
+     * Кнопка коллапсинг панели
+     */
+    private SimpleButton button;
+
+    /**
      * @param titleText текст для коллапсинг-панели
      */
     public CollapsingPanel(String titleText) {
@@ -68,7 +80,7 @@ public class CollapsingPanel extends Composite implements ArtaHasText {
         initWidget(root);
         root.addStyleName(SynergyComponents.getResources().cssComponents().collapsingPanel());
 
-        ArtaFlowPanel title = new ArtaFlowPanel();
+        title = new ArtaFlowPanel();
 
         title.addStyleName(SynergyComponents.getResources().cssComponents().collapsingTitle());
         title.getElement().getStyle().setCursor(Style.Cursor.POINTER);
@@ -109,6 +121,68 @@ public class CollapsingPanel extends Composite implements ArtaHasText {
         contentPanel.setStyleName(SynergyComponents.getResources().cssComponents().collapsingContent());
 
         root.add(contentContainer);
+    }
+
+    /**
+     * Создает кнопку для коллапсинг панели.
+     * Кнопка создается один раз, затем надо пользоваться методами {@link #hideButton()} и {@link #showButton()}
+     *
+     * @param buttonText текст кнопки
+     */
+    public void addButton(String buttonText) {
+        if (button == null) {
+            button = new SimpleButton(buttonText);
+            button.getElement().getStyle().setFloat(Style.Float.RIGHT);
+            button.getElement().getStyle().setMarginLeft(14, Style.Unit.PX);
+            button.getElement().getStyle().setMarginTop(3, Style.Unit.PX);
+            button.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    event.stopPropagation();
+                }
+            });
+        }
+    }
+
+    /**
+     * Изменяет текст кнопки
+     *
+     * @param buttonText новый текст кнопки
+     */
+    @SuppressWarnings("UnusedDeclaration")
+    public void setButtonText(String buttonText) {
+        if (button != null) {
+            button.setText(buttonText);
+        }
+    }
+
+    /**
+     * Показывает кнопку
+     */
+    public void showButton() {
+        title.add(button);
+    }
+
+    /**
+     * Убрать кнопку
+     */
+    public void hideButton() {
+        button.removeFromParent();
+    }
+
+    /**
+     * Добавить хэндлер на клик кнопки. Перед тем, как добавлять хэндлер надо добавить кнопку {@link #addButton(String)},
+     * потому что по умолчанию ее нет.
+     *
+     * @param handler хэндлер
+     * @return регистрация хэндлера
+     */
+    public HandlerRegistration addButtonClickHandler(ClickHandler handler) {
+        if (button != null) {
+            return button.addClickHandler(handler);
+        } else {
+            return null;
+        }
     }
 
     /**

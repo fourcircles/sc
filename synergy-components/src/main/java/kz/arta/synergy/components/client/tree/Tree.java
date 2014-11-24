@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.HasContextMenuHandlers;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -42,17 +43,18 @@ public class Tree extends Composite implements HasContextMenuHandlers {
     List<TreeItem> items;
 
     /**
-     * Создаем дерево (по умолчанию со скроллом)
+     * Создаем дерево (по умолчанию со скроллом и белое)
      */
     public Tree() {
-        this(true);
+        this(true, true);
     }
 
     /**
      * Создаем дерево с указанием необходимости скролла
      * @param withScroll true - нужен скролл, false - не нужен. Если false - тогда нужно поместить во внешний скролл
+     * @param white true - дерево белое, false - черное
      */
-    public Tree(boolean withScroll) {
+    public Tree(boolean withScroll, boolean white) {
 
         if (withScroll) {
             ArtaScrollPanel scroll = new ArtaScrollPanel();
@@ -111,7 +113,6 @@ public class Tree extends Composite implements HasContextMenuHandlers {
         return item;
     }
 
-    //todo сделать добавление ноды дерева с иконкой
     /**
      * Добавить новый узел дерева в заданный узел
      * @param parentItem родительский узел
@@ -124,6 +125,17 @@ public class Tree extends Composite implements HasContextMenuHandlers {
         return item;
     }
 
+    /**
+     * {@link #addItem(TreeItem, String)}
+     * @param icon иконка у нового элемента дерева
+     */
+    public TreeItem addItem(TreeItem parentItem, String text, ImageResource icon) {
+        TreeItem item = addItem(parentItem, text);
+        item.setIcon(icon);
+        return item;
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
     public HandlerRegistration addTreeOpenHandler(TreeOpenEvent.Handler handler) {
         return bus.addHandler(TreeOpenEvent.getType(), handler);
     }

@@ -13,41 +13,38 @@ public class Sample {
         combo.setReadOnly(false);
 
         // комбобокс изменяет состояния главного комбобокса
-        ComboBox<Integer> statesCombo = new ComboBox<Integer>();
+        ComboBox<ComboState> statesCombo = new ComboBox<ComboState>();
         comboBoxPanel.add(statesCombo);
 
-        // в него нельзя вводить значения для поиска
         statesCombo.setReadOnly(true);
 
-        statesCombo.addItem(Messages.i18n().tr("Включен, изменяем"), 1);
-        statesCombo.addItem(Messages.i18n().tr("Включен, неизменяем"), 2);
-        statesCombo.addItem(Messages.i18n().tr("Выключен"), 3);
+        statesCombo.addItem(Messages.i18n().tr("Включен, изменяем"), ComboState.ON);
+        statesCombo.addItem(Messages.i18n().tr("Включен, неизменяем"), ComboState.ON_READONLY);
+        statesCombo.addItem(Messages.i18n().tr("Выключен"), ComboState.OFF);
 
         // по умолчанию главный комбобокс включен и можно вводить значения для поиска
-        statesCombo.selectValue(1, false);
+        statesCombo.selectValue(ComboState.ON, false);
 
         // добавление хэндлера для выбора нового значения
-        statesCombo.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+        statesCombo.addValueChangeHandler(new ValueChangeHandler<ComboState>() {
             @Override
-            public void onValueChange(ValueChangeEvent<Integer> event) {
-                // также можно использовать statesCombo.getSelectedValue(), но так лучше
-                switch (event.getValue()) {
-                    case 1:
+            public void onValueChange(ValueChangeEvent<ComboState> event) {
+                switch(event.getValue()) {
+                    case ON:
                         combo.setEnabled(true);
                         combo.setReadOnly(false);
                         break;
-                    case 2:
+                    case ON_READONLY:
                         combo.setEnabled(true);
                         combo.setReadOnly(true);
                         break;
-                    case 3:
+                    case OFF:
                         combo.setEnabled(false);
                         break;
                     default:
-                        // ничего не происходит
                 }
             }
-        });
+        })
     }
 
     /**
@@ -60,5 +57,9 @@ public class Sample {
         for (int i = 1; i < 30; i++) {
             combobox.addItem(Messages.i18n().tr("Пункт меню ") + i, Messages.i18n().tr("Пункт меню ") + i);
         }
+    }
+
+    public enum ComboState {
+        OFF, ON, ON_READONLY
     }
 }

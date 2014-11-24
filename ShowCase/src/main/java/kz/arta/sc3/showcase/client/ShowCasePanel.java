@@ -647,32 +647,32 @@ public class ShowCasePanel extends FlowPanel {
         combo.setReadOnly(false);
         comboBoxPanel.add(combo);
 
-        ComboBox<Integer> statesCombo = new ComboBox<Integer>();
+        ComboBox<ComboState> statesCombo = new ComboBox<ComboState>();
         addCodeSample(statesCombo, Messages.i18n().tr("Комбобокс"), ShowCase.RESOURCES.combobox().getText());
         setMarginLeft(statesCombo, 20);
         comboBoxPanel.add(statesCombo);
 
         statesCombo.setReadOnly(true);
 
-        statesCombo.addItem(Messages.i18n().tr("Включен, изменяем"), 1);
-        statesCombo.addItem(Messages.i18n().tr("Включен, неизменяем"), 2);
-        statesCombo.addItem(Messages.i18n().tr("Выключен"), 3);
+        statesCombo.addItem(Messages.i18n().tr("Включен, изменяем"), ComboState.ON);
+        statesCombo.addItem(Messages.i18n().tr("Включен, неизменяем"), ComboState.ON_READONLY);
+        statesCombo.addItem(Messages.i18n().tr("Выключен"), ComboState.OFF);
 
-        statesCombo.selectValue(1, false);
+        statesCombo.selectValue(ComboState.ON, false);
 
-        statesCombo.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+        statesCombo.addValueChangeHandler(new ValueChangeHandler<ComboState>() {
             @Override
-            public void onValueChange(ValueChangeEvent<Integer> event) {
+            public void onValueChange(ValueChangeEvent<ComboState> event) {
                 switch (event.getValue()) {
-                    case 1:
+                    case ON:
                         combo.setEnabled(true);
                         combo.setReadOnly(false);
                         break;
-                    case 2:
+                    case ON_READONLY:
                         combo.setEnabled(true);
                         combo.setReadOnly(true);
                         break;
-                    case 3:
+                    case OFF:
                         combo.setEnabled(false);
                         break;
                     default:
@@ -964,7 +964,7 @@ public class ShowCasePanel extends FlowPanel {
     }
 
     private Tree copyTree(Tree tree, boolean withScroll) {
-        Tree newTree = new Tree(withScroll);
+        Tree newTree = new Tree(withScroll, true);
         for (TreeItem item : tree.getItems()) {
             TreeItem newItem = newTree.addItem(item.getText());
             copyTreeItem(newTree, item, newItem);

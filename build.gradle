@@ -2,7 +2,7 @@ apply plugin: 'sonar-runner'
 
 version='3.0'
 task wrapper(type: Wrapper) {
-  gradleVersion = "2.2-20140930220016+0000"
+  gradleVersion = "2.2"
 }
 
 repositories {

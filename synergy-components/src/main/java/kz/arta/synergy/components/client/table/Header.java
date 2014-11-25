@@ -1,5 +1,6 @@
 package kz.arta.synergy.components.client.table;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
@@ -149,6 +150,8 @@ public class Header extends Composite implements ArtaHasText,
     public void setWidth(int width) {
         int labelWidth = width;
         labelWidth -= 18;
+        getElement().getStyle().setWidth(labelWidth, Style.Unit.PX);
+
         if (isSorted) {
             labelWidth -= 10 + Constants.STD_ICON_WIDTH + 5;
         }

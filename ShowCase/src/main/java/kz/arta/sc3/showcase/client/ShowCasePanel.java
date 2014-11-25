@@ -1029,9 +1029,7 @@ public class ShowCasePanel extends FlowPanel {
         table.setMultiLine(!onlyRows);
 
         table.getCore().setOnlyRows(onlyRows);
-        if (onlyRows) {
-            table.setHeight(600 + "px");
-        }
+        table.setHeight(600 + "px");
 
         final ArtaTextColumn<User> idColumn = new ArtaTextColumn<User>("#") {
             @Override
@@ -1083,6 +1081,11 @@ public class ShowCasePanel extends FlowPanel {
         };
         addressColumn.setSortable(true);
         table.addColumn(addressColumn);
+
+        for (int i = 0; i < table.getCore().getColumns().size(); i++) {
+            table.setColumnWidth(i, 400);
+        }
+        table.setWidth("1200px");
 
         final ListDataProvider<User> provider = new ListDataProvider<User>();
         provider.addDataDisplay(table.getCore());

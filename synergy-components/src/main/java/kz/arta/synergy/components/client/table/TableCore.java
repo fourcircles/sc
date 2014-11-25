@@ -16,7 +16,6 @@ import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.*;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.table.column.ArtaColumn;
 import kz.arta.synergy.components.client.table.events.CellEditEvent;
 import kz.arta.synergy.components.client.table.events.TableCellMenuEvent;
@@ -37,11 +36,6 @@ import java.util.Map;
  * @see {@link Table} дополнительный функционал
  */
 public class TableCore<T> extends Composite implements HasData<T> {
-    /**
-     * Корневая панель
-     */
-    private final ArtaScrollPanel scroll;
-
     /**
      * Таблица
      */
@@ -105,20 +99,11 @@ public class TableCore<T> extends Composite implements HasData<T> {
     Map<ArtaColumn<T>, Integer> widths = new HashMap<ArtaColumn<T>, Integer>();
 
     /**
-     * Задана ли высота. Если не задана, то таблица растягивается.
-     * Растяжение таблицы реализовано, как периодическое изменение параметра height.
-     * Явно заданный параметр height необходим для корректной работы скролла.
-     */
-    private boolean isHeightSet;
-
-    /**
      * Точное ли количество объектов
      */
     private boolean isRowCountExact;
 
     public TableCore(int pageSize, ProvidesKey<T> keyProvider, final EventBus bus) {
-        scroll = new ArtaScrollPanel();
-        initWidget(scroll);
         this.bus = bus;
 
         this.keyProvider = keyProvider;
@@ -127,13 +112,12 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
         table = new FlexTable();
         table.sinkEvents(Event.ONCONTEXTMENU);
+        initWidget(table);
 
         table.addStyleName(SynergyComponents.getResources().cssComponents().table());
         for (int i = 0; i < pageSize; i++) {
             table.insertRow(0);
         }
-
-        scroll.setWidget(table);
 
         columns = new ArrayList<ArtaColumn<T>>();
         objects = new ArrayList<T>(pageSize);
@@ -412,7 +396,6 @@ public class TableCore<T> extends Composite implements HasData<T> {
         }
         if (select) {
             element.addClassName(SynergyComponents.getResources().cssComponents().selected());
-            element.scrollIntoView();
         } else {
             element.removeClassName(SynergyComponents.getResources().cssComponents().selected());
         }
@@ -632,16 +615,12 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param index позиция столбца
      */
     public boolean columnHasWidth(int index) {
-        if (index >= 0 && index < columns.size()) {
-            return columnHasWidth(columns.get(index));
-        }
-        return false;
+        return index >= 0 && index < columns.size() && columnHasWidth(columns.get(index));
     }
 
     /**
      * Задать ширину столбца.
-     * Пользователю для задания ширины столбца надо использовать {@link Table#setColumnWidth(int, int)}
-     * для сохранения соответствия ширины заголовков и положения разделителей.
+     *
      * @param column столбец
      * @param width ширина
      */
@@ -693,6 +672,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
         bus.fireEventFromSource(new TableSortEvent<T>(column, isAscending), this);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public ArtaColumn<T> getSortedColumn() {
         return sortedColumn;
     }
@@ -778,29 +758,6 @@ public class TableCore<T> extends Composite implements HasData<T> {
         }
 
         table.getRowFormatter().getElement(pageSize - 1).addClassName(SynergyComponents.getResources().cssComponents().last());
-
-        if (!isHeightSet) {
-            scroll.getElement().getStyle().setHeight(pageSize * 27 - 1, Style.Unit.PX);
-        }
-    }
-
-    @Override
-    public void setHeight(String height) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setHeight(int height) {
-        isHeightSet = true;
-        scroll.getElement().getStyle().setHeight(height, Style.Unit.PX);
-        scroll.onResize();
-    }
-
-    /**
-     * Если высота была задана {@link #setHeight(int)}, убирает заданную высоту и таблица растягивается
-     */
-    public void clearHeight() {
-        isHeightSet = false;
-        scroll.getElement().getStyle().clearHeight();
     }
 
     /**
@@ -987,6 +944,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
         return -1;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public int getPageSize() {
         return pageSize;
     }

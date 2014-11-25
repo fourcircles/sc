@@ -23,6 +23,7 @@ public class Colors {
     public static final Color buttonBorder = new Color("#e2e2e2");
     public static final Color navigatorBG = new Color("#292f3b");
     public static final Color textColor2 = new Color("#606060");
+    public static final Color buttonPressed = new Color("#d6d6d6");
 
 
     public static Color whiteBG() {
@@ -68,4 +69,8 @@ public class Colors {
     public static Color textColor2() {
         return textColor2;
     }
+    public static Color buttonPressed() {
+        return buttonPressed;
+    }
+
 }

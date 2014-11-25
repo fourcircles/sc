@@ -13,13 +13,11 @@ import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ProvidesKey;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.table.column.ArtaColumn;
 import kz.arta.synergy.components.client.table.events.TableHeaderMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
@@ -125,6 +123,7 @@ public class Table<T> extends Composite {
      */
     private TableCore<T> tableCore;
     private MouseDownHandler headerMouseDownHandler;
+    private ArtaScrollPanel scroll;
 
     public Table(int pageSize) {
         this(pageSize, null);
@@ -140,18 +139,32 @@ public class Table<T> extends Composite {
         root.addStyleName(SynergyComponents.getResources().cssComponents().tableWhole());
 
         tableCore = new TableCore<T>(pageSize, keyProvider, bus);
+        scroll = new ArtaScrollPanel();
+        scroll.setWidget(tableCore);
+        scroll.getElement().getStyle().setWidth(100, Style.Unit.PCT);
+
+        final SimplePanel headersContainer = new SimplePanel();
+        headersContainer.setStyleName(SynergyComponents.getResources().cssComponents().headersTableContainer());
 
         headersTable = new FlexTable();
         headersTable.setStyleName(SynergyComponents.getResources().cssComponents().headersTable());
-        root.add(headersTable);
+        headersContainer.setWidget(headersTable);
 
-        root.add(tableCore);
+        root.add(headersContainer);
+        root.add(scroll);
 
         Window.addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {
                 heightUpdated();
                 widthUpdated();
+            }
+        });
+
+        scroll.addScrollHandler(new ScrollHandler() {
+            @Override
+            public void onScroll(ScrollEvent event) {
+                headersTable.getElement().getStyle().setLeft(-scroll.getHorizontalScrollPosition(), Style.Unit.PX);
             }
         });
     }
@@ -162,11 +175,14 @@ public class Table<T> extends Composite {
 
     public void heightUpdated() {
         int tableHeight = getOffsetHeight();
+        tableHeight -= Constants.BORDER_WIDTH * 2;
         if (hasHat()) {
-            tableHeight -= 40;
+            tableHeight -= hat.getOffsetHeight();
+//            tableHeight -= 40;
         }
-        tableHeight -= 32;
-        tableCore.setHeight(tableHeight);
+        tableHeight -= headersTable.getOffsetHeight();
+//        tableHeight -= 32;
+        scroll.getElement().getStyle().setHeight(tableHeight, Style.Unit.PX);
     }
 
     /**
@@ -220,9 +236,40 @@ public class Table<T> extends Composite {
             @Override
             public void execute() {
                 tableCore.initWidths();
+
+                int fullWidth = getOffsetWidth();
+                fullWidth -= 2 * Constants.BORDER_WIDTH;
+
+                widthUpdated();
+
+                int unsetColumns = 0;
+
+                for (ArtaColumn<T> column : tableCore.getColumns()) {
+                    if (tableCore.columnHasWidth(column)) {
+                        fullWidth -= tableCore.getColumnWidth(column);
+                        if (tableCore.getColumns().indexOf(column) < tableCore.getColumns().size() - 1) {
+                            // граница
+                            fullWidth --;
+                        }
+                    } else {
+                        unsetColumns++;
+                    }
+                }
+
+                if (unsetColumns > 0) {
+                    double unsetColumnWidth = (double) fullWidth / unsetColumns;
+
+                    for (ArtaColumn<T> column : tableCore.getColumns()) {
+                        if (!tableCore.columnHasWidth(column)) {
+                            tableCore.setColumnWidth(column, (int) Math.max(column.getMinWidth(), unsetColumnWidth));
+                        }
+                    }
+                }
+
                 for (int i = 0; i < tableCore.getColumns().size(); i++) {
                     updateHeaderWidth(i);
                 }
+
                 redraw();
                 redrawDividers();
             }
@@ -238,17 +285,12 @@ public class Table<T> extends Composite {
      * @param index позиция заголовка
      */
     private void updateHeaderWidth(int index) {
-        Style tdstyle = headersTable.getFlexCellFormatter().getElement(0, index).getStyle();
-        //ширина элемента td
-        int columnWidth = tableCore.getColumnWidth(index);
-        if (tableCore.columnHasWidth(index)) {
-            tdstyle.setWidth(columnWidth, Style.Unit.PX);
-        } else {
-            tdstyle.clearWidth();
-        }
-
         //ширина виджета Header
-        tableCore.getColumns().get(index).getHeader().setWidth(columnWidth);
+        int width = tableCore.getElement(0, index).getOffsetWidth();
+        if (index < tableCore.getColumns().size() - 1) {
+            width--;
+        }
+        tableCore.getColumns().get(index).getHeader().setWidth(width);
     }
 
     /**

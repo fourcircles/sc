@@ -30,11 +30,13 @@ public interface ArtaColumn<T> {
      * Задает название столбца
      * @param name название
      */
+    @SuppressWarnings("UnusedDeclaration")
     void setDataStoreName(String name);
 
     /**
      * Возвращает название столбца
      */
+    @SuppressWarnings("UnusedDeclaration")
     String getDataStoreName();
 
     /**

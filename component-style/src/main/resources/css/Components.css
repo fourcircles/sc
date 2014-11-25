@@ -22,7 +22,7 @@
 @eval mainBG_0 kz.arta.synergy.components.style.client.Colors.mainBG().alpha0();
 @eval mainBG_0_ie kz.arta.synergy.components.style.client.Colors.mainBG().alpha0IE();
 
-@def buttonPressed #d6d6d6;
+@eval buttonPressed kz.arta.synergy.components.style.client.Colors.buttonPressed().hex();
 
 @def approveButtonBG1 #93c5ae;
 
@@ -1627,7 +1627,7 @@ p {
     border-collapse: separate;
     border-spacing: 0;
     table-layout: fixed;
-    width: 100%;
+    width: 0;
 }
 .table.notFull {
     border-bottom: 1px solid buttonBG;
@@ -1762,9 +1762,17 @@ p {
     background-color: border1;
 }
 
-
-.headersTable {
+.headersTableContainer {
+    height: 32px;
     width: 100%;
+    position: relative;
+    background-color: tabBg2;
+    border-bottom: 1px solid buttonPressed;
+}
+.headersTable {
+    position: absolute;
+    left: 0;
+    top: 0;
     border-collapse: separate;
     border-spacing: 0;
     table-layout: fixed;
@@ -1775,7 +1783,6 @@ p {
     -moz-box-sizing: border-box;
 
     border-right: 1px solid buttonPressed;
-    border-bottom:1px solid buttonPressed;
     border-spacing: 0;
     background-color: tabBg2;
     height: 32px;

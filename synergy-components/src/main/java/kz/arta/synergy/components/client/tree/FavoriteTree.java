@@ -17,9 +17,12 @@ public class FavoriteTree extends Tree {
      */
     private TreeItem rootItem;
 
-    public FavoriteTree(Tree parentTree) {
-        super(false);
+    public FavoriteTree(Tree parentTree, boolean white) {
+        super(false, white);
         init();
+    }
+    public FavoriteTree(Tree parentTree) {
+        this(parentTree, true);
     }
 
     /**

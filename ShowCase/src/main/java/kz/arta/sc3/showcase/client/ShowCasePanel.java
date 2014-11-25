@@ -23,6 +23,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import kz.arta.sc3.showcase.client.resources.Messages;
+import kz.arta.sc3.showcase.client.resources.SCResources;
 import kz.arta.synergy.components.client.*;
 import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.*;
@@ -2512,18 +2513,12 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel root = new FlowPanel();
 
         FilesPanel files = new FilesPanel();
+        addCodeSample(files, Messages.i18n().tr("Панель файлов"), ShowCase.RESOURCES.filesPanel().getText());
         files.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
         files.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
         files.getElement().getStyle().setWidth(400, Style.Unit.PX);
         files.getElement().getStyle().setHeight(400, Style.Unit.PX);
         root.add(files);
-
-        files.addNewFilesHandler(new NewFilesEvent.Handler() {
-            @Override
-            public void onNewFiles(NewFilesEvent event) {
-                System.out.println("new files");
-            }
-        });
 
         return root;
     }

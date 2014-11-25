@@ -154,4 +154,8 @@ public interface SCResources extends ClientBundle {
     TextResource notificationSuccess();
     @ClientBundle.Source("java-samples/notifications/notification-warning.java")
     TextResource notificationWarning();
+
+    @ClientBundle.Source("java-samples/files-panel.java")
+    TextResource filesPanel();
+
 }

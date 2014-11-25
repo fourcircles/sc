@@ -1,15 +1,12 @@
 package kz.arta.synergy.components.client.input;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
-
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.Notification;
@@ -23,7 +20,6 @@ import kz.arta.synergy.components.client.msg.UserMessage;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.resources.Messages;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
-import kz.arta.synergy.components.client.table.column.ArtaColumn;
 import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.client.util.Selection;
 import kz.arta.synergy.components.client.util.Utils;
@@ -175,28 +171,28 @@ public class FilesPanel extends Composite {
         newVersion.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.SUCCESS);
+                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.FAILURE);
             }
         });
 
         makeMain.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.SUCCESS);
+                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.FAILURE);
             }
         });
 
         downLoadPdf.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.SUCCESS);
+                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.FAILURE);
             }
         });
 
         download.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.SUCCESS);
+                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.FAILURE);
             }
         });
 

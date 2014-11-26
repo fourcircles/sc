@@ -125,6 +125,8 @@ public class Table<T> extends Composite {
     private MouseDownHandler headerMouseDownHandler;
     private ArtaScrollPanel scroll;
 
+    private int dividersOffset = 0;
+
     public Table(int pageSize) {
         this(pageSize, null);
     }
@@ -164,7 +166,17 @@ public class Table<T> extends Composite {
         scroll.addScrollHandler(new ScrollHandler() {
             @Override
             public void onScroll(ScrollEvent event) {
+                // сдвиг заголовков
                 headersTable.getElement().getStyle().setLeft(-scroll.getHorizontalScrollPosition(), Style.Unit.PX);
+
+                // сдвиг разделителей
+                int offsetChange = dividersOffset - scroll.getHorizontalScrollPosition();
+                for (ArtaFlowPanel divider : dividers) {
+                    String left = divider.getElement().getStyle().getLeft();
+                    int leftPx = Integer.parseInt(left.substring(0, left.length() - 2), 10);
+                    divider.getElement().getStyle().setLeft(leftPx + offsetChange, Style.Unit.PX);
+                }
+                dividersOffset -= offsetChange;
             }
         });
     }

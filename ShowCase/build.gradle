@@ -30,7 +30,7 @@ dependencies {
     compile 'com.google.gwt:gwt-user:2.6.1'
     compile project(':synergy-components')
     compile project(':component-style')
-    compile(group: 'kz.arta', name: 'arta-i18n', version: '1.0')
+    compile(group: 'kz.arta', name: 'arta-i18n', version: '2.0')
     compile(group: 'kz.arta', name: 'synergy-messages', version: '3.0', changing: true)
 }
 

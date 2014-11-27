@@ -158,7 +158,7 @@ public class Slider extends Composite implements HasValue<Double> {
         circlePosition = Math.max(circlePosition, 0);
         circlePosition = Math.min(circlePosition, getOffsetWidth());
 
-        setValue((double) circlePosition / getOffsetWidth(), true);
+        setValue((double) circlePosition / getOffsetWidth(), false);
     }
 
     @Override

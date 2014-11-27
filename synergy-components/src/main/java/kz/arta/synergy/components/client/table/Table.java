@@ -303,6 +303,11 @@ public class Table<T> extends Composite {
         tableCore.getColumns().get(index).getHeader().setWidth(width);
     }
 
+    public void setColumnWidth(ArtaColumn<T> column, int width) {
+        if (tableCore.getColumns().contains(column)) {
+            setColumnWidth(tableCore.getColumns().indexOf(column), width);
+        }
+    }
     /**
      * Изменяет ширину столбца на заданной позиции
      * @param index позиция

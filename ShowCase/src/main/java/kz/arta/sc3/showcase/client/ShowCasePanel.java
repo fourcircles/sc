@@ -23,7 +23,6 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import kz.arta.sc3.showcase.client.resources.Messages;
-import kz.arta.sc3.showcase.client.resources.SCResources;
 import kz.arta.synergy.components.client.*;
 import kz.arta.synergy.components.client.button.ButtonBase;
 import kz.arta.synergy.components.client.button.*;
@@ -44,7 +43,6 @@ import kz.arta.synergy.components.client.input.date.TimeInput;
 import kz.arta.synergy.components.client.input.date.repeat.FullRepeatChooser;
 import kz.arta.synergy.components.client.input.date.repeat.RepeatChooser;
 import kz.arta.synergy.components.client.input.date.repeat.RepeatDate;
-import kz.arta.synergy.components.client.input.events.NewFilesEvent;
 import kz.arta.synergy.components.client.input.number.*;
 import kz.arta.synergy.components.client.input.tags.MultiComboBox;
 import kz.arta.synergy.components.client.input.tags.ObjectChooser;
@@ -1037,6 +1035,49 @@ public class ShowCasePanel extends FlowPanel {
         };
         idColumn.setSortable(true);
         table.addColumn(idColumn);
+        table.setColumnWidth(idColumn, 50);
+
+        final IconColumn<User> iconColumn = new IconColumn<User>("") {
+            @Override
+            public ImageResource getImage(User object) {
+                if (object.getKey() % 2 == 0) {
+                    return ImageResources.IMPL.favouriteFolder();
+                } else {
+                    return null;
+                }
+            }
+        };
+        table.addColumn(iconColumn);
+        table.setColumnWidth(iconColumn, 26);
+
+        final CheckBoxColumn<User> boxColumn = new CheckBoxColumn<User>("") {
+            @Override
+            public boolean getValue(User object) {
+                return object.isAlive();
+            }
+
+            @Override
+            public void setValue(User object, boolean newValue) {
+                object.setAlive(newValue);
+                System.out.println();
+            }
+        };
+        table.addColumn(boxColumn);
+        table.setColumnWidth(boxColumn, 26);
+
+        final ProgressColumn<User> progressColumn = new ProgressColumn<User>("Прогресс") {
+            @Override
+            public double getValue(User object) {
+                return object.getLifeLived();
+            }
+
+            @Override
+            public boolean getType(User object) {
+                return object.getLifeLived() < 0.6;
+            }
+        };
+        table.addColumn(progressColumn);
+        table.setColumnWidth(progressColumn, ProgressColumn.WIDTH + 20);
 
         final ArtaEditableTextColumn<User> firstNameColumn = new ArtaEditableTextColumn<User>(Messages.i18n().tr("Имя")) {
             @Override
@@ -1080,17 +1121,17 @@ public class ShowCasePanel extends FlowPanel {
         addressColumn.setSortable(true);
         table.addColumn(addressColumn);
 
-        for (int i = 0; i < table.getCore().getColumns().size(); i++) {
+        for (int i = 4; i < table.getCore().getColumns().size(); i++) {
             table.setColumnWidth(i, 400);
         }
-        table.setWidth("1200px");
+        table.setWidth("1000px");
 
         final ListDataProvider<User> provider = new ListDataProvider<User>();
         provider.addDataDisplay(table.getCore());
 
         final List<User> list = provider.getList();
         for (int i = 0; i < 190; i++) {
-            list.add(new User("jon" + i, "jones" + i, "" + (85281 + i)));
+            list.add(new User("jon" + i, "jones" + i, "" + (85281 + i), i % 4 != 0, Random.nextDouble()));
         }
         provider.flush();
 

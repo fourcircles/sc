@@ -14,12 +14,28 @@ public class User {
     private String firstName;
     private String lastName;
     private String address;
+    private boolean alive;
+    private double lifeLived;
 
-    public User(String firstName, String lastName, String address) {
+    public User(String firstName, String lastName, String address, boolean alive, double lifeLived) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
+        this.alive = alive;
+        this.lifeLived = lifeLived;
         id = idCount++;
+    }
+
+    public double getLifeLived() {
+        return lifeLived;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    public boolean isAlive() {
+        return alive;
     }
 
     public String getFirstName() {

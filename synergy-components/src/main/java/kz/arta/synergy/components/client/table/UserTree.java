@@ -32,7 +32,12 @@ public class UserTree extends User implements TreeTableItem<UserTree> {
 
     public UserTree(UserTree parent, String firstName,
                     String lastName, String address) {
-        super(firstName, lastName, address);
+        this(parent, firstName, lastName, address, false, 0);
+    }
+
+    public UserTree(UserTree parent, String firstName,
+                    String lastName, String address, boolean alive, double lifeLived) {
+        super(firstName, lastName, address, alive, lifeLived);
 
         setParent(parent);
 

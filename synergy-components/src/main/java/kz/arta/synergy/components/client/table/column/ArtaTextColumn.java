@@ -49,4 +49,6 @@ public abstract class ArtaTextColumn<T> extends AbstractArtaColumn<T> {
     public void setSortable(boolean isSortable) {
         this.isSortable = isSortable;
     }
+
+    public abstract String getValue(T object);
 }

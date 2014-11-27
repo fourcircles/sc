@@ -59,6 +59,4 @@ public abstract class AbstractArtaColumn<T> implements ArtaColumn<T> {
 
     public abstract Widget createWidget(T object, EventBus bus);
     public abstract void updateWidget(Widget widget, T object);
-
-    public abstract String getValue(T object);
 }

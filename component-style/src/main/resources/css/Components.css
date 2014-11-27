@@ -1706,6 +1706,10 @@ p {
     padding: 0;
 }
 
+.table td.selected, .table tr.selected {
+    background-color: beige;
+}
+
 .table td:hover {
     background-color: selectColor;
 }
@@ -1716,9 +1720,6 @@ p {
     background-color: inherit;
 }
 
-.table td.selected, .table tr.selected {
-    background-color: beige;
-}
 .table tr td.edit {
     border-style: solid;
     border-bottom-style: none;

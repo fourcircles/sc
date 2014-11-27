@@ -8,12 +8,21 @@ import kz.arta.synergy.components.client.table.Header;
  * User: vsl
  * Date: 04.09.14
  * Time: 17:41
- * //todo задокументировать
  */
 public abstract class AbstractArtaColumn<T> implements ArtaColumn<T> {
+    /**
+     * Сортируем ли столбец
+     */
     protected boolean isSortable = false;
+
+    /**
+     * Название столбца
+     */
     private String dataStoreName;
 
+    /**
+     * Текст заголовка
+     */
     private Header header;
 
     protected AbstractArtaColumn(String headerText) {

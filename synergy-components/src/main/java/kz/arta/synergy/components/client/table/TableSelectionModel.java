@@ -8,33 +8,33 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
 import kz.arta.synergy.components.client.table.column.ArtaColumn;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * User: vsl
- * Date: 16.09.14
- * Time: 14:18
+ * Date: 26.11.14
+ * Time: 10:46
  *
- * Модель выбора для таблицы
+ * Модель выбора ячейки для таблицы.
+ * Поддерживает одновременный выбор нескольких объектов.
  */
 public class TableSelectionModel<T> implements SelectionModel<T> {
-    private EventBus bus;
-    /**
-     * Выбранный объект
-     */
-    private T selectedObject;
+    private final EventBus bus;
+    private final ProvidesKey<T> keyProvider;
 
     /**
-     * Выбранный столбец
+     * Выбранные объекты.
      */
-    private ArtaColumn<T> selectedColumn;
-
-    /**
-     * Предоставляет ключи для объектов
-     */
-    private ProvidesKey<T> keyProvider;
+    private Map<T, Set<ArtaColumn<T>>> selection;
 
     public TableSelectionModel(EventBus bus, ProvidesKey<T> keyProvider) {
         this.bus = bus;
         this.keyProvider = keyProvider;
+
+        selection = new HashMap<T, Set<ArtaColumn<T>>>();
     }
 
     @Override
@@ -42,60 +42,104 @@ public class TableSelectionModel<T> implements SelectionModel<T> {
         return bus.addHandler(SelectionChangeEvent.getType(), handler);
     }
 
+    /**
+     * Есть ли выбранные объекты на строке, соответствующей объекту (это включает саму строку).
+     * @param object объект
+     */
     @Override
     public boolean isSelected(T object) {
-        return selectedObject == object;
-    }
-
-    public void setSelected(T object, ArtaColumn<T> column,
-                            boolean selected, boolean fireEvents) {
-        T newObject;
-        ArtaColumn<T> newColumn;
-        if (selected) {
-            newObject = object;
-            newColumn = column;
-        } else {
-            if (object == selectedObject && (column == null || column == selectedColumn)) {
-                //если объекты совпадают или деселект всей строки
-                newObject = null;
-                newColumn = null;
-            } else {
-                //деселект невыбранного объекта
-                return;
-            }
-        }
-        if (newObject != selectedObject || newColumn != selectedColumn) {
-            selectedObject = newObject;
-            selectedColumn = newColumn;
-            if (fireEvents) {
-                SelectionChangeEvent.fire(this);
-            }
-        }
+        return selection.containsKey(object);
     }
 
     /**
-     * Выбирает или снимает выделение ячейки или ряда
-     * @param object объект
-     * @param column столбец; если null то предполагается, что работаем с рядом
-     * @param selected выделить или снять выделение
+     * Выбран ли заданный объект.
+     * @param object объект соответствующий строке
+     * @param column столбец, если null, то запрос о строке
      */
-    public void setSelected(T object, ArtaColumn<T> column, boolean selected) {
-        setSelected(object, column, selected, true);
+    public boolean isSelected(T object, ArtaColumn<T> column) {
+        return selection.containsKey(object) && selection.get(object).contains(column);
     }
 
     /**
-     * Выделить/снять выделение ряда
+     * Добавляет или удаляет из выделения строку, соответствующую заданному объекту
+     * @param object объект
+     * @param selected true - добавить, false - удалить
      */
     @Override
     public void setSelected(T object, boolean selected) {
-        setSelected(object, null, selected);
+        setSelected(object, selected, true);
     }
 
     /**
-     * Снять выделение
+     * @param fireEvents создавать ли событие об изменении выделения
      */
+    public void setSelected(T object, boolean selected, boolean fireEvents) {
+        setSelected(object, null, selected, fireEvents);
+    }
+
+    /**
+     * Добавляет или удалет из выделения строку или столбец.
+     * @param object объект
+     * @param column строка, если null, то речь идет о строке
+     * @param selected true - добавить, false - удалить
+     * @param fireEvents создавать ли событие об изменении выделения
+     */
+    public void setSelected(T object, ArtaColumn<T> column,
+                            boolean selected, boolean fireEvents) {
+        boolean change = false;
+
+        if (selected) {
+            if (selection.containsKey(object)) {
+                change = !selection.get(object).contains(column);
+                selection.get(object).add(column);
+            } else {
+                change = true;
+
+                Set<ArtaColumn<T>> newSet = new HashSet<ArtaColumn<T>>();
+                selection.put(object, newSet);
+                newSet.add(column);
+            }
+        } else if (selection.containsKey(object) && selection.get(object).contains(column)) {
+            change = true;
+            selection.get(object).remove(column);
+            if (selection.get(object).isEmpty()) {
+                selection.remove(object);
+            }
+        }
+
+        if (change && fireEvents) {
+            SelectionChangeEvent.fire(this);
+        }
+    }
+
+    /**
+     * Возвращает выделенные столбцы в строке заданного объекта.
+     * @param object объект
+     * @return выделенные ячейки
+     */
+    public Set<ArtaColumn<T>> getSelectedColumns(T object) {
+        return selection.containsKey(object) ? selection.get(object) : null;
+    }
+
+    public Set<T> getSelectedObjects() {
+        return selection.keySet();
+    }
+
     public void clear() {
-        setSelected(selectedObject, selectedColumn, false);
+        clear(true);
+    }
+
+    /**
+     * Удаляет все объекты из выделения
+     * @param fireEvents создавать ли событие об изменении выделения
+     */
+    public void clear(boolean fireEvents) {
+        boolean change = !selection.keySet().isEmpty();
+        selection.clear();
+
+        if (change && fireEvents) {
+            SelectionChangeEvent.fire(this);
+        }
     }
 
     @Override
@@ -105,17 +149,6 @@ public class TableSelectionModel<T> implements SelectionModel<T> {
 
     @Override
     public Object getKey(T item) {
-        if (keyProvider != null) {
-            return keyProvider.getKey(item);
-        }
-        return null;
-    }
-
-    public T getSelectedObject() {
-        return selectedObject;
-    }
-
-    public ArtaColumn<T> getSelectedColumn() {
-        return selectedColumn;
+        return keyProvider != null ? keyProvider.getKey(item) : null;
     }
 }

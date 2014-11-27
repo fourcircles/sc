@@ -1,17 +1,21 @@
 import com.google.gwt.user.client.Command;
 import com.google.gwt.view.client.ListDataProvider;
 import kz.arta.sc3.showcase.client.resources.Messages;
+import kz.arta.synergy.components.client.menu.ContextMenu;
+import kz.arta.synergy.components.client.menu.MenuItem;
 import kz.arta.synergy.components.client.table.Pager;
 import kz.arta.synergy.components.client.table.Table;
 import kz.arta.synergy.components.client.table.User;
 import kz.arta.synergy.components.client.table.column.ArtaEditableTextColumn;
 import kz.arta.synergy.components.client.table.column.ArtaTextColumn;
 import kz.arta.synergy.components.client.table.events.TableHeaderMenuEvent;
+import kz.arta.synergy.components.client.table.events.TableMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableRowMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 public class Sample {
     public static void main(String[] args) {
@@ -133,20 +137,24 @@ public class Sample {
      * Через него можно удалить ряд.
      */
     private void setUpRowMenu(Table<User> table, ListDataProvider<User> provider) {
-        final ContextMenu rowMenu = new ContextMenu();
-        table.getCore().addRowMenuHandler(new TableRowMenuEvent.Handler<User>() {
+        // контекстное меню
+        final ContextMenu tableMenu = new ContextMenu();
+
+        // содержит только один пункт
+        tableMenu.add(new MenuItem<Command>(new Command() {
             @Override
-            public void onTableRowMenu(final TableRowMenuEvent<User> event) {
-                rowMenu.clear();
-                rowMenu.addItem(Messages.i18n().tr("Удалить ряд"), new Command() {
-                    @Override
-                    public void execute() {
-                        // event.getObject() - объект в ряду, для которого вызвано меню
-                        provider.getList().remove(event.getObject());
-                        provider.flush();
-                    }
-                });
-                rowMenu.show(event.getX(), event.getY());
+            public void execute() {
+                Set<User> selected = table.getCore().getSelectionModel().getSelectedObjects();
+                list.removeAll(selected);
+                provider.flush();
+            }
+        }, Messages.i18n().tr("Удалить")));
+
+        // вызов контекстного меню
+        table.getCore().addContextMenuHandler(new TableMenuEvent.Handler() {
+            @Override
+            public void onTableMenu(TableMenuEvent event) {
+                tableMenu.show(event.getX(), event.getY());
             }
         });
     }

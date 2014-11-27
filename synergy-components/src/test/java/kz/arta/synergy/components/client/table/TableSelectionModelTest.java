@@ -11,8 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -52,7 +51,9 @@ public class TableSelectionModelTest {
         User user = TableTestUtils.createUser(0);
         model.setSelected(user, true);
         verify(handler, times(1)).onSelectionChange(any(SelectionChangeEvent.class));
-        assertEquals(user, model.getSelectedObject());
+        assertEquals(1, model.getSelectedObjects().size());
+        assertEquals(1, model.getSelectedColumns(user).size());
+        assertTrue(model.isSelected(user, null));
     }
 
     @Test
@@ -65,7 +66,7 @@ public class TableSelectionModelTest {
         model.setSelected(user, null, true, true); //повторное выделение - события нет
 
         verify(handler, times(0)).onSelectionChange(any(SelectionChangeEvent.class));
-        assertEquals(user, model.getSelectedObject());
+        assertTrue(model.isSelected(user, null));
     }
 
     @Test
@@ -78,7 +79,9 @@ public class TableSelectionModelTest {
         model.setSelected(user, null, false, true); //снятие выделения
 
         verify(handler, times(1)).onSelectionChange(any(SelectionChangeEvent.class));
-        assertNull(model.getSelectedObject());
+
+        assertTrue(model.getSelectedObjects().isEmpty());
+        assertFalse(model.isSelected(user, null));
     }
 
     @Test
@@ -91,29 +94,53 @@ public class TableSelectionModelTest {
         ArtaColumn column2 = mock(ArtaColumn.class);
 
         model.setSelected(user, column1, true, false);
-        assertEquals(column1, model.getSelectedColumn());
+        assertEquals(1, model.getSelectedColumns(user).size());
+        assertTrue(model.getSelectedColumns(user).contains(column1));
 
         model.setSelected(user, column2, true, true);
-        assertEquals(column2, model.getSelectedColumn());
+        assertEquals(2, model.getSelectedColumns(user).size());
+        assertTrue(model.getSelectedColumns(user).contains(column1));
 
         verify(handler, times(1)).onSelectionChange(any(SelectionChangeEvent.class));
     }
 
-    //выделена ячейка, снимаем выделение с ряда
     @Test
-    public void testDeselectRow() {
-        SelectionChangeEvent.Handler handler = mock(SelectionChangeEvent.Handler.class);
-        model.addSelectionChangeHandler(handler);
+    public void testMultipleSelection() {
+        User user1 = TableTestUtils.createUser(0);
+        User user2 = TableTestUtils.createUser(0);
 
-        User user = TableTestUtils.createUser(0);
-        ArtaColumn column = mock(ArtaColumn.class);
+        ArtaColumn column1 = mock(ArtaColumn.class);
+        ArtaColumn column2 = mock(ArtaColumn.class);
 
-        model.setSelected(user, column, true, false);
-        model.setSelected(user, false);
+        model.setSelected(user1, null, true, false);
+        model.setSelected(user2, column1, true, false);
+        model.setSelected(user2, column2, true, false);
 
-        assertNull(model.getSelectedColumn());
-        assertNull(model.getSelectedObject());
+        assertTrue(model.isSelected(user1, null));
 
-        verify(handler, times(1)).onSelectionChange(any(SelectionChangeEvent.class));
+        //строка не выделена
+        assertFalse(model.isSelected(user2, null));
+        assertTrue(model.isSelected(user2, column1));
+        assertTrue(model.isSelected(user2, column2));
+    }
+
+    @Test
+    public void testClear() {
+        User user1 = TableTestUtils.createUser(0);
+        User user2 = TableTestUtils.createUser(0);
+
+        ArtaColumn column1 = mock(ArtaColumn.class);
+        ArtaColumn column2 = mock(ArtaColumn.class);
+
+        model.setSelected(user1, null, true, false);
+        model.setSelected(user2, column1, true, false);
+        model.setSelected(user2, column2, true, false);
+
+        model.clear();
+
+        assertTrue(model.getSelectedObjects().isEmpty());
+        assertFalse(model.isSelected(user1));
+        assertFalse(model.isSelected(user2, column1));
+        assertFalse(model.isSelected(user2, column2));
     }
 }

@@ -66,10 +66,7 @@ import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
 import kz.arta.synergy.components.client.table.*;
 import kz.arta.synergy.components.client.table.column.*;
-import kz.arta.synergy.components.client.table.events.TableCellMenuEvent;
-import kz.arta.synergy.components.client.table.events.TableHeaderMenuEvent;
-import kz.arta.synergy.components.client.table.events.TableRowMenuEvent;
-import kz.arta.synergy.components.client.table.events.TableSortEvent;
+import kz.arta.synergy.components.client.table.events.*;
 import kz.arta.synergy.components.client.tabs.TabPanel;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.taskbar.TaskBar;
@@ -1010,7 +1007,7 @@ public class ShowCasePanel extends FlowPanel {
         return root;
     }
 
-    private Widget getTablePanel(boolean onlyRows) {
+    private Widget getTablePanel(final boolean onlyRows) {
         FlowPanel panel = new FlowPanel();
         panel.getElement().getStyle().setPadding(20, Style.Unit.PX);
         panel.getElement().getStyle().setPaddingLeft(40, Style.Unit.PX);
@@ -1030,7 +1027,7 @@ public class ShowCasePanel extends FlowPanel {
         table.setMultiLine(!onlyRows);
 
         table.getCore().setOnlyRows(onlyRows);
-        table.setHeight(600 + "px");
+        table.setHeight(500 + "px");
 
         final ArtaTextColumn<User> idColumn = new ArtaTextColumn<User>("#") {
             @Override
@@ -1160,38 +1157,21 @@ public class ShowCasePanel extends FlowPanel {
         ArtaScrollPanel scroll = new ArtaScrollPanel(panel);
         scroll.setHeight("100%");
 
-
-        table.getCore().addCellMenuHandler(new TableCellMenuEvent.Handler<User>() {
+        final ContextMenu tableMenu = new ContextMenu();
+        tableMenu.add(new MenuItem<Command>(new Command() {
             @Override
-            public void onTableCellMenu(final TableCellMenuEvent<User> event) {
-                final int row = provider.getList().indexOf(event.getObject()) - table.getCore().getVisibleRange().getStart();
-                final int column = table.getCore().getColumns().indexOf(event.getColumn());
-                ContextMenu cellMenu = new ContextMenu();
-                MenuItem<Command> cellMenuItem = new MenuItem<Command>(new Command() {
-                    @Override
-                    public void execute() {
-                        ((EditableText)table.getCore().getWidget(row, column)).edit();
-                    }
-                }, Messages.i18n().tr("Редактировать ячейку"));
-                cellMenu.add(cellMenuItem);
-                cellMenuItem.setText(Messages.i18n().tr("Редактировать ячейку") + " " + row + " " + column);
-                cellMenu.show(event.getX(), event.getY());
+            public void execute() {
+                Set<User> selected = table.getCore().getSelectionModel().getSelectedObjects();
+                list.removeAll(selected);
+                provider.flush();
             }
-        });
-
-        final ContextMenu rowMenu = new ContextMenu();
-        table.getCore().addRowMenuHandler(new TableRowMenuEvent.Handler<User>() {
+        }, Messages.i18n().tr("Удалить")));
+        table.getCore().addContextMenuHandler(new TableMenuEvent.Handler() {
             @Override
-            public void onTableRowMenu(final TableRowMenuEvent<User> event) {
-                rowMenu.clear();
-                rowMenu.add(new MenuItem<Command>(new Command() {
-                    @Override
-                    public void execute() {
-                        provider.getList().remove(event.getObject());
-                        provider.flush();
-                    }
-                }, Messages.i18n().tr("Удалить ряд")));
-                rowMenu.show(event.getX(), event.getY());
+            public void onTableMenu(TableMenuEvent event) {
+                if (onlyRows) {
+                    tableMenu.show(event.getX(), event.getY());
+                }
             }
         });
 
@@ -1301,7 +1281,7 @@ public class ShowCasePanel extends FlowPanel {
         return root;
     }
 
-    private Widget getTreeTable(boolean onlyRows) {
+    private Widget getTreeTable(final boolean onlyRows) {
         FlowPanel root = new FlowPanel();
 
         final Table<UserTree> table = new Table<UserTree>(10, new ProvidesKey<UserTree>() {
@@ -1419,37 +1399,56 @@ public class ShowCasePanel extends FlowPanel {
         }
         provider.flush();
 
-        final ContextMenu rowMenu = new ContextMenu();
-        table.getCore().addRowMenuHandler(new TableRowMenuEvent.Handler<UserTree>() {
+        final ContextMenu menu = new ContextMenu();
+        final MenuItem<Command> deleteItem = new MenuItem<Command>(new Command() {
             @Override
-            public void onTableRowMenu(final TableRowMenuEvent<UserTree> event) {
-                rowMenu.clear();
-                rowMenu.add(new MenuItem<Command>(new Command() {
-                    @Override
-                    public void execute() {
-                        provider.getList().remove(event.getObject());
-                        provider.flush();
+            public void execute() {
+                if (onlyRows) {
+                    for (UserTree userTree : table.getCore().getSelectionModel().getSelectedObjects()) {
+                        userTree.removeFromParent();
+                        provider.getList().remove(userTree);
                     }
-                }, Messages.i18n().tr("Удалить ряд")));
-                rowMenu.show(event.getX(), event.getY());
+                    provider.flush();
+                }
+                table.getCore().getSelectionModel().clear();
             }
-        });
+        }, Messages.i18n().tr("Удалить"));
 
-        table.getCore().addCellMenuHandler(new TableCellMenuEvent.Handler<UserTree>() {
+        final MenuItem<Command> openItems = new MenuItem<Command>(new Command() {
             @Override
-            public void onTableCellMenu(final TableCellMenuEvent<UserTree> event) {
-                final int row = provider.getList().indexOf(event.getObject()) - table.getCore().getVisibleRange().getStart();
-                final int column = table.getCore().getColumns().indexOf(event.getColumn());
-                ContextMenu cellMenu = new ContextMenu();
-                MenuItem<Command> cellMenuItem = new MenuItem<Command>(new Command() {
-                    @Override
-                    public void execute() {
-                        ((TreeTableWidget)table.getCore().getWidget(row, column)).edit();
+            public void execute() {
+                for (TreeTableItem user : table.getCore().getSelectionModel().getSelectedObjects()) {
+                    if (user.hasChildren()) {
+                        user.open();
                     }
-                }, Messages.i18n().tr("Редактировать ячейку"));
-                cellMenu.add(cellMenuItem);
-                cellMenuItem.setText(Messages.i18n().tr("Редактировать ячейку") + " " + row + " " + column);
-                cellMenu.show(event.getX(), event.getY());
+                }
+                table.getCore().getSelectionModel().clear();
+            }
+        }, Messages.i18n().tr("Открыть"));
+
+        final MenuItem<Command> closeItems = new MenuItem<Command>(new Command() {
+            @Override
+            public void execute() {
+                for (UserTree user : table.getCore().getSelectionModel().getSelectedObjects()) {
+                    if (user.hasChildren()) {
+                        user.close();
+                    }
+                }
+                table.getCore().getSelectionModel().clear();
+            }
+        }, Messages.i18n().tr("Закрыть"));
+
+        menu.add(deleteItem);
+        menu.add(openItems);
+        menu.add(closeItems);
+
+
+        table.getCore().addContextMenuHandler(new TableMenuEvent.Handler() {
+            @Override
+            public void onTableMenu(TableMenuEvent event) {
+                if (onlyRows) {
+                    menu.show(event.getX(), event.getY());
+                }
             }
         });
 

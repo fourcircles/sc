@@ -19,6 +19,29 @@ public class Utils {
     }
 
     /**
+     * Возвращает только положительный результат модуля в отличии от %
+     * @param value значение
+     * @param mod модуль
+     */
+    public static int positiveMod(int value, int mod) {
+        int res = value;
+        if (value < 0) {
+            res += mod * (-value / mod + 1);
+        }
+        return res % mod;
+    }
+
+    /**
+     * Возвращает сфокусированный элемент
+     *
+     * @return сфокусированный элемент
+     */
+    public native Element getFocusedElement() /*-{
+        "use strict";
+        return $doc.activeElement;
+    }-*/;
+
+    /**
      * Возвращает ширина текста с заданным стилем
      * @param text текст
      * @param style стиль

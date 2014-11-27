@@ -18,9 +18,10 @@ import com.google.gwt.view.client.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.table.column.ArtaColumn;
 import kz.arta.synergy.components.client.table.events.CellEditEvent;
-import kz.arta.synergy.components.client.table.events.TableCellMenuEvent;
-import kz.arta.synergy.components.client.table.events.TableRowMenuEvent;
+import kz.arta.synergy.components.client.table.events.StartEditEvent;
+import kz.arta.synergy.components.client.table.events.TableMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
+import kz.arta.synergy.components.client.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,9 +34,11 @@ import java.util.Map;
  * Time: 15:23
  *
  * Таблица
- * @see {@link Table} дополнительный функционал
+ * @see {@link Table} заголовки, шапка
  */
 public class TableCore<T> extends Composite implements HasData<T> {
+    private static int TAB_INDEX = 1;
+
     /**
      * Таблица
      */
@@ -79,16 +82,6 @@ public class TableCore<T> extends Composite implements HasData<T> {
     private boolean onlyRows;
 
     /**
-     * Выбранный ряд.
-     */
-    private int selectedRow = -1;
-
-    /**
-     * Выбранный столбец
-     */
-    private int selectedColumn = -1;
-
-    /**
      * Столбец, по которому отсортирована таблица
      */
     private ArtaColumn<T> sortedColumn;
@@ -102,6 +95,13 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * Точное ли количество объектов
      */
     private boolean isRowCountExact;
+
+    /**
+     * Индексы показывают какая ячейка была выбрана последней.
+     * Эти индексы будут использоваться как начало выбора при shift+click
+     */
+    private int lastSelectedRow = 0;
+    private int lastSelectedColumn = 0;
 
     public TableCore(int pageSize, ProvidesKey<T> keyProvider, final EventBus bus) {
         this.bus = bus;
@@ -126,19 +126,44 @@ public class TableCore<T> extends Composite implements HasData<T> {
             @Override
             public void onClick(ClickEvent event) {
                 HTMLTable.Cell cell = table.getCellForEvent(event);
-                T object = objects.get(cell.getRowIndex() + start);
+                int rowIndex = cell.getRowIndex();
+                int cellIndex = cell.getCellIndex();
 
-
-                if (onlyRows) {
-                    selectionModel.setSelected(object, null, true);
-                } else {
-                    ArtaColumn<T> column = columns.get(cell.getCellIndex());
-                    if (column.isEditable()) {
-                        selectionModel.setSelected(object, column, true);
-                    }
+                if (!event.isControlKeyDown()) {
+                    selectionModel.clear(false);
                 }
+
+                if (event.isShiftKeyDown()) {
+                    if (onlyRows) {
+                        for (int r = Math.min(rowIndex, lastSelectedRow); r <= Math.max(rowIndex, lastSelectedRow); r++) {
+                            T object = objects.get(start + r);
+                            selectionModel.setSelected(object, null, true, false);
+                        }
+                    } else {
+                        for (int r = Math.min(rowIndex, lastSelectedRow); r <= Math.max(rowIndex, lastSelectedRow); r++) {
+                            for (int c = Math.min(cellIndex, lastSelectedColumn); c <= Math.max(cellIndex, lastSelectedColumn); c++) {
+                                T object = objects.get(start + r);
+                                ArtaColumn<T> column = columns.get(c);
+                                selectionModel.setSelected(object, column, true, false);
+                            }
+                        }
+                    }
+                } else {
+                    if (!event.isControlKeyDown()) {
+                        lastSelectedRow = rowIndex;
+                        lastSelectedColumn = cellIndex;
+                    }
+
+                    T object = objects.get(start + rowIndex);
+                    ArtaColumn<T> column = onlyRows ? null : columns.get(cellIndex);
+                    boolean select = event.isControlKeyDown() ? !selectionModel.isSelected(object, column) : true;
+                    selectionModel.setSelected(object, column, select, false);
+                }
+
+                updateSelection();
             }
         });
+
         bus.addHandler(CellEditEvent.TYPE, new CellEditEvent.Handler<T>() {
             @Override
             public void onCommit(CellEditEvent<T> event) {
@@ -159,7 +184,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
         bus.addHandler(SelectionChangeEvent.getType(), new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent event) {
-                select(selectionModel.getSelectedObject(), selectionModel.getSelectedColumn());
+                updateSelection();
             }
         });
 
@@ -186,21 +211,18 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
         Element td = getCellForEvent(Event.as(event.getNativeEvent()));
 
-        int row = TableRowElement.as(td.getParentElement()).getRowIndex();
-        int column = TableCellElement.as(td).getCellIndex();
+        int rowIndex = TableRowElement.as(td.getParentElement()).getRowIndex();
+        int columnIndex = TableCellElement.as(td).getCellIndex();
 
-        T object = objects.get(start + row);
+        T object = objects.get(start + rowIndex);
+        ArtaColumn<T> column = onlyRows ? null : columns.get(columnIndex);
 
-
-        if (onlyRows) {
-            select(objects.get(start + row), null);
-            bus.fireEventFromSource(new TableRowMenuEvent<T>(object,
-                    event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), this);
-        } else {
-            select(objects.get(start + row), columns.get(column));
-            bus.fireEventFromSource(new TableCellMenuEvent<T>(object, columns.get(column),
-                    event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), this);
+        // если правый клик не по выбранному элементу, то выделение обнуляется
+        if (!selectionModel.isSelected(object, column)) {
+            selectionModel.clear(false);
+            selectionModel.setSelected(object, column, true, true);
         }
+        bus.fireEventFromSource(new TableMenuEvent(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), this);
     }
 
     private Element getCellForEvent(Event event) {
@@ -249,10 +271,6 @@ public class TableCore<T> extends Composite implements HasData<T> {
                 td.getStyle().clearHeight();
             }
         }
-
-        if (event.jumpForward()) {
-            selectNextCell();
-        }
     }
 
     /**
@@ -261,32 +279,113 @@ public class TableCore<T> extends Composite implements HasData<T> {
     @Override
     public void onBrowserEvent(com.google.gwt.user.client.Event event) {
         super.onBrowserEvent(event);
-        int type = event.getTypeInt();
-        int keyCode = event.getKeyCode();
 
-        if (type == Event.ONKEYDOWN) {
-            switch (keyCode) {
-                case KeyCodes.KEY_DOWN:
-                    event.preventDefault();
-                    selectionModel.setSelected(getNextVisibleObject(selectionModel.getSelectedObject(), true),
-                            selectionModel.getSelectedColumn(), true);
-                    break;
-                case KeyCodes.KEY_UP:
-                    event.preventDefault();
-                    selectionModel.setSelected(getNextVisibleObject(selectionModel.getSelectedObject(), false),
-                            selectionModel.getSelectedColumn(), true);
-                    break;
-                case KeyCodes.KEY_RIGHT:
+        if (event.getTypeInt() == Event.ONKEYDOWN || event.getTypeInt() == Event.ONFOCUS) {
+            Element focused = Utils.impl().getFocusedElement();
+            if (TableRowElement.is(focused)) {
+                rowEvent(event, TableRowElement.as(focused));
+            }
+            if (TableCellElement.is(focused)) {
+                cellEvent(event, TableCellElement.as(focused));
+            }
+        }
+    }
+
+    /**
+     * Событие клавиатуры для ячейки
+     * @param event событие
+     * @param cellElement элемент ячейки таблицы
+     */
+    private void cellEvent(Event event, TableCellElement cellElement) {
+        int rowIndex = TableRowElement.as(cellElement.getParentElement()).getRowIndex();
+        int cellIndex = cellElement.getCellIndex();
+        if (event.getTypeInt() == Event.ONKEYDOWN) {
+            switch (event.getKeyCode()) {
                 case KeyCodes.KEY_TAB:
                     event.preventDefault();
-                    selectNextCell();
+                    int newRow;
+                    int newCol;
+                    if (cellIndex == columns.size() - 1) {
+                        newRow = Utils.positiveMod(rowIndex + 1, getVisibleRange().getLength());
+                        newCol = 0;
+                    } else {
+                        newRow = rowIndex;
+                        newCol = cellIndex + 1;
+                    }
+
+                    selectionModel.clear(false);
+                    selectionModel.setSelected(objects.get(start + newRow), columns.get(newCol), true, true);
+                    table.getFlexCellFormatter().getElement(newRow, newCol).focus();
+
                     break;
                 case KeyCodes.KEY_LEFT:
                     event.preventDefault();
-                    selectPreviousCell();
+                    selectionModel.clear(false);
+                    selectionModel.setSelected(objects.get(rowIndex + start),
+                            columns.get(Utils.positiveMod(cellIndex - 1, table.getCellCount(rowIndex))),
+                            true, true);
+                    table.getFlexCellFormatter().getElement(rowIndex,
+                            Utils.positiveMod(cellIndex - 1, table.getCellCount(rowIndex))).focus();
+                    break;
+                case KeyCodes.KEY_RIGHT:
+                    event.preventDefault();
+                    selectionModel.clear(false);
+                    selectionModel.setSelected(objects.get(rowIndex + start),
+                            columns.get(Utils.positiveMod(cellIndex + 1, table.getCellCount(rowIndex))),
+                            true, true);
+                    table.getFlexCellFormatter().getElement(rowIndex,
+                            Utils.positiveMod(cellIndex + 1, table.getCellCount(rowIndex))).focus();
+                    break;
+                case KeyCodes.KEY_DOWN:
+                    event.preventDefault();
+                    selectionModel.clear(false);
+                    selectionModel.setSelected(objects.get(start + Utils.positiveMod(rowIndex + 1, getVisibleRange().getLength())),
+                            columns.get(cellIndex), true, true);
+                    table.getFlexCellFormatter().getElement(Utils.positiveMod(rowIndex + 1, getVisibleRange().getLength()), cellIndex).focus();
+                    break;
+                case KeyCodes.KEY_UP:
+                    event.preventDefault();
+                    selectionModel.clear(false);
+                    selectionModel.setSelected(objects.get(start + Utils.positiveMod(rowIndex - 1, getVisibleRange().getLength())),
+                            columns.get(cellIndex), true, true);
+
+                    table.getFlexCellFormatter().getElement(Utils.positiveMod(rowIndex - 1, getVisibleRange().getLength()), cellIndex).focus();
+                    break;
+                case KeyCodes.KEY_ENTER:
+                case KeyCodes.KEY_F2:
+                    event.preventDefault();
+                    bus.fireEventFromSource(new StartEditEvent(), table.getWidget(rowIndex, cellIndex));
                     break;
                 default:
             }
+        } else if (event.getTypeInt() == Event.ONFOCUS) {
+            clearTableSelection();
+            selectionModel.setSelected(objects.get(rowIndex), columns.get(cellIndex), true, true);
+        }
+    }
+
+    /**
+     * Событие клавиатуры для ряда
+     * @param event событие
+     * @param rowElement элемент ряда таблицы
+     */
+    private void rowEvent(Event event, TableRowElement rowElement) {
+        int rowIndex = rowElement.getRowIndex();
+        switch (event.getKeyCode()) {
+            case KeyCodes.KEY_TAB:
+            case KeyCodes.KEY_DOWN:
+                event.preventDefault();
+                selectionModel.clear(false);
+                selectionModel.setSelected(objects.get(start + Utils.positiveMod(rowIndex + 1, getVisibleRange().getLength())), null, true, true);
+                table.getRowFormatter().getElement(Utils.positiveMod(rowIndex + 1, getVisibleRange().getLength())).focus();
+                break;
+            case KeyCodes.KEY_UP:
+                event.preventDefault();
+                selectionModel.clear(false);
+                selectionModel.setSelected(objects.get(start + Utils.positiveMod(rowIndex - 1, getVisibleRange().getLength())), null, true, true);
+                table.getRowFormatter().getElement(Utils.positiveMod(rowIndex - 1, getVisibleRange().getLength())).focus();
+                break;
+            default:
         }
     }
 
@@ -337,19 +436,6 @@ public class TableCore<T> extends Composite implements HasData<T> {
     }
 
     /**
-     * Возвращает только положительный результат модуля в отличии от %
-     * @param value значение
-     * @param mod модуль
-     */
-    static int positiveMod(int value, int mod) {
-        int res = value;
-        if (value < 0) {
-            res += mod * (-value / mod + 1);
-        }
-        return res % mod;
-    }
-
-    /**
      * Возвращает соседний видимый объект.
      * @param startObject объект, начиная с которого (не включая) начинается поиск
      * @param forward true - следующий, false - предыдущий
@@ -367,103 +453,45 @@ public class TableCore<T> extends Composite implements HasData<T> {
         }
         int visibleSize = Math.min(pageSize, objects.size() - start);
         row -= start;
-        row = positiveMod(row, visibleSize);
+        row = Utils.positiveMod(row, visibleSize);
         row += start;
         return objects.get(row);
     }
 
     /**
-     * Выделяет/снимает выделение ячейки или ряда в таблице.
-     * @param row номер ряда
-     * @param column номер столбца, если -1, то операция производится для ряда
-     * @param select выделить или снять выделение
+     * Снимает выделение с ячеек и строк таблицы.
+     * Этот метод не меняет выделение, изменяет только вид.
+     * Для изменения выделения надо использовать {@link kz.arta.synergy.components.client.table.TableSelectionModel#clear(boolean)}
      */
-    void innerSelect(int row, int column, boolean select) {
-        if (row < 0 || row >= Math.min(pageSize, objects.size() - start)) {
-            return;
-        }
-        Element element;
-        if (column != -1) {
-            element = table.getFlexCellFormatter().getElement(row, column);
-            if (select) {
-                table.getWidget(row, column).getElement().focus();
-            } else {
-                table.getWidget(row, column).getElement().blur();
+    private void clearTableSelection() {
+        for (int row = 0; row < getVisibleRange().getLength(); row++) {
+            for (int col = 0; col < table.getCellCount(row); col++) {
+                table.getFlexCellFormatter().getElement(row, col).removeClassName(SynergyComponents.getResources().cssComponents().selected());
             }
-        } else {
-            element = table.getRowFormatter().getElement(row);
-            table.getElement().focus();
-        }
-        if (select) {
-            element.addClassName(SynergyComponents.getResources().cssComponents().selected());
-        } else {
-            element.removeClassName(SynergyComponents.getResources().cssComponents().selected());
+            table.getRowFormatter().getElement(row).removeClassName(SynergyComponents.getResources().cssComponents().selected());
         }
     }
 
     /**
-     * Выделяет ячейку или ряд соответствующую объекту и столбцу.
-     * @param object объект
-     * @param column столбец
+     * Обновляет вид таблицы до соответствия с выделенными элементами.
+     * Вызывается при поступлении события об изменении выделения, поэтому если надо произвести
+     * сложное изменение выделения, то можно изменять модель выделения без создания событий и после
+     * изменения модели вызвать этот метод.
      */
-    public void select(T object, ArtaColumn<T> column) {
-        if (selectedRow != -1) {
-            innerSelect(selectedRow, selectedColumn, false);
-        }
-
-        if (object != null && objects.contains(object)) {
-            selectedRow = objects.indexOf(object) - start;
-            if (column != null) {
-                selectedColumn = columns.indexOf(column);
-            } else {
-                selectedColumn = -1;
+    void updateSelection() {
+        clearTableSelection();
+        for (T selectedObject : selectionModel.getSelectedObjects()) {
+            int rowIndex = objects.indexOf(selectedObject);
+            if (rowIndex >= start && rowIndex < start + pageSize) {
+                for (ArtaColumn<T> column : selectionModel.getSelectedColumns(selectedObject)) {
+                    if (column == null) {
+                        table.getRowFormatter().getElement(rowIndex - start).addClassName(SynergyComponents.getResources().cssComponents().selected());
+                    } else {
+                        int columnIndex = columns.indexOf(column);
+                        table.getFlexCellFormatter().getElement(rowIndex - start, columnIndex).addClassName(SynergyComponents.getResources().cssComponents().selected());
+                    }
+                }
             }
-        } else {
-            selectedRow = -1;
-            selectedColumn = -1;
-        }
-        if (selectedRow != -1) {
-            innerSelect(selectedRow, selectedColumn, true);
-        }
-    }
-
-    /**
-     * Выделяет следующую ячейку, возможен переход на следующий ряд
-     * Выделяются только ячейки из изменяемых столбцов.
-     */
-    private void selectNextCell() {
-        if (selectionModel.getSelectedColumn() == null) {
-            return;
-        }
-        int columnNum = columns.indexOf(selectionModel.getSelectedColumn());
-        int nextColumn = getNextEditableColumn(columnNum);
-        if (nextColumn == -1) {
-            nextColumn = getNextEditableColumn(-1);
-            if (nextColumn != -1) {
-                selectionModel.setSelected(getNextVisibleObject(selectionModel.getSelectedObject(), true), columns.get(nextColumn), true);
-            }
-        } else {
-            selectionModel.setSelected(selectionModel.getSelectedObject(), columns.get(nextColumn), true);
-        }
-    }
-
-    /**
-     * Выделяет предыдущую ячейку, возможен переход на предыдущий ряд.
-     * Выделяются только ячейки из изменяемых столбцов.
-     */
-    private void selectPreviousCell() {
-        if (selectionModel.getSelectedColumn() == null) {
-            return;
-        }
-        int columnNum = columns.indexOf(selectionModel.getSelectedColumn());
-        int previousColumn = getPreviousEditableColumn(columnNum);
-        if (previousColumn == -1) {
-            previousColumn = getPreviousEditableColumn(columns.size());
-            if (previousColumn != -1) {
-                selectionModel.setSelected(getNextVisibleObject(selectionModel.getSelectedObject(), false), columns.get(previousColumn), true);
-            }
-        } else {
-            selectionModel.setSelected(selectionModel.getSelectedObject(), columns.get(previousColumn), true);
         }
     }
 
@@ -693,6 +721,9 @@ public class TableCore<T> extends Composite implements HasData<T> {
             table.addCell(i);
             int cellColumn = table.getCellCount(i) - 1;
             table.setWidget(i, cellColumn, column.createWidget(objects.get(cellColumn), bus));
+            if (!onlyRows) {
+                table.getElement().setTabIndex(TAB_INDEX);
+            }
         }
     }
 
@@ -739,14 +770,19 @@ public class TableCore<T> extends Composite implements HasData<T> {
             if (!table.isCellPresent(row, i) || table.getWidget(row, i) == null) {
                 Widget widget = column.createWidget(value, bus);
                 table.setWidget(row, i, widget);
+                if (!onlyRows) {
+                    table.getFlexCellFormatter().getElement(row, i).setTabIndex(TAB_INDEX);
+                }
             } else {
                 column.updateWidget(table.getWidget(row, i), value);
             }
         }
+        if (onlyRows) {
+            table.getRowFormatter().getElement(row).setTabIndex(TAB_INDEX);
+        }
     }
 
     public void redraw() {
-        selectionModel.clear();
         if (pageSize > objects.size() - start) {
             table.addStyleName(SynergyComponents.getResources().cssComponents().notFull());
         } else {
@@ -851,7 +887,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     @Override
     public Range getVisibleRange() {
-        return new Range(start, pageSize);
+        return new Range(start, Math.min(pageSize, objects.size() - start));
     }
 
     @Override
@@ -964,12 +1000,8 @@ public class TableCore<T> extends Composite implements HasData<T> {
         }
     }
 
-    public HandlerRegistration addCellMenuHandler(TableCellMenuEvent.Handler<T> handler) {
-        return bus.addHandlerToSource(TableCellMenuEvent.TYPE, this, handler);
-    }
-
-    public HandlerRegistration addRowMenuHandler(TableRowMenuEvent.Handler<T> handler) {
-        return bus.addHandlerToSource(TableRowMenuEvent.TYPE, this, handler);
+    public HandlerRegistration addContextMenuHandler(TableMenuEvent.Handler handler) {
+        return bus.addHandlerToSource(TableMenuEvent.TYPE, this, handler);
     }
 
     /**
@@ -978,6 +1010,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param col столбец
      * @return  виджет
      */
+    @SuppressWarnings("UnusedDeclaration")
     public Widget getWidget(int row, int col) {
         return table.getWidget(row, col);
     }

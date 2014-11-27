@@ -7,7 +7,6 @@ import com.google.gwt.user.client.ui.Widget;
  * User: vsl
  * Date: 02.09.14
  * Time: 15:12
- * //todo почему при нажатии на ячейку выделяется только редактируемые ячейки
  * Столбец, в котором можно изменять значения
  */
 public abstract class ArtaEditableTextColumn<T> extends AbstractEditableColumn<T> {

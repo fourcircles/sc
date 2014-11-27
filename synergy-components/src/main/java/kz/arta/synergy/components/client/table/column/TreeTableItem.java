@@ -27,6 +27,8 @@ public interface TreeTableItem<T extends TreeTableItem<T>> {
      */
     boolean isOpen();
 
+    boolean isLoading();
+
     /**
      * Открыть объект.
      */

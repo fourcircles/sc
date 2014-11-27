@@ -190,10 +190,8 @@ public class Table<T> extends Composite {
         tableHeight -= Constants.BORDER_WIDTH * 2;
         if (hasHat()) {
             tableHeight -= hat.getOffsetHeight();
-//            tableHeight -= 40;
         }
         tableHeight -= headersTable.getOffsetHeight();
-//        tableHeight -= 32;
         scroll.getElement().getStyle().setHeight(tableHeight, Style.Unit.PX);
     }
 

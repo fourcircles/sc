@@ -3,6 +3,7 @@ package kz.arta.synergy.components.client.table;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Timer;
 import kz.arta.synergy.components.client.table.column.TreeTableItem;
 import kz.arta.synergy.components.client.table.events.TreeTableItemEvent;
@@ -24,6 +25,11 @@ public class UserTree extends User implements TreeTableItem<UserTree> {
 
     private EventBus bus;
 
+    /**
+     * Производится ли загрузка данных для этого объекта
+     */
+    private boolean loading = false;
+
     public UserTree(UserTree parent, String firstName,
                     String lastName, String address) {
         super(firstName, lastName, address);
@@ -44,6 +50,13 @@ public class UserTree extends User implements TreeTableItem<UserTree> {
     @Override
     public UserTree getParent() {
         return parent;
+    }
+
+    public void removeFromParent() {
+        if (parent != null) {
+            assert parent.hasChildren();
+            parent.getChildren().remove(this);
+        }
     }
 
     public void addChild(UserTree child) {
@@ -68,19 +81,26 @@ public class UserTree extends User implements TreeTableItem<UserTree> {
     @Override
     public void open() {
         this.isOpen = true;
+        loading = true;
+        bus.fireEventFromSource(new TreeTableItemEvent<UserTree>(this, TreeTableItemEvent.EventType.LOADING), this);
         new Timer() {
             @Override
             public void run() {
+                loading = false;
                 bus.fireEventFromSource(new TreeTableItemEvent<UserTree>(UserTree.this, TreeTableItemEvent.EventType.OPEN), UserTree.this);
             }
-        }.schedule(1000);
-//        bus.fireEventFromSource(new TreeTableItemEvent<UserTree>(this, TreeTableItemEvent.EventType.OPEN), this);
+        }.schedule(Random.nextInt(1500));
     }
 
     @Override
     public void close() {
         this.isOpen = false;
         bus.fireEventFromSource(new TreeTableItemEvent<UserTree>(this, TreeTableItemEvent.EventType.CLOSE), this);
+    }
+
+    @Override
+    public boolean isLoading() {
+        return loading;
     }
 
     @Override

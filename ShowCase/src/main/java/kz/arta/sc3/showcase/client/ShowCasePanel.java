@@ -852,7 +852,7 @@ public class ShowCasePanel extends FlowPanel {
         });
 
         TreeItem table = tree.addItem(basicComponents, Messages.i18n().tr("Таблица"));
-        addTreeItem(table, new LoadPanel(Messages.i18n().tr("Таблица - ряды")) {
+        firstTab = addTreeItem(table, new LoadPanel(Messages.i18n().tr("Таблица - ряды")) {
             @Override
             public Widget getContentWidget() {
                 return getTablePanel(true);
@@ -1061,9 +1061,14 @@ public class ShowCasePanel extends FlowPanel {
                 object.setAlive(newValue);
                 System.out.println();
             }
+
+            @Override
+            public String getBackgroundColor(User object) {
+                return object.getLifeLived() < 0.6 ? Colors.progressNormal.hex() : Colors.declineButtonBG2.hex();
+            }
         };
         table.addColumn(boxColumn);
-        table.setColumnWidth(boxColumn, 26);
+        table.setColumnWidth(boxColumn, CheckBoxColumn.WIDTH);
 
         final ProgressColumn<User> progressColumn = new ProgressColumn<User>("Прогресс") {
             @Override
@@ -1074,6 +1079,11 @@ public class ShowCasePanel extends FlowPanel {
             @Override
             public boolean getType(User object) {
                 return object.getLifeLived() < 0.6;
+            }
+
+            @Override
+            public double getOptionalValue(User object) {
+                return 0.6;
             }
         };
         table.addColumn(progressColumn);
@@ -1089,6 +1099,11 @@ public class ShowCasePanel extends FlowPanel {
             public void setValue(User value, String text) {
                 value.setFirstName(text);
             }
+
+            @Override
+            public String getTextColor(User object) {
+                return object.getLifeLived() < 0.6 ? super.getTextColor(object) : Colors.declineButtonBG2.hex();
+            }
         };
         firstNameColumn.setSortable(true);
         table.addColumn(firstNameColumn);
@@ -1102,6 +1117,11 @@ public class ShowCasePanel extends FlowPanel {
             @Override
             public void setValue(User value, String text) {
                 value.setLastName(text);
+            }
+
+            @Override
+            public String getTextColor(User object) {
+                return object.getLifeLived() < 0.6 ? super.getTextColor(object) : Colors.declineButtonBG2.hex();
             }
         };
         lastNameColumn.setSortable(true);
@@ -1117,6 +1137,11 @@ public class ShowCasePanel extends FlowPanel {
             public void setValue(User value, String text) {
                 value.setAddress(text);
             }
+
+            @Override
+            public String getTextColor(User object) {
+                return object.getLifeLived() < 0.6 ? super.getTextColor(object) : Colors.declineButtonBG2.hex();
+            }
         };
         addressColumn.setSortable(true);
         table.addColumn(addressColumn);
@@ -1130,7 +1155,7 @@ public class ShowCasePanel extends FlowPanel {
         provider.addDataDisplay(table.getCore());
 
         final List<User> list = provider.getList();
-        for (int i = 0; i < 190; i++) {
+        for (int i = 0; i < 5; i++) {
             list.add(new User("jon" + i, "jones" + i, "" + (85281 + i), i % 4 != 0, Random.nextDouble()));
         }
         provider.flush();

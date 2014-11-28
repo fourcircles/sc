@@ -271,6 +271,10 @@ public class TableCore<T> extends Composite implements HasData<T> {
                 td.getStyle().clearHeight();
             }
         }
+
+        if (event.jumpForward()) {
+            tab(row, column);
+        }
     }
 
     /**
@@ -303,20 +307,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
             switch (event.getKeyCode()) {
                 case KeyCodes.KEY_TAB:
                     event.preventDefault();
-                    int newRow;
-                    int newCol;
-                    if (cellIndex == columns.size() - 1) {
-                        newRow = Utils.positiveMod(rowIndex + 1, getVisibleRange().getLength());
-                        newCol = 0;
-                    } else {
-                        newRow = rowIndex;
-                        newCol = cellIndex + 1;
-                    }
-
-                    selectionModel.clear(false);
-                    selectionModel.setSelected(objects.get(start + newRow), columns.get(newCol), true, true);
-                    table.getFlexCellFormatter().getElement(newRow, newCol).focus();
-
+                    tab(rowIndex, cellIndex);
                     break;
                 case KeyCodes.KEY_LEFT:
                     event.preventDefault();
@@ -362,6 +353,22 @@ public class TableCore<T> extends Composite implements HasData<T> {
             clearTableSelection();
             selectionModel.setSelected(objects.get(rowIndex), columns.get(cellIndex), true, true);
         }
+    }
+
+    private void tab(int rowIndex, int cellIndex) {
+        int newRow;
+        int newCol;
+        if (cellIndex == columns.size() - 1) {
+            newRow = Utils.positiveMod(rowIndex + 1, getVisibleRange().getLength());
+            newCol = 0;
+        } else {
+            newRow = rowIndex;
+            newCol = cellIndex + 1;
+        }
+
+        selectionModel.clear(false);
+        selectionModel.setSelected(objects.get(start + newRow), columns.get(newCol), true, true);
+        table.getFlexCellFormatter().getElement(newRow, newCol).focus();
     }
 
     /**
@@ -768,8 +775,11 @@ public class TableCore<T> extends Composite implements HasData<T> {
         for (int i = 0; i < columns.size(); i++) {
             ArtaColumn<T> column = columns.get(i);
             if (!table.isCellPresent(row, i) || table.getWidget(row, i) == null) {
+                // новая ячейка
                 Widget widget = column.createWidget(value, bus);
                 table.setWidget(row, i, widget);
+                // апдейт после присоединения к dom нужен для обновления столбцом td
+                column.updateWidget(widget, value);
                 if (!onlyRows) {
                     table.getFlexCellFormatter().getElement(row, i).setTabIndex(TAB_INDEX);
                 }

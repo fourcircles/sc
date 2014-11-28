@@ -21,6 +21,7 @@ public abstract class ArtaTextColumn<T> extends AbstractArtaColumn<T> {
 
     @Override
     public void updateWidget(Widget widget, T object) {
+        super.updateWidget(widget, object);
         ((Label) widget).setText(getValue(object));
     }
 

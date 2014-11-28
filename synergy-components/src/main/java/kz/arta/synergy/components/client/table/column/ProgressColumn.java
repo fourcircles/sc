@@ -35,6 +35,7 @@ public abstract class ProgressColumn<T> extends AbstractArtaColumn<T> {
     public void updateWidget(Widget widget, T object) {
         ProgressBar bar = (ProgressBar) widget;
         bar.setValue(getValue(object));
+        bar.setOptionalValue(getOptionalValue(object));
     }
 
     @Override
@@ -49,6 +50,7 @@ public abstract class ProgressColumn<T> extends AbstractArtaColumn<T> {
 
     /**
      * Значение для прогресс-бара
+     *
      * @param object объект
      * @return значение прогресс-бара
      */
@@ -61,4 +63,12 @@ public abstract class ProgressColumn<T> extends AbstractArtaColumn<T> {
      * @return тип
      */
     public abstract boolean getType(T object);
+
+    /**
+     * Опциональное значение объекта
+     *
+     * @param object объект
+     * @return опциональное значение
+     */
+    public abstract double getOptionalValue(T object);
 }

@@ -58,5 +58,26 @@ public abstract class AbstractArtaColumn<T> implements ArtaColumn<T> {
     }
 
     public abstract Widget createWidget(T object, EventBus bus);
-    public abstract void updateWidget(Widget widget, T object);
+
+    /**
+     * Проставляет цвета фона и текста.
+     *
+     * @param widget виджет
+     * @param object новый объект
+     */
+    public void updateWidget(Widget widget, T object) {
+        widget.getElement().getParentElement().getStyle().setBackgroundColor(getBackgroundColor(object));
+        String textColor = getTextColor(object);
+        if (textColor != null) {
+            widget.getElement().getParentElement().getStyle().setColor(textColor);
+        }
+    }
+
+    public String getBackgroundColor(T object) {
+        return "transparent";
+    }
+
+    public String getTextColor(T object) {
+        return null;
+    }
 }

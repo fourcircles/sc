@@ -100,7 +100,7 @@
 
 @def stackPanelMarker1 #c23b3b;
 @def progressOptional #ffe465;
-@def progressNormal #b3e062;
+@eval progressNormal kz.arta.synergy.components.style.client.Colors.progressNormal().hex();
 
 @def positiveColor #729b28;
 @def negativeColor #a33c3c;

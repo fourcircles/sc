@@ -3,6 +3,7 @@ package kz.arta.synergy.components.client.table.column;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -18,6 +19,8 @@ import kz.arta.synergy.components.client.checkbox.ArtaCheckBox;
  */
 public abstract class CheckBoxColumn<T> extends AbstractArtaColumn<T> {
 
+    public static final int WIDTH = 36;
+
     protected CheckBoxColumn(String headerText) {
         super(headerText);
     }
@@ -25,7 +28,11 @@ public abstract class CheckBoxColumn<T> extends AbstractArtaColumn<T> {
     @Override
     public Widget createWidget(T object, EventBus bus) {
         TableCheckBox box = new TableCheckBox(object);
-        box.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
+        box.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+        box.getElement().getStyle().setProperty("marginLeft", "auto");
+        box.getElement().getStyle().setProperty("marginRight", "auto");
+
+        box.getElement().getStyle().setMarginTop(3, Style.Unit.PX);
 
         return box;
     }
@@ -33,6 +40,7 @@ public abstract class CheckBoxColumn<T> extends AbstractArtaColumn<T> {
     @SuppressWarnings("unchecked")
     @Override
     public void updateWidget(Widget widget, T object) {
+        super.updateWidget(widget, object);
         TableCheckBox box = (TableCheckBox) widget;
         box.setObject(object);
     }
@@ -44,7 +52,7 @@ public abstract class CheckBoxColumn<T> extends AbstractArtaColumn<T> {
 
     @Override
     public int getMinWidth() {
-        return 26;
+        return WIDTH;
     }
 
     /**
@@ -72,7 +80,6 @@ public abstract class CheckBoxColumn<T> extends AbstractArtaColumn<T> {
         private TableCheckBox(T object) {
             super();
             this.object = object;
-            setValue(CheckBoxColumn.this.getValue(object), false);
             addValueChangeHandler(new ValueChangeHandler<Boolean>() {
                 @Override
                 public void onValueChange(ValueChangeEvent<Boolean> event) {
@@ -91,8 +98,25 @@ public abstract class CheckBoxColumn<T> extends AbstractArtaColumn<T> {
             return object;
         }
 
+        /**
+         * Изменяет объект, который отображается в виджете
+         * @param object объект
+         */
         public void setObject(T object) {
             this.object = object;
+            update();
+        }
+
+        @Override
+        protected void onLoad() {
+            super.onLoad();
+            update();
+        }
+
+        /**
+         * Обновляет вид виджета в соответствии с объектом
+         */
+        private void update() {
             setValue(CheckBoxColumn.this.getValue(object), false);
         }
     }

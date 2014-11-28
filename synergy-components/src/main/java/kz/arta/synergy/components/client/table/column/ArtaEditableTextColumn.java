@@ -23,6 +23,7 @@ public abstract class ArtaEditableTextColumn<T> extends AbstractEditableColumn<T
     @SuppressWarnings("unchecked")
     @Override
     public void updateWidget(Widget widget, T object) {
+        super.updateWidget(widget, object);
         EditableText textWidget = (EditableText) widget;
         textWidget.setObject(object);
     }

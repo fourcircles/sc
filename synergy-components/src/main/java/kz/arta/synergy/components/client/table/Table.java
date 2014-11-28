@@ -765,14 +765,6 @@ public class Table<T> extends Composite {
                 divider.getElement().getStyle().setTop(0, Style.Unit.PX);
             }
         }
-//        for (FlowPanel divider : dividers) {
-//            Style dividerStyle = divider.getElement().getStyle();
-//            if (hasHat()) {
-//                dividerStyle.setTop(40, Style.Unit.PX);
-//            } else {
-//                dividerStyle.setTop(0, Style.Unit.PX);
-//            }
-//        }
     }
 
     /**

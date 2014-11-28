@@ -78,3 +78,9 @@ draftWar {
 task show << {
     println gwtSuperDev.src.getFiles()
 }
+
+sonarRunner {
+    sonarProperties {
+	    property "sonar.sources", "src/main/java"
+    }
+}

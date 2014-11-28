@@ -18,14 +18,18 @@ public abstract class ProgressColumn<T> extends AbstractArtaColumn<T> {
 
     public ProgressColumn(String headerText) {
         super(headerText);
+        locked = true;
     }
 
     @Override
     public Widget createWidget(T object, EventBus bus) {
         ProgressBar bar = new ProgressBar(getType(object));
+
         bar.getElement().getStyle().setLineHeight(19, Style.Unit.PX);
         bar.getElement().getStyle().setWidth(WIDTH, Style.Unit.PX);
-        bar.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        bar.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+        bar.getElement().getStyle().setProperty("marginLeft", "auto");
+        bar.getElement().getStyle().setProperty("marginRight", "auto");
 
         bar.setValue(getValue(object));
         return bar;

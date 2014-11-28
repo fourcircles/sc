@@ -852,7 +852,7 @@ public class ShowCasePanel extends FlowPanel {
         });
 
         TreeItem table = tree.addItem(basicComponents, Messages.i18n().tr("Таблица"));
-        firstTab = addTreeItem(table, new LoadPanel(Messages.i18n().tr("Таблица - ряды")) {
+        addTreeItem(table, new LoadPanel(Messages.i18n().tr("Таблица - ряды")) {
             @Override
             public Widget getContentWidget() {
                 return getTablePanel(true);
@@ -1032,6 +1032,11 @@ public class ShowCasePanel extends FlowPanel {
             public String getValue(User object) {
                 return "" + object.getKey();
             }
+
+            @Override
+            public int getMinWidth() {
+                return 30;
+            }
         };
         idColumn.setSortable(true);
         table.addColumn(idColumn);
@@ -1049,6 +1054,7 @@ public class ShowCasePanel extends FlowPanel {
         };
         table.addColumn(iconColumn);
         table.setColumnWidth(iconColumn, 26);
+        iconColumn.setResizeLock(true);
 
         final CheckBoxColumn<User> boxColumn = new CheckBoxColumn<User>("") {
             @Override
@@ -1069,6 +1075,7 @@ public class ShowCasePanel extends FlowPanel {
         };
         table.addColumn(boxColumn);
         table.setColumnWidth(boxColumn, CheckBoxColumn.WIDTH);
+        boxColumn.setResizeLock(true);
 
         final ProgressColumn<User> progressColumn = new ProgressColumn<User>("Прогресс") {
             @Override
@@ -1088,6 +1095,7 @@ public class ShowCasePanel extends FlowPanel {
         };
         table.addColumn(progressColumn);
         table.setColumnWidth(progressColumn, ProgressColumn.WIDTH + 20);
+        progressColumn.setResizeLock(true);
 
         final ArtaEditableTextColumn<User> firstNameColumn = new ArtaEditableTextColumn<User>(Messages.i18n().tr("Имя")) {
             @Override
@@ -1155,7 +1163,7 @@ public class ShowCasePanel extends FlowPanel {
         provider.addDataDisplay(table.getCore());
 
         final List<User> list = provider.getList();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 190; i++) {
             list.add(new User("jon" + i, "jones" + i, "" + (85281 + i), i % 4 != 0, Random.nextDouble()));
         }
         provider.flush();

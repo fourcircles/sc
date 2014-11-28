@@ -546,13 +546,13 @@ public class TableCore<T> extends Composite implements HasData<T> {
      */
     void setColumnWidgets(FlexTable table, int dest, int source) {
         for (int row = 0; row < table.getRowCount(); row++) {
-            table.setWidget(row, dest, table.getWidget(row, source));
-        }
-        if (columnHasWidth(source)) {
-            int width = widths.get(columns.get(source));
-            table.getFlexCellFormatter().getElement(0, dest).getStyle().setWidth(width, Style.Unit.PX);
-        } else {
-            table.getFlexCellFormatter().getElement(0, dest).getStyle().clearWidth();
+            if (table.isCellPresent(row, source)) {
+                table.setWidget(row, dest, table.getWidget(row, source));
+
+                Element tdSource = table.getFlexCellFormatter().getElement(row, source);
+                Element tdDest = table.getFlexCellFormatter().getElement(row, dest);
+                tdDest.setAttribute("style", tdSource.getAttribute("style"));
+            }
         }
     }
 
@@ -561,17 +561,14 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param table таблица
      * @param index позиция столбца
      * @param widgets виджеты
-     * @param width ширина
+     * @param styles стили
      */
-    static void setColumnWidgets(FlexTable table, int index, List<Widget> widgets, int width) {
+    static void setColumnWidgets(FlexTable table, int index, List<Widget> widgets, List<String> styles) {
         for (int row = 0; row < table.getRowCount(); row++) {
-            table.setWidget(row, index, widgets.get(row));
-
-        }
-        if (width != -1) {
-            table.getFlexCellFormatter().getElement(0, index).getStyle().setWidth(width, Style.Unit.PX);
-        } else {
-            table.getFlexCellFormatter().getElement(0, index).getStyle().clearWidth();
+            if (widgets.get(row) != null) {
+                table.setWidget(row, index, widgets.get(row));
+                table.getFlexCellFormatter().getElement(row, index).setAttribute("style", styles.get(row));
+            }
         }
     }
 
@@ -608,21 +605,27 @@ public class TableCore<T> extends Composite implements HasData<T> {
      */
     void changeColumnPosition(FlexTable table, int columnIndex, int targetPosition) {
         List<Widget> columnWidgets = new ArrayList<Widget>();
-        int width = getColumnWidth(columnIndex);
+        List<String> styles = new ArrayList<String>();
 
         for (int i = 0; i < table.getRowCount(); i++) {
-            columnWidgets.add(table.getWidget(i, columnIndex));
+            if (table.isCellPresent(i, columnIndex)) {
+                columnWidgets.add(table.getWidget(i, columnIndex));
+                styles.add(table.getFlexCellFormatter().getElement(i, columnIndex).getAttribute("style"));
+            } else {
+                columnWidgets.add(null);
+                styles.add(null);
+            }
         }
         if (targetPosition < columnIndex) {
             for (int col = columnIndex; col > targetPosition; col--) {
                 setColumnWidgets(table, col, col - 1);
             }
-            setColumnWidgets(table, targetPosition, columnWidgets, width);
+            setColumnWidgets(table, targetPosition, columnWidgets, styles);
         } else if (targetPosition > columnIndex) {
             for (int col = columnIndex; col < targetPosition; col++) {
                 setColumnWidgets(table, col, col + 1);
             }
-            setColumnWidgets(table, targetPosition, columnWidgets, width);
+            setColumnWidgets(table, targetPosition, columnWidgets, styles);
         }
     }
 

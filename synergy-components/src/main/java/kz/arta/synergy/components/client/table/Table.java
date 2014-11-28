@@ -11,20 +11,21 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ProvidesKey;
-import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.table.column.ArtaColumn;
+import kz.arta.synergy.components.client.table.events.ColumnLockEvent;
 import kz.arta.synergy.components.client.table.events.TableHeaderMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.style.client.Constants;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: vsl
@@ -64,28 +65,6 @@ public class Table<T> extends Composite {
     private final FlexTable headersTable;
 
     /**
-     * Невидимые разделители для изменения ширины столбцов
-     */
-    private List<ArtaFlowPanel> dividers = new ArrayList<ArtaFlowPanel>();
-
-    /**
-     * Самая левая позиция для перемещения разделителя.
-     * Определяется минимальной шириной столбца слева от разделителя
-     */
-    private int leftDividerLimit;
-    private int rightDividerLimit;
-
-    /**
-     * Начальная позиция разделителя до drag'а
-     */
-    private int oldDividerPosition;
-
-    /**
-     * Производится ли изменение ширины столбцов в данный момент
-     */
-    private boolean resizing = false;
-
-    /**
      * Заголовок, который отображается при перетаскивании
      */
     private Header headerProxy;
@@ -123,9 +102,23 @@ public class Table<T> extends Composite {
      */
     private TableCore<T> tableCore;
     private MouseDownHandler headerMouseDownHandler;
+
+    /**
+     * Панель скролла для внутренней таблицы.
+     * Разделители и заголовки не находятся в ней и поддерживаются в правильном
+     * состоянии через {@link com.google.gwt.event.dom.client.ScrollHandler}
+     */
     private ArtaScrollPanel scroll;
 
+    /**
+     * Сдвиг разделителей, соответствующий горизонтальному скроллу
+     */
     private int dividersOffset = 0;
+
+    /**
+     * Разделители
+     */
+    private Map<ArtaColumn<T>, TableDivider<T>> dividers = new HashMap<ArtaColumn<T>, TableDivider<T>>();
 
     public Table(int pageSize) {
         this(pageSize, null);
@@ -171,7 +164,7 @@ public class Table<T> extends Composite {
 
                 // сдвиг разделителей
                 int offsetChange = dividersOffset - scroll.getHorizontalScrollPosition();
-                for (ArtaFlowPanel divider : dividers) {
+                for (TableDivider<T> divider : dividers.values()) {
                     String left = divider.getElement().getStyle().getLeft();
                     int leftPx = Integer.parseInt(left.substring(0, left.length() - 2), 10);
                     divider.getElement().getStyle().setLeft(leftPx + offsetChange, Style.Unit.PX);
@@ -203,35 +196,25 @@ public class Table<T> extends Composite {
         heightUpdated();
     }
 
-    /**
-     * Изменяет количество и положение разделителей в соответствии со столбцами
-     */
     public void redrawDividers() {
-        if (dividers.size() != tableCore.getColumns().size() - 1) {
-            while (dividers.size() > tableCore.getColumns().size() - 1) {
-                ArtaFlowPanel divider = dividers.get(tableCore.getColumns().size());
-                divider.removeFromParent();
-                dividers.remove(divider);
-            }
-            while (dividers.size() < tableCore.getColumns().size() - 1) {
-                ArtaFlowPanel divider = createDivider();
-                dividers.add(divider);
-                root.add(divider);
-            }
-        }
-
-        for (int i = 0; i < tableCore.getColumns().size() - 1; i++) {
-            Style dividerStyle = dividers.get(i).getElement().getStyle();
-
-            int left = getHeaderEnd(tableCore.getColumn(i).getHeader());
-            left -= root.getAbsoluteLeft();
+        for (TableDivider<T> divider : dividers.values()) {
+            Element headerTd = divider.getColumn().getHeader().getElement().getParentElement();
+            int left = headerTd.getAbsoluteLeft() + headerTd.getOffsetWidth() - headersTable.getAbsoluteLeft();
             left -= Constants.TABLE_DIVIDER_WIDTH / 2 + 1;
 
-            dividerStyle.setLeft(left, Style.Unit.PX);
+            divider.getElement().getStyle().setLeft(left, Style.Unit.PX);
+
+            // здесь надо обновить верхнюю границу разделителей,
+            // потому что они могли быть добавлены после добавления шляпы
             if (hasHat()) {
-                dividerStyle.setTop(40, Style.Unit.PX);
-            } else {
-                dividerStyle.setTop(0, Style.Unit.PX);
+                if (hasHat()) {
+                    divider.getElement().getStyle().setTop(40, Style.Unit.PX);
+                } else {
+                    divider.getElement().getStyle().setTop(0, Style.Unit.PX);
+                }
+            }
+            if (tableCore.getOffsetWidth() > getOffsetWidth()) {
+                divider.getElement().getStyle().setBottom(Constants.SCROLL_BAR_HEIGHT, Style.Unit.PX);
             }
         }
     }
@@ -259,7 +242,7 @@ public class Table<T> extends Composite {
                         fullWidth -= tableCore.getColumnWidth(column);
                         if (tableCore.getColumns().indexOf(column) < tableCore.getColumns().size() - 1) {
                             // граница
-                            fullWidth --;
+                            fullWidth--;
                         }
                     } else {
                         unsetColumns++;
@@ -297,9 +280,7 @@ public class Table<T> extends Composite {
     private void updateHeaderWidth(int index) {
         //ширина виджета Header
         int width = tableCore.getElement(0, index).getOffsetWidth();
-        if (index < tableCore.getColumns().size() - 1) {
-            width--;
-        }
+        width--;
         tableCore.getColumns().get(index).getHeader().setWidth(width);
     }
 
@@ -308,6 +289,7 @@ public class Table<T> extends Composite {
             setColumnWidth(tableCore.getColumns().indexOf(column), width);
         }
     }
+
     /**
      * Изменяет ширину столбца на заданной позиции
      * @param index позиция
@@ -327,107 +309,72 @@ public class Table<T> extends Composite {
         }
     }
 
-    /**
-     * Начало drag'а разделителя
-     * @param divider разделитель
-     */
-    private void startResizing(ArtaFlowPanel divider) {
-        resizing = true;
-        divider.addStyleName(SynergyComponents.getResources().cssComponents().drag());
+    private void startResizing(TableDivider<T> divider) {
+        if (!divider.getColumn().isResizable()) {
+            return;
+        }
+        Event.setCapture(divider.getElement());
+        divider.setResizing(true);
         RootPanel.get().getElement().getStyle().setCursor(Style.Cursor.COL_RESIZE);
-
-        int index = dividers.indexOf(divider);
-
-        oldDividerPosition = divider.getAbsoluteLeft();
-
-        if (LocaleInfo.getCurrentLocale().isRTL()) {
-            ArtaColumn<T> leftColumn = tableCore.getColumns().get(index + 1);
-            ArtaColumn<T> rightColumn = tableCore.getColumns().get(index);
-            leftDividerLimit = getHeaderEnd(leftColumn.getHeader()) + leftColumn.getMinWidth();
-            rightDividerLimit = getHeaderStart(rightColumn.getHeader()) - rightColumn.getMinWidth();
-        } else {
-            ArtaColumn<T> leftColumn = tableCore.getColumns().get(index);
-            ArtaColumn<T> rightColumn = tableCore.getColumns().get(index + 1);
-            leftDividerLimit = getHeaderStart(leftColumn.getHeader()) + leftColumn.getMinWidth();
-            rightDividerLimit = getHeaderEnd(rightColumn.getHeader()) - rightColumn.getMinWidth();
-        }
     }
 
-    /**
-     * Перемещение разделителя
-     * @param divider разделитель
-     * @param x абсолютная x-координата
-     */
-    private void resizingDrag(ArtaFlowPanel divider, int x) {
-        if (resizing) {
-            int left = Math.max(x, leftDividerLimit);
-            left = Math.min(left, rightDividerLimit);
-            divider.getElement().getStyle().setLeft(left - root.getAbsoluteLeft(), Style.Unit.PX);
+    private void dragResize(TableDivider<T> divider, int x) {
+        if (!divider.getColumn().isResizable() || !divider.isResizing()) {
+            return;
         }
+        int left = x - headersTable.getAbsoluteLeft();
+
+        int columnIndex = tableCore.getColumns().indexOf(divider.getColumn());
+        int leftLimit = headersTable.getFlexCellFormatter().getElement(0, columnIndex).getAbsoluteLeft()
+                - headersTable.getAbsoluteLeft() + divider.getColumn().getMinWidth();
+
+
+        divider.getElement().getStyle().setLeft(Math.max(left, leftLimit), Style.Unit.PX);
     }
 
-    /**
-     * Drop разделителя, завершение изменения ширины.
-     * @param divider разделитель
-     */
-    private void stopResizing(ArtaFlowPanel divider) {
-        resizing = false;
-        divider.removeStyleName(SynergyComponents.getResources().cssComponents().drag());
+    private void stopResizing(TableDivider<T> divider) {
+        Event.releaseCapture(divider.getElement());
         RootPanel.get().getElement().getStyle().clearCursor();
 
-        int index = dividers.indexOf(divider);
+        int delta = divider.getAbsoluteLeft() - divider.getOldPosition();
+        Element cellElement = tableCore.getElement(0, tableCore.getColumns().indexOf(divider.getColumn()));
+        setColumnWidth(divider.getColumn(), cellElement.getOffsetWidth() + delta);
 
-        int delta = divider.getAbsoluteLeft() - oldDividerPosition;
-        oldDividerPosition = divider.getAbsoluteLeft();
-
-        int leftIndex = index;
-        int rightIndex = index;
-        if (LocaleInfo.getCurrentLocale().isRTL()) {
-            leftIndex++;
-        } else {
-            rightIndex++;
-        }
-
-        int leftWidth = tableCore.getElement(0, leftIndex).getOffsetWidth();
-        int rightWidth = tableCore.getElement(0, rightIndex).getOffsetWidth();
-
-        // задавать новую ширину надо обоим столбцам, даже если до этого у них не было ширины
-        setColumnWidth(leftIndex, leftWidth + delta);
-        setColumnWidth(rightIndex, rightWidth - delta);
+        divider.setResizing(false);
 
         redrawDividers();
     }
 
-    /**
-     * Создает разделитель с необходимыми событиями
-     */
-    private ArtaFlowPanel createDivider() {
-        final ArtaFlowPanel divider = new ArtaFlowPanel();
-        divider.setStyleName(SynergyComponents.getResources().cssComponents().tableDivider());
-
+    private TableDivider<T> createDivider(ArtaColumn<T> column) {
+        final TableDivider<T> divider = new TableDivider<T>(column);
         divider.addMouseDownHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
-                event.stopPropagation();
-                event.preventDefault();
-                Event.setCapture(divider.getElement());
-                startResizing(divider);
-            }
-        });
-        divider.addMouseMoveHandler(new MouseMoveHandler() {
-            @Override
-            public void onMouseMove(MouseMoveEvent event) {
-                resizingDrag(divider, event.getClientX());
-            }
-        });
-        divider.addMouseUpHandler(new MouseUpHandler() {
-            @Override
-            public void onMouseUp(MouseUpEvent event) {
-                Event.releaseCapture(divider.getElement());
-                stopResizing(divider);
+                if (divider.getColumn().isResizable()) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    startResizing(divider);
+                }
             }
         });
 
+        divider.addMouseMoveHandler(new MouseMoveHandler() {
+            @Override
+            public void onMouseMove(MouseMoveEvent event) {
+                if (divider.getColumn().isResizable()) {
+                    dragResize(divider, event.getClientX());
+                }
+            }
+        });
+
+        divider.addMouseUpHandler(new MouseUpHandler() {
+            @Override
+            public void onMouseUp(MouseUpEvent event) {
+                if (divider.getColumn().isResizable()) {
+                    stopResizing(divider);
+                }
+            }
+        });
         return divider;
     }
 
@@ -720,6 +667,7 @@ public class Table<T> extends Composite {
      */
     public void addColumn(final ArtaColumn<T> column) {
         tableCore.addColumn(column);
+        column.setBus(bus);
 
         final Header header = column.getHeader();
         headersTable.setWidget(0, tableCore.getColumns().size() - 1, header);
@@ -751,6 +699,21 @@ public class Table<T> extends Composite {
                         event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), Table.this);
             }
         }, ContextMenuEvent.getType());
+
+        final TableDivider<T> divider = createDivider(column);
+        dividers.put(column, divider);
+        root.add(divider);
+
+        column.addLockHandler(new ColumnLockEvent.Handler() {
+            @Override
+            public void onColumnLock(ColumnLockEvent event) {
+                if (event.isLocked()) {
+                    divider.addStyleName(SynergyComponents.getResources().cssComponents().disabled());
+                } else {
+                    divider.removeStyleName(SynergyComponents.getResources().cssComponents().disabled());
+                }
+            }
+        });
     }
 
     @Override
@@ -795,14 +758,21 @@ public class Table<T> extends Composite {
             }
         }
 
-        for (FlowPanel divider : dividers) {
-            Style dividerStyle = divider.getElement().getStyle();
+        for (TableDivider<T> divider : dividers.values()) {
             if (hasHat()) {
-                dividerStyle.setTop(40, Style.Unit.PX);
+                divider.getElement().getStyle().setTop(40, Style.Unit.PX);
             } else {
-                dividerStyle.setTop(0, Style.Unit.PX);
+                divider.getElement().getStyle().setTop(0, Style.Unit.PX);
             }
         }
+//        for (FlowPanel divider : dividers) {
+//            Style dividerStyle = divider.getElement().getStyle();
+//            if (hasHat()) {
+//                dividerStyle.setTop(40, Style.Unit.PX);
+//            } else {
+//                dividerStyle.setTop(0, Style.Unit.PX);
+//            }
+//        }
     }
 
     /**

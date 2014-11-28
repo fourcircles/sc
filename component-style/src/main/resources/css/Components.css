@@ -1679,9 +1679,6 @@ p {
 .table tr:last-child td {
     border-bottom-style: none;
 }
-.table tr td:last-child {
-    border-right-style: none;
-}
 .table tr td:first-child {
     border-left-style: none;
 }
@@ -1752,11 +1749,15 @@ p {
 
 @eval tableDividerWidth kz.arta.synergy.components.style.client.Constants.tableDividerWidth();
 .tableDivider {
-    height: 100%;
     width: tableDividerWidth;
     cursor: col-resize;
     position: absolute;
     top: 0;
+    bottom: 0;
+}
+.tableDivider.disabled {
+    cursor: auto;
+    visibility: hidden;
 }
 .tableDivider.drag {
     width: 1px;
@@ -1787,9 +1788,6 @@ p {
     border-spacing: 0;
     background-color: tabBg2;
     height: 32px;
-}
-.headersTable td:last-child {
-    border-right-style: none;
 }
 .header{
     color: textColor2;

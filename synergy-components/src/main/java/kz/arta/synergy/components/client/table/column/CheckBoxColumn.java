@@ -23,6 +23,7 @@ public abstract class CheckBoxColumn<T> extends AbstractArtaColumn<T> {
 
     protected CheckBoxColumn(String headerText) {
         super(headerText);
+        locked = true;
     }
 
     @Override

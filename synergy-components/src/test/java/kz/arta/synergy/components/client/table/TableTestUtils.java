@@ -1,5 +1,7 @@
 package kz.arta.synergy.components.client.table;
 
+import com.google.gwt.user.client.Random;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  */
 public class TableTestUtils {
     public static User createUser(int i) {
-        return new User("jon" + i, "jones" + i, "" + (85281 + i));
+        return new User("jon" + i, "jones" + i, "" + (85281 + i), i % 4 != 0, Random.nextDouble());
     }
 
     public static List<User> createUserList(int size, int userStart) {

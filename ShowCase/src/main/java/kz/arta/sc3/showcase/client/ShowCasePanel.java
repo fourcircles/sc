@@ -844,7 +844,7 @@ public class ShowCasePanel extends FlowPanel {
                 return getCheckBoxPanel();
             }
         });
-        addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Дерево")) {
+        addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Дерево (черное)")) {
             @Override
             public Widget getContentWidget() {
                 return getTreePanel();
@@ -959,8 +959,8 @@ public class ShowCasePanel extends FlowPanel {
         }
     }
 
-    private Tree copyTree(Tree tree, boolean withScroll) {
-        Tree newTree = new Tree(withScroll, true);
+    private Tree copyTree(Tree tree, boolean withScroll, boolean white) {
+        Tree newTree = new Tree(withScroll, white);
         for (TreeItem item : tree.getItems()) {
             TreeItem newItem = newTree.addItem(item.getText());
             copyTreeItem(newTree, item, newItem);
@@ -979,7 +979,7 @@ public class ShowCasePanel extends FlowPanel {
     private Widget getTreePanel() {
         FlowPanel root = new FlowPanel();
 
-        kz.arta.synergy.components.client.tree.Tree localTree = copyTree(tree, true);
+        kz.arta.synergy.components.client.tree.Tree localTree = copyTree(tree, true, false);
         addCodeSample(localTree, Messages.i18n().tr("Дерево"), ShowCase.RESOURCES.tree().getText());
 
         localTree.getElement().getStyle().setHeight(LOCAL_TREE_SIZE, Style.Unit.PX);
@@ -1236,7 +1236,7 @@ public class ShowCasePanel extends FlowPanel {
 
     private Widget getPathPanel() {
         final FlowPanel root = new FlowPanel();
-        final Tree localTree = copyTree(tree, false);
+        final Tree localTree = copyTree(tree, false, true);
         addCodeSample(localTree, Messages.i18n().tr("Дерево"), ShowCase.RESOURCES.tree().getText());
 
         localTree.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);

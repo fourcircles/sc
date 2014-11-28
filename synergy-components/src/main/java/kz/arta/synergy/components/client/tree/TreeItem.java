@@ -11,7 +11,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.ArtaFlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
@@ -21,7 +20,6 @@ import kz.arta.synergy.components.client.tree.events.TreeOpenEvent;
 import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.Navigator;
-import kz.arta.synergy.components.client.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,15 +115,30 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
      */
     private TreeAnimationIE9 animation;
 
+    /**
+     * Цвет дерева
+     */
+    private boolean white;
+
     interface TreeItemUiBinder extends UiBinder<ArtaFlowPanel, TreeItem> {
     }
 
     private static TreeItemUiBinder ourUiBinder = GWT.create(TreeItemUiBinder.class);
 
     TreeItem(String text, final EventBus bus) {
+        this(text, bus, true);
+    }
+
+    /**
+     * @param text текст пункта дерева
+     * @param bus события будут создаваться на этом eventbus
+     * @param white цвет пункта, true - белый, false - черный
+     */
+    TreeItem(String text, final EventBus bus, boolean white) {
         root = ourUiBinder.createAndBindUi(this);
         root.addStyleName(SynergyComponents.getResources().cssComponents().treeItem());
 
+        this.white = white;
 
         ClickHandler selectionHandler = new ClickHandler() {
             @Override
@@ -180,7 +193,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
      * Клик по индикатору открытия/закрытия
      */
     @UiHandler("indicator")
-    void indicatorClick(ClickEvent event) {
+    void indicatorClick(@SuppressWarnings("UnusedParameters") ClickEvent event) {
         setOpen(!isOpen());
     }
 
@@ -188,10 +201,15 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
      * Скрывает или показывает индикатор открытия в зависимости от наличия внутренниз узлов
      */
     private void updateIndicator() {
-        if (items != null && !items.isEmpty()) {
+        if (hasItems()) {
             indicator.getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
         } else {
             indicator.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+        }
+        if (isOpen()) {
+            indicator.setResource(getOpenIndicatorImage());
+        } else {
+            indicator.setResource(getClosedIndicatorImage());
         }
     }
 
@@ -212,7 +230,6 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
 
     /**
      * Добавить узел.
-     * Повторное добавление узла запрещено.
      */
     void addTreeItem(TreeItem item) {
         if (items == null) {
@@ -253,6 +270,22 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
         return isOpen;
     }
 
+    private ImageResource getOpenIndicatorImage() {
+        if (white) {
+            return ImageResources.IMPL.nodeOpen16();
+        } else {
+            return ImageResources.IMPL.blackNodeOpened();
+        }
+    }
+
+    private ImageResource getClosedIndicatorImage() {
+        if (white) {
+            return ImageResources.IMPL.nodeClosed16();
+        } else {
+            return ImageResources.IMPL.blackNodeClosed();
+        }
+    }
+
     /**
      * Открыть/закрыть узел
      * @param isOpen true - открыть, false - закрыть
@@ -260,19 +293,17 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
      */
     public void setOpen(boolean isOpen, boolean fireEvents) {
         if (isOpen) {
-            indicator.setResource(ImageResources.IMPL.nodeOpen16());
-
             content.getElement().getStyle().setDisplay(Style.Display.BLOCK);
             if (parent != null && !parent.isOpen()) {
                 parent.setOpen(true, fireEvents);
             }
             updateContentHeight(content.getElement().getScrollHeight());
         } else {
-            indicator.setResource(ImageResources.IMPL.nodeClosed16());
             updateContentHeight(-getContentHeight());
             closeTimer.schedule(ANIMATION_DURATION);
         }
         this.isOpen = isOpen;
+        updateIndicator();
         if (fireEvents) {
             bus.fireEvent(new TreeOpenEvent(this, isOpen));
         }
@@ -441,5 +472,4 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
     }
-
 }

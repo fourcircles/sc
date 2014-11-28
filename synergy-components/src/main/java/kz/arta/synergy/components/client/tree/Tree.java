@@ -7,10 +7,12 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
+import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.tree.events.TreeOpenEvent;
 import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
 
@@ -43,6 +45,11 @@ public class Tree extends Composite implements HasContextMenuHandlers {
     List<TreeItem> items;
 
     /**
+     * Цвет дерева
+     */
+    private final boolean white;
+
+    /**
      * Создаем дерево (по умолчанию со скроллом и белое)
      */
     public Tree() {
@@ -54,20 +61,25 @@ public class Tree extends Composite implements HasContextMenuHandlers {
      * @param withScroll true - нужен скролл, false - не нужен. Если false - тогда нужно поместить во внешний скролл
      * @param white true - дерево белое, false - черное
      */
+    @UiConstructor
     public Tree(boolean withScroll, boolean white) {
-
+        this.white = white;
         if (withScroll) {
-            ArtaScrollPanel scroll = new ArtaScrollPanel();
+            ArtaScrollPanel scroll = new ArtaScrollPanel(white ? ColorType.WHITE : ColorType.BLACK);
             initWidget(scroll);
             scroll.addStyleName(SynergyComponents.getResources().cssComponents().tree());
+            if (!white) {
+                scroll.addStyleName(SynergyComponents.getResources().cssComponents().dark());
+            }
 
             root = new FlowPanel();
             scroll.setWidget(root);
         } else {
             root = new FlowPanel();
             initWidget(root);
+            root.setStyleName(SynergyComponents.getResources().cssComponents().tree());
+            root.addStyleName(SynergyComponents.getResources().cssComponents().dark());
         }
-
 
         bus = new SimpleEventBus();
         items = new ArrayList<TreeItem>();
@@ -105,7 +117,8 @@ public class Tree extends Composite implements HasContextMenuHandlers {
      * @return новый узел дерева
      */
     public TreeItem addItem(String text) {
-        TreeItem item = new TreeItem(text, bus);
+        TreeItem item = new TreeItem(text, bus, white);
+
 
         items.add(item);
         root.add(item.asTreeItem());
@@ -120,7 +133,7 @@ public class Tree extends Composite implements HasContextMenuHandlers {
      * @return новый узел
      */
     public TreeItem addItem(TreeItem parentItem, String text) {
-        TreeItem item = new TreeItem(text, bus);
+        TreeItem item = new TreeItem(text, bus, white);
         parentItem.addTreeItem(item);
         return item;
     }

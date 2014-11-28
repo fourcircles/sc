@@ -112,6 +112,13 @@ public interface ImageResources extends ClientBundle {
     @Source("images/tree/node-open-16.png")
     @ImageResource.ImageOptions(flipRtl = true)
     ImageResource nodeOpen16();
+    @Source("images/tree/black_tree_node_closed.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource blackNodeClosed();
+    @Source("images/tree/black_tree_node_opened.png")
+    @ImageResource.ImageOptions(flipRtl = true)
+    ImageResource blackNodeOpened();
+
 
     @Source("images/tree/favourite_icon.png")
     ImageResource favouriteFolder();

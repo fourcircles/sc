@@ -2432,7 +2432,7 @@ p {
     max-width: 400px;
     padding: notificationOffset;
 
-    border: 1px solid buttonBorder;
+    border: 1px solid buttonPressed;
     border-radius: 4px;
     color: stackPanelText2;
     box-shadow: 2px 2px 5px -1px rgba(0, 0, 0, 0.15);
@@ -2446,7 +2446,7 @@ p {
 
 .notification .notificationText {
     display: inline-block;
-    max-width: 350px;
+    max-width: 323px;
     margin-left: notificationOffset;
     vertical-align: top;
     word-wrap: break-word;

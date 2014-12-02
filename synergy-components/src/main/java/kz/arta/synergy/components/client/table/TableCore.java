@@ -37,7 +37,7 @@ import java.util.Map;
  * @see {@link Table} заголовки, шапка
  */
 public class TableCore<T> extends Composite implements HasData<T> {
-    private static int TAB_INDEX = 1;
+    static final int TAB_INDEX = 1;
 
     /**
      * Таблица
@@ -88,6 +88,8 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Ширина заголовков
+     *
+     * //todo не вижу смысла оставлять логическую ширину столбцов, надо правильно убрать
      */
     Map<ArtaColumn<T>, Integer> widths = new HashMap<ArtaColumn<T>, Integer>();
 
@@ -203,6 +205,22 @@ public class TableCore<T> extends Composite implements HasData<T> {
     }
 
     /**
+     * Фокус таблицы. Выбирается первая строка или ячейка.
+     */
+    public void focus() {
+        if (!objects.isEmpty()) {
+            selectionModel.clear(false);
+            if (onlyRows) {
+                selectionModel.setSelected(objects.get(0), true, true);
+                table.getRowFormatter().getElement(0).focus();
+            } else if (!columns.isEmpty()) {
+                selectionModel.setSelected(objects.get(0), columns.get(0), true, true);
+                table.getFlexCellFormatter().getElement(0, 0).focus();
+            }
+        }
+    }
+
+    /**
      * Обработка вызова контекстного меню
      * @param event событие
      */
@@ -273,7 +291,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
         }
 
         if (event.jumpForward()) {
-            tab(row, column);
+            cellTab(row, column, false);
         }
     }
 
@@ -307,7 +325,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
             switch (event.getKeyCode()) {
                 case KeyCodes.KEY_TAB:
                     event.preventDefault();
-                    tab(rowIndex, cellIndex);
+                    cellTab(rowIndex, cellIndex, event.getShiftKey());
                     break;
                 case KeyCodes.KEY_LEFT:
                     event.preventDefault();
@@ -355,17 +373,28 @@ public class TableCore<T> extends Composite implements HasData<T> {
         }
     }
 
-    private void tab(int rowIndex, int cellIndex) {
-        int newRow;
-        int newCol;
-        if (cellIndex == columns.size() - 1) {
-            newRow = Utils.positiveMod(rowIndex + 1, getVisibleRange().getLength());
-            newCol = 0;
-        } else {
-            newRow = rowIndex;
-            newCol = cellIndex + 1;
-        }
+    /**
+     * Нажатие таба в таблице с выбором ячеек
+     * @param rowIndex строка последней выбранной ячейки
+     * @param cellIndex столбец последней выбранной ячейки
+     */
+    private void cellTab(int rowIndex, int cellIndex, boolean shift) {
+        int newRow = rowIndex;
+        int newCol = cellIndex;
 
+        if (shift) {
+            if (cellIndex == 0) {
+                newRow--;
+            }
+            newCol--;
+        } else {
+            if (cellIndex == columns.size() - 1) {
+                newRow++;
+            }
+            newCol++;
+        }
+        newRow = Utils.positiveMod(newRow, getVisibleRange().getLength());
+        newCol = Utils.positiveMod(newCol, columns.size());
         selectionModel.clear(false);
         selectionModel.setSelected(objects.get(start + newRow), columns.get(newCol), true, true);
         table.getFlexCellFormatter().getElement(newRow, newCol).focus();
@@ -380,6 +409,13 @@ public class TableCore<T> extends Composite implements HasData<T> {
         int rowIndex = rowElement.getRowIndex();
         switch (event.getKeyCode()) {
             case KeyCodes.KEY_TAB:
+                event.preventDefault();
+                selectionModel.clear(false);
+                int newRowIndex = event.getShiftKey() ? rowIndex - 1 : rowIndex + 1;
+                newRowIndex = Utils.positiveMod(newRowIndex, getVisibleRange().getLength());
+                selectionModel.setSelected(objects.get(start + newRowIndex), null, true, true);
+                table.getRowFormatter().getElement(newRowIndex).focus();
+                break;
             case KeyCodes.KEY_DOWN:
                 event.preventDefault();
                 selectionModel.clear(false);
@@ -398,6 +434,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Возвращает ширину столбца
+     *
      * @param column столбец
      * @return ширина; если не задана, то -1
      */
@@ -414,6 +451,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @see {@link #getColumnWidth(kz.arta.synergy.components.client.table.column.ArtaColumn)}
      * @param index позиция столбца
      */
+    @SuppressWarnings("UnusedDeclaration")
     public int getColumnWidth(int index) {
         return getColumnWidth(columns.get(index));
     }
@@ -444,6 +482,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Возвращает соседний видимый объект.
+     *
      * @param startObject объект, начиная с которого (не включая) начинается поиск
      * @param forward true - следующий, false - предыдущий
      * @return соседний видимый объект
@@ -504,6 +543,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Возвращает предыдущий столбец, который можно изменять
+     *
      * @param startColumn столбец с которого начинается поиск (не включая)
      * @return столбец
      */
@@ -522,6 +562,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Возвращает следующий столбец, который можно изменять.
+     *
      * @param startColumn столбец с которого начинается поиск (не включая)
      * @return изменяемый столбец
      */
@@ -540,6 +581,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Переместить виджеты из одного стоблца в другой
+     *
      * @param table таблица
      * @param dest куда поместить виджеты
      * @param source откуда взять виджеты
@@ -558,6 +600,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Заменить виджеты столбца на указанной позиции
+     *
      * @param table таблица
      * @param index позиция столбца
      * @param widgets виджеты
@@ -574,6 +617,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Сдвигает лист вперед или назад на одну позицию.
+     *
      * @param list лист
      * @see {@link java.util.Collections#rotate(java.util.List, int)}
      */
@@ -631,6 +675,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Перемещает столбец на новую позицию, сохраняя относительный порядок остальных столбцов
+     *
      * @param srcColumnIndex начальная позиция
      * @param targetPosition позиция на которую надо переместить столбец
      */
@@ -650,6 +695,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Задана ли ширина для столбца
+     *
      * @param index позиция столбца
      */
     public boolean columnHasWidth(int index) {
@@ -692,6 +738,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Сортирует таблицу по столбцу
+     *
      * @param column столбец
      */
     public void sort(ArtaColumn<T> column) {
@@ -812,6 +859,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
     /**
      * Изменяет значения объектов, нужные изменения сразу отображаются на текущей странице.
      * Здесь предполагается правильное количество объектов, которое задается через {@link #setRowCount(int)}
+     *
      * @param start начальная позиция в объектах
      * @param values новые значения
      */
@@ -849,6 +897,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * Управляет отображаемым интервалом.
      * Вызывается, например, при листании страниц.
      * При изменении интервала создается событие
+     *
      * @param range новый интервал
      * @param forceEvents если true, событие создается даже когда интервал не был изменен
      * @param clearData очищает данные
@@ -918,7 +967,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
             rowCountChange = true;
         } else if (objects.size() > count) {
 
-            //случай когда удаляются элементы в конце
+            //случай, когда удаляются элементы в конце
             for (int row = count - start; row < pageSize; row++) {
                 TableRowElement rowElement = TableRowElement.as(table.getRowFormatter().getElement(row));
                 while (rowElement.getCells().getLength() > 0) {
@@ -961,6 +1010,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Изменяет режим выбора в таблице
+     *
      * @param onlyRows true - можно выбирать ряды, false - можно выбирать ячейки
      */
     public void setOnlyRows(boolean onlyRows) {
@@ -977,6 +1027,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * Возвращает номер ряда в котором расположен объект с заданным ключем.
      * Если объект расположен не на текущей странице или такого объекта
      * просто нет - возвращает -1.
+     *
      * @param key ключ
      * @return номер ряда с объектом
      */

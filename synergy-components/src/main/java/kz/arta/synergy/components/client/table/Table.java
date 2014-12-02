@@ -132,6 +132,7 @@ public class Table<T> extends Composite {
         root = new FlowPanel();
         initWidget(root);
         root.addStyleName(SynergyComponents.getResources().cssComponents().tableWhole());
+        root.getElement().setTabIndex(TableCore.TAB_INDEX);
 
         tableCore = new TableCore<T>(pageSize, keyProvider, bus);
         scroll = new ArtaScrollPanel();
@@ -156,6 +157,15 @@ public class Table<T> extends Composite {
             }
         });
 
+        // фокус таблицы
+        root.addDomHandler(new FocusHandler() {
+            @Override
+            public void onFocus(FocusEvent event) {
+                tableCore.focus();
+            }
+        }, FocusEvent.getType());
+
+        // горизонтальный скролл таблицы
         scroll.addScrollHandler(new ScrollHandler() {
             @Override
             public void onScroll(ScrollEvent event) {

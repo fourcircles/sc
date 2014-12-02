@@ -82,7 +82,10 @@ public abstract class AbstractArtaColumn<T> implements ArtaColumn<T> {
      * @param object новый объект
      */
     public void updateWidget(Widget widget, T object) {
-        widget.getElement().getParentElement().getStyle().setBackgroundColor(getBackgroundColor(object));
+        String backgroundColor = getBackgroundColor(object);
+        if (backgroundColor != null) {
+            widget.getElement().getParentElement().getStyle().setBackgroundColor(backgroundColor);
+        }
         String textColor = getTextColor(object);
         if (textColor != null) {
             widget.getElement().getParentElement().getStyle().setColor(textColor);
@@ -90,7 +93,7 @@ public abstract class AbstractArtaColumn<T> implements ArtaColumn<T> {
     }
 
     public String getBackgroundColor(T object) {
-        return "transparent";
+        return null;
     }
 
     public String getTextColor(T object) {

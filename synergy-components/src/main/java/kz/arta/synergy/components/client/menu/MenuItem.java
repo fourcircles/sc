@@ -89,7 +89,7 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
             @Override
             public void onClick(ClickEvent event) {
                 if (event.getNativeButton() == NativeEvent.BUTTON_LEFT) {
-                    setValue(!isSelected(), true);
+                    click();
                 }
             }
         }, ClickEvent.getType());
@@ -97,6 +97,13 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
 
     public MenuItem(V value, String text) {
         this(value, text, null);
+    }
+
+    /**
+     * Метод вызывается при клике левой кнопкой мыши.
+     */
+    void click() {
+        setValue(!isSelected(), true);
     }
 
     /**

@@ -6,6 +6,7 @@ import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.label.GradientLabel;
+import kz.arta.synergy.components.client.label.GradientLabel2;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
 import kz.arta.synergy.components.style.client.resources.CssComponents;
 import org.junit.Before;
@@ -37,13 +38,16 @@ public class ButtonBaseTest {
     CssComponents css;
 
     @GwtMock
-    GradientLabel gradientLabel;
+    GradientLabel2 gradientLabel;
 
     @Before
     public void setUp() {
 
         when(resources.cssComponents()).thenReturn(css);
         when(css.disabled()).thenReturn("disabled");
+        when(css.mainTextBold()).thenReturn("bold");
+
+        new SynergyComponents().onModuleLoad();
 
         clickHandler = new ClickHandler() {
             @Override
@@ -62,15 +66,6 @@ public class ButtonBaseTest {
         buttonBaseSpy.getButton().addClickHandler(clickHandler);
 
         new SynergyComponents().onModuleLoad();
-    }
-
-
-
-    @Test
-    public void getText_test() {
-        buttonBase.setText("Button text");
-        verify(gradientLabel).setText("Button text");
-        assertEquals("Button text", buttonBase.getText());
     }
 
     @Test

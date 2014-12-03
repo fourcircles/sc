@@ -52,9 +52,9 @@ public class DropDownListMultiTest {
 
     @Test
     public void testMultipleSelection() {
-        items.get(0).fireEvent(TestUtils.createClickEvent(null));
-        items.get(1).fireEvent(TestUtils.createClickEvent(null));
-        items.get(2).fireEvent(TestUtils.createClickEvent(null));
+        items.get(0).click();
+        items.get(1).click();
+        items.get(2).click();
 
         Set<MenuItem<Integer>> selectedItems = list.getSelectedItems();
         assertEquals(3, selectedItems.size());
@@ -65,15 +65,15 @@ public class DropDownListMultiTest {
 
     @Test
     public void testDeselection() {
-        items.get(0).fireEvent(TestUtils.createClickEvent(null));
-        items.get(1).fireEvent(TestUtils.createClickEvent(null));
-        items.get(2).fireEvent(TestUtils.createClickEvent(null));
+        items.get(0).click();
+        items.get(1).click();
+        items.get(2).click();
 
         assertEquals(3, list.getSelectedItems().size());
 
-        items.get(0).fireEvent(TestUtils.createClickEvent(null));
-        items.get(1).fireEvent(TestUtils.createClickEvent(null));
-        items.get(2).fireEvent(TestUtils.createClickEvent(null));
+        items.get(0).click();
+        items.get(1).click();
+        items.get(2).click();
 
         assertEquals(0, list.getSelectedItems().size());
     }
@@ -83,10 +83,10 @@ public class DropDownListMultiTest {
         MenuItemSelection.Handler<Integer> handler = mock(MenuItemSelection.Handler.class);
         list.addItemSelectionHandler(handler);
 
-        items.get(0).fireEvent(TestUtils.createClickEvent(null));
-        items.get(1).fireEvent(TestUtils.createClickEvent(null));
-        items.get(2).fireEvent(TestUtils.createClickEvent(null));
-        items.get(2).fireEvent(TestUtils.createClickEvent(null));
+        items.get(0).click();
+        items.get(1).click();
+        items.get(2).click();
+        items.get(2).click();
 
         assertEquals(2, list.getSelectedItems().size());
 

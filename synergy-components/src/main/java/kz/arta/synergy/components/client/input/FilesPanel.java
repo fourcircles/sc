@@ -147,11 +147,18 @@ public class FilesPanel extends Composite {
             }
         });
 
-        MenuItem<Command> download = new MenuItem<Command>(null, Messages.i18n().tr("Скачать"));
-        MenuItem<Command> downLoadPdf = new MenuItem<Command>(null, Messages.i18n().tr("Скачать PDF версию"));
-        MenuItem<Command> makeMain = new MenuItem<Command>(null, Messages.i18n().tr("Сделать основным"));
-        MenuItem<Command> newVersion = new MenuItem<Command>(null, Messages.i18n().tr("Новая версия"));
-        MenuItem<Command> delete = new MenuItem<Command>(null, Messages.i18n().tr("Удалить"));
+        Command notAvailable = new Command() {
+            @Override
+            public void execute() {
+                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.FAILURE);
+            }
+        };
+
+        MenuItem<Command> download = new MenuItem<Command>(notAvailable, Messages.i18n().tr("Скачать"));
+        MenuItem<Command> downLoadPdf = new MenuItem<Command>(notAvailable, Messages.i18n().tr("Скачать PDF версию"));
+        MenuItem<Command> makeMain = new MenuItem<Command>(notAvailable, Messages.i18n().tr("Сделать основным"));
+        MenuItem<Command> newVersion = new MenuItem<Command>(notAvailable, Messages.i18n().tr("Новая версия"));
+        MenuItem<Command> delete = new MenuItem<Command>(notAvailable, Messages.i18n().tr("Удалить"));
 
         filesMenu = new ContextMenu();
         filesMenu.add(download);
@@ -159,42 +166,6 @@ public class FilesPanel extends Composite {
         filesMenu.add(makeMain);
         filesMenu.add(newVersion);
         filesMenu.add(delete);
-
-        //todo real handler when redesign synergy
-        delete.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                selectedFile.removeFromParent();
-            }
-        });
-
-        newVersion.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.FAILURE);
-            }
-        });
-
-        makeMain.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.FAILURE);
-            }
-        });
-
-        downLoadPdf.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.FAILURE);
-            }
-        });
-
-        download.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                UserMessage.showMessage(Messages.i18n().tr("Данная функция пока недоступна"), Notification.Type.FAILURE);
-            }
-        });
 
         Selection.disableTextSelectInternal(getElement());
     }
@@ -239,21 +210,26 @@ public class FilesPanel extends Composite {
             @Override
             public void onContextMenu(ContextMenuEvent event) {
                 filesMenu.show(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
+                select(filePanel);
             }
         });
         filePanel.addMouseDownHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
                 if (event.getNativeEvent().getButton() != NativeEvent.BUTTON_MIDDLE) {
-                    if (selectedFile != null) {
-                        selectedFile.removeStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
-                    }
-                    filePanel.addStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
-                    selectedFile = filePanel;
+                    select(filePanel);
                 }
             }
         });
-        filesPanel.add(filePanel);
+        this.filesPanel.add(filePanel);
+    }
+
+    private void select(ArtaFlowPanel newSelection) {
+        if (selectedFile != null) {
+            selectedFile.removeStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
+        }
+        newSelection.addStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
+        selectedFile = newSelection;
     }
 
     /**
@@ -261,7 +237,7 @@ public class FilesPanel extends Composite {
      * @return непосредственное имя файла без пути
      */
     @SuppressWarnings("NonJREEmulationClassesInClientCode")
-    String getFileName(String fullName) {
+    static String getFileName(String fullName) {
         if (fullName.contains(":")) {
             return fullName.substring(fullName.lastIndexOf("\\") + 1);
         } else {
@@ -274,6 +250,7 @@ public class FilesPanel extends Composite {
      */
     List<String> getSelectedFiles() {
         if (Navigator.isIE()) {
+            // только один файл
             return Arrays.asList(getFileName(upload.getFilename()));
         } else {
             List<String> result = new ArrayList<String>();
@@ -332,6 +309,7 @@ public class FilesPanel extends Composite {
     /**
      * @return контекстное меню файла
      */
+    @SuppressWarnings("UnusedDeclaration")
     public ContextMenu getFilesMenu() {
         return filesMenu;
     }
@@ -340,6 +318,7 @@ public class FilesPanel extends Composite {
      * Задает новое меню для файла
      * @param menu  контекстное меню
      */
+    @SuppressWarnings("UnusedDeclaration")
     public void setFilesMenu(ContextMenu menu) {
         this.filesMenu = menu;
     }

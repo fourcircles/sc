@@ -85,14 +85,14 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
         }, MouseMoveEvent.getType());
 
         // клик по пункту выбирает его
-        bus.addHandlerToSource(ClickEvent.getType(), this, new ClickHandler() {
+        root.addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 if (event.getNativeButton() == NativeEvent.BUTTON_LEFT) {
                     setValue(!isSelected(), true);
                 }
             }
-        });
+        }, ClickEvent.getType());
     }
 
     public MenuItem(V value, String text) {

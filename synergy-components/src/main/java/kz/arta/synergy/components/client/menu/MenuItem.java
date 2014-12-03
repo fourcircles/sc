@@ -1,6 +1,7 @@
 package kz.arta.synergy.components.client.menu;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -87,7 +88,9 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
         bus.addHandlerToSource(ClickEvent.getType(), this, new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                setValue(!isSelected(), true);
+                if (event.getNativeButton() == NativeEvent.BUTTON_LEFT) {
+                    setValue(!isSelected(), true);
+                }
             }
         });
     }

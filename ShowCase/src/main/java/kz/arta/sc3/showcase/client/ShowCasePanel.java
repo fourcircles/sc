@@ -2626,13 +2626,14 @@ public class ShowCasePanel extends FlowPanel {
         slider1.addValueChangeHandler(new ValueChangeHandler<Double>() {
             @Override
             public void onValueChange(ValueChangeEvent<Double> event) {
-                indicator1.setText(Integer.toString((int) (event.getValue() * 100)));
+                progress1.setValue(slider1.getValue());
+                indicator1.setText(Integer.toString((int) (slider1.getValue() * 100)));
             }
         });
-        slider1.addCircleMouseUpHandler(new MouseUpHandler() {
+        slider1.addCircleMoveHandler(new MouseMoveHandler() {
             @Override
-            public void onMouseUp(MouseUpEvent event) {
-                progress1.setValue(slider1.getValue());
+            public void onMouseMove(MouseMoveEvent event) {
+                indicator1.setText(Integer.toString((int) (slider1.getValue() * 100)));
             }
         });
 
@@ -2679,13 +2680,14 @@ public class ShowCasePanel extends FlowPanel {
         slider2.addValueChangeHandler(new ValueChangeHandler<Double>() {
             @Override
             public void onValueChange(ValueChangeEvent<Double> event) {
-                indicator2.setText(Integer.toString((int) (event.getValue() * 100)));
+                progress1.setValue(slider2.getValue());
+                indicator1.setText(Integer.toString((int) (slider2.getValue() * 100)));
             }
         });
-        slider2.addCircleMouseUpHandler(new MouseUpHandler() {
+        slider2.addCircleMoveHandler(new MouseMoveHandler() {
             @Override
-            public void onMouseUp(MouseUpEvent event) {
-                progress2.setValue(slider2.getValue());
+            public void onMouseMove(MouseMoveEvent event) {
+                indicator1.setText(Integer.toString((int) (slider2.getValue() * 100)));
             }
         });
 

@@ -18,7 +18,7 @@ import kz.arta.synergy.components.style.client.Constants;
  * Предполагается, что две кнопки будут всегда. Кнопка "отмена" опциональна.
  */
 public class NotificationWithResponse extends Notification {
-    static final int BUTTON_WIDTH = 111;
+    static final int BUTTON_WIDTH = 115;
 
     /**
      * Есть ли кнопка "отмена"
@@ -77,7 +77,7 @@ public class NotificationWithResponse extends Notification {
 
         int contentWidth = popupWidth - 2 * Constants.BORDER_WIDTH - Constants.NOTIFICATION_OFFSET * 2;
 
-        int buttonsWidth = BUTTON_WIDTH * buttonsCount + Constants.NOTIFICATION_OFFSET * (buttonsCount - 1);
+        int buttonsWidth = BUTTON_WIDTH * buttonsCount + 10 * (buttonsCount - 1);
         if (buttonsWidth < contentWidth) {
             double delta = ((double) contentWidth - buttonsWidth) / 2;
             yesButton.getElement().getStyle().setMarginLeft(delta, Style.Unit.PX);

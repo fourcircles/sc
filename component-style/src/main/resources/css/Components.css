@@ -2474,15 +2474,15 @@ p {
 .notification .approveButton,
 .notification .declineButton,
 .notification .buttonSimple {
-    min-width: 111px;
-    width: 111px;
+    min-width: 113px;
+    width: 113px;
 }
 
 .notification .declineButton {
-    margin-left: notificationOffset;
+    margin-left: 10px;
 }
 .notification .buttonSimple {
-    margin-left: notificationOffset;
+    margin-left: 10px;
 }
 
 #circularG{

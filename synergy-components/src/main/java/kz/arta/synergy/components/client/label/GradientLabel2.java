@@ -1,7 +1,6 @@
 package kz.arta.synergy.components.client.label;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -18,7 +17,9 @@ import kz.arta.synergy.components.client.util.Utils;
  * Улучшеный лейбл с градиентом
  * //todo заменить градиент
  */
-public class GradientLabel2 extends Composite implements ArtaHasText{
+public class GradientLabel2 extends Composite implements ArtaHasText {
+    private final double eps = 0.01;
+
     /**
      * Градиент
      */
@@ -33,6 +34,8 @@ public class GradientLabel2 extends Composite implements ArtaHasText{
         root = new FlowPanel();
         initWidget(root);
         root.getElement().getStyle().setFontSize(0, Style.Unit.PX);
+        root.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
+        root.getElement().getStyle().setPosition(Style.Position.RELATIVE);
 
         this.font = font;
 
@@ -45,10 +48,16 @@ public class GradientLabel2 extends Composite implements ArtaHasText{
         gradient.setStyleName(SynergyComponents.getResources().cssComponents().gradient());
     }
 
+    /**
+     * Добавляет или удаляет градиент в зависимости от размеров.
+     * Должен вызываться после изменения размера.
+     */
     public void adjustGradient() {
         getElement().getStyle().setPadding(0, Style.Unit.PX);
         if (isAttached()) {
-            if (Utils.impl().getPreciseWidth(getElement()) < Utils.impl().getPreciseTextWidth(getText(), font)) {
+            double width = Utils.impl().getPreciseWidth(getElement());
+            double textWidth = Utils.impl().getPreciseTextWidth(getText(), font);
+            if (Math.abs(width - textWidth) > eps && width < textWidth) {
                 root.add(gradient);
             } else {
                 root.remove(gradient);
@@ -62,7 +71,7 @@ public class GradientLabel2 extends Composite implements ArtaHasText{
         adjustGradient();
     }
 
-    public void setFont(String font) {
+    public void setFontStyle(String font) {
         if (this.font != null) {
             removeStyleName(this.font);
         }

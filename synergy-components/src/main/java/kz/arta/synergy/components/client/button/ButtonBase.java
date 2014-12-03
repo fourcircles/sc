@@ -14,7 +14,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.Image;
 import kz.arta.synergy.components.client.SynergyComponents;
-import kz.arta.synergy.components.client.label.GradientLabel;
+import kz.arta.synergy.components.client.label.GradientLabel2;
 import kz.arta.synergy.components.client.resources.Messages;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.MouseStyle;
@@ -36,14 +36,9 @@ public class ButtonBase extends FlowPanel implements
     protected boolean enabled = true;
 
     /**
-     * Панель для текста с иконкой
-     */
-    protected FlowPanel textPanel = GWT.create(FlowPanel.class);
-
-    /**
      * Надпись кнопки
      */
-    protected GradientLabel textLabel;
+    protected GradientLabel2 textLabel;
 
     /**
      * Текст кнопки
@@ -70,7 +65,7 @@ public class ButtonBase extends FlowPanel implements
     protected IconPosition iconPosition = IconPosition.LEFT;
 
     protected ButtonBase() {
-        textLabel = GWT.create(GradientLabel.class);
+        textLabel = new GradientLabel2(SynergyComponents.getResources().cssComponents().mainTextBold());
         icon = GWT.create(Image.class);
         buildButton();
         sinkEvents(Event.MOUSEEVENTS);
@@ -196,7 +191,7 @@ public class ButtonBase extends FlowPanel implements
         this.text = text;
         if (textLabel == null) {
             needRebuild = true;
-            textLabel = GWT.create(GradientLabel.class);
+            textLabel = new GradientLabel2(SynergyComponents.getResources().cssComponents().mainTextBold());
 
             textLabel.setStyleName(SynergyComponents.getResources().cssComponents().buttonText());
 
@@ -218,6 +213,7 @@ public class ButtonBase extends FlowPanel implements
 
     /**
      * Создает или изменяет иконку для кнопки.
+     *
      * @param iconResource рисунок для иконки
      * @return true - в случае, если кнопка до этого не имела иконки
      */
@@ -244,6 +240,7 @@ public class ButtonBase extends FlowPanel implements
 
     /**
      * Создает или изменяет иконку для кнопки.
+     *
      * @param iconResource рисунок для иконки
      */
     public void setIcon(ImageResource iconResource) {
@@ -254,8 +251,10 @@ public class ButtonBase extends FlowPanel implements
 
     /**
      * Указывает позицию иконки
+     *
      * @param position позиция
      */
+    @SuppressWarnings("UnusedDeclaration")
     public void setIconPosition(IconPosition position) {
         if (position == null) {
             return;
@@ -290,6 +289,7 @@ public class ButtonBase extends FlowPanel implements
     /**
      * Вычисляет ширину текстового элемента в зависимости от ширины кнопки и
      * наличия дополнительных элементов (иконка, кнопка для открытия меню и т.д.)
+     *
      * @return ширина текста
      */
     protected int getTextLabelWidth() {
@@ -310,9 +310,14 @@ public class ButtonBase extends FlowPanel implements
         }
         if (textLabel != null) {
             int width = getTextLabelWidth();
-            if (width < textLabel.getOffsetWidth() && width > 0) {
-                textLabel.setWidth(width);
+
+            width = Math.max(0, width);
+
+            textLabel.getElement().getStyle().clearWidth();
+            if (width < textLabel.getOffsetWidth()) {
+                textLabel.getElement().getStyle().setWidth(width, Style.Unit.PX);
             }
+            textLabel.adjustGradient();
         }
     }
 

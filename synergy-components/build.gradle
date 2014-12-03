@@ -2,6 +2,10 @@ apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'jacoco'
 
+apply plugin: 'artifactory-publish'
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
+
 version='3.0'
 
 repositories {
@@ -10,7 +14,24 @@ repositories {
     maven {
         url 'http://192.168.1.30:8081/artifactory/synergy-libs'
     }
+    maven {
+        url 'http://oss.jfrog.org/artifactory/oss-release-local'
+    }
 }
+
+buildscript {
+    repositories {
+        maven {
+            url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/'
+        }
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.4')
+    }
+}
+
 
 dependencies {
     compile 'com.google.gwt:gwt-dev:2.6.1'
@@ -41,6 +62,34 @@ dependencies {
 test {
     jvmArgs += [ "-XX:MaxPermSize=512m" ]
 }
+
+publishing {
+    publications {
+        componentStyle(MavenPublication) {
+            groupId 'kz.arta'
+            artifactId 'component-style'
+
+            from components.java
+        }
+    }
+}
+
+artifactory {
+    contextUrl = 'http://192.168.1.30:8081/artifactory'
+    //The base Artifactory URL if not overridden by the publisher/resolver
+    publish {
+        //A closure defining publishing information
+        repository {
+            repoKey = 'synergy-libs'   //The Artifactory repository key to publish to
+            username = 'deployer'          //The publisher user name
+            password = 'deployer'       //The publisher password
+        }
+        defaults {
+            publications('componentStyle')
+        }
+    }
+}
+
 
 
 

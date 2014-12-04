@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.util.ArtaHasText;
+import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.client.util.Utils;
 
 /**
@@ -18,7 +19,7 @@ import kz.arta.synergy.components.client.util.Utils;
  * //todo заменить градиент
  */
 public class GradientLabel2 extends Composite implements ArtaHasText {
-    private final double eps = 0.01;
+    private final double EPS = Navigator.isIE() ? 2 : 0.01;
 
     /**
      * Градиент
@@ -57,7 +58,7 @@ public class GradientLabel2 extends Composite implements ArtaHasText {
         if (isAttached()) {
             double width = Utils.impl().getPreciseWidth(getElement());
             double textWidth = Utils.impl().getPreciseTextWidth(getText(), font);
-            if (Math.abs(width - textWidth) > eps && width < textWidth) {
+            if (Math.abs(width - textWidth) >= EPS && width < textWidth) {
                 root.add(gradient);
             } else {
                 root.remove(gradient);

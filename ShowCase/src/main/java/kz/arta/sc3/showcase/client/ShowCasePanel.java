@@ -2680,14 +2680,14 @@ public class ShowCasePanel extends FlowPanel {
         slider2.addValueChangeHandler(new ValueChangeHandler<Double>() {
             @Override
             public void onValueChange(ValueChangeEvent<Double> event) {
-                progress1.setValue(slider2.getValue());
-                indicator1.setText(Integer.toString((int) (slider2.getValue() * 100)));
+                progress2.setValue(slider2.getValue());
+                indicator2.setText(Integer.toString((int) (slider2.getValue() * 100)));
             }
         });
         slider2.addCircleMoveHandler(new MouseMoveHandler() {
             @Override
             public void onMouseMove(MouseMoveEvent event) {
-                indicator1.setText(Integer.toString((int) (slider2.getValue() * 100)));
+                indicator2.setText(Integer.toString((int) (slider2.getValue() * 100)));
             }
         });
 

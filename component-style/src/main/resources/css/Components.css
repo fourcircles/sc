@@ -1706,14 +1706,14 @@ p {
 }
 
 .table td.selected, .table tr.selected {
-    background-color: beige;
+    background-color: selectColor;
 }
 
 .table td:hover {
-    background-color: selectColor;
+    background-color: beige;
 }
 .table.onlyRows tr:hover {
-    background-color: selectColor;
+    background-color: beige;
 }
 .table.onlyRows td:hover {
     background-color: inherit;

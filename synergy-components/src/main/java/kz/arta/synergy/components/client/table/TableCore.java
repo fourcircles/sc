@@ -77,7 +77,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
     /**
      * Разрешено ли выделение нескольких объектов в таблице.
      */
-    private boolean multiSelectionAllowed = true;
+    private boolean multiSelectionAllowed = false;
 
     private EventBus bus;
 

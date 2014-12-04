@@ -1364,6 +1364,7 @@ public class ShowCasePanel extends FlowPanel {
                 return item.getKey();
             }
         });
+        table.getCore().setMultiSelectionAllowed(true);
         addCodeSample(table, Messages.i18n().tr("Дерево-таблица"), ShowCase.RESOURCES.treetable().getText());
         Style tableStyle = table.getElement().getStyle();
         tableStyle.setPosition(Style.Position.ABSOLUTE);

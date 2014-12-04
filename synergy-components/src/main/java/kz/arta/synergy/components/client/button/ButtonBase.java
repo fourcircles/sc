@@ -68,8 +68,7 @@ public class ButtonBase extends FlowPanel implements
         textLabel = new GradientLabel2(SynergyComponents.getResources().cssComponents().mainTextBold());
         icon = GWT.create(Image.class);
         buildButton();
-        sinkEvents(Event.MOUSEEVENTS);
-        sinkEvents(Event.ONCLICK);
+        addHandlers();
     }
 
     public ButtonBase(String text) {
@@ -91,9 +90,60 @@ public class ButtonBase extends FlowPanel implements
             this.iconPosition = iconPosition;
         }
         buildButton();
+        addHandlers();
+    }
+
+    private void addHandlers() {
+        addDomHandler(new MouseDownHandler() {
+            @Override
+            public void onMouseDown(MouseDownEvent event) {
+                if (event.getNativeButton() == NativeEvent.BUTTON_LEFT && isEnabled()) {
+                    setPressed(true);
+                    Event.setCapture(ButtonBase.this.getElement());
+                }
+            }
+        }, MouseDownEvent.getType());
+
+        addDomHandler(new MouseUpHandler() {
+            @Override
+            public void onMouseUp(MouseUpEvent event) {
+                Event.releaseCapture(ButtonBase.this.getElement());
+                setPressed(false);
+            }
+        }, MouseUpEvent.getType());
+
+        addDomHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                setOver(false);
+            }
+        }, MouseOutEvent.getType());
+
+        addDomHandler(new MouseOverHandler() {
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                setOver(true);
+            }
+        }, MouseOverEvent.getType());
 
         sinkEvents(Event.MOUSEEVENTS);
         sinkEvents(Event.ONCLICK);
+    }
+
+    public void setPressed(boolean pressed) {
+        if (pressed) {
+            addStyleName(SynergyComponents.getResources().cssComponents().pressed());
+        } else {
+            removeStyleName(SynergyComponents.getResources().cssComponents().pressed());
+        }
+    }
+
+    public void setOver(boolean over) {
+        if (over) {
+            addStyleName(SynergyComponents.getResources().cssComponents().over());
+        } else {
+            removeStyleName(SynergyComponents.getResources().cssComponents().over());
+        }
     }
 
     /**
@@ -263,27 +313,6 @@ public class ButtonBase extends FlowPanel implements
             iconPosition = position;
             buildButton();
         }
-    }
-
-    public void onBrowserEvent(Event event) {
-        if (event.getButton() != NativeEvent.BUTTON_LEFT){
-            return;
-        }
-        switch (DOM.eventGetType(event)) {
-            case Event.ONMOUSEDOWN:
-                if (isEnabled()) {
-                    MouseStyle.setPressed(this);
-                }
-                break;
-            case Event.ONMOUSEUP:
-                MouseStyle.removeAll(this);
-                break;
-            case Event.ONMOUSEOUT:
-                MouseStyle.removeAll(this);
-                break;
-            default:
-        }
-        super.onBrowserEvent(event);
     }
 
     /**

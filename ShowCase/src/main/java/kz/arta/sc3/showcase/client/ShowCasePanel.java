@@ -2409,6 +2409,8 @@ public class ShowCasePanel extends FlowPanel {
 
         simpleButton4.setContextMenu(menu);
 
+        Label pluralLabel = new Label(Messages.i18n().trn("Кнопка", "%d кнопок", 5));
+
         return simpleButtonPanel;
     }
 

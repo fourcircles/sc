@@ -2410,6 +2410,7 @@ p {
 .file {
     white-space: nowrap;
     cursor: pointer;
+    height: 19px;
 }
 .file > * {
     vertical-align: top;
@@ -2420,6 +2421,10 @@ p {
 }
 .file + .file {
     margin-top: 13px;
+}
+.file.selected span {
+    top: -2px;
+    position: relative;
 }
 
 .files {

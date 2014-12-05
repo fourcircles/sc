@@ -227,8 +227,10 @@ public class FilesPanel extends Composite {
     private void select(ArtaFlowPanel newSelection) {
         if (selectedFile != null) {
             selectedFile.removeStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
+            selectedFile.removeStyleName(SynergyComponents.getResources().cssComponents().selected());
         }
         newSelection.addStyleName(SynergyComponents.getResources().cssComponents().mainTextBold());
+        newSelection.addStyleName(SynergyComponents.getResources().cssComponents().selected());
         selectedFile = newSelection;
     }
 

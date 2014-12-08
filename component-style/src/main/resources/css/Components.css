@@ -2422,9 +2422,19 @@ p {
 .file + .file {
     margin-top: 13px;
 }
+
 .file.selected span {
-    top: -2px;
     position: relative;
+}
+@if user.agent gecko1_8 ie9 {
+    .file.selected span {
+        top: 0;
+    }
+}
+@else {
+    .file.selected span {
+        top: -2px;
+    }
 }
 
 .files {

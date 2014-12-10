@@ -1,8 +1,10 @@
 package kz.arta.synergy.components.client.table.column;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.table.Header;
+import kz.arta.synergy.components.client.table.events.ColumnLockEvent;
 
 /**
  * User: vsl
@@ -30,11 +32,13 @@ public interface ArtaColumn<T> {
      * Задает название столбца
      * @param name название
      */
+    @SuppressWarnings("UnusedDeclaration")
     void setDataStoreName(String name);
 
     /**
      * Возвращает название столбца
      */
+    @SuppressWarnings("UnusedDeclaration")
     String getDataStoreName();
 
     /**
@@ -57,4 +61,22 @@ public interface ArtaColumn<T> {
      * Возвращает заголовок столбца
      */
     Header getHeader();
+
+    /**
+     * Можно ли изменять ширину пользователю
+     *
+     * @param locked true - можно, false - нельзя
+     */
+    void setResizeLock(boolean locked);
+
+    /**
+     * Можно ли изменять ширину пользователю.
+     * Реализация должна принимать во внимание метод {@link #setResizeLock(boolean)}
+     */
+    boolean isResizable();
+
+    EventBus getBus();
+    void setBus(EventBus bus);
+
+    HandlerRegistration addLockHandler(ColumnLockEvent.Handler handler);
 }

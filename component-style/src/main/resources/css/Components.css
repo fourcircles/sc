@@ -22,7 +22,7 @@
 @eval mainBG_0 kz.arta.synergy.components.style.client.Colors.mainBG().alpha0();
 @eval mainBG_0_ie kz.arta.synergy.components.style.client.Colors.mainBG().alpha0IE();
 
-@def buttonPressed #d6d6d6;
+@eval buttonPressed kz.arta.synergy.components.style.client.Colors.buttonPressed().hex();
 
 @def approveButtonBG1 #93c5ae;
 
@@ -100,7 +100,7 @@
 
 @def stackPanelMarker1 #c23b3b;
 @def progressOptional #ffe465;
-@def progressNormal #b3e062;
+@eval progressNormal kz.arta.synergy.components.style.client.Colors.progressNormal().hex();
 
 @def positiveColor #729b28;
 @def negativeColor #a33c3c;
@@ -172,6 +172,8 @@ code, pre {
 }
 
 .buttonText {
+    display: inline-block;
+    height: 30px;
     vertical-align: top;
     white-space:nowrap;
     text-align: center;
@@ -1627,7 +1629,7 @@ p {
     border-collapse: separate;
     border-spacing: 0;
     table-layout: fixed;
-    width: 100%;
+    width: 0;
 }
 .table.notFull {
     border-bottom: 1px solid buttonBG;
@@ -1679,9 +1681,6 @@ p {
 .table tr:last-child td {
     border-bottom-style: none;
 }
-.table tr td:last-child {
-    border-right-style: none;
-}
 .table tr td:first-child {
     border-left-style: none;
 }
@@ -1706,19 +1705,20 @@ p {
     padding: 0;
 }
 
-.table td:hover {
+.table td.selected, .table tr.selected {
     background-color: selectColor;
 }
+
+.table td:hover {
+    background-color: beige;
+}
 .table.onlyRows tr:hover {
-    background-color: selectColor;
+    background-color: beige;
 }
 .table.onlyRows td:hover {
     background-color: inherit;
 }
 
-.table td.selected, .table tr.selected {
-    background-color: beige;
-}
 .table tr td.edit {
     border-style: solid;
     border-bottom-style: none;
@@ -1751,20 +1751,32 @@ p {
 
 @eval tableDividerWidth kz.arta.synergy.components.style.client.Constants.tableDividerWidth();
 .tableDivider {
-    height: 100%;
     width: tableDividerWidth;
     cursor: col-resize;
     position: absolute;
     top: 0;
+    bottom: 0;
+}
+.tableDivider.disabled {
+    cursor: auto;
+    visibility: hidden;
 }
 .tableDivider.drag {
     width: 1px;
     background-color: border1;
 }
 
-
-.headersTable {
+.headersTableContainer {
+    height: 32px;
     width: 100%;
+    position: relative;
+    background-color: tabBg2;
+    border-bottom: 1px solid buttonPressed;
+}
+.headersTable {
+    position: absolute;
+    left: 0;
+    top: 0;
     border-collapse: separate;
     border-spacing: 0;
     table-layout: fixed;
@@ -1775,13 +1787,9 @@ p {
     -moz-box-sizing: border-box;
 
     border-right: 1px solid buttonPressed;
-    border-bottom:1px solid buttonPressed;
     border-spacing: 0;
     background-color: tabBg2;
     height: 32px;
-}
-.headersTable td:last-child {
-    border-right-style: none;
 }
 .header{
     color: textColor2;
@@ -1813,6 +1821,12 @@ p {
 
 .tree {
     border: 1px solid buttonPressed;
+    background-color: whiteBG;
+}
+
+.tree.dark {
+    border-color: navigatorBG;
+    background-color:navigatorBG;
 }
 
 .treeFavorite {
@@ -1829,8 +1843,14 @@ p {
     white-space: nowrap;
     margin-left: 19px;
 }
+.tree.dark .treeItem {
+    color: buttonPressed;
+}
 .treeItem.selected {
     color: textColor2;
+}
+.tree.dark .treeItem.selected {
+    color: whiteBG;
 }
 /*индикатор*/
 .treeItem img {
@@ -2390,6 +2410,7 @@ p {
 .file {
     white-space: nowrap;
     cursor: pointer;
+    height: 19px;
 }
 .file > * {
     vertical-align: top;
@@ -2400,6 +2421,20 @@ p {
 }
 .file + .file {
     margin-top: 13px;
+}
+
+.file.selected span {
+    position: relative;
+}
+@if user.agent gecko1_8 ie9 {
+    .file.selected span {
+        top: 0;
+    }
+}
+@else {
+    .file.selected span {
+        top: -2px;
+    }
 }
 
 .files {
@@ -2414,7 +2449,7 @@ p {
     max-width: 400px;
     padding: notificationOffset;
 
-    border: 1px solid buttonBorder;
+    border: 1px solid buttonPressed;
     border-radius: 4px;
     color: stackPanelText2;
     box-shadow: 2px 2px 5px -1px rgba(0, 0, 0, 0.15);
@@ -2428,7 +2463,7 @@ p {
 
 .notification .notificationText {
     display: inline-block;
-    max-width: 350px;
+    max-width: 323px;
     margin-left: notificationOffset;
     vertical-align: top;
     word-wrap: break-word;
@@ -2454,15 +2489,15 @@ p {
 .notification .approveButton,
 .notification .declineButton,
 .notification .buttonSimple {
-    min-width: 111px;
-    width: 111px;
+    min-width: 113px;
+    width: 113px;
 }
 
 .notification .declineButton {
-    margin-left: notificationOffset;
+    margin-left: 10px;
 }
 .notification .buttonSimple {
-    margin-left: notificationOffset;
+    margin-left: 10px;
 }
 
 #circularG{
@@ -2470,160 +2505,170 @@ p {
     width:16px;
     height:16px}
 
-.circularG{
-    position:absolute;
-    background-color:#0070AD;
-    width:4px;
-    height:4px;
-    -moz-border-radius:2px;
-    -moz-animation-name:bounce_circularG;
-    -moz-animation-duration:0.72s;
-    -moz-animation-iteration-count:infinite;
-    -moz-animation-direction:linear;
-    -webkit-border-radius:2px;
-    -webkit-animation-name:bounce_circularG;
-    -webkit-animation-duration:0.72s;
-    -webkit-animation-iteration-count:infinite;
-    -webkit-animation-direction:linear;
-    -ms-border-radius:2px;
-    -ms-animation-name:bounce_circularG;
-    -ms-animation-duration:0.72s;
-    -ms-animation-iteration-count:infinite;
-    -ms-animation-direction:linear;
-    -o-border-radius:2px;
-    -o-animation-name:bounce_circularG;
-    -o-animation-duration:0.72s;
-    -o-animation-iteration-count:infinite;
-    -o-animation-direction:linear;
-    border-radius:2px;
-    animation-name:bounce_circularG;
-    animation-duration:0.72s;
-    animation-iteration-count:infinite;
-    animation-direction:linear;
+.circularG {
+    position: absolute;
+    background-color: #0070AD;
+    width: 4px;
+    height: 4px;
+    -moz-border-radius: 2px;
+    -moz-animation-name: bounce_circularG;
+    -moz-animation-duration: 0.72s;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-direction: linear;
+    -webkit-border-radius: 2px;
+    -webkit-animation-name: bounce_circularG;
+    -webkit-animation-duration: 0.72s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-direction: linear;
+    -ms-border-radius: 2px;
+    -ms-animation-name: bounce_circularG;
+    -ms-animation-duration: 0.72s;
+    -ms-animation-iteration-count: infinite;
+    -ms-animation-direction: linear;
+    -o-border-radius: 2px;
+    -o-animation-name: bounce_circularG;
+    -o-animation-duration: 0.72s;
+    -o-animation-iteration-count: infinite;
+    -o-animation-direction: linear;
+    border-radius: 2px;
+    animation-name: bounce_circularG;
+    animation-duration: 0.72s;
+    animation-iteration-count: infinite;
+    animation-direction: linear;
 }
 
-#circularG_1{
-    left:0;
-    top:6px;
-    -moz-animation-delay:0.27s;
-    -webkit-animation-delay:0.27s;
-    -ms-animation-delay:0.27s;
-    -o-animation-delay:0.27s;
-    animation-delay:0.27s;
+#circularG_1 {
+    left: 0;
+    top: 6px;
+    -moz-animation-delay: 0.27s;
+    -webkit-animation-delay: 0.27s;
+    -ms-animation-delay: 0.27s;
+    -o-animation-delay: 0.27s;
+    animation-delay: 0.27s;
 }
 
-#circularG_2{
-    left:2px;
-    top:2px;
-    -moz-animation-delay:0.36s;
-    -webkit-animation-delay:0.36s;
-    -ms-animation-delay:0.36s;
-    -o-animation-delay:0.36s;
-    animation-delay:0.36s;
+#circularG_2 {
+    left: 2px;
+    top: 2px;
+    -moz-animation-delay: 0.36s;
+    -webkit-animation-delay: 0.36s;
+    -ms-animation-delay: 0.36s;
+    -o-animation-delay: 0.36s;
+    animation-delay: 0.36s;
 }
 
-#circularG_3{
-    top:0;
-    left:6px;
-    -moz-animation-delay:0.45s;
-    -webkit-animation-delay:0.45s;
-    -ms-animation-delay:0.45s;
-    -o-animation-delay:0.45s;
-    animation-delay:0.45s;
+#circularG_3 {
+    top: 0;
+    left: 6px;
+    -moz-animation-delay: 0.45s;
+    -webkit-animation-delay: 0.45s;
+    -ms-animation-delay: 0.45s;
+    -o-animation-delay: 0.45s;
+    animation-delay: 0.45s;
 }
 
-#circularG_4{
-    right:2px;
-    top:2px;
-    -moz-animation-delay:0.54s;
-    -webkit-animation-delay:0.54s;
-    -ms-animation-delay:0.54s;
-    -o-animation-delay:0.54s;
-    animation-delay:0.54s;
+#circularG_4 {
+    right: 2px;
+    top: 2px;
+    -moz-animation-delay: 0.54s;
+    -webkit-animation-delay: 0.54s;
+    -ms-animation-delay: 0.54s;
+    -o-animation-delay: 0.54s;
+    animation-delay: 0.54s;
 }
 
-#circularG_5{
-    right:0;
-    top:6px;
-    -moz-animation-delay:0.63s;
-    -webkit-animation-delay:0.63s;
-    -ms-animation-delay:0.63s;
-    -o-animation-delay:0.63s;
-    animation-delay:0.63s;
+#circularG_5 {
+    right: 0;
+    top: 6px;
+    -moz-animation-delay: 0.63s;
+    -webkit-animation-delay: 0.63s;
+    -ms-animation-delay: 0.63s;
+    -o-animation-delay: 0.63s;
+    animation-delay: 0.63s;
 }
 
-#circularG_6{
-    right:2px;
-    bottom:2px;
-    -moz-animation-delay:0.72s;
-    -webkit-animation-delay:0.72s;
-    -ms-animation-delay:0.72s;
-    -o-animation-delay:0.72s;
-    animation-delay:0.72s;
+#circularG_6 {
+    right: 2px;
+    bottom: 2px;
+    -moz-animation-delay: 0.72s;
+    -webkit-animation-delay: 0.72s;
+    -ms-animation-delay: 0.72s;
+    -o-animation-delay: 0.72s;
+    animation-delay: 0.72s;
 }
 
-#circularG_7{
-    left:6px;
-    bottom:0;
-    -moz-animation-delay:0.81s;
-    -webkit-animation-delay:0.81s;
-    -ms-animation-delay:0.81s;
-    -o-animation-delay:0.81s;
-    animation-delay:0.81s;
+#circularG_7 {
+    left: 6px;
+    bottom: 0;
+    -moz-animation-delay: 0.81s;
+    -webkit-animation-delay: 0.81s;
+    -ms-animation-delay: 0.81s;
+    -o-animation-delay: 0.81s;
+    animation-delay: 0.81s;
 }
 
-#circularG_8{
-    left:2px;
-    bottom:2px;
-    -moz-animation-delay:0.9s;
-    -webkit-animation-delay:0.9s;
-    -ms-animation-delay:0.9s;
-    -o-animation-delay:0.9s;
-    animation-delay:0.9s;
+#circularG_8 {
+    left: 2px;
+    bottom: 2px;
+    -moz-animation-delay: 0.9s;
+    -webkit-animation-delay: 0.9s;
+    -ms-animation-delay: 0.9s;
+    -o-animation-delay: 0.9s;
+    animation-delay: 0.9s;
 }
 
-@-moz-keyframes bounce_circularG{
-    0%{
-        -moz-transform:scale(1)}
+@-moz-keyframes bounce_circularG {
+    0% {
+        -moz-transform: scale(1)
+    }
 
-    100%{
-        -moz-transform:scale(.3)}
-
-}
-
-@-webkit-keyframes bounce_circularG{
-    0%{
-        -webkit-transform:scale(1)}
-
-    100%{
-        -webkit-transform:scale(.3)}
+    100% {
+        -moz-transform: scale(.3)
+    }
 
 }
 
-@-ms-keyframes bounce_circularG{
-    0%{
-        -ms-transform:scale(1)}
+@-webkit-keyframes bounce_circularG {
+    0% {
+        -webkit-transform: scale(1)
+    }
 
-    100%{
-        -ms-transform:scale(.3)}
-
-}
-
-@-o-keyframes bounce_circularG{
-    0%{
-        -o-transform:scale(1)}
-
-    100%{
-        -o-transform:scale(.3)}
+    100% {
+        -webkit-transform: scale(.3)
+    }
 
 }
 
-@keyframes bounce_circularG{
-    0%{
-        transform:scale(1)}
+@-ms-keyframes bounce_circularG {
+    0% {
+        -ms-transform: scale(1)
+    }
 
-    100%{
-        transform:scale(.3)}
+    100% {
+        -ms-transform: scale(.3)
+    }
+
+}
+
+@-o-keyframes bounce_circularG {
+    0% {
+        -o-transform: scale(1)
+    }
+
+    100% {
+        -o-transform: scale(.3)
+    }
+
+}
+
+@keyframes bounce_circularG {
+    0% {
+        transform: scale(1)
+    }
+
+    100% {
+        transform: scale(.3)
+    }
 
 }
 

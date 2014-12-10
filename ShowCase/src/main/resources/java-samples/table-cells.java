@@ -16,6 +16,7 @@ import java.util.List;
 public class Sample {
     public static void main(String[] args) {
         final Table<User> table = new Table<User>(29);
+        table.getCore().setMultiSelectionAllowed(true);
         // шапка
         table.enableHat(true);
         // название таблицы
@@ -96,7 +97,6 @@ public class Sample {
         final Pager simplePager = new Pager(false);
         simplePager.setDisplay(table.getCore());
 
-        setUpCellMenu(table, provider);
         setUpHeaderMenu(table);
     }
 
@@ -126,25 +126,6 @@ public class Sample {
             }
         });
         table.getCore().addSortHandler(listHandler);
-    }
-
-    /**
-     * Добавляет контекстное меню для ячейки.
-     */
-    private void setUpCellMenu(Table<User> table, ListDataProvider<User> provider) {
-        final ContextMenu cellMenu = new ContextMenu();
-        final ContextMenu.ContextMenuItem item = cellMenu.addItem(Messages.i18n().tr("Меню для ячейки"), null);
-
-        table.getCore().addCellMenuHandler(new TableCellMenuEvent.Handler<User>() {
-            @Override
-            public void onTableCellMenu(TableCellMenuEvent<User> event) {
-                int row = provider.getList().indexOf(event.getObject()) - table.getCore().getVisibleRange().getStart();
-                int column = table.getCore().getColumns().indexOf(event.getColumn());
-                item.setText(Messages.i18n().tr("Меню для ячейки") + " " + row + " " + column);
-                cellMenu.show(event.getX(), event.getY());
-            }
-        });
-
     }
 
     /**

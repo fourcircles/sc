@@ -44,6 +44,11 @@ public class TreeTableProvider<T extends TreeTableItem<T>> extends ListDataProvi
                 }
                 flush();
             }
+
+            @Override
+            public void onLoading(TreeTableItemEvent<T> event) {
+                //do nothing
+            }
         };
     }
 

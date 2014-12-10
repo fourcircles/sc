@@ -1,19 +1,17 @@
 package kz.arta.synergy.components.client.table.column;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
-import kz.arta.synergy.components.client.table.events.CellEditEvent;
 import kz.arta.synergy.components.client.table.events.TreeTableItemEvent;
 
 /**
@@ -60,7 +58,7 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends EditableText<T>
      */
     private boolean isEditable = false;
 
-    public TreeTableWidget(T object, TreeColumn<T> column, boolean isEditable, EventBus bus) {
+    public TreeTableWidget(final T object, TreeColumn<T> column, boolean isEditable, EventBus bus) {
         super(column, object, bus);
 
         widgets = new FlowPanel();
@@ -83,7 +81,11 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends EditableText<T>
             @Override
             public void onClick(ClickEvent event) {
                 if (event.getNativeButton() == NativeEvent.BUTTON_LEFT) {
-                    imageClick();
+                    if (TreeTableWidget.this.object.isOpen()) {
+                        TreeTableWidget.this.object.close();
+                    } else {
+                        TreeTableWidget.this.object.open();
+                    }
                 }
                 event.stopPropagation();
             }
@@ -91,15 +93,9 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends EditableText<T>
     }
 
     @Override
-    public void onBrowserEvent(Event event) {
-        int type = event.getTypeInt();
-        int keyCode = event.getKeyCode();
+    public void edit() {
         if (isEditable) {
-            if (isEditing) {
-                editEvent(event);
-            } else if (type == Event.ONKEYDOWN && (keyCode == KeyCodes.KEY_ENTER || keyCode == KeyCodes.KEY_F2)) {
-                edit();
-            }
+            super.edit();
         }
     }
 
@@ -114,7 +110,7 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends EditableText<T>
         } else {
             getElement().getStyle().setPaddingLeft(14, Style.Unit.PX);
         }
-        root.setFocus(true);
+        root.getElement().getParentElement().focus();
     }
 
     /**
@@ -159,31 +155,11 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends EditableText<T>
      * Скрывает лоадер
      */
     private void hideLoader() {
+        if (loader == null) {
+            loader = createLoader();
+        }
         loader.removeFromParent();
         widgets.insert(image, 0);
-    }
-
-    /**
-     * Клик по треугольнику
-     */
-    private void imageClick() {
-        if (object.isOpen()) {
-            object.close();
-        } else {
-            showLoader();
-            object.addTreeTableHandler(new TreeTableItemEvent.Handler<T>() {
-                @Override
-                public void onClose(TreeTableItemEvent<T> event) {
-                    // do nothing
-                }
-
-                @Override
-                public void onOpen(TreeTableItemEvent<T> event) {
-                    hideLoader();
-                }
-            });
-            object.open();
-        }
     }
 
     /**
@@ -256,10 +232,17 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends EditableText<T>
                 @Override
                 public void onClose(TreeTableItemEvent<T> event) {
                     image.setResource(ImageResources.IMPL.nodeClosed16());
+                    hideLoader();
                 }
                 @Override
                 public void onOpen(TreeTableItemEvent<T> event) {
                     image.setResource(ImageResources.IMPL.nodeOpen16());
+                    hideLoader();
+                }
+
+                @Override
+                public void onLoading(TreeTableItemEvent<T> event) {
+                    showLoader();
                 }
             };
         }
@@ -277,7 +260,19 @@ public class TreeTableWidget<T extends TreeTableItem<T>> extends EditableText<T>
                 handlerRegistration.removeHandler();
             }
             handlerRegistration = item.addTreeTableHandler(getHandler());
+
+            // случай, когда объект был заменен и в одном из объектов был отображен лоадер
+            if (item.isLoading()) {
+                showLoader();
+            } else {
+                hideLoader();
+            }
         }
         update();
+    }
+
+    @Override
+    public void setObject(T object) {
+        super.setObject(object);
     }
 }

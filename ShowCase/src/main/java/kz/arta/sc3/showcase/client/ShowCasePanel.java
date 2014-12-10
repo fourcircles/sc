@@ -43,7 +43,6 @@ import kz.arta.synergy.components.client.input.date.TimeInput;
 import kz.arta.synergy.components.client.input.date.repeat.FullRepeatChooser;
 import kz.arta.synergy.components.client.input.date.repeat.RepeatChooser;
 import kz.arta.synergy.components.client.input.date.repeat.RepeatDate;
-import kz.arta.synergy.components.client.input.events.NewFilesEvent;
 import kz.arta.synergy.components.client.input.number.*;
 import kz.arta.synergy.components.client.input.tags.MultiComboBox;
 import kz.arta.synergy.components.client.input.tags.ObjectChooser;
@@ -65,10 +64,7 @@ import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
 import kz.arta.synergy.components.client.table.*;
 import kz.arta.synergy.components.client.table.column.*;
-import kz.arta.synergy.components.client.table.events.TableCellMenuEvent;
-import kz.arta.synergy.components.client.table.events.TableHeaderMenuEvent;
-import kz.arta.synergy.components.client.table.events.TableRowMenuEvent;
-import kz.arta.synergy.components.client.table.events.TableSortEvent;
+import kz.arta.synergy.components.client.table.events.*;
 import kz.arta.synergy.components.client.tabs.TabPanel;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.taskbar.TaskBar;
@@ -848,7 +844,7 @@ public class ShowCasePanel extends FlowPanel {
                 return getCheckBoxPanel();
             }
         });
-        addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Дерево")) {
+        addTreeItem(basicComponents, new LoadPanel(Messages.i18n().tr("Дерево (черное)")) {
             @Override
             public Widget getContentWidget() {
                 return getTreePanel();
@@ -963,8 +959,8 @@ public class ShowCasePanel extends FlowPanel {
         }
     }
 
-    private Tree copyTree(Tree tree, boolean withScroll) {
-        Tree newTree = new Tree(withScroll, true);
+    private Tree copyTree(Tree tree, boolean withScroll, boolean white) {
+        Tree newTree = new Tree(withScroll, white);
         for (TreeItem item : tree.getItems()) {
             TreeItem newItem = newTree.addItem(item.getText());
             copyTreeItem(newTree, item, newItem);
@@ -983,7 +979,7 @@ public class ShowCasePanel extends FlowPanel {
     private Widget getTreePanel() {
         FlowPanel root = new FlowPanel();
 
-        kz.arta.synergy.components.client.tree.Tree localTree = copyTree(tree, true);
+        kz.arta.synergy.components.client.tree.Tree localTree = copyTree(tree, true, false);
         addCodeSample(localTree, Messages.i18n().tr("Дерево"), ShowCase.RESOURCES.tree().getText());
 
         localTree.getElement().getStyle().setHeight(LOCAL_TREE_SIZE, Style.Unit.PX);
@@ -1009,7 +1005,7 @@ public class ShowCasePanel extends FlowPanel {
         return root;
     }
 
-    private Widget getTablePanel(boolean onlyRows) {
+    private Widget getTablePanel(final boolean onlyRows) {
         FlowPanel panel = new FlowPanel();
         panel.getElement().getStyle().setPadding(20, Style.Unit.PX);
         panel.getElement().getStyle().setPaddingLeft(40, Style.Unit.PX);
@@ -1029,18 +1025,77 @@ public class ShowCasePanel extends FlowPanel {
         table.setMultiLine(!onlyRows);
 
         table.getCore().setOnlyRows(onlyRows);
-        if (onlyRows) {
-            table.setHeight(600 + "px");
-        }
+        table.setHeight(500 + "px");
 
         final ArtaTextColumn<User> idColumn = new ArtaTextColumn<User>("#") {
             @Override
             public String getValue(User object) {
                 return "" + object.getKey();
             }
+
+            @Override
+            public int getMinWidth() {
+                return 30;
+            }
         };
         idColumn.setSortable(true);
         table.addColumn(idColumn);
+        table.setColumnWidth(idColumn, 50);
+
+        final IconColumn<User> iconColumn = new IconColumn<User>("") {
+            @Override
+            public ImageResource getImage(User object) {
+                if (object.getKey() % 2 == 0) {
+                    return ImageResources.IMPL.favouriteFolder();
+                } else {
+                    return null;
+                }
+            }
+        };
+        table.addColumn(iconColumn);
+        table.setColumnWidth(iconColumn, 26);
+        iconColumn.setResizeLock(true);
+
+        final CheckBoxColumn<User> boxColumn = new CheckBoxColumn<User>("") {
+            @Override
+            public boolean getValue(User object) {
+                return object.isAlive();
+            }
+
+            @Override
+            public void setValue(User object, boolean newValue) {
+                object.setAlive(newValue);
+                System.out.println();
+            }
+
+            @Override
+            public String getBackgroundColor(User object) {
+                return object.getLifeLived() < 0.6 ? Colors.progressNormal.hex() : Colors.declineButtonBG2.hex();
+            }
+        };
+        table.addColumn(boxColumn);
+        table.setColumnWidth(boxColumn, CheckBoxColumn.WIDTH);
+        boxColumn.setResizeLock(true);
+
+        final ProgressColumn<User> progressColumn = new ProgressColumn<User>("Прогресс") {
+            @Override
+            public double getValue(User object) {
+                return object.getLifeLived();
+            }
+
+            @Override
+            public boolean getType(User object) {
+                return object.getLifeLived() < 0.6;
+            }
+
+            @Override
+            public double getOptionalValue(User object) {
+                return 0.6;
+            }
+        };
+        table.addColumn(progressColumn);
+        table.setColumnWidth(progressColumn, ProgressColumn.WIDTH + 20);
+        progressColumn.setResizeLock(true);
 
         final ArtaEditableTextColumn<User> firstNameColumn = new ArtaEditableTextColumn<User>(Messages.i18n().tr("Имя")) {
             @Override
@@ -1051,6 +1106,11 @@ public class ShowCasePanel extends FlowPanel {
             @Override
             public void setValue(User value, String text) {
                 value.setFirstName(text);
+            }
+
+            @Override
+            public String getTextColor(User object) {
+                return object.getLifeLived() < 0.6 ? super.getTextColor(object) : Colors.declineButtonBG2.hex();
             }
         };
         firstNameColumn.setSortable(true);
@@ -1066,6 +1126,11 @@ public class ShowCasePanel extends FlowPanel {
             public void setValue(User value, String text) {
                 value.setLastName(text);
             }
+
+            @Override
+            public String getTextColor(User object) {
+                return object.getLifeLived() < 0.6 ? super.getTextColor(object) : Colors.declineButtonBG2.hex();
+            }
         };
         lastNameColumn.setSortable(true);
         table.addColumn(lastNameColumn);
@@ -1080,16 +1145,26 @@ public class ShowCasePanel extends FlowPanel {
             public void setValue(User value, String text) {
                 value.setAddress(text);
             }
+
+            @Override
+            public String getTextColor(User object) {
+                return object.getLifeLived() < 0.6 ? super.getTextColor(object) : Colors.declineButtonBG2.hex();
+            }
         };
         addressColumn.setSortable(true);
         table.addColumn(addressColumn);
+
+        for (int i = 4; i < table.getCore().getColumns().size(); i++) {
+            table.setColumnWidth(i, 400);
+        }
+        table.setWidth("1000px");
 
         final ListDataProvider<User> provider = new ListDataProvider<User>();
         provider.addDataDisplay(table.getCore());
 
         final List<User> list = provider.getList();
         for (int i = 0; i < 190; i++) {
-            list.add(new User("jon" + i, "jones" + i, "" + (85281 + i)));
+            list.add(new User("jon" + i, "jones" + i, "" + (85281 + i), i % 4 != 0, Random.nextDouble()));
         }
         provider.flush();
 
@@ -1156,38 +1231,21 @@ public class ShowCasePanel extends FlowPanel {
         ArtaScrollPanel scroll = new ArtaScrollPanel(panel);
         scroll.setHeight("100%");
 
-
-        table.getCore().addCellMenuHandler(new TableCellMenuEvent.Handler<User>() {
+        final ContextMenu tableMenu = new ContextMenu();
+        tableMenu.add(new MenuItem<Command>(new Command() {
             @Override
-            public void onTableCellMenu(final TableCellMenuEvent<User> event) {
-                final int row = provider.getList().indexOf(event.getObject()) - table.getCore().getVisibleRange().getStart();
-                final int column = table.getCore().getColumns().indexOf(event.getColumn());
-                ContextMenu cellMenu = new ContextMenu();
-                MenuItem<Command> cellMenuItem = new MenuItem<Command>(new Command() {
-                    @Override
-                    public void execute() {
-                        ((EditableText)table.getCore().getWidget(row, column)).edit();
-                    }
-                }, Messages.i18n().tr("Редактировать ячейку"));
-                cellMenu.add(cellMenuItem);
-                cellMenuItem.setText(Messages.i18n().tr("Редактировать ячейку") + " " + row + " " + column);
-                cellMenu.show(event.getX(), event.getY());
+            public void execute() {
+                Set<User> selected = table.getCore().getSelectionModel().getSelectedObjects();
+                list.removeAll(selected);
+                provider.flush();
             }
-        });
-
-        final ContextMenu rowMenu = new ContextMenu();
-        table.getCore().addRowMenuHandler(new TableRowMenuEvent.Handler<User>() {
+        }, Messages.i18n().tr("Удалить")));
+        table.getCore().addContextMenuHandler(new TableMenuEvent.Handler() {
             @Override
-            public void onTableRowMenu(final TableRowMenuEvent<User> event) {
-                rowMenu.clear();
-                rowMenu.add(new MenuItem<Command>(new Command() {
-                    @Override
-                    public void execute() {
-                        provider.getList().remove(event.getObject());
-                        provider.flush();
-                    }
-                }, Messages.i18n().tr("Удалить ряд")));
-                rowMenu.show(event.getX(), event.getY());
+            public void onTableMenu(TableMenuEvent event) {
+                if (onlyRows) {
+                    tableMenu.show(event.getX(), event.getY());
+                }
             }
         });
 
@@ -1211,7 +1269,7 @@ public class ShowCasePanel extends FlowPanel {
 
     private Widget getPathPanel() {
         final FlowPanel root = new FlowPanel();
-        final Tree localTree = copyTree(tree, false);
+        final Tree localTree = copyTree(tree, false, true);
         addCodeSample(localTree, Messages.i18n().tr("Дерево"), ShowCase.RESOURCES.tree().getText());
 
         localTree.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
@@ -1297,7 +1355,7 @@ public class ShowCasePanel extends FlowPanel {
         return root;
     }
 
-    private Widget getTreeTable(boolean onlyRows) {
+    private Widget getTreeTable(final boolean onlyRows) {
         FlowPanel root = new FlowPanel();
 
         final Table<UserTree> table = new Table<UserTree>(10, new ProvidesKey<UserTree>() {
@@ -1306,6 +1364,7 @@ public class ShowCasePanel extends FlowPanel {
                 return item.getKey();
             }
         });
+        table.getCore().setMultiSelectionAllowed(true);
         addCodeSample(table, Messages.i18n().tr("Дерево-таблица"), ShowCase.RESOURCES.treetable().getText());
         Style tableStyle = table.getElement().getStyle();
         tableStyle.setPosition(Style.Position.ABSOLUTE);
@@ -1415,37 +1474,56 @@ public class ShowCasePanel extends FlowPanel {
         }
         provider.flush();
 
-        final ContextMenu rowMenu = new ContextMenu();
-        table.getCore().addRowMenuHandler(new TableRowMenuEvent.Handler<UserTree>() {
+        final ContextMenu menu = new ContextMenu();
+        final MenuItem<Command> deleteItem = new MenuItem<Command>(new Command() {
             @Override
-            public void onTableRowMenu(final TableRowMenuEvent<UserTree> event) {
-                rowMenu.clear();
-                rowMenu.add(new MenuItem<Command>(new Command() {
-                    @Override
-                    public void execute() {
-                        provider.getList().remove(event.getObject());
-                        provider.flush();
+            public void execute() {
+                if (onlyRows) {
+                    for (UserTree userTree : table.getCore().getSelectionModel().getSelectedObjects()) {
+                        userTree.removeFromParent();
+                        provider.getList().remove(userTree);
                     }
-                }, Messages.i18n().tr("Удалить ряд")));
-                rowMenu.show(event.getX(), event.getY());
+                    provider.flush();
+                }
+                table.getCore().getSelectionModel().clear();
             }
-        });
+        }, Messages.i18n().tr("Удалить"));
 
-        table.getCore().addCellMenuHandler(new TableCellMenuEvent.Handler<UserTree>() {
+        final MenuItem<Command> openItems = new MenuItem<Command>(new Command() {
             @Override
-            public void onTableCellMenu(final TableCellMenuEvent<UserTree> event) {
-                final int row = provider.getList().indexOf(event.getObject()) - table.getCore().getVisibleRange().getStart();
-                final int column = table.getCore().getColumns().indexOf(event.getColumn());
-                ContextMenu cellMenu = new ContextMenu();
-                MenuItem<Command> cellMenuItem = new MenuItem<Command>(new Command() {
-                    @Override
-                    public void execute() {
-                        ((TreeTableWidget)table.getCore().getWidget(row, column)).edit();
+            public void execute() {
+                for (TreeTableItem user : table.getCore().getSelectionModel().getSelectedObjects()) {
+                    if (user.hasChildren()) {
+                        user.open();
                     }
-                }, Messages.i18n().tr("Редактировать ячейку"));
-                cellMenu.add(cellMenuItem);
-                cellMenuItem.setText(Messages.i18n().tr("Редактировать ячейку") + " " + row + " " + column);
-                cellMenu.show(event.getX(), event.getY());
+                }
+                table.getCore().getSelectionModel().clear();
+            }
+        }, Messages.i18n().tr("Открыть"));
+
+        final MenuItem<Command> closeItems = new MenuItem<Command>(new Command() {
+            @Override
+            public void execute() {
+                for (UserTree user : table.getCore().getSelectionModel().getSelectedObjects()) {
+                    if (user.hasChildren()) {
+                        user.close();
+                    }
+                }
+                table.getCore().getSelectionModel().clear();
+            }
+        }, Messages.i18n().tr("Закрыть"));
+
+        menu.add(deleteItem);
+        menu.add(openItems);
+        menu.add(closeItems);
+
+
+        table.getCore().addContextMenuHandler(new TableMenuEvent.Handler() {
+            @Override
+            public void onTableMenu(TableMenuEvent event) {
+                if (onlyRows) {
+                    menu.show(event.getX(), event.getY());
+                }
             }
         });
 
@@ -2331,6 +2409,8 @@ public class ShowCasePanel extends FlowPanel {
 
         simpleButton4.setContextMenu(menu);
 
+        Label pluralLabel = new Label(Messages.i18n().trn("Кнопка", "%d кнопок", 5));
+
         return simpleButtonPanel;
     }
 
@@ -2509,18 +2589,12 @@ public class ShowCasePanel extends FlowPanel {
         FlowPanel root = new FlowPanel();
 
         FilesPanel files = new FilesPanel();
+        addCodeSample(files, Messages.i18n().tr("Панель файлов"), ShowCase.RESOURCES.filesPanel().getText());
         files.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
         files.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
         files.getElement().getStyle().setWidth(400, Style.Unit.PX);
         files.getElement().getStyle().setHeight(400, Style.Unit.PX);
         root.add(files);
-
-        files.addNewFilesHandler(new NewFilesEvent.Handler() {
-            @Override
-            public void onNewFiles(NewFilesEvent event) {
-                System.out.println("new files");
-            }
-        });
 
         return root;
     }
@@ -2555,13 +2629,14 @@ public class ShowCasePanel extends FlowPanel {
         slider1.addValueChangeHandler(new ValueChangeHandler<Double>() {
             @Override
             public void onValueChange(ValueChangeEvent<Double> event) {
-                indicator1.setText(Integer.toString((int) (event.getValue() * 100)));
+                progress1.setValue(slider1.getValue());
+                indicator1.setText(Integer.toString((int) (slider1.getValue() * 100)));
             }
         });
-        slider1.addCircleMouseUpHandler(new MouseUpHandler() {
+        slider1.addCircleMoveHandler(new MouseMoveHandler() {
             @Override
-            public void onMouseUp(MouseUpEvent event) {
-                progress1.setValue(slider1.getValue());
+            public void onMouseMove(MouseMoveEvent event) {
+                indicator1.setText(Integer.toString((int) (slider1.getValue() * 100)));
             }
         });
 
@@ -2608,13 +2683,14 @@ public class ShowCasePanel extends FlowPanel {
         slider2.addValueChangeHandler(new ValueChangeHandler<Double>() {
             @Override
             public void onValueChange(ValueChangeEvent<Double> event) {
-                indicator2.setText(Integer.toString((int) (event.getValue() * 100)));
+                progress2.setValue(slider2.getValue());
+                indicator2.setText(Integer.toString((int) (slider2.getValue() * 100)));
             }
         });
-        slider2.addCircleMouseUpHandler(new MouseUpHandler() {
+        slider2.addCircleMoveHandler(new MouseMoveHandler() {
             @Override
-            public void onMouseUp(MouseUpEvent event) {
-                progress2.setValue(slider2.getValue());
+            public void onMouseMove(MouseMoveEvent event) {
+                indicator2.setText(Integer.toString((int) (slider2.getValue() * 100)));
             }
         });
 

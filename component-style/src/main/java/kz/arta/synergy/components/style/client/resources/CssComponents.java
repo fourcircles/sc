@@ -18,8 +18,6 @@ public interface CssComponents extends CssResource {
 
     String buttonBorder();
 
-    String buttonPressed();
-
     String buttonSimple();
 
     String buttonText();
@@ -162,6 +160,7 @@ public interface CssComponents extends CssResource {
     String header();
     String tableWhole();
     String headersTable();
+    String headersTableContainer();
     String headerDivider();
     String drag();
     String notFull();

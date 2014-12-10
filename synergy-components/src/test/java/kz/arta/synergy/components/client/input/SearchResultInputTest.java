@@ -52,7 +52,7 @@ public class SearchResultInputTest {
 
     @Test
     public void testSelectValueFromList() {
-        list.getItems().get(0).fireEvent(TestUtils.createClickEvent(null));
+        list.getItems().get(0).setValue(true, true);
 
         assertEquals(Integer.valueOf(0), search.getValue());
         assertTrue(list.getItems().get(0).isSelected());
@@ -62,9 +62,9 @@ public class SearchResultInputTest {
 
     @Test
     public void testSelectSeveralValues() {
-        list.getItems().get(0).fireEvent(TestUtils.createClickEvent(null));
-        list.getItems().get(1).fireEvent(TestUtils.createClickEvent(null));
-        list.getItems().get(2).fireEvent(TestUtils.createClickEvent(null));
+        list.getItems().get(0).setValue(true, true);
+        list.getItems().get(1).setValue(true, true);
+        list.getItems().get(2).setValue(true, true);
 
         assertEquals(Integer.valueOf(2), search.getValue());
         assertTrue(list.getItems().get(2).isSelected());

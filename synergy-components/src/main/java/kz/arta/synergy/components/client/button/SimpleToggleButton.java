@@ -141,7 +141,7 @@ public class SimpleToggleButton extends SimpleButton {
      * Меняется стиль в зависимости от состояния кнопки
      * @param pressed   нажатое состояние либо нет
      */
-    private void setPressed(boolean pressed) {
+    public void setPressed(boolean pressed) {
         this.pressed = pressed;
         if (pressed) {
             getElement().getStyle().setZIndex(2);

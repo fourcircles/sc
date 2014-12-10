@@ -12,6 +12,7 @@ import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.table.column.ArtaColumn;
 import kz.arta.synergy.components.client.table.column.ArtaTextColumn;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
+import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.resources.ComponentResources;
 import kz.arta.synergy.components.style.client.resources.CssComponents;
 import org.junit.Before;
@@ -317,32 +318,6 @@ public class TableCoreTest {
     }
 
     @Test
-    public void testSelect() {
-        ArtaColumn column = mock(ArtaColumn.class);
-        table.addColumn(column);
-
-        TableCore<User> spy = spy(table);
-        doNothing().when(spy).innerSelect(anyInt(), anyInt(), anyBoolean());
-
-        spy.select(provider.getList().get(0), column);
-
-        verify(spy, times(1)).innerSelect(0, 0, true);
-    }
-
-    @Test
-    public void testSelectNonVisible() {
-        ArtaColumn column = mock(ArtaColumn.class);
-        table.addColumn(column);
-
-        TableCore<User> spy = spy(table);
-        doNothing().when(spy).innerSelect(anyInt(), anyInt(), anyBoolean());
-
-        spy.select(provider.getList().get(provider.getList().size() - 1), column);
-
-        verify(spy, times(0)).innerSelect(anyInt(), anyInt(), anyBoolean());
-    }
-
-    @Test
     public void testNextVisibleObject() {
         table.setVisibleRange(10, PAGE_SIZE);
         User first = provider.getList().get(10);
@@ -356,7 +331,7 @@ public class TableCoreTest {
 
     @Test
     public void testPositiveMod() {
-        assertEquals(9, TableCore.positiveMod(20, 11));
-        assertEquals(1, TableCore.positiveMod(-5, 2));
+        assertEquals(9, Utils.positiveMod(20, 11));
+        assertEquals(1, Utils.positiveMod(-5, 2));
     }
 }

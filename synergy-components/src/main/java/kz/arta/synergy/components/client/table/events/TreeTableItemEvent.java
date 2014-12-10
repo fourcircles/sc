@@ -32,19 +32,27 @@ public class TreeTableItemEvent<T extends TreeTableItem<T>> extends GwtEvent<Tre
     }
 
     protected void dispatch(Handler<T> handler) {
-        if (eventType == EventType.OPEN) {
-            handler.onOpen(this);
-        } else {
-            handler.onClose(this);
+        switch (eventType) {
+            case CLOSE:
+                handler.onClose(this);
+                break;
+            case OPEN:
+                handler.onOpen(this);
+                break;
+            case LOADING:
+                handler.onLoading(this);
+                break;
+            default:
         }
     }
 
     public static interface Handler<V extends TreeTableItem<V>> extends EventHandler {
         void onClose(TreeTableItemEvent<V> event);
         void onOpen(TreeTableItemEvent<V> event);
+        void onLoading(TreeTableItemEvent<V> event);
     }
 
     public enum EventType {
-        OPEN, CLOSE
+        OPEN, LOADING, CLOSE
     }
 }

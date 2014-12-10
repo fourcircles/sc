@@ -2,6 +2,11 @@ apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'jacoco'
 
+apply plugin: 'artifactory-publish'
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
+
+
 version='3.0'
 
 repositories {
@@ -15,6 +20,7 @@ buildscript {
         jcenter()
     }
     dependencies {
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.4')
         classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.4')
     }
 }
@@ -36,3 +42,15 @@ artifacts {
 jar {
     from 'src/main/java'
 }
+
+publishing {
+    publications {
+        synergyComponents(MavenPublication) {
+            groupId 'kz.arta'
+            artifactId 'synergy-components'
+
+            from components.java
+        }
+    }
+}
+

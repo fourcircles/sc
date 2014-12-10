@@ -15,7 +15,11 @@ import kz.arta.synergy.components.style.client.Constants;
  * Date: 31.10.14
  * Time: 9:35
  *
- * Слайдер
+ * Слайдер.
+ *
+ * Событие {@link com.google.gwt.event.logical.shared.ValueChangeEvent} создается при отпускании слайдера.
+ * Если необходимо постоянно следить за положением круга в слайдере, надо пользоваться {@link #addCircleMoveHandler(com.google.gwt.event.dom.client.MouseMoveHandler)}
+ * и {@link #getValue()}.
  */
 public class Slider extends Composite implements HasValue<Double> {
 
@@ -135,6 +139,8 @@ public class Slider extends Composite implements HasValue<Double> {
         dragging = false;
         event.stopPropagation();
         RootPanel.get().getElement().getStyle().clearCursor();
+
+        ValueChangeEvent.fire(this, this.value);
     }
 
     /**
@@ -142,6 +148,7 @@ public class Slider extends Composite implements HasValue<Double> {
      */
     private void circleMouseDown(MouseDownEvent event) {
         Event.setCapture(circle.getElement());
+        event.preventDefault();
         circleStartX = event.getClientX() - (circle.getAbsoluteLeft() + Constants.SLIDER_OUTERCIRCLE_RADIUS);
         dragging = true;
         RootPanel.get().getElement().getStyle().setCursor(Style.Cursor.POINTER);
@@ -154,11 +161,12 @@ public class Slider extends Composite implements HasValue<Double> {
         if (!dragging) {
             return;
         }
+        event.preventDefault();
         int circlePosition = event.getClientX() - getAbsoluteLeft() - circleStartX;
         circlePosition = Math.max(circlePosition, 0);
         circlePosition = Math.min(circlePosition, getOffsetWidth());
 
-        setValue((double) circlePosition / getOffsetWidth(), true);
+        setValue((double) circlePosition / getOffsetWidth(), false);
     }
 
     @Override
@@ -215,11 +223,7 @@ public class Slider extends Composite implements HasValue<Double> {
         return addHandler(handler, ValueChangeEvent.getType());
     }
 
-    /**
-     * Добавляет хэндлер на событие mouseup круга
-     * @param handler хэндлер
-     */
-    public HandlerRegistration addCircleMouseUpHandler(MouseUpHandler handler) {
-        return circle.addDomHandler(handler, MouseUpEvent.getType());
+    public HandlerRegistration addCircleMoveHandler(MouseMoveHandler handler) {
+        return circle.addDomHandler(handler, MouseMoveEvent.getType());
     }
 }

@@ -98,7 +98,7 @@
         <g:FlowPanel styleName="{style.titlePanel}" ui:field="titlePanel">
             <g:InlineLabel text="ShowCase" ui:field="showCaseLabel" />
         </g:FlowPanel>
-        <artaTree:Tree addStyleNames="{style.tree}" ui:field="tree"/>
+        <artaTree:Tree withScroll="true" white="true" addStyleNames="{style.tree}" ui:field="tree"/>
         <artaTabs:TabPanel addStyleNames="{style.tabs}" ui:field="tabPanel"/>
         <g:FlowPanel styleName="{style.codePanel}" ui:field="codePanel">
             <g:Label styleName="" text="Компонент" ui:field="codeLabel" />

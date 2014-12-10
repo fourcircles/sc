@@ -82,15 +82,6 @@ public class MenuItemTest {
     }
 
     @Test
-    public void testClick() {
-        item.fireEvent(TestUtils.createClickEvent(null));
-        assertEquals(true, item.getValue());
-
-        item.fireEvent(TestUtils.createClickEvent(null));
-        assertEquals(false, item.getValue());
-    }
-
-    @Test
     public void testSetFocus() {
         item.setFocused(true, false);
         assertTrue(styles.contains(OVER));

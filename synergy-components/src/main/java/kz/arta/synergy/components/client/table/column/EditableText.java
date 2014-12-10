@@ -1,20 +1,15 @@
 package kz.arta.synergy.components.client.table.column;
 
-import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.table.events.CellEditEvent;
+import kz.arta.synergy.components.client.table.events.StartEditEvent;
 
 /**
  * User: user
@@ -27,7 +22,7 @@ public class EditableText<T> extends Composite {
     /**
      * Корневая панель
      */
-    protected FocusPanel root;
+    protected SimplePanel root;
 
     /**
      * Текст
@@ -64,7 +59,7 @@ public class EditableText<T> extends Composite {
     protected AbstractEditableColumn<T> column;
 
     public EditableText(AbstractEditableColumn<T> column, T object, EventBus bus) {
-        root = new FocusPanel();
+        root = new SimplePanel();
         initWidget(root);
 
         this.bus = bus;
@@ -91,49 +86,37 @@ public class EditableText<T> extends Composite {
 
         root.setWidget(label);
 
+        bus.addHandlerToSource(StartEditEvent.TYPE, this, new StartEditEvent.StartEditEventHandler() {
+            @Override
+            public void onStartEdit(StartEditEvent event) {
+                edit();
+            }
+        });
+        root.addDomHandler(new KeyDownHandler() {
+            @Override
+            public void onKeyDown(KeyDownEvent event) {
+                if (isEditing) {
+                    switch (event.getNativeKeyCode()) {
+                        case KeyCodes.KEY_ENTER :
+                            commit();
+                            break;
+                        case KeyCodes.KEY_ESCAPE :
+                            cancel();
+                            break;
+                        case KeyCodes.KEY_TAB :
+                            commit(true);
+                            break;
+                        default:
+                    }
+                    event.stopPropagation();
+                }
+            }
+        }, KeyDownEvent.getType());
+
         sinkEvents(Event.ONKEYDOWN);
         sinkEvents(Event.ONCLICK);
         sinkEvents(Event.ONBLUR);
         sinkEvents(Event.ONFOCUS);
-    }
-
-    @Override
-    public void onBrowserEvent(Event event) {
-        int type = event.getTypeInt();
-        int keyCode = event.getKeyCode();
-        if (isEditing) {
-            editEvent(event);
-        } else if (type == Event.ONKEYDOWN &&
-                (keyCode == KeyCodes.KEY_ENTER || keyCode == KeyCodes.KEY_F2)) {
-            edit();
-        }
-        super.onBrowserEvent(event);
-    }
-
-    /**
-     * Обработка событий при изменении
-     * @param event событие
-     */
-    protected void editEvent(Event event) {
-
-        String type = event.getType();
-        int keyCode = event.getKeyCode();
-
-        if (BrowserEvents.KEYDOWN.equals(type)) {
-            switch(keyCode) {
-                case KeyCodes.KEY_ENTER :
-                    commit();
-                    break;
-                case KeyCodes.KEY_ESCAPE :
-                    commit();
-                    break;
-                case KeyCodes.KEY_TAB :
-                    commit(true);
-                    break;
-                default:
-            }
-            event.stopPropagation();
-        }
     }
 
     /**
@@ -190,7 +173,7 @@ public class EditableText<T> extends Composite {
         label.setText(text);
 
         bus.fireEvent(new CellEditEvent<T>(object, column, CellEditEvent.EditType.CANCEL));
-        root.setFocus(true);
+        root.getElement().focus();
     }
 
     /**
@@ -204,7 +187,7 @@ public class EditableText<T> extends Composite {
         column.setValue(object, text);
 
         bus.fireEvent(new CellEditEvent<T>(object, column, CellEditEvent.EditType.COMMIT, jumpForward));
-        root.setFocus(true);
+        root.getElement().focus();
     }
 
     protected void commit() {
@@ -222,7 +205,7 @@ public class EditableText<T> extends Composite {
         } else {
             getElement().getStyle().setPaddingLeft(14, Style.Unit.PX);
         }
-        root.setFocus(true);
+        root.getElement().getParentElement().focus();
     }
 
     /**

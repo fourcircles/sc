@@ -237,7 +237,7 @@ public class Notification {
      */
     protected void align() {
         contentContainer.getElement().getStyle().clearWidth();
-        contentContainer.getElement().getStyle().setWidth(content.getOffsetWidth(), Style.Unit.PX);
+        contentContainer.getElement().getStyle().setWidth(content.getOffsetWidth() + 1, Style.Unit.PX);
 
         verticalAlignImageText();
     }

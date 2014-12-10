@@ -177,6 +177,7 @@ public abstract class Menu<V> extends Composite implements HasMouseMoveHandlers 
     /**
      * Показать меню
      */
+    @SuppressWarnings("UnusedDeclaration")
     private void show() {
         if (resizeRegistration != null) {
             resizeRegistration = Window.addResizeHandler(resizeHandler);

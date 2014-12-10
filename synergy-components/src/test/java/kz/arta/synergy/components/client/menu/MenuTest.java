@@ -145,8 +145,8 @@ public class MenuTest {
 
     @Test
     public void testSelectionEvent() {
-        items.get(0).fireEvent(TestUtils.createClickEvent(items.get(0)));
-        items.get(0).fireEvent(TestUtils.createClickEvent(items.get(0)));
+        items.get(0).click();
+        items.get(0).click();
 
         ArgumentCaptor<ValueChangeEvent> captor = ArgumentCaptor.forClass(ValueChangeEvent.class);
         verify(changeHandler, times(2)).onValueChange(captor.capture());
@@ -230,7 +230,7 @@ public class MenuTest {
 
     @Test
     public void testKeyEnter() {
-        items.get(5).fireEvent(TestUtils.createClickEvent(items.get(0)));
+        items.get(5).click();
 
         menu.keyEnter(null);
 

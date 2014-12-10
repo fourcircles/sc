@@ -1,10 +1,10 @@
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import kz.arta.synergy.components.client.Indicator;
-import kz.arta.synergy.components.client.progressbar.ProgressBar;
 import kz.arta.synergy.components.client.Slider;
+import kz.arta.synergy.components.client.progressbar.ProgressBar;
 
 public class Sample {
     public static void main(String[] args) {
@@ -20,13 +20,14 @@ public class Sample {
         slider.addValueChangeHandler(new ValueChangeHandler<Double>() {
             @Override
             public void onValueChange(ValueChangeEvent<Double> event) {
-                indicator.setText(Integer.toString((int) (event.getValue() * 100)));
+                progressBar.setValue(slider.getValue());
+                indicator.setText(Integer.toString((int) (slider.getValue() * 100)));
             }
         });
-        slider.addCircleMouseUpHandler(new MouseUpHandler() {
+        slider.addCircleMoveHandler(new MouseMoveHandler() {
             @Override
-            public void onMouseUp(MouseUpEvent event) {
-                progressBar.setValue(slider.getValue());
+            public void onMouseMove(MouseMoveEvent event) {
+                indicator.setText(Integer.toString((int) (slider.getValue() * 100)));
             }
         });
 

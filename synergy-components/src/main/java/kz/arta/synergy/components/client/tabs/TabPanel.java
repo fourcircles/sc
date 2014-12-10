@@ -16,7 +16,6 @@ import kz.arta.synergy.components.client.tabs.events.TabSelectionEvent;
  * User: vsl
  * Date: 08.08.14
  * Time: 11:46
- * //todo scroll panel for contentPanel
  * Панель вкладок
  */
 public class TabPanel extends Composite implements HasTabHandlers {

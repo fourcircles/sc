@@ -18,4 +18,6 @@ public abstract class AbstractEditableColumn<T> extends AbstractArtaColumn<T> {
      * @param value значение
      */
     public abstract void setValue(T object, String value);
+
+    public abstract String getValue(T object);
 }

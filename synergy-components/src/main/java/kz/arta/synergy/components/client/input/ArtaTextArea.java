@@ -216,6 +216,10 @@ public class ArtaTextArea extends Composite {
         return correct;
     }
 
+    /**
+     * Получает текст из компонента
+     * @return  текст
+     */
     public String getText() {
         if (placeHolderHandler != null) {
             if (textArea.getText().equals(placeHolderHandler.getPlaceHolder())) {
@@ -223,6 +227,14 @@ public class ArtaTextArea extends Composite {
             }
         }
         return textArea.getText();
+    }
+
+    /**
+     * Устанавливает текст в компонент
+     * @param text текст
+     */
+    public void setText(String text) {
+        textArea.setText(text);
     }
 
     public void setPixelSize(int width, int height) {

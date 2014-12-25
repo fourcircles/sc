@@ -73,6 +73,12 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * Модель выбора объекта
      */
     private TableSelectionModel<T> selectionModel;
+
+    /**
+     * Разрешено ли выделение нескольких объектов в таблице.
+     */
+    private boolean multiSelectionAllowed = false;
+
     private EventBus bus;
 
     /**
@@ -100,7 +106,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Индексы показывают какая ячейка была выбрана последней.
-     * Эти индексы будут использоваться как начало выбора при shift+click
+     * Эти индексы будут использоваться, как начало выбора при shift+click.
      */
     private int lastSelectedRow = 0;
     private int lastSelectedColumn = 0;
@@ -131,11 +137,11 @@ public class TableCore<T> extends Composite implements HasData<T> {
                 int rowIndex = cell.getRowIndex();
                 int cellIndex = cell.getCellIndex();
 
-                if (!event.isControlKeyDown()) {
+                if (!event.isControlKeyDown() || !multiSelectionAllowed) {
                     selectionModel.clear(false);
                 }
 
-                if (event.isShiftKeyDown()) {
+                if (event.isShiftKeyDown() && multiSelectionAllowed) {
                     if (onlyRows) {
                         for (int r = Math.min(rowIndex, lastSelectedRow); r <= Math.max(rowIndex, lastSelectedRow); r++) {
                             T object = objects.get(start + r);
@@ -151,7 +157,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
                         }
                     }
                 } else {
-                    if (!event.isControlKeyDown()) {
+                    if (!event.isControlKeyDown() || !multiSelectionAllowed) {
                         lastSelectedRow = rowIndex;
                         lastSelectedColumn = cellIndex;
                     }
@@ -1051,6 +1057,14 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public boolean isMultiSelectionAllowed() {
+        return multiSelectionAllowed;
+    }
+
+    public void setMultiSelectionAllowed(boolean multiSelectionAllowed) {
+        this.multiSelectionAllowed = multiSelectionAllowed;
     }
 
     /**

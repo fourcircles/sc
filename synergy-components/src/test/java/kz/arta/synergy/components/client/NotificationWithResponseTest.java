@@ -47,7 +47,7 @@ public class NotificationWithResponseTest {
             throw new IllegalArgumentException("Количество кнопок от 2 до 3");
         }
         int width = NotificationWithResponse.BUTTON_WIDTH * buttonsNumber;
-        width += Constants.NOTIFICATION_OFFSET * (buttonsNumber + 1);
+        width += 10 * (buttonsNumber + 1);
         width += Constants.BORDER_WIDTH * 2;
         return width;
     }
@@ -100,6 +100,6 @@ public class NotificationWithResponseTest {
         notification.align();
 
         verify(notification.icon.getElement().getStyle(), times(0)).setMarginLeft(anyDouble(), any(Style.Unit.class));
-        verify(notification.yesButton.getElement().getStyle(), times(1)).setMarginLeft(50, Style.Unit.PX);
+        verify(notification.yesButton.getElement().getStyle(), times(1)).setMarginLeft(44, Style.Unit.PX);
     }
 }

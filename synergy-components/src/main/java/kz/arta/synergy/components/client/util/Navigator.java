@@ -29,6 +29,9 @@ public class Navigator {
     private Navigator() {
     }
 
+    /**
+     * IE 10 и хуже
+     */
     public static boolean isIE() {
         return browser == BrowserType.IE;
     }
@@ -41,6 +44,7 @@ public class Navigator {
         return browser == BrowserType.CHROME;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static boolean isFirefox() {
         return browser == BrowserType.FIREFOX;
     }

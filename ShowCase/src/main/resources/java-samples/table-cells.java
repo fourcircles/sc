@@ -16,6 +16,7 @@ import java.util.List;
 public class Sample {
     public static void main(String[] args) {
         final Table<User> table = new Table<User>(29);
+        table.getCore().setMultiSelectionAllowed(true);
         // шапка
         table.enableHat(true);
         // название таблицы

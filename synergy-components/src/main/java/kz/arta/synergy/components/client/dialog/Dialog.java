@@ -1,6 +1,8 @@
 package kz.arta.synergy.components.client.dialog;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -185,4 +187,17 @@ public class Dialog extends DialogSimple {
         rightButton.setVisible(visible);
         adjustSaveButtonMargin();
     }
+
+    public HandlerRegistration addLeftButtonHandler(ClickHandler handler) {
+        return leftButton.addClickHandler(handler);
+    }
+
+    public HandlerRegistration addSaveButtonHandler(ClickHandler handler) {
+        return saveButton.addClickHandler(handler);
+    }
+
+    public HandlerRegistration addRightButtonHandler(ClickHandler handler) {
+        return rightButton.addClickHandler(handler);
+    }
+
 }

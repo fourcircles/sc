@@ -172,6 +172,8 @@ code, pre {
 }
 
 .buttonText {
+    display: inline-block;
+    height: 30px;
     vertical-align: top;
     white-space:nowrap;
     text-align: center;
@@ -1704,14 +1706,14 @@ p {
 }
 
 .table td.selected, .table tr.selected {
-    background-color: beige;
+    background-color: selectColor;
 }
 
 .table td:hover {
-    background-color: selectColor;
+    background-color: beige;
 }
 .table.onlyRows tr:hover {
-    background-color: selectColor;
+    background-color: beige;
 }
 .table.onlyRows td:hover {
     background-color: inherit;
@@ -2408,6 +2410,7 @@ p {
 .file {
     white-space: nowrap;
     cursor: pointer;
+    height: 19px;
 }
 .file > * {
     vertical-align: top;
@@ -2418,6 +2421,20 @@ p {
 }
 .file + .file {
     margin-top: 13px;
+}
+
+.file.selected span {
+    position: relative;
+}
+@if user.agent gecko1_8 ie9 {
+    .file.selected span {
+        top: 0;
+    }
+}
+@else {
+    .file.selected span {
+        top: -2px;
+    }
 }
 
 .files {
@@ -2432,7 +2449,7 @@ p {
     max-width: 400px;
     padding: notificationOffset;
 
-    border: 1px solid buttonBorder;
+    border: 1px solid buttonPressed;
     border-radius: 4px;
     color: stackPanelText2;
     box-shadow: 2px 2px 5px -1px rgba(0, 0, 0, 0.15);
@@ -2446,7 +2463,7 @@ p {
 
 .notification .notificationText {
     display: inline-block;
-    max-width: 350px;
+    max-width: 323px;
     margin-left: notificationOffset;
     vertical-align: top;
     word-wrap: break-word;
@@ -2472,15 +2489,15 @@ p {
 .notification .approveButton,
 .notification .declineButton,
 .notification .buttonSimple {
-    min-width: 111px;
-    width: 111px;
+    min-width: 113px;
+    width: 113px;
 }
 
 .notification .declineButton {
-    margin-left: notificationOffset;
+    margin-left: 10px;
 }
 .notification .buttonSimple {
-    margin-left: notificationOffset;
+    margin-left: 10px;
 }
 
 #circularG{

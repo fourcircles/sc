@@ -50,7 +50,7 @@ public class ContextMenuTest {
 
     @Test
     public void testSelection() {
-        items.get(0).fireEvent(TestUtils.createClickEvent(items.get(0)));
+        items.get(0).click();
         verify(items.get(0).getUserValue(), times(1)).execute();
     }
 

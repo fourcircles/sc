@@ -19,7 +19,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-	classpath 'org.ajoberstar:gradle-jacoco:0.1.0' 
+	classpath 'org.ajoberstar:gradle-jacoco:0.1.0'
     }
 }
 

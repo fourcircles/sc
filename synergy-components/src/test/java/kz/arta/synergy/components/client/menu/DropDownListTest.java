@@ -61,7 +61,7 @@ public class DropDownListTest {
     @Test
     public void testSelection() {
         assertNull(list.getSelectedItem());
-        items.get(0).fireEvent(TestUtils.createClickEvent(null));
+        items.get(0).click();
         assertEquals(items.get(0), list.getSelectedItem());
         assertTrue(items.get(0).isSelected());
     }
@@ -71,10 +71,10 @@ public class DropDownListTest {
      */
     @Test
     public void testSingleSelection() {
-        items.get(0).fireEvent(TestUtils.createClickEvent(null));
+        items.get(0).click();
         assertTrue(items.get(0).isSelected());
 
-        items.get(3).fireEvent(TestUtils.createClickEvent(null));
+        items.get(3).click();
         assertFalse(items.get(0).isSelected());
         assertTrue(items.get(3).isSelected());
         assertEquals(items.get(3), list.getSelectedItem());
@@ -88,8 +88,8 @@ public class DropDownListTest {
         MenuItemSelection.Handler<Integer> handler = mock(MenuItemSelection.Handler.class);
         list.addItemSelectionHandler(handler);
 
-        items.get(0).fireEvent(TestUtils.createClickEvent(null));
-        items.get(0).fireEvent(TestUtils.createClickEvent(null));
+        items.get(0).click();
+        items.get(0).click();
 
         ArgumentCaptor<MenuItemSelection> captor = ArgumentCaptor.forClass(MenuItemSelection.class);
         verify(handler, times(2)).onItemSelection(captor.capture());

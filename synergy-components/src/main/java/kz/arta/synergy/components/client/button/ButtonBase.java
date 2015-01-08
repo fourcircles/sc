@@ -8,7 +8,6 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
@@ -17,7 +16,6 @@ import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.label.GradientLabel2;
 import kz.arta.synergy.components.client.resources.Messages;
 import kz.arta.synergy.components.client.util.ArtaHasText;
-import kz.arta.synergy.components.client.util.MouseStyle;
 import kz.arta.synergy.components.client.util.Selection;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -25,7 +23,12 @@ import kz.arta.synergy.components.style.client.Constants;
  * User: user
  * Date: 23.06.14
  * Time: 18:20
+ *  
  * Базовый класс для кнопок
+ * 
+ * Для того, чтобы можно было нажать на кнопку, отвести мышь, отпустить кнопку использован
+ * {@link Event#setCapture(com.google.gwt.dom.client.Element)}, поэтому поэтому события
+ * MouseUp и MouseDown не поднимаются к родителям элемента.
  */
 public class ButtonBase extends FlowPanel implements
         HasClickHandlers, HasFocusHandlers, HasEnabled, HasAllMouseHandlers, ArtaHasText{
@@ -192,6 +195,7 @@ public class ButtonBase extends FlowPanel implements
                 adjustMargins();
             }
         });
+
     }
 
     @Override

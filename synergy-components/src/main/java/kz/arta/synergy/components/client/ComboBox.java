@@ -57,8 +57,13 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
 
     private MenuItem<V> selectedItem;
 
+    /**
+     * Корневая панель 
+     */
+    private final ArtaFlowPanel root;
+
     public ComboBox() {
-        final ArtaFlowPanel root = new ArtaFlowPanel();
+        root = new ArtaFlowPanel();
 
         initWidget(root);
 
@@ -79,15 +84,7 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
                 if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
                     return;
                 }
-                if (isEnabled) {
-                    root.removeStyleName(SynergyComponents.getResources().cssComponents().pressed());
-                    if (!list.isShowing()) {
-                        filter.setText("");
-                        list.showUnder(ComboBox.this);
-                    } else {
-                        list.hide();
-                    }
-                }
+                click();
             }
         });
         root.addMouseOutHandler(new MouseOutHandler() {
@@ -157,6 +154,12 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
 
         ImageButton dropDownButton = new ImageButton(ImageResources.IMPL.comboBoxDropDown());
         dropDownButton.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
+        dropDownButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                click();
+            }
+        });
 
         root.add(input);
         root.add(dropDownButton);
@@ -164,6 +167,22 @@ public class ComboBox<V> extends Composite implements HasEnabled, HasValueChange
         setStyleName(SynergyComponents.getResources().cssComponents().comboBox());
         addStyleName(SynergyComponents.getResources().cssComponents().mainText());
         setWidth(Constants.FIELD_WITH_BUTTON_MIN_WIDTH);
+    }
+
+    /**
+     * Клик по комбобоксу (по кнопке или по самому комбобоксу)
+     */
+    private void click() {
+        if (!isEnabled()) {
+            return;
+        }
+        root.removeStyleName(SynergyComponents.getResources().cssComponents().pressed());
+        if (!list.isShowing()) {
+            filter.setText("");
+            list.showUnder(this);
+        } else {
+            list.hide();
+        }
     }
 
     /**

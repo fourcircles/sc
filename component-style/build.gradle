@@ -45,9 +45,9 @@ jar {
 
 publishing {
     publications {
-        synergyComponents(MavenPublication) {
+        componentStyle(MavenPublication) {
             groupId 'kz.arta'
-            artifactId 'synergy-components'
+            artifactId 'component-style'
 
             from components.java
         }

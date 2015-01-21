@@ -37,7 +37,8 @@ dependencies {
     compile 'com.google.gwt:gwt-dev:2.6.1'
     compile 'com.google.gwt:gwt-user:2.6.1'
     compile project(':component-style')
-    compile(group: 'kz.arta', name: 'arta-i18n', version: '2.0')
+    compile(group: 'kz.arta', name: 'arta-i18n', version: '2.1')
+    compile(group: 'kz.arta', name: 'synergy-messages', version: '3.0', changing: true)
     testCompile (group: 'junit', name: 'junit', version: '4.8.2')
     testCompile (group: 'com.google.gwt.gwtmockito', name: 'gwtmockito', version: '1.1.3')
 }
@@ -55,19 +56,15 @@ jar {
     from 'src/main/java'
 }
 
-dependencies {
-    compile(group: 'kz.arta', name: 'synergy-messages', version: '3.0', changing: true)
-}
-
 test {
     jvmArgs += [ "-XX:MaxPermSize=512m" ]
 }
 
 publishing {
     publications {
-        componentStyle(MavenPublication) {
+        synergyComponents(MavenPublication) {
             groupId 'kz.arta'
-            artifactId 'component-style'
+            artifactId 'synergy-components'
 
             from components.java
         }
@@ -85,11 +82,7 @@ artifactory {
             password = 'deployer'       //The publisher password
         }
         defaults {
-            publications('componentStyle')
+            publications('synergyComponents', 'componentStyle')
         }
     }
 }
-
-
-
-

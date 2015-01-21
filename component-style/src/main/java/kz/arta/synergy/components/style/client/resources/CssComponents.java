@@ -169,6 +169,7 @@ public interface CssComponents extends CssResource {
     String multipleLines();
 
     String tree();
+    String treeScroll();
     String treeFavorite();
 
     String treeItem();
@@ -208,6 +209,7 @@ public interface CssComponents extends CssResource {
 
     String progressBar();
     String progressBarLine();
+    String split();
 
     String filesPanel();
     String file();

@@ -9,16 +9,32 @@ package kz.arta.synergy.components.client.progressbar;
  */
 public interface ProgressBarCustomLabel {
     /**
-     * @param value значение прогресс бара
-     * @return текст надписи
+     * Возвращает текст для прогресс-бара без опциональной полосы.
+     *
+     * @param value основное значение
+     * @return текст соответствующий этому состоянию
      */
     String getMessage(double value);
 
     /**
-     * Применима ли надпись к текущему значению
+     * Возвращает текст для прогресс-бара с опциональной полосой.
+     * 
+     * @param value основное значение
+     * @param optional опцинальное значение
+     * @return текст соответствующий этому состоянию
+     */
+    String getMessage(double value, double optional);
+    
+    /**
+     * Применима ли надпись к текущему состоянию прогресс-бара
      *
      * @param value текущее значение
      * @return true - применима, false - неа
      */
     boolean isApplicable(double value);
+
+    /**
+     * {@link #isApplicable(double)}
+     */
+    boolean isApplicable(double value, double optionalValue);
 }

@@ -33,12 +33,23 @@ public class ProgressBarConstraintLabel implements ProgressBarCustomLabel {
     }
 
     @Override
+    public String getMessage(double value) {
+        return message;
+    }
+
+    @Override
+    public String getMessage(double value, double optional) {
+        return getMessage(value);
+    }
+    
+    @Override
+    public boolean isApplicable(double value, double optional) {
+        return isApplicable(value);
+    }
+
+    @Override
     public boolean isApplicable(double value) {
         return value >= left && value <= right;
     }
 
-    @Override
-    public String getMessage(double value) {
-        return message;
-    }
 }

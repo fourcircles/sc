@@ -1819,12 +1819,16 @@ p {
     visibility: hidden;
 }
 
-.tree {
+.tree, .treeScroll {
     border: 1px solid buttonPressed;
     background-color: whiteBG;
 }
+/*если дерево внутри скролла, то границы нет*/
+.treeScroll .tree {
+    border-width: 0;
+}
 
-.tree.dark {
+.tree.dark, .treeScroll.dark {
     border-color: navigatorBG;
     background-color:navigatorBG;
 }
@@ -1853,13 +1857,11 @@ p {
     color: whiteBG;
 }
 /*индикатор*/
-.treeItem img {
+.treeItem img, .treeItem .loader {
     cursor: pointer;
-
     position: relative;
 }
-.treeItem img:first-child {
-    position: relative;
+.treeItem img:first-child, .treeItem .loader {
     margin-right: 6px;
     top: 3px;
 }
@@ -2361,19 +2363,25 @@ p {
 
 .progressBarLine {
     position: absolute;
-    top: 0;
     left: 0;
-    height: 100%;
 }
 .progressBar .progressBarLine:first-child {
     background-color: progressOptional;
+    bottom: 0;
+    height: 50%;
 }
 
 .progressBar .progressBarLine + .progressBarLine {
     background-color: progressNormal;
+    top: 0;
+    height: 100%;
 }
 .progressBar.decline .progressBarLine + .progressBarLine {
     background-color: declineButtonBG2;
+}
+
+.progressBar.split .progressBarLine + .progressBarLine {
+    height: 50%;
 }
 
 .progressBar span {
@@ -2503,7 +2511,8 @@ p {
 #circularG{
     position:relative;
     width:16px;
-    height:16px}
+    height:16px
+}
 
 .circularG {
     position: absolute;
@@ -2535,6 +2544,10 @@ p {
     animation-duration: 0.72s;
     animation-iteration-count: infinite;
     animation-direction: linear;
+}
+
+.dark .circularG{
+    background-color: #e14d1f;
 }
 
 #circularG_1 {

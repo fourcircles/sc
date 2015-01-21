@@ -39,8 +39,18 @@ public class ProgressBar extends Composite implements HasValue<Double>, HasClick
      */
     public static final ProgressBarCustomLabel PERCENTAGE_LABEL = new ProgressBarCustomLabel() {
         @Override
+        public String getMessage(double value, double optional) {
+            return ((int) (value * 100) + "%") + " / " + ((int) (optional * 100) + "%");
+        }
+
+        @Override
         public String getMessage(double value) {
             return (int) (value * 100) + "%";
+        }
+
+        @Override
+        public boolean isApplicable(double value, double optional) {
+            return true;
         }
 
         @Override
@@ -59,6 +69,11 @@ public class ProgressBar extends Composite implements HasValue<Double>, HasClick
      */
     private double value;
 
+    /**
+     * Есть ли у прогресс-бара опциональное значение.
+     */
+    private boolean hasOptionalValue;
+    
     /**
      * Опциональное значение (желтая полоска)
      */
@@ -135,14 +150,38 @@ public class ProgressBar extends Composite implements HasValue<Double>, HasClick
     public List<ProgressBarCustomLabel> getCustomLabels() {
         return customLabels;
     }
+    
+    private void split() {
+        addStyleName(SynergyComponents.getResources().cssComponents().split());
+    }
+    
+    private void merge() {
+        removeStyleName(SynergyComponents.getResources().cssComponents().split());
+    }
 
     /**
      * Задает опциональное значение
-     * @param value новое значение
+     * @param optionalValue новое значение
      */
-    public void setOptionalValue(double value) {
-        double trueValue = constraint(value);
-        optionalValue = trueValue;
+    public void setOptionalValue(Double optionalValue) {
+        if (optionalValue == null) {
+            if (hasOptionalValue) {
+                hasOptionalValue = false;
+                merge();
+            }
+            return;
+        }
+        
+        double trueValue = constraint(optionalValue);
+        this.optionalValue = trueValue;
+
+        if (!hasOptionalValue) {
+            hasOptionalValue = true;
+            split();
+        }
+        
+        updateText();
+
         optionalLine.getElement().getStyle().setWidth(trueValue * 100, Style.Unit.PCT);
     }
 
@@ -172,18 +211,33 @@ public class ProgressBar extends Composite implements HasValue<Double>, HasClick
         double trueValue = constraint(value);
 
         this.value = trueValue;
-
-        for (ProgressBarCustomLabel customLabel : customLabels) {
-            if (customLabel.isApplicable(trueValue)) {
-                label.setText(customLabel.getMessage(trueValue));
-                break;
-            }
-        }
+        
+        updateText();
 
         valueLine.getElement().getStyle().setWidth(trueValue * 100, Style.Unit.PCT);
 
         if (fireEvents) {
             ValueChangeEvent.fire(this, trueValue);
+        }
+    }
+
+    private void updateText() {
+        for (ProgressBarCustomLabel customLabel : customLabels) {
+            String newMessage = null;
+            if (hasOptionalValue) {
+                if (customLabel.isApplicable(value, optionalValue)) {
+                    newMessage = customLabel.getMessage(value, optionalValue);
+                }
+            } else {
+                if (customLabel.isApplicable(value)) {
+                    newMessage = customLabel.getMessage(value);
+                }
+            }
+            if (newMessage != null) {
+                label.setText(newMessage);
+                // первое подходящее сообщение
+                break;
+            }
         }
     }
 

@@ -20,7 +20,7 @@ public class RulerLabel extends Label {
         labelStyle.setPosition(Style.Position.FIXED);
         labelStyle.setTop(0, Style.Unit.PX);
         labelStyle.setLeft(0, Style.Unit.PX);
-        labelStyle.setWhiteSpace(Style.WhiteSpace.NOWRAP);
+        StyleUtils.setWhiteSpace(getElement(), StyleUtils.WhiteSpace.NOWRAP);
 
         labelStyle.setPadding(0, Style.Unit.PX);
         labelStyle.setBorderWidth(0, Style.Unit.PX);

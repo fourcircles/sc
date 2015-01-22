@@ -14,7 +14,7 @@ public class PPanel extends SimplePanel {
 
     public PPanel(int lineHeight) {
         this();
-        getElement().getStyle().setLineHeight(lineHeight, Style.Unit.PX);
+        StyleUtils.setLineHeight(getElement(), lineHeight, Style.Unit.PX);
     }
 }
 

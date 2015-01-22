@@ -21,6 +21,7 @@ import kz.arta.synergy.components.client.scroll.ArtaScrollPanel;
 import kz.arta.synergy.components.client.theme.ColorType;
 import kz.arta.synergy.components.client.util.ArtaHasText;
 import kz.arta.synergy.components.client.util.Navigator;
+import kz.arta.synergy.components.client.util.StyleUtils;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -331,7 +332,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
         * есть одна линия текста - line-height и высота фиксированна, если линий больше - высота линии снимается.
         */
         if (lines <= 1 || textArea.getValue().isEmpty()) {
-            textArea.getElement().getStyle().setLineHeight(Constants.COMMENT_INPUT_LINE_HEIGHT, Style.Unit.PX);
+            StyleUtils.setLineHeight(textArea.getElement(), Constants.COMMENT_INPUT_LINE_HEIGHT, Style.Unit.PX);
             textArea.getElement().getStyle().setHeight(Constants.COMMENT_INPUT_LINE_HEIGHT +
                     Constants.COMMON_INPUT_PADDING * 2, Style.Unit.PX);
             scroll.getElement().getStyle().setHeight(Constants.COMMENT_INPUT_LINE_HEIGHT +
@@ -341,7 +342,7 @@ public class CommentInput extends Composite implements ArtaHasText, HasResizeHan
                 updateOffsetForScroll(false);
             }
         } else {
-            textArea.getElement().getStyle().clearLineHeight();
+            StyleUtils.clearLineHeight(textArea.getElement());
             maybeUpdateTextIE();
 
             if (lines <= MAX_LINES) {

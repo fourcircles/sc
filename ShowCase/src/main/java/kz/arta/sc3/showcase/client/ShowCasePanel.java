@@ -78,6 +78,7 @@ import kz.arta.synergy.components.client.tree.events.TreeItemContextMenuEvent;
 import kz.arta.synergy.components.client.tree.events.TreeSelectionEvent;
 import kz.arta.synergy.components.client.util.Br;
 import kz.arta.synergy.components.client.util.PPanel;
+import kz.arta.synergy.components.client.util.StyleUtils;
 import kz.arta.synergy.components.style.client.Colors;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -1704,7 +1705,7 @@ public class ShowCasePanel extends FlowPanel {
     private Widget makeLineForCollapsingPanel(String text, int textWidth, int inputWidth, boolean dateInput) {
 
         FlowPanel row = new FlowPanel();
-        row.getElement().getStyle().setLineHeight(32, Style.Unit.PX);
+        StyleUtils.setLineHeight(row.getElement(), 32, Style.Unit.PX);
         row.setStyleName(SynergyComponents.getResources().cssComponents().mainText());
         row.setWidth(textWidth + inputWidth + 5 + "px");
 
@@ -2035,7 +2036,7 @@ public class ShowCasePanel extends FlowPanel {
         label.setStyleName(SynergyComponents.getResources().cssComponents().mainText());
         label.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
         label.getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
-        label.getElement().getStyle().setLineHeight(32, Style.Unit.PX);
+        StyleUtils.setLineHeight(label.getElement(), 32, Style.Unit.PX);
         label.setWidth(width + "px");
         return label;
     }
@@ -2074,7 +2075,7 @@ public class ShowCasePanel extends FlowPanel {
      */
     private Widget getTagInputs() {
         FlowPanel root = new FlowPanel();
-        root.getElement().getStyle().setLineHeight(1, Style.Unit.PX);
+        StyleUtils.setLineHeight(root.getElement(), 1, Style.Unit.PX);
         root.getElement().getStyle().setPadding(10, Style.Unit.PX);
 
         final List<HasEnabled> enabledWidgets = new ArrayList<HasEnabled>();

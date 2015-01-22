@@ -12,6 +12,7 @@ import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
 import kz.arta.synergy.components.client.label.GradientLabel;
 import kz.arta.synergy.components.client.resources.ImageResources;
 import kz.arta.synergy.components.client.util.ArtaHasText;
+import kz.arta.synergy.components.client.util.StyleUtils;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -87,7 +88,7 @@ public class Tag<V> extends Composite implements ArtaHasText, TagRemoveEvent.Has
 
         label = new GradientLabel(getFontStyle());
         label.setHeight(Constants.TAG_HEIGHT + "px");
-        label.getElement().getStyle().setTextAlign(Style.TextAlign.CENTER);
+        StyleUtils.setTextAlign(label.getElement(), StyleUtils.TextAlign.CENTER);
         label.getElement().getStyle().setCursor(Style.Cursor.DEFAULT);
 
         image = GWT.create(Image.class);

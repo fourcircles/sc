@@ -249,8 +249,9 @@ public class TableCore<T> extends Composite implements HasData<T> {
         bus.fireEventFromSource(new TableMenuEvent(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), this);
     }
 
+//    com.google.gwt.user.client.Element
     private Element getCellForEvent(Event event) {
-        Element td = DOM.eventGetTarget(event);
+        com.google.gwt.user.client.Element td = DOM.eventGetTarget(event);
         for (; td != null; td = DOM.getParent(td)) {
             //noinspection NonJREEmulationClassesInClientCode
             if ("td".equalsIgnoreCase(td.getPropertyString("tagName"))) {
@@ -367,7 +368,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
                     table.getFlexCellFormatter().getElement(Utils.positiveMod(rowIndex - 1, getVisibleRange().getLength()), cellIndex).focus();
                     break;
                 case KeyCodes.KEY_ENTER:
-                case KeyCodes.KEY_F2:
+//                case KeyCodes.KEY_F2: пока без f2
                     event.preventDefault();
                     bus.fireEventFromSource(new StartEditEvent(), table.getWidget(rowIndex, cellIndex));
                     break;

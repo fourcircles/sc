@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.SimplePanel;
 import kz.arta.synergy.components.client.input.tags.events.TagAddEvent;
 import kz.arta.synergy.components.client.input.tags.events.TagRemoveEvent;
+import kz.arta.synergy.components.client.util.StyleUtils;
 import kz.arta.synergy.components.client.util.Utils;
 import kz.arta.synergy.components.style.client.Constants;
 
@@ -83,7 +84,7 @@ public class TagsPanel<V> extends Composite implements HasEnabled {
         rootStyle.setTop(2, Style.Unit.PX);
 
         rootStyle.setDisplay(Style.Display.INLINE_BLOCK);
-        rootStyle.setWhiteSpace(Style.WhiteSpace.NOWRAP);
+        StyleUtils.setWhiteSpace(root.getElement(), StyleUtils.WhiteSpace.NOWRAP);
 
         TagAddEvent.register(bus, new TagAddEvent.Handler<V>() {
             @Override

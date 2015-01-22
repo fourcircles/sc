@@ -4,6 +4,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
 import kz.arta.synergy.components.client.progressbar.ProgressBar;
+import kz.arta.synergy.components.client.util.StyleUtils;
 
 /**
  * User: vsl
@@ -25,7 +26,7 @@ public abstract class ProgressColumn<T> extends AbstractArtaColumn<T> {
     public Widget createWidget(T object, EventBus bus) {
         ProgressBar bar = new ProgressBar(getType(object));
 
-        bar.getElement().getStyle().setLineHeight(19, Style.Unit.PX);
+        StyleUtils.setLineHeight(bar.getElement(), 19, Style.Unit.PX);
         bar.getElement().getStyle().setWidth(WIDTH, Style.Unit.PX);
         bar.getElement().getStyle().setDisplay(Style.Display.BLOCK);
         bar.getElement().getStyle().setProperty("marginLeft", "auto");

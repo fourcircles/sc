@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.util.ArtaHasText;
+import kz.arta.synergy.components.client.util.StyleUtils;
 import kz.arta.synergy.components.client.util.Utils;
 
 /**
@@ -67,7 +68,7 @@ public class GradientLabel extends Composite implements ArtaHasText {
 
         getElement().getStyle().setDisplay(Style.Display.INLINE_BLOCK);
         getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
-        getElement().getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
+        StyleUtils.setWhiteSpace(getElement(), StyleUtils.WhiteSpace.NOWRAP);
 
         gradient.setStyleName(SynergyComponents.getResources().cssComponents().gradient());
     }

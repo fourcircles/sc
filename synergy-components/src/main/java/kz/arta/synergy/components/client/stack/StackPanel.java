@@ -172,9 +172,9 @@ public class StackPanel extends Composite implements HasStackOpenHandlers {
             if (ie9Animation == null) {
                 ie9Animation = new StackAnimationIE9(contentHeight);
             } else {
-                if (ie9Animation.isRunning()) {
-                    ie9Animation.cancel();
-                }
+//                if (ie9Animation.isRunning()) {
+//                    ie9Animation.cancel();
+//                }
             }
 
             ie9Animation.openStack(openedStack, stack);

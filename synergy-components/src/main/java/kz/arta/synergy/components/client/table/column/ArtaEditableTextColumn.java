@@ -16,8 +16,8 @@ public abstract class ArtaEditableTextColumn<T> extends AbstractEditableColumn<T
     }
 
     @Override
-    public EditableText createWidget(T object, EventBus bus) {
-        return new EditableText(this, object, bus);
+    public EditableText<T> createWidget(T object, EventBus bus) {
+        return new EditableText<T>(this, object, bus);
     }
 
     @SuppressWarnings("unchecked")

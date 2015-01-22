@@ -4,6 +4,7 @@
     <inherits name='com.google.gwt.user.User'/>
     <inherits name="kz.arta.synergy.components.SynergyComponents"/>
     <inherits name="kz.arta.synergy.components.style.ComponentStyle"/>
+    <inherits name="kz.arta.i18n.I18N"/>
 
     <entry-point class='kz.arta.sc3.showcase.client.ShowCase'/>
     <set-configuration-property name="CssResource.style" value="pretty"/>

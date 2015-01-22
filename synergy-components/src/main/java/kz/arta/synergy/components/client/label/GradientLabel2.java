@@ -36,7 +36,6 @@ public class GradientLabel2 extends Composite implements ArtaHasText {
         initWidget(root);
         root.getElement().getStyle().setFontSize(0, Style.Unit.PX);
         root.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
-        root.getElement().getStyle().setPosition(Style.Position.RELATIVE);
 
         this.font = font;
 

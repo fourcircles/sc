@@ -11,8 +11,6 @@ import org.xnap.commons.i18n.I18n;
  */
 public class Messages {
 
-    private static final I18n I_18_N = I18nFactory.getI18n();
-
     public static final String JANUARY_FULL = i18n().tr("Январь");
     public static final String FEBRUARY_FULL = i18n().tr("Февраль");
     public static final String MARCH_FULL = i18n().tr("Март");
@@ -32,6 +30,6 @@ public class Messages {
     }
 
     public static I18n i18n() {
-        return I_18_N;
+        return I18nFactory.getI18n();
     }
 }

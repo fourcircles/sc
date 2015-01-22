@@ -24,18 +24,17 @@ buildscript {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.5'
     }
 }
+String version = '2.4.0'
 
 dependencies {
-    compile 'com.google.gwt:gwt-dev:2.6.1'
-    compile 'com.google.gwt:gwt-user:2.6.1'
+    compile 'com.google.gwt:gwt-dev:$version'
+    compile 'com.google.gwt:gwt-user:$version'
     compile project(':synergy-components')
     compile project(':component-style')
-    compile(group: 'kz.arta', name: 'arta-i18n', version: '2.0')
-    compile(group: 'kz.arta', name: 'synergy-messages', version: '3.0', changing: true)
 }
 
 gwt {
-    gwtVersion="2.6.1";
+    gwtVersion=version;
     minHeapSize = "512M";
     maxHeapSize = "1024M";
 
@@ -43,6 +42,18 @@ gwt {
     src = files('src/main/java', 'build/resources/main',
             '../synergy-components/src/main/java', '../synergy-components/build/resources/main',
             '../component-style/src/main/java', '../component-style/build/resources/main')
+    superDev {
+        port = 1337
+    }
+
+    compiler {
+        optimize = 9
+        validateOnly = true
+        compileReport = true
+        strict = true
+        disableCastChecking = true
+        enableClosureCompiler = true
+    }
 }
 
 war {

@@ -9,14 +9,12 @@ import org.xnap.commons.i18n.I18n;
  * Time: 15:47
  */
 public class Messages {
-    private static final I18n I_18_N = I18nFactory.getI18n();
-
     public static final String SIZE = "Размер";
 
     private Messages() {
     }
 
     public static I18n i18n() {
-        return I_18_N;
+        return I18nFactory.getI18n();
     }
 }

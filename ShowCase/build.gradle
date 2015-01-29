@@ -46,14 +46,14 @@ gwt {
         port = 1337
     }
 
-    compiler {
-        optimize = 9
-        validateOnly = true
-        compileReport = true
-        strict = true
-        disableCastChecking = true
-        enableClosureCompiler = true
-    }
+//    compiler {
+//        optimize = 9
+//        validateOnly = true
+//        compileReport = true
+//        strict = true
+//        disableCastChecking = true
+//        enableClosureCompiler = true
+//    }
 }
 
 war {

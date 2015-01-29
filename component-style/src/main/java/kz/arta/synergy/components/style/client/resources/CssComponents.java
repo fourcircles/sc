@@ -49,6 +49,7 @@ public interface CssComponents extends CssResource {
     String declineButton();
 
     String dialog();
+    String dialogGlass();
 
     String dialogBackButton();
 

@@ -5,7 +5,7 @@ package kz.arta.synergy.components.client.progressbar;
  * Date: 24.11.14
  * Time: 11:28
  *
- * Надпись прогресс бара, которая применяется при значении в указанном интервале
+ * Надпись прогресс бара, которая применяется при значении в указанном интервале.
  */
 public class ProgressBarConstraintLabel implements ProgressBarCustomLabel {
 
@@ -27,8 +27,8 @@ public class ProgressBarConstraintLabel implements ProgressBarCustomLabel {
             throw new IllegalArgumentException("левая граница должна быть меньше правой");
         }
 
-        this.left = ProgressBar.constraint(left);
-        this.right = ProgressBar.constraint(right);
+        this.left = ProgressBar.normalizedConstrains(left);
+        this.right = ProgressBar.normalizedConstrains(right);
         this.message = message;
     }
 

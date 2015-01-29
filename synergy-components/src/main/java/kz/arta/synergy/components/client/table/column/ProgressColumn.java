@@ -62,12 +62,12 @@ public abstract class ProgressColumn<T> extends AbstractArtaColumn<T> {
     public abstract double getValue(T object);
 
     /**
-     * Тип прогресс бара. {@link kz.arta.synergy.components.client.progressbar.ProgressBar#ProgressBar(boolean)}
+     * Тип прогресс бара. {@link kz.arta.synergy.components.client.progressbar.ProgressBar#ProgressBar(kz.arta.synergy.components.client.progressbar.ProgressBar.Type)}
      *
      * @param object объект
      * @return тип
      */
-    public abstract boolean getType(T object);
+    public abstract ProgressBar.Type getType(T object);
 
     /**
      * Опциональное значение объекта

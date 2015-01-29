@@ -18,6 +18,7 @@ import kz.arta.synergy.components.client.taskbar.events.ModelChangeEvent;
 import kz.arta.synergy.components.client.taskbar.events.TaskBarEvent;
 import kz.arta.synergy.components.client.util.Navigator;
 import kz.arta.synergy.components.style.client.Constants;
+import kz.arta.synergy.components.style.client.resources.CssComponents;
 
 /**
  * User: vsl
@@ -121,9 +122,7 @@ public class DialogSimple extends PopupPanel implements TaskBarItem {
 
         setPreviewingAllNativeEvents(true);
 
-        if (getGlassElement() != null) {
-            getGlassElement().getStyle().setZIndex(1000);
-        }
+        setGlassStyleName(SynergyComponents.getResources().cssComponents().dialogGlass());
         getElement().getStyle().setZIndex(2000);
     }
 

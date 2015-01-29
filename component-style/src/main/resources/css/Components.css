@@ -524,6 +524,12 @@ code, pre {
     border: dialogBorderWidth solid border1;
 }
 
+.dialogGlass {
+    opacity: 0.1;
+    background-color: red;
+    z-index: 1000;
+}
+
 @eval dialogCloseButtonPadding kz.arta.synergy.components.style.client.Constants.dialogCloseButtonPadding();
 @eval dialogCloseButtonRightMargin kz.arta.synergy.components.style.client.Constants.dialogCloseButtonRightMargin();
 .dialogTitleButton {
@@ -1742,13 +1748,6 @@ p {
     border-top: 1px solid border1;
 }
 
-/*Временно*/
-@external gwt-Label;
-.gwt-Label {
-    font-family: DroidSans;
-    font-size:14px;
-}
-
 @eval tableDividerWidth kz.arta.synergy.components.style.client.Constants.tableDividerWidth();
 .tableDivider {
     width: tableDividerWidth;
@@ -2355,10 +2354,13 @@ p {
     position: relative;
     min-width: 102px;
     height: 20px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
     background-color: buttonBG;
     cursor: pointer;
     overflow: hidden;
-    border-radius: 2px;
+    border: 1px solid border1;
+    border-radius: 3px;
 }
 
 .progressBarLine {
@@ -2369,6 +2371,10 @@ p {
     background-color: progressOptional;
     bottom: 0;
     height: 50%;
+    visibility: hidden;
+}
+.progressBar.split .progressBarLine:first-child {
+    visibility: visible;
 }
 
 .progressBar .progressBarLine + .progressBarLine {

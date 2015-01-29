@@ -4,11 +4,17 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.RootPanel;
 import kz.arta.sc3.showcase.client.resources.ImageResources;
 import kz.arta.sc3.showcase.client.resources.SCResources;
 import kz.arta.synergy.components.client.SynergyComponents;
+import kz.arta.synergy.components.client.dialog.DialogSimple;
+import kz.arta.synergy.components.client.util.mousetracking.IdleEvent;
+import kz.arta.synergy.components.client.util.mousetracking.MouseTracking;
 
 /**
  * User: user
@@ -30,5 +36,27 @@ public class ShowCase implements EntryPoint {
         RootPanel.get().getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
         RootPanel.get().add(new ShowCasePanel());
         RootPanel.get().addStyleName(SynergyComponents.getResources().cssComponents().mainText());
+
+        MouseTracking.enable();
+        MouseTracking.addIdleHandler(new IdleEvent.Handler() {
+            @Override
+            public void onMouseTracking(IdleEvent event) {
+                MouseTracking.disable();
+                
+                DialogSimple idle = new DialogSimple(true);
+                idle.setWidth("280px");
+                
+                idle.setText("You've been idle too long");
+                idle.center();
+                idle.show();
+
+                idle.addCloseButtonHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        MouseTracking.enable();
+                    }
+                });
+            }
+        });
     }
 }

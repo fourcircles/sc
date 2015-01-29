@@ -5,7 +5,8 @@ package kz.arta.synergy.components.client.progressbar;
  * Date: 24.11.14
  * Time: 11:27
  *
- * Надпись для прогресс-бара
+ * Надпись для прогресс-бара.
+ * Все значения прогресс-бара преполагаются нормализованными, т.е. в [0..1].
  */
 public interface ProgressBarCustomLabel {
     /**

@@ -1085,8 +1085,8 @@ public class ShowCasePanel extends FlowPanel {
             }
 
             @Override
-            public boolean getType(User object) {
-                return object.getLifeLived() < 0.6;
+            public ProgressBar.Type getType(User object) {
+                return object.getLifeLived() < 0.6 ? ProgressBar.Type.NEGATIVE : ProgressBar.Type.NEGATIVE;
             }
 
             @Override
@@ -2620,7 +2620,7 @@ public class ShowCasePanel extends FlowPanel {
 
         root.add(new Br());
 
-        final ProgressBar progress1 = new ProgressBar(true);
+        final ProgressBar progress1 = new ProgressBar(ProgressBar.Type.POSITIVE);
         progress1.getElement().getStyle().setWidth(150, Style.Unit.PX);
         progress1.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         progress1.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
@@ -2674,7 +2674,7 @@ public class ShowCasePanel extends FlowPanel {
         customLabels.add(new ProgressBarConstraintLabel(0.2, 0.7, Messages.i18n().tr("Исполнение сложного задания")));
         customLabels.add(new ProgressBarConstraintLabel(0.7, 1, Messages.i18n().tr("Завершение исполнения сложного задания")));
 
-        final ProgressBar progress2 = new ProgressBar(false, customLabels);
+        final ProgressBar progress2 = new ProgressBar(ProgressBar.Type.NEGATIVE, customLabels);
         progress2.getElement().getStyle().setWidth(150, Style.Unit.PX);
         progress2.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
         progress2.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);

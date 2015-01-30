@@ -10,4 +10,14 @@
     <set-configuration-property name="CssResource.style" value="pretty"/>
 
     <add-linker name="xsiframe"/>
+
+    <extend-property name="locale" values="ru"/>
+    <extend-property name="locale" values="kk"/>
+    <extend-property name="locale" values="en"/>
+    <extend-property name="locale" values="ar"/>
+
+    <set-property-fallback name="locale" value="ru"/>
+
+    <collapse-all-properties />
+
 </module>

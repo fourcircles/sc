@@ -1,23 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-
     <inherits name='com.google.gwt.user.User'/>
     <inherits name="com.google.gwt.resources.Resources" />
     <inherits name="com.google.gwt.i18n.I18N"/>
     <inherits name="kz.arta.i18n.I18N"/>
 
-    <inherits name='com.google.gwt.user.theme.standard.Standard'/>
     <inherits name='kz.arta.synergy.components.style.ComponentStyle'/>
-    <!--this doesn't look right-->
+    <inherits name="com.google.gwt.logging.LoggingDisabled"/>
+    <set-property name="gwt.logging.enabled" value="TRUE"/>
+    <set-property name="gwt.logging.popupHandler" value="DISABLED"/>
+    <set-property name="gwt.logging.developmentModeHandler" value="DISABLED"/>
+
     <entry-point class='kz.arta.synergy.components.client.SynergyComponents'/>
-
-    <extend-property name="locale" values="ru"/>
-    <extend-property name="locale" values="kk"/>
-    <extend-property name="locale" values="en"/>
-    <extend-property name="locale" values="ar"/>
-
-    <set-property-fallback name="locale" value="ru"/>
-
-    <collapse-all-properties />
-
 </module>

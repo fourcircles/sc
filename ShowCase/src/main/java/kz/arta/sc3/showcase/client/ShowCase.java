@@ -44,6 +44,7 @@ public class ShowCase implements EntryPoint {
                 MouseTracking.disable();
                 
                 DialogSimple idle = new DialogSimple(true);
+                idle.setGlassStyleName(SynergyComponents.getResources().cssComponents().logoutDialog());
                 idle.setWidth("280px");
                 
                 idle.setText("You've been idle too long");

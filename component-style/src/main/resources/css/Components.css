@@ -524,10 +524,13 @@ code, pre {
     border: dialogBorderWidth solid border1;
 }
 
-.dialogGlass {
+.dialogGlass,.logoutDialog {
     opacity: 0.1;
-    background-color: red;
+    background-color: black;
     z-index: 1000;
+}
+.logoutDialog {
+    background-color: red;
 }
 
 @eval dialogCloseButtonPadding kz.arta.synergy.components.style.client.Constants.dialogCloseButtonPadding();

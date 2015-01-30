@@ -50,6 +50,7 @@ public interface CssComponents extends CssResource {
 
     String dialog();
     String dialogGlass();
+    String logoutDialog();
 
     String dialogBackButton();
 

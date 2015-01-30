@@ -1,10 +1,14 @@
 apply plugin: 'sonar-runner'
 
 version='3.0'
-task wrapper(type: Wrapper) {
-  gradleVersion = "2.2"
-}
 
+allprojects {
+    configurations.all {
+        resolutionStrategy {
+            failOnVersionConflict()
+        }
+    }
+}
 repositories {
     mavenLocal()
     mavenCentral()

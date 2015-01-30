@@ -24,11 +24,8 @@ buildscript {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.5'
     }
 }
-String version = '2.4.0'
 
 dependencies {
-    compile 'com.google.gwt:gwt-dev:$version'
-    compile 'com.google.gwt:gwt-user:$version'
     compile project(':synergy-components')
     compile project(':component-style')
 }
@@ -45,15 +42,6 @@ gwt {
     superDev {
         port = 1337
     }
-
-//    compiler {
-//        optimize = 9
-//        validateOnly = true
-//        compileReport = true
-//        strict = true
-//        disableCastChecking = true
-//        enableClosureCompiler = true
-//    }
 }
 
 war {
@@ -84,10 +72,6 @@ draftWar {
                                        version    : ant.properties[ext.buildNumber]
         ])
     }
-}
-
-task show << {
-    println gwtSuperDev.src.getFiles()
 }
 
 sonarRunner {

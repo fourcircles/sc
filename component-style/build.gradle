@@ -1,11 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'jacoco'
 
-apply plugin: 'artifactory-publish'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
-version '3.0-SNAPSHOT'
+version '3.0'
 
 repositories {
     mavenLocal()
@@ -17,21 +16,27 @@ buildscript {
         mavenCentral()
         jcenter()
     }
-    dependencies {
-        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.4')
-    }
+}
+dependencies {
+    compile group: 'com.google.gwt', name: 'gwt-dev', version: rootProject.properties.gwtversion
+    compile group: 'com.google.gwt', name: 'gwt-user', version: rootProject.properties.gwtversion
 }
 
-//task sourcesJar(type: Jar, dependsOn: classes) {
-//    from sourceSets.main.allSource
-//}
-
-dependencies {
-    compile 'com.google.gwt:gwt-dev:2.4.0'
-    compile 'com.google.gwt:gwt-user:2.4.0'
+jar {
+    from 'src/main/java'
 }
 
 publishing {
+    repositories {
+        mavenLocal()
+        maven {
+            url 'http://192.168.1.30:8081/artifactory/synergy-libs'
+            credentials {
+                username = 'deployer'
+                password = 'deployer'
+            }
+        }
+    }
     publications {
         componentStyle(MavenPublication) {
             groupId 'kz.arta'

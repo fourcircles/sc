@@ -14,6 +14,8 @@
     <extend-property name="locale" values="en"/>
     <extend-property name="locale" values="ar"/>
     <extend-property name="locale" values="ky"/>
-
+    
     <set-property-fallback name="locale" value="ru"/>
+    
+    <collapse-all-properties/>
 </module>

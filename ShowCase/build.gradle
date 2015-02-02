@@ -31,16 +31,20 @@ dependencies {
 }
 
 gwt {
-    gwtVersion=version;
+    gwtVersion = rootProject.properties.gwtversion;
     minHeapSize = "512M";
     maxHeapSize = "1024M";
 
     modules = ['kz.arta.sc3.showcase.ShowCase']
+
     src = files('src/main/java', 'build/resources/main',
             '../synergy-components/src/main/java', '../synergy-components/build/resources/main',
             '../component-style/src/main/java', '../component-style/build/resources/main')
     superDev {
         port = 1337
+    }
+    compiler {
+        compileReport = true
     }
 }
 

@@ -64,7 +64,9 @@ import kz.arta.synergy.components.client.stack.StackPanel;
 import kz.arta.synergy.components.client.stack.events.StackOpenEvent;
 import kz.arta.synergy.components.client.table.*;
 import kz.arta.synergy.components.client.table.column.*;
-import kz.arta.synergy.components.client.table.events.*;
+import kz.arta.synergy.components.client.table.events.TableHeaderMenuEvent;
+import kz.arta.synergy.components.client.table.events.TableMenuEvent;
+import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.client.tabs.TabPanel;
 import kz.arta.synergy.components.client.tabs.events.TabCloseEvent;
 import kz.arta.synergy.components.client.taskbar.TaskBar;
@@ -199,13 +201,6 @@ public class ShowCasePanel extends FlowPanel {
                 aboutDialog.show();
             }
         });
-//        about.addClickHandler(new ClickHandler() {
-//            @Override
-//            public void onClick(ClickEvent event) {
-//                Window.alert("About: \nSynergy components ShowCase\n\nVersion: " + theme.get("version") +
-//                        "\nRevision: " + theme.get("revision") + "\nBuild stamp: " + theme.get("build_stamp"));
-//            }
-//        });
         titlePanel.add(about);
 
 

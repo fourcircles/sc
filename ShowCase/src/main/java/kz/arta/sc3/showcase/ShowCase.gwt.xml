@@ -7,7 +7,6 @@
     <inherits name="kz.arta.i18n.I18N"/>
 
     <entry-point class='kz.arta.sc3.showcase.client.ShowCase'/>
-    <set-configuration-property name="CssResource.style" value="pretty"/>
 
     <extend-property name="locale" values="ru"/>
     <extend-property name="locale" values="kk"/>

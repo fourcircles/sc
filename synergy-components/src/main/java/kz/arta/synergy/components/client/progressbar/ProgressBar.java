@@ -10,6 +10,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.Messages;
+import kz.arta.synergy.components.client.util.ArtaTestName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,6 +161,8 @@ public class ProgressBar extends Composite implements HasValue<Double>, HasClick
         // надпись, которая отображает просто значение в процентах добавляется всегда и всегда
         // последней, в качестве страховки от случая, когда ни одна надпись не сработает
         this.customLabels.add(PERCENTAGE_LABEL);
+
+        ArtaTestName.getInstance().setName(root.getElement(), "progress-bar");
     }
 
     public void setType(Type type) {

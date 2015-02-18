@@ -1,9 +1,6 @@
 package kz.arta.synergy.components.client.table;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.TableCellElement;
-import com.google.gwt.dom.client.TableRowElement;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent;
@@ -23,6 +20,7 @@ import kz.arta.synergy.components.client.table.events.TableMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.client.util.Utils;
 
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,10 +118,14 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
         table = new FlexTable();
         table.sinkEvents(Event.ONCONTEXTMENU);
+
+        TableElement tableElement = TableElement.as(table.getElement());
+        tableElement.createTHead().insertRow(0);
+        
         initWidget(table);
 
         table.addStyleName(SynergyComponents.getResources().cssComponents().table());
-        for (int i = 0; i < pageSize; i++) {
+        for (int i = 0; i <= pageSize; i++) {
             table.insertRow(0);
         }
 
@@ -249,7 +251,6 @@ public class TableCore<T> extends Composite implements HasData<T> {
         bus.fireEventFromSource(new TableMenuEvent(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY()), this);
     }
 
-//    com.google.gwt.user.client.Element
     private Element getCellForEvent(Event event) {
         com.google.gwt.user.client.Element td = DOM.eventGetTarget(event);
         for (; td != null; td = DOM.getParent(td)) {
@@ -458,7 +459,6 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @see {@link #getColumnWidth(kz.arta.synergy.components.client.table.column.ArtaColumn)}
      * @param index позиция столбца
      */
-    @SuppressWarnings("UnusedDeclaration")
     public int getColumnWidth(int index) {
         return getColumnWidth(columns.get(index));
     }
@@ -603,6 +603,11 @@ public class TableCore<T> extends Composite implements HasData<T> {
                 tdDest.setAttribute("style", tdSource.getAttribute("style"));
             }
         }
+        try {
+            getWidthCell(table, dest).getStyle().setProperty("width", getWidthCell(table, source).getStyle().getWidth());
+        } catch (NullPointerException e) {
+            // значит thead'a нет
+        }
     }
 
     /**
@@ -646,8 +651,8 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
     /**
      * Изменяет позицию стоблца.
-     * На самом деле здесь происходит перемещение виджетов и (перемещение свойства ширина
-     * у первого ряда таблиц заголовков) в dom-элементе table.
+     * На самом деле здесь происходит перемещение виджетов и перемещение
+     * inline-style (перемещение атрибута style у первого ряда таблиц заголовков) в dom-элементе table.
      * Столбец перемещается на новую позицию, остальные смещаются в нужную сторону.
      *
      * @param columnIndex позиция на которой находится столбец
@@ -667,6 +672,8 @@ public class TableCore<T> extends Composite implements HasData<T> {
                 styles.add(null);
             }
         }
+        String width = getWidthCell(table, columnIndex).getStyle().getWidth();
+        
         if (targetPosition < columnIndex) {
             for (int col = columnIndex; col > targetPosition; col--) {
                 setColumnWidgets(table, col, col - 1);
@@ -677,6 +684,10 @@ public class TableCore<T> extends Composite implements HasData<T> {
                 setColumnWidgets(table, col, col + 1);
             }
             setColumnWidgets(table, targetPosition, columnWidgets, styles);
+        }
+        
+        if (width != null) {
+            getWidthCell(table, targetPosition).getStyle().setProperty("width", width);
         }
     }
 
@@ -722,12 +733,12 @@ public class TableCore<T> extends Composite implements HasData<T> {
         int index = columns.indexOf(column);
         if (width < 0) {
             if (isAttached()) {
-                table.getFlexCellFormatter().getElement(0, index).getStyle().clearWidth();
+                getWidthCell(index).getStyle().clearWidth();
             }
             widths.put(column, -1);
         } else {
             if (isAttached()) {
-                table.getFlexCellFormatter().getElement(0, index).getStyle().setWidth(width, Style.Unit.PX);
+                getWidthCell(index).getStyle().setWidth(width, Style.Unit.PX);
             }
             widths.put(column, width);
         }
@@ -789,6 +800,8 @@ public class TableCore<T> extends Composite implements HasData<T> {
                 table.getElement().setTabIndex(TAB_INDEX);
             }
         }
+        TableElement ele = TableElement.as(table.getElement());
+        ele.getTHead().getRows().getItem(0).insertCell(-1);
     }
 
     @Override
@@ -823,11 +836,20 @@ public class TableCore<T> extends Composite implements HasData<T> {
     public List<ArtaColumn<T>> getColumns() {
         return columns;
     }
-
-    public Element getElement(int row, int column) {
-        return table.getFlexCellFormatter().getElement(row, column);
+    
+    public Element getWidthCell(int column) {
+        return getWidthCell(table, column);
     }
-
+    
+    private static Element getWidthCell(FlexTable table, int column) {
+        TableElement te = TableElement.as(table.getElement());
+        try {
+            return te.getTHead().getRows().getItem(0).getCells().getItem(column);
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+    
     void setRow(int row, T value) {
         for (int i = 0; i < columns.size(); i++) {
             ArtaColumn<T> column = columns.get(i);

@@ -1013,6 +1013,7 @@ public class ShowCasePanel extends FlowPanel {
         } else {
             addCodeSample(table, Messages.i18n().tr("Таблица с выбором ячеек"), ShowCase.RESOURCES.tableCells().getText());
         }
+        table.setCanChangeColumnOrder(true);
         table.enableHat(true);
         table.getHat().setName(Messages.i18n().tr("Таблица"));
         table.getHat().enableAddButton(true);

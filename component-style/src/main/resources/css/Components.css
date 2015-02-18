@@ -1578,6 +1578,11 @@ p {
 
 .checkbox {
     cursor: pointer;
+    height: 16px;
+    width: 16px;
+}
+.checkbox > img {
+    position: absolute;
 }
 
 .radio input[type=radio] {

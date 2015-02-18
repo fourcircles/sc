@@ -123,7 +123,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     /**
      * Можно ли выбрать этот узел 
      */
-    private boolean selectable;
+    private boolean selectable = true;
 
     interface TreeItemUiBinder extends UiBinder<ArtaFlowPanel, TreeItem> {
     }

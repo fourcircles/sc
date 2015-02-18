@@ -178,18 +178,6 @@ public interface ImageResources extends ClientBundle {
     @ImageResource.ImageOptions(flipRtl = true)
     ImageResource scrollBarDarkRightPressed();
 
-    @ClientBundle.Source("images/checkbox/checkbox_off.png")
-    ImageResource checkboxOff();
-
-    @ClientBundle.Source("images/checkbox/checkbox_off_disabled.png")
-    ImageResource checkboxOffDisabled();
-
-    @ClientBundle.Source("images/checkbox/checkbox_on.png")
-    ImageResource checkboxOn();
-
-    @ClientBundle.Source("images/checkbox/checkbox_on_disabled.png")
-    ImageResource checkboxOnDisabled();
-
     @ClientBundle.Source("images/notifications/failure.png")
     ImageResource notificationFailure();
     @ClientBundle.Source("images/notifications/question.png")

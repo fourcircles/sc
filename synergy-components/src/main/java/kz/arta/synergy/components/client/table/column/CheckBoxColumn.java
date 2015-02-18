@@ -33,8 +33,6 @@ public abstract class CheckBoxColumn<T> extends AbstractArtaColumn<T> {
         box.getElement().getStyle().setProperty("marginLeft", "auto");
         box.getElement().getStyle().setProperty("marginRight", "auto");
 
-        box.getElement().getStyle().setMarginTop(3, Style.Unit.PX);
-
         return box;
     }
 

@@ -1,17 +1,17 @@
 package kz.arta.synergy.components.client.checkbox;
 
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasEnabled;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.*;
 import kz.arta.synergy.components.client.SynergyComponents;
 import kz.arta.synergy.components.client.resources.ImageResources;
+import kz.arta.synergy.components.style.client.resources.ComponentResources;
 
 /**
  * User: vsl
@@ -33,8 +33,12 @@ public class ArtaCheckBox extends Composite implements HasValue<Boolean>, HasEna
     private boolean enabled = true;
 
     public ArtaCheckBox() {
+        SimplePanel root = new SimplePanel();
+        initWidget(root);
+        
         image = new Image();
-        initWidget(image);
+        image.setStyleName("");
+        root.setWidget(image);
 
         setStyleName(SynergyComponents.getResources().cssComponents().checkbox());
 
@@ -83,9 +87,9 @@ public class ArtaCheckBox extends Composite implements HasValue<Boolean>, HasEna
      */
     private void updateIcon() {
         if (isEnabled()) {
-            image.setResource(value ? ImageResources.IMPL.checkboxOn() : ImageResources.IMPL.checkboxOff());
+            image.setResource(value ? SynergyComponents.getResources().checkboxOn() : SynergyComponents.getResources().checkboxOff());
         } else {
-            image.setResource(value ? ImageResources.IMPL.checkboxOnDisabled() : ImageResources.IMPL.checkboxOffDisabled());
+            image.setResource(value ? SynergyComponents.getResources().checkboxOnDisabled() : SynergyComponents.getResources().checkboxOffDisabled());
         }
     }
 

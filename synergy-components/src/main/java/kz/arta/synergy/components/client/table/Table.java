@@ -119,7 +119,9 @@ public class Table<T> extends Composite {
      * Разделители
      */
     private Map<ArtaColumn<T>, TableDivider<T>> dividers = new HashMap<ArtaColumn<T>, TableDivider<T>>();
-
+    
+    private boolean canChangeColumnOrder = false;
+    
     public Table(int pageSize) {
         this(pageSize, null);
     }
@@ -289,7 +291,7 @@ public class Table<T> extends Composite {
      */
     private void updateHeaderWidth(int index) {
         //ширина виджета Header
-        int width = tableCore.getElement(0, index).getOffsetWidth();
+        int width = tableCore.getWidthCell(index).getOffsetWidth();
         width--;
         tableCore.getColumns().get(index).getHeader().setWidth(width);
     }
@@ -347,7 +349,7 @@ public class Table<T> extends Composite {
         RootPanel.get().getElement().getStyle().clearCursor();
 
         int delta = divider.getAbsoluteLeft() - divider.getOldPosition();
-        Element cellElement = tableCore.getElement(0, tableCore.getColumns().indexOf(divider.getColumn()));
+        Element cellElement = tableCore.getWidthCell(tableCore.getColumns().indexOf(divider.getColumn()));
         setColumnWidth(divider.getColumn(), cellElement.getOffsetWidth() + delta);
 
         divider.setResizing(false);
@@ -580,6 +582,7 @@ public class Table<T> extends Composite {
         }
         tableCore.changeColumnPosition(headersTable, columnIndex, target);
         tableCore.changeColumnPosition(columnIndex, target);
+
         redrawDividers();
     }
 
@@ -597,7 +600,7 @@ public class Table<T> extends Composite {
         }
         hideHeaderDivider();
     }
-
+    
     /**
      * Инициализирует заголовок, который появляется при начале перемещения.
      * @param header заголовок, который надо перемещать
@@ -642,7 +645,7 @@ public class Table<T> extends Composite {
             headerMouseDownHandler = new MouseDownHandler() {
                 @Override
                 public void onMouseDown(MouseDownEvent event) {
-                    if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+                    if (!canChangeColumnOrder || event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
                         return;
                     }
                     event.preventDefault();
@@ -659,6 +662,9 @@ public class Table<T> extends Composite {
         return new MouseMoveHandler() {
             @Override
             public void onMouseMove(MouseMoveEvent event) {
+                if (!canChangeColumnOrder) {
+                    return;
+                }
                 if (headerMouseDown) {
                     event.preventDefault();
                     event.stopPropagation();
@@ -713,7 +719,7 @@ public class Table<T> extends Composite {
         final TableDivider<T> divider = createDivider(column);
         dividers.put(column, divider);
         root.add(divider);
-
+        
         column.addLockHandler(new ColumnLockEvent.Handler() {
             @Override
             public void onColumnLock(ColumnLockEvent event) {
@@ -777,6 +783,10 @@ public class Table<T> extends Composite {
         }
     }
 
+    public void setCanChangeColumnOrder(boolean value) {
+        this.canChangeColumnOrder = value;
+    }
+    
     /**
      * Включить-выключить перенос на следующую строку
      */

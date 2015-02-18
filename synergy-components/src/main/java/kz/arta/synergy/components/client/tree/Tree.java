@@ -78,7 +78,9 @@ public class Tree extends Composite implements HasContextMenuHandlers {
             root = new FlowPanel();
             initWidget(root);
             root.setStyleName(SynergyComponents.getResources().cssComponents().tree());
-            root.addStyleName(SynergyComponents.getResources().cssComponents().dark());
+            if (!white) {
+                root.addStyleName(SynergyComponents.getResources().cssComponents().dark());
+            }
         }
 
         bus = new SimpleEventBus();

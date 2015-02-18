@@ -119,6 +119,11 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
      * Цвет дерева
      */
     private boolean white;
+    
+    /**
+     * Можно ли выбрать этот узел 
+     */
+    private boolean selectable;
 
     interface TreeItemUiBinder extends UiBinder<ArtaFlowPanel, TreeItem> {
     }
@@ -153,10 +158,13 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
                 setOpen(!isOpen());
             }
         };
-
+        
+        label.setStyleName("");
         label.addStyleName(SynergyComponents.getResources().cssComponents().unselectable());
         label.addClickHandler(selectionHandler);
         label.addDoubleClickHandler(doubleSelectHandler);
+
+        icon.setStyleName("");
         icon.addClickHandler(selectionHandler);
         icon.addDoubleClickHandler(doubleSelectHandler);
 
@@ -165,6 +173,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
         this.bus = bus;
         label.setText(text);
 
+        indicator.setStyleName("");
         indicator.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
 
         content.setStyleName(SynergyComponents.getResources().cssComponents().content());
@@ -312,7 +321,7 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     public void setOpen(boolean isOpen) {
         setOpen(isOpen, true);
     }
-
+    
     public boolean isSelected() {
         return isSelected;
     }
@@ -320,10 +329,14 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     /**
      * Выбрать/убрать выделение узел дерева.
      * Событие создается для каждого вызова, где selected==true, даже если узел уже был выбран.
+     *
      * @param selected true - выделить, false - убрать выделение
      * @param fireEvents создавать ли события
      */
     public void setSelected(boolean selected, boolean fireEvents) {
+        if (!selectable) {
+            return;
+        }
         label.removeStyleName(getFontStyle());
         this.isSelected = selected;
         label.addStyleName(getFontStyle());
@@ -348,7 +361,15 @@ public class TreeItem implements ArtaHasText, IsTreeItem, IsWidget, HasClickHand
     public void setSelected(boolean selected) {
         setSelected(selected, true);
     }
-
+    
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }
+    
+    public boolean isSelectable() {
+        return selectable;
+    }
+    
     @Override
     public String getFontStyle() {
         if (isSelected()) {

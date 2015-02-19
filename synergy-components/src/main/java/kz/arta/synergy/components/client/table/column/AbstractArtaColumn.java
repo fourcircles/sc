@@ -13,7 +13,7 @@ import kz.arta.synergy.components.client.table.events.ColumnLockEvent;
  */
 public abstract class AbstractArtaColumn<T> implements ArtaColumn<T> {
 
-    private EventBus columnBus;
+    protected EventBus columnBus;
 
     /**
      * Сортируем ли столбец

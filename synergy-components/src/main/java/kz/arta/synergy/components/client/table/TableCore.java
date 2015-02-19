@@ -140,21 +140,21 @@ public class TableCore<T> extends Composite implements HasData<T> {
                 int cellIndex = cell.getCellIndex();
 
                 if (!event.isControlKeyDown() || !multiSelectionAllowed) {
-                    selectionModel.clear(false);
+                    selectionModel.clear(true);
                 }
 
                 if (event.isShiftKeyDown() && multiSelectionAllowed) {
                     if (onlyRows) {
                         for (int r = Math.min(rowIndex, lastSelectedRow); r <= Math.max(rowIndex, lastSelectedRow); r++) {
                             T object = objects.get(start + r);
-                            selectionModel.setSelected(object, null, true, false);
+                            selectionModel.setSelected(object, null, true, true);
                         }
                     } else {
                         for (int r = Math.min(rowIndex, lastSelectedRow); r <= Math.max(rowIndex, lastSelectedRow); r++) {
                             for (int c = Math.min(cellIndex, lastSelectedColumn); c <= Math.max(cellIndex, lastSelectedColumn); c++) {
                                 T object = objects.get(start + r);
                                 ArtaColumn<T> column = columns.get(c);
-                                selectionModel.setSelected(object, column, true, false);
+                                selectionModel.setSelected(object, column, true, true);
                             }
                         }
                     }
@@ -167,7 +167,7 @@ public class TableCore<T> extends Composite implements HasData<T> {
                     T object = objects.get(start + rowIndex);
                     ArtaColumn<T> column = onlyRows ? null : columns.get(cellIndex);
                     boolean select = event.isControlKeyDown() ? !selectionModel.isSelected(object, column) : true;
-                    selectionModel.setSelected(object, column, select, false);
+                    selectionModel.setSelected(object, column, select, true);
                 }
 
                 updateSelection();

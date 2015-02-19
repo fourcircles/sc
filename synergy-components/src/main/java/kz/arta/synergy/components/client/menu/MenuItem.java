@@ -64,10 +64,12 @@ public class MenuItem<V> extends Composite implements HasValue<Boolean>, HasValu
         this.userValue = userValue;
 
         icon = GWT.create(Image.class);
+        icon.setStyleName("");
         setIcon(iconResource);
         root.add(icon);
 
         label = GWT.create(Label.class);
+        label.setStyleName("");
         label.setText(text);
         Selection.disableTextSelectInternal(label.getElement());
         root.add(label);

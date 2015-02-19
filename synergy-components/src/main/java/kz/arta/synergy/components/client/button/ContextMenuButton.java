@@ -66,13 +66,7 @@ public class ContextMenuButton extends SimpleButton {
             @Override
             public void onClick(ClickEvent event) {
                 event.stopPropagation();
-                if (contextMenu != null) {
-                    if (contextMenu.isShowing()) {
-                        contextMenu.hide();
-                    } else {
-                        contextMenu.showUnder(ContextMenuButton.this);
-                    }
-                }
+                toggleMenu();
             }
         };
         contextButton.addDomHandler(down, MouseDownEvent.getType());
@@ -80,6 +74,16 @@ public class ContextMenuButton extends SimpleButton {
 
         contextButton.setStyleName(SynergyComponents.getResources().cssComponents().dropDownButton());
         add(contextButton);
+    }
+
+    public void toggleMenu() {
+        if (contextMenu != null) {
+            if (contextMenu.isShowing()) {
+                contextMenu.hide();
+            } else {
+                contextMenu.showUnder(this);
+            }
+        }
     }
 
     /**
@@ -133,5 +137,11 @@ public class ContextMenuButton extends SimpleButton {
         if (contextButton != null) {
             add(contextButton);
         }
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        contextButton.setEnabled(enabled);
     }
 }

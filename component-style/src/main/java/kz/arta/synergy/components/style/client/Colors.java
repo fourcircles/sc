@@ -22,6 +22,7 @@ public class Colors {
     public static final Color border1 = new Color("#afafaf");
     public static final Color buttonBorder = new Color("#e2e2e2");
     public static final Color navigatorBG = new Color("#292f3b");
+    public static final Color textColor1 = new Color("#757575");
     public static final Color textColor2 = new Color("#606060");
     public static final Color buttonPressed = new Color("#d6d6d6");
     public static final Color progressNormal = new Color("#b3e062");
@@ -66,6 +67,9 @@ public class Colors {
     }
     public static Color buttonBorder() {
         return buttonBorder;
+    }
+    public static Color textColor1() {
+        return textColor1;
     }
     public static Color textColor2() {
         return textColor2;

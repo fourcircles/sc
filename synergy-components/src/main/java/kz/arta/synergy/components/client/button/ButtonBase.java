@@ -280,6 +280,7 @@ public class ButtonBase extends FlowPanel implements
         if (icon == null) {
             needRebuild = true;
             icon = GWT.create(Image.class);
+            icon.setStyleName("");
             icon.addDragStartHandler(new DragStartHandler() {
                 @Override
                 public void onDragStart(DragStartEvent event) {

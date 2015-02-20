@@ -54,6 +54,11 @@ public class EditableText<T> extends Composite {
      */
     protected String oldText;
 
+    /**
+     * Можно ли изменять значение 
+     */
+    private boolean editable = true;
+
     protected EventBus bus;
 
     protected AbstractEditableColumn<T> column;
@@ -147,6 +152,10 @@ public class EditableText<T> extends Composite {
      * Заменяет текст на элемент ввода.
      */
     public void edit() {
+        if (!isEditable()) {
+            return;
+        }
+        
         oldText = text;
         isEditing = true;
 
@@ -217,5 +226,13 @@ public class EditableText<T> extends Composite {
         }
         this.object = object;
         label.setText(column.getValue(object));
+    }
+    
+    public void setEditable(boolean value) {
+        this.editable = value;
+    }
+    
+    public boolean isEditable() {
+        return editable;
     }
 }

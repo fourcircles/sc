@@ -20,7 +20,6 @@ import kz.arta.synergy.components.client.table.events.TableMenuEvent;
 import kz.arta.synergy.components.client.table.events.TableSortEvent;
 import kz.arta.synergy.components.client.util.Utils;
 
-import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -312,10 +311,11 @@ public class TableCore<T> extends Composite implements HasData<T> {
 
         if (event.getTypeInt() == Event.ONKEYDOWN || event.getTypeInt() == Event.ONFOCUS) {
             Element focused = Utils.impl().getFocusedElement();
-            if (TableRowElement.is(focused)) {
+
+            if (focused != null && focused.getTagName().equalsIgnoreCase("tr")) {
                 rowEvent(event, TableRowElement.as(focused));
             }
-            if (TableCellElement.is(focused)) {
+            if (focused != null && focused.getTagName().equalsIgnoreCase("td")) {
                 cellEvent(event, TableCellElement.as(focused));
             }
         }
@@ -327,7 +327,11 @@ public class TableCore<T> extends Composite implements HasData<T> {
      * @param cellElement элемент ячейки таблицы
      */
     private void cellEvent(Event event, TableCellElement cellElement) {
-        int rowIndex = TableRowElement.as(cellElement.getParentElement()).getRowIndex();
+        assert TableRowElement.is(cellElement.getParentElement());
+        TableRowElement rowElement = TableRowElement.as(cellElement.getParentElement());
+        
+        // -1 из-за ряда в thead
+        int rowIndex = rowElement.getRowIndex() - 1;
         int cellIndex = cellElement.getCellIndex();
         if (event.getTypeInt() == Event.ONKEYDOWN) {
             switch (event.getKeyCode()) {

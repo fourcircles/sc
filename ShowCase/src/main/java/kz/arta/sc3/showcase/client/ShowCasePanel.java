@@ -1007,7 +1007,7 @@ public class ShowCasePanel extends FlowPanel {
         panel.getElement().getStyle().setPaddingLeft(40, Style.Unit.PX);
         panel.getElement().getStyle().setPaddingRight(40, Style.Unit.PX);
 
-        final Table<User> table = new Table<User>(29);
+        final Table<User> table = new Table<User>(6);
         if (onlyRows) {
             addCodeSample(table, Messages.i18n().tr("Таблица с выбором рядом"), ShowCase.RESOURCES.tableRows().getText());
         } else {
@@ -1160,7 +1160,7 @@ public class ShowCasePanel extends FlowPanel {
         provider.addDataDisplay(table.getCore());
 
         final List<User> list = provider.getList();
-        for (int i = 0; i < 190; i++) {
+        for (int i = 0; i < 10; i++) {
             list.add(new User("jon" + i, "jones" + i, "" + (85281 + i), i % 4 != 0, Random.nextDouble()));
         }
         provider.flush();

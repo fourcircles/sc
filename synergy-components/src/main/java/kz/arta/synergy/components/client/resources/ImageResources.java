@@ -197,4 +197,9 @@ public interface ImageResources extends ClientBundle {
     ImageResource scan();
     @ClientBundle.Source("images/file/add.png")
     ImageResource add();
+
+    @ClientBundle.Source("images/arrow_up.png")
+    ImageResource arrow_up();
+    @ClientBundle.Source("images/arrow_down.png")
+    ImageResource arrow_down();
 }
